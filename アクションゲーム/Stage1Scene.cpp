@@ -33,10 +33,10 @@ void Stage1Scene::Init()
 	m_StrokeCount = 0; // 現在打数を初期化
 
 	// オブジェクトを作成
-	m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Ground>());
-	Ground* ground = dynamic_cast<Ground*>(m_MySceneObjects[m_MySceneObjects.size() - 1]);
+	ground = Game::GetInstance()->AddObject<Ground>();
+	m_MySceneObjects.emplace_back(ground);
 	groundsize = ground->GetGroundSize();
-	m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Player>());
+
 	//m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Pole>()); // ポール
 
 	for (int i = 0; i < 15; i++) {
@@ -44,7 +44,8 @@ void Stage1Scene::Init()
 		Arrow* arrow = dynamic_cast<Arrow*>(m_MySceneObjects[m_MySceneObjects.size() - 1]); // 矢印
 		arrow->SetState(0); // 矢印を非表示
 	}
-	m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Boss>());
+	boss = Game::GetInstance()->AddObject<Boss>();
+	m_MySceneObjects.emplace_back(boss);
 	//for (int i = 0; i < 9; i++) {
 	//	int r1 = rand();
 	//	int r2 = rand();
@@ -116,7 +117,8 @@ void Stage1Scene::Init()
 	pt6->SetUV(1, 1, 10, 1); //UVを指定
 	m_MySceneObjects.emplace_back(pt6);
 
-	Player* player = dynamic_cast<Player*>(m_MySceneObjects[1]);// ゴルフボール
+	player = Game::GetInstance()->AddObject<Player>();
+	m_MySceneObjects.emplace_back(player);
 	player->SetState(0);
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
@@ -125,9 +127,7 @@ void Stage1Scene::Init()
 //更新
 void Stage1Scene::Update()
 {
-	Player* player = dynamic_cast<Player*>(m_MySceneObjects[1]);//ゴルフボール
 	//Arrow* arrow = dynamic_cast<Arrow*>(m_MySceneObjects[2]); // 矢印
-	Boss* boss = Game::GetInstance()->GetObjects<Boss>()[0];
 	// 数を更新
 	Texture2D* count[1];
 	vector<Texture2D*> texture2D = Game::GetInstance()->GetObjects<Texture2D>();

@@ -3,6 +3,11 @@
 #include "Object.h"
 #include "sound.h"
 
+class Player;
+class Enemy;
+class Boss;
+class Ground;
+
 // Stage1Scenクラス
 class Stage1Scene : public Scene
 {
@@ -19,6 +24,10 @@ private:
 	int m_StrokeCount; // 現在の打数
 	const int setenemycount = 15;//敵の数
 	DirectX::XMFLOAT2 groundsize;//地面の大きさ
+
+	Player* player;
+	Boss* boss;
+	Ground* ground;
 
 public:
 	Stage1Scene(); // コンストラクタ

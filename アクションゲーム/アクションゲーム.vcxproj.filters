@@ -73,6 +73,9 @@
     <Filter Include="ソース ファイル\Buffer">
       <UniqueIdentifier>{073630ad-6203-45a7-b618-41bcaebf1fa7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Object\Interface">
+      <UniqueIdentifier>{c52f9736-3b76-4093-ac74-b96c8f60c1e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -177,11 +180,14 @@
     <ClCompile Include="Shader.cpp">
       <Filter>ソース ファイル\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Weapon.cpp">
       <Filter>ソース ファイル\Object\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponManager.cpp">
+      <Filter>ソース ファイル\Object\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="GroundManager.cpp">
+      <Filter>ソース ファイル\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -305,11 +311,20 @@
     <ClInclude Include="VertexBuffer.h">
       <Filter>ソース ファイル\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Weapon.h">
       <Filter>ソース ファイル\Object\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponManager.h">
+      <Filter>ソース ファイル\Object\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="IDamage.h">
+      <Filter>ソース ファイル\Object\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ICollider.h">
+      <Filter>ソース ファイル\Object\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="GroundManager.h">
+      <Filter>ソース ファイル\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

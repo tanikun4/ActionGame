@@ -7,6 +7,7 @@ class Weapon :
 private:
     TestCube hitbox;
     int atk;
+    int flamecount;
 public:
 };
 

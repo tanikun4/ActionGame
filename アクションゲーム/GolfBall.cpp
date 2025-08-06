@@ -88,8 +88,6 @@ void GolfBall::GBInit(std::u8string modelfilename)
 void GolfBall::GBUpdate()
 {
 
-	
-
 	//現在の前向きベクトル
 	//まずは回転行列を作成する
 	Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);

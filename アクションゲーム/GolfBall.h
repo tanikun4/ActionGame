@@ -34,6 +34,8 @@ protected:
 
 	//前向きベクトル変数
 	DirectX::SimpleMath::Vector3 m_ForwardVector = { 0.0f,0.0f,1.0f };//初期ベクトル
+
+	std::vector<Collision::Polygon> m_GroundPolygons;//地面のポリゴン
 public:
 
 	GolfBall(Camera* cam); // コンストラクタ
@@ -46,6 +48,7 @@ public:
 	void Update();
 	void Draw();
 	void Uninit();
+	void CheckGround();
 
 	// 状態の設定・取得
 	void SetState(int s);
