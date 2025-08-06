@@ -9,6 +9,7 @@
 #include "Arrow.h"
 #include "Pole.h"
 #include "EnemyManager.h"
+#include "GroundManager.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -29,14 +30,13 @@ Stage1Scene::~Stage1Scene()
 void Stage1Scene::Init()
 {
 	srand((unsigned)time(NULL));
-	m_Par = 4;// パー(標準打数)を設定
-	m_StrokeCount = 0; // 現在打数を初期化
 
 	// オブジェクトを作成
 	ground = Game::GetInstance()->AddObject<Ground>();
 	m_MySceneObjects.emplace_back(ground);
 	groundsize = ground->GetGroundSize();
 
+	GroundManager::GetInstance().Initialize();
 	//m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Pole>()); // ポール
 
 	for (int i = 0; i < 15; i++) {

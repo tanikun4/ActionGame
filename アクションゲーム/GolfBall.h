@@ -31,11 +31,12 @@ protected:
 	static constexpr float ForwardVelocity = 0.5f; // 前進速度定数
 	static constexpr float BackwardVelocity = 0.5f; // 後退速度定数
 	static constexpr float LeftRightVelocity = 0.5f; // 左右移動速度定数
+	
+	const float gravity = 0.07f; //重力
 
 	//前向きベクトル変数
 	DirectX::SimpleMath::Vector3 m_ForwardVector = { 0.0f,0.0f,1.0f };//初期ベクトル
 
-	std::vector<Collision::Polygon> m_GroundPolygons;//地面のポリゴン
 public:
 
 	GolfBall(Camera* cam); // コンストラクタ
@@ -48,7 +49,7 @@ public:
 	void Update();
 	void Draw();
 	void Uninit();
-	void CheckGround();
+	bool CheckGround();
 
 	// 状態の設定・取得
 	void SetState(int s);

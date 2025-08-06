@@ -6,7 +6,7 @@
 #include "Ground.h"
 #include "Pole.h"
 #include "Collision.h"
-
+#include "GroundManager.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -103,85 +103,86 @@ void GolfBall::GBUpdate()
 	// 現在の座標を計算
 	m_Position += m_ForwardVector * m_Velocity_f;
 
-	//重力
-	const float gravity = 0.07f;
 	m_Velocity.y -= gravity;
 
 	//速度を座標に加算
 	m_Position += m_Velocity;
 
-	//Groundの頂点データを取得
+	////Groundの頂点データを取得
 
-	vector<Ground*>grounds = Game::GetInstance()->GetObjects<Ground>();
-	vector<VERTEX_3D> vertices;
-	for (auto& g : grounds) //Groundオブジェクトの数ループ
-	{
-		vector<VERTEX_3D> vecs = g->GetVertices();
-		for (auto& v : vecs) //頂点の数ループ
-		{
-			vertices.emplace_back(v);
-		}
-	}
-	float moveDistance = 9999; //移動距離
-	Vector3 contactPoint; //接触点
-	Vector3 normal;
+	//const auto& ground_polygon = GroundManager::GetInstance().GetGroundPolygons();
 
-	//線分とポリゴンの当たり判定
-	bool senbunFg = false;
-	for (int i = 0; i < vertices.size(); i += 3) 
-	{
-		//三角形ポリゴン
-		Collision::Polygon collisionPolygon =
-		{
-			vertices[i + 0].position,
-			vertices[i + 1].position,
-			vertices[i + 2].position,
-		};
-		Vector3 cp; //接触点
-		Collision::Segment collisionSegment = { oldPos, m_Position };
-		if (Collision::CheckHit(collisionSegment, collisionPolygon, cp))
-		{
-			float md = 0;
-			Vector3 np = Collision::moveSphere(collisionSegment, radius, collisionPolygon, cp, md);
-			if (moveDistance > md)
-			{
-				moveDistance = md;
-				m_Position = np;
-				contactPoint = cp;
-				normal = Collision::GetNormal(collisionPolygon);
-			}
-			senbunFg = true;
-		}
-	}
+	//vector<Ground*>grounds = Game::GetInstance()->GetObjects<Ground>();
+	//vector<VERTEX_3D> vertices;
+	//for (auto& g : grounds) //Groundオブジェクトの数ループ
+	//{
+	//	vector<VERTEX_3D> vecs = g->GetVertices();
+	//	for (auto& v : vecs) //頂点の数ループ
+	//	{
+	//		vertices.emplace_back(v);
+	//	}
+	//}
+	//float moveDistance = 9999; //移動距離
+	//Vector3 contactPoint; //接触点
+	//Vector3 normal;
 
-	//球体とポリゴンの当たり判定
-	if (!senbunFg)
-	{
-		for (int i = 0; i < vertices.size(); i += 3) {
-			//三角形ポリゴン
-			Collision::Polygon collisionPolygon = {
-				vertices[i + 0].position,
-				vertices[i + 1].position,
-				vertices[i + 2].position,
-			};
+	////線分とポリゴンの当たり判定
+	//bool senbunFg = false;
+	//for (int i = 0; i < vertices.size(); i += 3) 
+	//{
+	//	//三角形ポリゴン
+	//	Collision::Polygon collisionPolygon =
+	//	{
+	//		vertices[i + 0].position,
+	//		vertices[i + 1].position,
+	//		vertices[i + 2].position,
+	//	};
+	//	Vector3 cp; //接触点
+	//	Collision::Segment collisionSegment = { oldPos, m_Position };
+	//	if (Collision::CheckHit(collisionSegment, collisionPolygon, cp))
+	//	{
+	//		float md = 0;
+	//		Vector3 np = Collision::moveSphere(collisionSegment, radius, collisionPolygon, cp, md);
+	//		if (moveDistance > md)
+	//		{
+	//			moveDistance = md;
+	//			m_Position = np;
+	//			contactPoint = cp;
+	//			normal = Collision::GetNormal(collisionPolygon);
+	//		}
+	//		senbunFg = true;
+	//	}
+	//}
 
-			Vector3 cp; //接触点
-			Collision::Sphere collisionSphere = { m_Position, radius };
-			if (Collision::CheckHit(collisionSphere, collisionPolygon, cp)) {
-				float md = 0;
-				Vector3 np = Collision::moveSphere(collisionSphere, collisionPolygon, cp);
-				md = (np - oldPos).Length();
-				if (moveDistance > md)
-				{
-					moveDistance = md;
-					m_Position = np;
-					contactPoint = cp;
-					normal = Collision::GetNormal(collisionPolygon);
-				}
-			}
-		}
-	}
-	if (moveDistance != 9999)//もし当たっていれば
+	////球体とポリゴンの当たり判定
+	//if (!senbunFg)
+	//{
+	//	for (int i = 0; i < vertices.size(); i += 3) {
+	//		//三角形ポリゴン
+	//		Collision::Polygon collisionPolygon = {
+	//			vertices[i + 0].position,
+	//			vertices[i + 1].position,
+	//			vertices[i + 2].position,
+	//		};
+
+	//		Vector3 cp; //接触点
+	//		Collision::Sphere collisionSphere = { m_Position, radius };
+	//		if (Collision::CheckHit(collisionSphere, collisionPolygon, cp)) {
+	//			float md = 0;
+	//			Vector3 np = Collision::moveSphere(collisionSphere, collisionPolygon, cp);
+	//			md = (np - oldPos).Length();
+	//			if (moveDistance > md)
+	//			{
+	//				moveDistance = md;
+	//				m_Position = np;
+	//				contactPoint = cp;
+	//				normal = Collision::GetNormal(collisionPolygon);
+	//			}
+	//		}
+	//	}
+	//}
+
+	if (CheckGround())//もし当たっていれば
 	{
 		m_Velocity.y = -gravity;
 
@@ -245,3 +246,54 @@ void GolfBall::Shot(Vector3 v) { m_Velocity = v;}
 float GolfBall::GetRadius() { return radius; }
 
 Vector3 GolfBall::GetForwardVector() { return m_ForwardVector; }
+
+bool GolfBall::CheckGround() {
+	//Groundの頂点データを取得
+
+	const auto& ground_polygon = GroundManager::GetInstance().GetGroundPolygons();
+
+	float moveDistance = 9999; //移動距離
+	Vector3 contactPoint; //接触点
+	Vector3 normal;
+
+	//線分とポリゴンの当たり判定
+	for (const auto& poly : ground_polygon)
+	{
+		Vector3 cp; //接触点
+		Collision::Segment collisionSegment = { oldPos, m_Position };
+		if (Collision::CheckHit(collisionSegment, poly, cp))
+		{
+			float md = 0;
+			Vector3 np = Collision::moveSphere(collisionSegment, radius, poly, cp, md);
+			if (moveDistance > md)
+			{
+				moveDistance = md;
+				m_Position = np;
+				contactPoint = cp;
+				normal = Collision::GetNormal(poly);
+			}
+			return true;
+		}
+	}
+
+	//球体とポリゴンの当たり判定
+	for (const auto& poly : ground_polygon) {
+		Vector3 cp; //接触点
+		Collision::Sphere collisionSphere = { m_Position, radius };
+		if (Collision::CheckHit(collisionSphere, poly, cp)) {
+			float md = 0;
+			Vector3 np = Collision::moveSphere(collisionSphere, poly, cp);
+			md = (np - oldPos).Length();
+			if (moveDistance > md)
+			{
+				moveDistance = md;
+				m_Position = np;
+				contactPoint = cp;
+				normal = Collision::GetNormal(poly);
+			}
+		}
+		return true;
+	}
+
+	return false;
+}
