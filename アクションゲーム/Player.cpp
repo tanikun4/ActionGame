@@ -10,7 +10,7 @@
 #include "Enemy.h"
 #include "sound.h"
 #include "Boss.h"
-
+#include "WeaponManager.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;

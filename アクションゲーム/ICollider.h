@@ -1,7 +1,9 @@
 #pragma once
+
+template <typename T>
 class ICollider
 {
 public:
     virtual ~ICollider() {}
-    virtual void HitCheck(int damage) = 0;
+    virtual T GetCollision() = 0;
 };

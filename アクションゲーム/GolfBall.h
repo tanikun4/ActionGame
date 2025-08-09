@@ -4,8 +4,10 @@
 #include "Texture.h"
 #include "Material.h"
 #include "input.h"
+#include "Collision.h"
+#include "ICollider.h"
 
-class GolfBall :public Object
+class GolfBall :public Object , public ICollider<Collision::Sphere>
 {
 protected:
 	//速度
@@ -39,6 +41,7 @@ protected:
 
 public:
 
+	GolfBall();
 	GolfBall(Camera* cam); // コンストラクタ
 	~GolfBall();//デストラクタ
 
@@ -59,6 +62,7 @@ public:
 	void Shot(DirectX::SimpleMath::Vector3 v);
 
 	float GetRadius();
+	Collision::Sphere GetCollision();
 	DirectX::SimpleMath::Vector3 GetForwardVector();
 };
 

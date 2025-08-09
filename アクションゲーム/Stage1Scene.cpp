@@ -235,5 +235,24 @@ int Stage1Scene::GetScore()
 }
 
 void Stage1Scene::Collision() {
-	
+	//for (size_t i = 0; i < m_MySceneObjects.size(); ++i) {
+	//	for (size_t j = i + 1; j < m_MySceneObjects.size(); ++j) {
+	//		auto a = m_MySceneObjects[i];
+	//		auto b = m_MySceneObjects[j];
+
+	//		auto col_a = dynamic_cast<ICollider*>(a);
+	//		auto col_b = dynamic_cast<ICollider*>(b);
+	//		if (col_a && col_b) {
+	//			if (Collision::CheckHit(col_a->GetCollision(), col_b->GetCollision())) {
+	//				// ダメージを与える（キャストできるか確認）
+	//				if (auto da = dynamic_cast<IDamageable*>(a)) {
+	//					da->Damage(10);
+	//				}
+	//				if (auto db = dynamic_cast<IDamageable*>(b)) {
+	//					db->Damage(10);
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 }

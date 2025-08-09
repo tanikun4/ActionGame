@@ -4,7 +4,7 @@
 #include "Camera.h"
 #define PI  (DirectX::XM_PI)
 
-class Object {
+class Object  {
 protected:
 	// SRT情報（姿勢情報）
 	DirectX::SimpleMath::Vector3 m_Position = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
@@ -19,6 +19,7 @@ protected:
 
 public:
 
+	Object();
 	Object(Camera* cam); // コンストラクタ
 
 	virtual ~Object(); // デストラクタ

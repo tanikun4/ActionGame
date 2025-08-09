@@ -11,8 +11,12 @@ using namespace std;
 using namespace DirectX::SimpleMath;
 
 // コンストラクタ
-Pole::Pole(Camera* cam) :Object(cam)
+Pole::Pole(Camera* cam) :Weapon(cam)
 {
+
+}
+
+Pole::Pole() {
 
 }
 

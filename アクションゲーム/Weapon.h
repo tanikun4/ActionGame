@@ -1,13 +1,21 @@
 #pragma once
 #include "Object.h"
 #include "TestCube.h"
+#include "ICollider.h"
+#include "Collision.h"
+
 class Weapon :
-    public Object
+    public Object , public ICollider<Collision::OBB>
 {
 private:
     TestCube hitbox;
     int atk;
     int flamecount;
 public:
+    Weapon(Camera* cam);//コンストラクタ
+    Weapon();
+    ~Weapon();//デストラクタ
+
+    Collision::OBB GetCollision();
 };
 

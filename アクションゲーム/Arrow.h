@@ -4,11 +4,12 @@
 #include "Texture.h"
 #include "Material.h"
 #include "TestCube.h"
+#include "Weapon.h"
 
 //-----------------------------------------------------------------------------
 // Arrowクラス
 //-----------------------------------------------------------------------------
-class Arrow :public Object
+class Arrow :public Weapon
 {
 private:
 	//速度
@@ -37,6 +38,7 @@ private:
 
 public:
 	Arrow(Camera* cam); // コンストラクタ
+	Arrow();
 	~Arrow(); // デストラクタ
 	TestCube hitbox;
 	void Init();

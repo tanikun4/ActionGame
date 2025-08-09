@@ -4,11 +4,12 @@
 #include "MeshRenderer.h"
 #include "Texture.h"
 #include "Material.h"
+#include "Weapon.h"
 
 //-----------------------------------------------------------------------------
 // Poleクラス
 //-----------------------------------------------------------------------------
-class Pole :public Object
+class Pole :public Weapon
 {
 private:
 
@@ -25,6 +26,7 @@ private:
 public:
 
 	Pole(Camera* cam); // コンストラクタ
+	Pole(); // コンストラクタ
 	~Pole(); // デストラクタ
 
 	TestCube hitbox;

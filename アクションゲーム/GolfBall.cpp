@@ -5,7 +5,6 @@
 #include "Game.h"
 #include "Ground.h"
 #include "Pole.h"
-#include "Collision.h"
 #include "GroundManager.h"
 
 using namespace std;
@@ -14,6 +13,11 @@ extern Input input;
 
 // コンストラクタ
 GolfBall::GolfBall(Camera* cam) : Object(cam)
+{
+
+}
+
+GolfBall::GolfBall()
 {
 
 }
@@ -296,4 +300,9 @@ bool GolfBall::CheckGround() {
 	}
 
 	return false;
+}
+
+Collision::Sphere GolfBall::GetCollision() {
+	//Collision::Sphere collisionSphere = { m_Position, radius };
+	return { m_Position, radius };
 }

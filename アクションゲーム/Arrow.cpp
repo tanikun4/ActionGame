@@ -9,8 +9,12 @@ using namespace std;
 using namespace DirectX::SimpleMath;
 
 // コンストラクタ
-Arrow::Arrow(Camera* cam) :Object(cam)
+Arrow::Arrow(Camera* cam) :Weapon(cam)
 {
+
+}
+
+Arrow::Arrow() {
 
 }
 
