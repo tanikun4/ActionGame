@@ -326,6 +326,9 @@
     <ClInclude Include="GroundManager.h">
       <Filter>ソース ファイル\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="IColliderBase.h">
+      <Filter>ソース ファイル\Object\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl">

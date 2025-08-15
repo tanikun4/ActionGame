@@ -381,6 +381,7 @@
     <ClInclude Include="Ground.h" />
     <ClInclude Include="GroundManager.h" />
     <ClInclude Include="ICollider.h" />
+    <ClInclude Include="IColliderBase.h" />
     <ClInclude Include="IDamage.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="input.h" />

@@ -1,9 +1,8 @@
 #pragma once
-
-template <typename T>
+#include "Collision.h"
 class ICollider
 {
 public:
     virtual ~ICollider() {}
-    virtual T GetCollision() = 0;
+    virtual Collision::Base& GetCollision() = 0;
 };

@@ -708,7 +708,7 @@ namespace Collision
 	//==================================
 	AABB SetAABB(Vector3 centerposition, float width, int height, int depth)
 	{
-		AABB aabb{};
+		AABB aabb({ 0,0,0 }, { 0, 0, 0 });
 
 		width = fabs(width);
 		height = fabs(height);
@@ -883,5 +883,7 @@ namespace Collision
 	}
 
 	//点とOBBの最短距離を使えばポリゴンのやつも行けそう
+
+	bool CheckHit(const Base& a, const Base& b) { return false; } //ダミー
 }
 

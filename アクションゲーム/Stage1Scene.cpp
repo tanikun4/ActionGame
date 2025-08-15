@@ -10,6 +10,7 @@
 #include "Pole.h"
 #include "EnemyManager.h"
 #include "GroundManager.h"
+#include "ICollider.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -122,6 +123,13 @@ void Stage1Scene::Init()
 	player->SetState(0);
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
+
+	std::vector<Weapon*> weapons = Game::GetInstance()->GetObjects<Weapon>();
+	m_MySceneObjects.insert(
+		m_MySceneObjects.end(),    // 挿入位置
+		weapons.begin(),        // 挿入する範囲の開始
+		weapons.end()           // 挿入する範囲の終了
+	);
 }
 
 //更新
@@ -235,24 +243,20 @@ int Stage1Scene::GetScore()
 }
 
 void Stage1Scene::Collision() {
-	//for (size_t i = 0; i < m_MySceneObjects.size(); ++i) {
-	//	for (size_t j = i + 1; j < m_MySceneObjects.size(); ++j) {
-	//		auto a = m_MySceneObjects[i];
-	//		auto b = m_MySceneObjects[j];
+	for (size_t i = 0; i < m_MySceneObjects.size(); ++i) {
+		for (size_t j = i + 1; j < m_MySceneObjects.size(); ++j) {
+			auto a = m_MySceneObjects[i];
+			auto b = m_MySceneObjects[j];
+			if (!(a->GetLive() && b->GetLive())) { continue; };
 
-	//		auto col_a = dynamic_cast<ICollider*>(a);
-	//		auto col_b = dynamic_cast<ICollider*>(b);
-	//		if (col_a && col_b) {
-	//			if (Collision::CheckHit(col_a->GetCollision(), col_b->GetCollision())) {
-	//				// ダメージを与える（キャストできるか確認）
-	//				if (auto da = dynamic_cast<IDamageable*>(a)) {
-	//					da->Damage(10);
-	//				}
-	//				if (auto db = dynamic_cast<IDamageable*>(b)) {
-	//					db->Damage(10);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+			auto col_a = dynamic_cast<ICollider*>(a);
+			auto col_b = dynamic_cast<ICollider*>(b);
+			if (col_a && col_b) {
+				if (Collision::CheckHit(col_a->GetCollision(), col_b->GetCollision())) {
+					a->HitObject(b);
+					b->HitObject(a);
+				}
+			}
+		}
+	}
 }

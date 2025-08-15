@@ -39,10 +39,11 @@ void Player::Init() {
 void Player::Update() {
 	m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	//状態ごとの処理
-	switch (m_State) {//0:通常時、1:近接攻撃中,2:遠距離攻撃中,3:ダメージ中,4:回避状態
+	switch (m_State) {//0:通常時、1:近接攻撃中,2:遠距離攻撃中,3:ダメージ中,4:回避状態5:ガード状態
 	case 0:
 		Move();
 		Attack();
+		Guard();
 		break;
 	case 1:
 		if (m_pole->GetState() == 0) {
@@ -86,6 +87,9 @@ void Player::Update() {
 			InviFg = false;
 			rollcount = 0;
 		}
+		break;
+	case 5:
+		Guard();
 		break;
 	}
 
@@ -252,9 +256,8 @@ void Player::CheckHit() {
 
 void Player::CheckHitPole(Pole* pole) {
 	if (m_State == 3) { return; }
-	Collision::Sphere balCollision = { m_Position, radius };
+	Collision::Sphere balCollision = { m_Position , radius };
 	if (pole->GetState() == 1) {
-		Collision::Sphere balCollision = { m_Position, radius };
 		if (Collision::CheckHit(pole->hitbox, balCollision)) {
 			Damage(2);
 			Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
@@ -278,5 +281,17 @@ int Player::GetHP() {
 
 Pole* Player::GetWeapon() {
 	return m_pole;
+}
+
+void Player::Guard() {
+	if (Input::GetKeyTrigger(VK_E)) {
+		m_State = 5;
+		GuardFg = true;
+	}
+	if (Input::GetButtonRelease(VK_E)) {
+		m_State = 0;
+		GuardFg = false;
+	}
+	return;
 }
 

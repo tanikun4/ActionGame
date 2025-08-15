@@ -5,6 +5,10 @@
 class TestCube;
 namespace Collision
 {
+	struct Base {
+		Base() = default;
+	};
+
 	// ライン（無限の長さの線）
 	struct Line {
 		DirectX::SimpleMath::Vector3 point; // 通過地点
@@ -26,15 +30,20 @@ namespace Collision
 
 	// 三角形ポリゴン（有限の広さの平面）
 	struct Polygon {
-		const DirectX::SimpleMath::Vector3 p0; //頂点0
-		const DirectX::SimpleMath::Vector3 p1; //頂点1
-		const DirectX::SimpleMath::Vector3 p2; //頂点2
+		const DirectX::SimpleMath::Vector3 p0{}; //頂点0
+		const DirectX::SimpleMath::Vector3 p1{}; //頂点1
+		const DirectX::SimpleMath::Vector3 p2{}; //頂点2
 	};
 
 	// 球体
-	struct Sphere {
-		DirectX::SimpleMath::Vector3 center; // 中心
-		float radius; // 半径
+	struct Sphere : public Base {
+		DirectX::SimpleMath::Vector3 center{}; // 中心
+		float radius{}; // 半径
+		Sphere(const DirectX::SimpleMath::Vector3& c, const float r)
+			: Base()       // ← 親を明示初期化（必要に応じて引数付きで）
+			, center(c)
+			, radius(r) {
+		}
 	};
 
 	//// 円柱
@@ -52,18 +61,35 @@ namespace Collision
 	//};
 
 	// BOX定義
-	struct AABB {
-		DirectX::SimpleMath::Vector3 min;
-		DirectX::SimpleMath::Vector3 max;
+	struct AABB : public Base {
+		DirectX::SimpleMath::Vector3 min{};
+		DirectX::SimpleMath::Vector3 max{};
+		AABB(const DirectX::SimpleMath::Vector3& mi, const DirectX::SimpleMath::Vector3& ma)
+			: Base()       // ← 親を明示初期化（必要に応じて引数付きで）
+			, min(mi)
+			, max(ma) {
+		}
 	};
 
-	struct OBB {
-		DirectX::SimpleMath::Vector3 m_pos;              // 位置
-		DirectX::SimpleMath::Vector3 m_axis[3];			 // 方向ベクトル(軸)
-		DirectX::SimpleMath::Vector3 m_length;           // 各軸方向の長さ(サイズ)
+	struct OBB : public Base {
+		DirectX::SimpleMath::Vector3 m_pos{};              // 位置
+		DirectX::SimpleMath::Vector3 m_axis[3]{};			 // 方向ベクトル(軸)
+		DirectX::SimpleMath::Vector3 m_length{};           // 各軸方向の長さ(サイズ)
+		OBB(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& rotation, const DirectX::SimpleMath::Vector3& length)
+			: Base()       // ← 親を明示初期化（必要に応じて引数付きで）
+			, m_pos(pos)
+			, m_length(length) 
+		{
+			DirectX::SimpleMath::Matrix r = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(rotation.y, rotation.x, rotation.z);
+			m_axis[0] = DirectX::SimpleMath::Vector3(r._11, r._12, r._13);
+			m_axis[1] = DirectX::SimpleMath::Vector3(r._21, r._22, r._23);
+			m_axis[2] = DirectX::SimpleMath::Vector3(r._31, r._32, r._33);
+		}
+
 	};
 
 	//当たり判定
+	bool CheckHit(const Base& a, const Base& b);
 	bool CheckHit(const Line& line, const Plane& plane); //線(無限の長さ)と平面(無限の大きさ)
 	bool CheckHit(const Segment& segment, const Plane& plane); //線分と平面(無限の大きさ)
 	bool CheckHit(const Line& line, const Polygon& polygon); //線(無限の長さ)とポリゴン

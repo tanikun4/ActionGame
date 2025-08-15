@@ -17,7 +17,7 @@ Weapon::~Weapon()
 }
 
 
-Collision::OBB Weapon::GetCollision() {
-	Collision::OBB obb = { m_Position,m_Rotation,m_Scale };
+Collision::OBB& Weapon::GetCollision() {
+	Collision::OBB obb = { m_Position, m_Rotation,m_Scale };
 	return obb;
 }

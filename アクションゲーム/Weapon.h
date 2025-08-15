@@ -5,7 +5,7 @@
 #include "Collision.h"
 
 class Weapon :
-    public Object , public ICollider<Collision::OBB>
+    public Object , public ICollider
 {
 private:
     TestCube hitbox;
@@ -16,6 +16,6 @@ public:
     Weapon();
     ~Weapon();//デストラクタ
 
-    Collision::OBB GetCollision();
+    Collision::OBB& GetCollision();
 };
 

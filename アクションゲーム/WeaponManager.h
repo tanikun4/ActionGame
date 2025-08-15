@@ -27,6 +27,7 @@ public:
     void Uninit();
     void SetGameWeapon();
     Weapon* SetWeapon(int id);
+    std::vector<Weapon*> GetWeapon();
 private:
     std::vector<Weapon*> m_weapons;
 };

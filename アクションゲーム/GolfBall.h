@@ -7,7 +7,7 @@
 #include "Collision.h"
 #include "ICollider.h"
 
-class GolfBall :public Object , public ICollider<Collision::Sphere>
+class GolfBall :public Object , public ICollider
 {
 protected:
 	//‘¬“x
@@ -62,7 +62,7 @@ public:
 	void Shot(DirectX::SimpleMath::Vector3 v);
 
 	float GetRadius();
-	Collision::Sphere GetCollision();
+	Collision::Sphere& GetCollision();
 	DirectX::SimpleMath::Vector3 GetForwardVector();
 };
 

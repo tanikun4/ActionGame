@@ -16,6 +16,7 @@ protected:
 
 	// カメラ
 	Camera* m_Camera;
+	bool m_live = false;
 
 public:
 
@@ -28,10 +29,13 @@ public:
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 	virtual void Uninit() = 0;
+	virtual void HitObject(Object* ob) { return; }//オブジェクトに当たった時の処理を入れる
+	virtual bool GetLive() { return m_live; }
 
 	//position セッター関数・ゲッター関数
 	void SetPosition(const DirectX::SimpleMath::Vector3& pos);
 	DirectX::SimpleMath::Vector3 GetPosition() const;
 	DirectX::SimpleMath::Vector3 GetRotation() const;
 	DirectX::SimpleMath::Vector3 GetScale() const;
+
 };
