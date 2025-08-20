@@ -6,10 +6,12 @@
 class GroundManager :
     public Manager<GroundManager>
 {
+    friend class Manager<GroundManager>; // Manager ‚©‚ç new ‚Å‚«‚é‚æ‚¤‚É‚·‚é
+
 public:
-    void Initialize();
-    const std::vector<Collision::Polygon>& GetGroundPolygons() const;
+   void Initialize();
+   const std::vector<Collision::Polygon>& GetGroundPolygons() const;
 private:
-    std::vector<Collision::Polygon> m_Polygons;
+   std::vector<Collision::Polygon> m_Polygons;
 };
 

@@ -1,5 +1,6 @@
 #include "GroundManager.h"
 #include "Game.h"
+#include "Ground.h"
 
 void GroundManager::Initialize() {
     m_Polygons.clear();
