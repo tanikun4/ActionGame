@@ -81,7 +81,6 @@ bool Boss::GetLive() {
 
 void Boss::Damage(int atk) {
 	hp -= atk;
-	//m_State = 2;
 	invicount = 0.0f;
 	inviFg = true;
 	m_Velocity_f = 0.0f;//ˆÚ“®‘¬“x‚ð0‚É‚·‚é
@@ -217,4 +216,11 @@ int Boss::GetHP() {
 
 Pole* Boss::GetWeapon() {
 	return m_weapon;
+}
+
+void Boss::HitObject(Pole* po) {
+	if (inviFg) { return; }
+	Damage(po->atk);
+	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
+	return;
 }

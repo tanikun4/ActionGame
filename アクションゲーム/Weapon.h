@@ -16,6 +16,6 @@ public:
     Weapon();
     ~Weapon();//デストラクタ
 
-    Collision::OBB& GetCollision();
+    Collision::Base& GetCollision() override ;
 };
 

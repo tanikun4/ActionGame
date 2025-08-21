@@ -103,7 +103,7 @@ void Player::Update() {
 		++flamecount;
 	}
 	else {
-		CheckHit();
+		//CheckHit();
 	}
 	// 下に落ちた時はダメージを受けてリスポーン
 	if (m_Position.y < -100)
@@ -272,6 +272,7 @@ void Player::Damage(int atk) {
 		m_State = 3;
 		flamecount = 0;
 		InviFg = true;
+		Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
 	}
 }
 
@@ -292,6 +293,16 @@ void Player::Guard() {
 		m_State = 0;
 		GuardFg = false;
 	}
+	return;
+}
+
+void Player::HitObject(Boss* bo) {
+	Damage(1);
+	return;
+}
+
+void Player::HitObject(Pole* po) {
+	Damage(2);
 	return;
 }
 

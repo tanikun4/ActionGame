@@ -39,5 +39,6 @@ public:
 	int GetHP();
 	bool HitCheckPole(Pole* pole);//UŒ‚‚É“–‚½‚Á‚½‚©‚ğ•Ô‚·
 	Pole* GetWeapon();
+	void HitObject(Pole* po);
 };
 

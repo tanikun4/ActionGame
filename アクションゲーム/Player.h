@@ -2,6 +2,7 @@
 #include "GolfBall.h"
 class Arrow;
 class Pole;
+class Boss;
 class Player :
     public GolfBall
 {
@@ -32,5 +33,7 @@ public:
 	int GetHP();
 	Pole* GetWeapon();
 	void CheckHitPole(Pole* pole);
+	void HitObject(Boss* bo);
+	void HitObject(Pole* po);
 };
 

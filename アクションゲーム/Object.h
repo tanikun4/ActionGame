@@ -16,7 +16,7 @@ protected:
 
 	// ƒJƒƒ‰
 	Camera* m_Camera;
-	bool m_live = false;
+	bool m_live = true;
 
 public:
 

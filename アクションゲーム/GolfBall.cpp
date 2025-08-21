@@ -188,7 +188,7 @@ void GolfBall::GBUpdate()
 
 	if (CheckGround())//‚à‚µ“–‚½‚Á‚Ä‚¢‚ê‚Î
 	{
-		m_Velocity.y = -gravity;
+		m_Velocity.y = 0;
 
 	}
 
@@ -295,14 +295,14 @@ bool GolfBall::CheckGround() {
 				contactPoint = cp;
 				normal = Collision::GetNormal(poly);
 			}
+			return true;
 		}
-		return true;
 	}
 
 	return false;
 }
 
-Collision::Sphere& GolfBall::GetCollision() {
+Collision::Base& GolfBall::GetCollision() {
 	Collision::Sphere collisionSphere = { m_Position, radius };
 	return collisionSphere;
 }

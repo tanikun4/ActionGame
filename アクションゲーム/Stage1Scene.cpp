@@ -40,7 +40,7 @@ void Stage1Scene::Init()
 	GroundManager::GetInstance().Initialize();
 	//m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Pole>()); // ポール
 
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Arrow>()); // 矢印
 		Arrow* arrow = dynamic_cast<Arrow*>(m_MySceneObjects[m_MySceneObjects.size() - 1]); // 矢印
 		arrow->SetState(0); // 矢印を非表示
@@ -213,9 +213,11 @@ void Stage1Scene::Update()
 		break;
 	}
 
-	//if (enemycount <= 0) {
-	boss->HitCheckPole(player->GetWeapon());
-	player->CheckHitPole(boss->GetWeapon());
+
+	Collision();
+
+	//boss->HitCheckPole(player->GetWeapon());
+	//player->CheckHitPole(boss->GetWeapon());
 	if(boss->GetHP() <= 0){
 		Game::GetInstance()->ChangeScene(RESULT);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
@@ -228,10 +230,15 @@ void Stage1Scene::Update()
 // 終了処理
 void Stage1Scene::Uninit()
 {
+
+	for (auto& o : m_MySceneObjects) {//ループ中にポインタを削除するとバグるので、終了処理のみを先に行う
+		o->Uninit();
+	}
 	// このシーンのオブジェクトを削除する
 	for (auto& o : m_MySceneObjects) {
 		Game::GetInstance()->DeleteObject(o);
 	}
+	m_MySceneObjects.clear();
 	Game::GetInstance()->DeleteAllObject();
 }
 

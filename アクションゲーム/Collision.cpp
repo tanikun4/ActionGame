@@ -725,6 +725,13 @@ namespace Collision
 		return aabb;
 	}
 
+	bool CheckHit(OBB obb, Sphere sphere) {//OBBと球の判定
+		if (LenOBBtoPoint(obb, sphere.center) < sphere.radius) {
+			return true;
+		}
+		return false;
+	}
+
 	bool CheckHit(TestCube& obb, Sphere sphere) {//OBBと球の判定
 		if (LenOBBtoPoint(obb, sphere.center) < sphere.radius) {
 			return true;
@@ -859,6 +866,27 @@ namespace Collision
 		}
 
 		return true;
+	}
+
+	//OBBと点の長さ
+	float LenOBBtoPoint(OBB& obb, Vector3& point) {
+		Vector3 Vec(0, 0, 0);   // 最終的に長さを求めるベクトル
+
+		// 各軸についてはみ出た部分のベクトルを算出
+		for (int i = 0; i < 3; i++)
+		{
+			float L = obb.GetLen(i);
+			if (L <= 0) continue;  // L=0は計算できない
+			float s = Dot((point - obb.m_pos), obb.GetDirect(i)) / L;
+
+			// sの値から、はみ出した部分があればそのベクトルを加算
+			s = fabs(s);
+			if (s > 1)
+				Vec += (1 - s) * L * obb.GetDirect(i);   // はみ出した部分のベクトル算出
+		}
+
+		return DirectX::XMVectorGetX(XMVector3Length(Vec));   // 長さを出力
+
 	}
 
 	//OBBと点の長さ

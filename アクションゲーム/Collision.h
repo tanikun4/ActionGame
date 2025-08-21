@@ -85,7 +85,23 @@ namespace Collision
 			m_axis[1] = DirectX::SimpleMath::Vector3(r._21, r._22, r._23);
 			m_axis[2] = DirectX::SimpleMath::Vector3(r._31, r._32, r._33);
 		}
+		float GetLen(int elem) {
+			switch (elem) {
+			case 0:
+				return m_length.x;
+			case 1:
+				return m_length.y;
+			case 2:
+				return m_length.z;
+			default:
+				return 0;
+			}
+			return 0;
+		}
 
+		DirectX::SimpleMath::Vector3 GetDirect(int elem) {
+			return m_axis[elem];
+		}
 	};
 
 	//“–‚½‚è”»’è
@@ -138,6 +154,7 @@ namespace Collision
 	DirectX::SimpleMath::Vector3 moveSphere(const Segment& capsule, const float& radius, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact, float& distance);
 	DirectX::SimpleMath::Vector3 moveSphere(const Sphere& sphere, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact);
 	float LenOBBtoPoint(TestCube& obb, DirectX::SimpleMath::Vector3& point);//OBB‚Æ“_‚Ì’·‚³
+	float LenOBBtoPoint(OBB& obb, DirectX::SimpleMath::Vector3& point);//OBB‚Æ“_‚Ì’·‚³
 
 
 	//struct Plane {

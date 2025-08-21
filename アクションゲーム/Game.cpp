@@ -86,15 +86,10 @@ void Game::Draw()
 // 終了処理
 void Game::Uninit()
 {
+
 	//オブジェクトを全て削除
 	m_Instance->DeleteAllObject();
 
-	// オブジェクト終了処理
- 	// (※DeleteObject関数で実行するように変更）
-	//for (auto& o : m_Instance->m_Objects)
-	//{
-	//	o->Uninit();
-	//}
 
 	// カメラ終了処理
 	m_Instance->m_Camera->Uninit();
@@ -152,9 +147,7 @@ void Game::ChangeScene(SceneName sName)
 // オブジェクトを削除する
 void Game::DeleteObject(Object* pt)
 {
-	if (pt == NULL) return;
-
-	pt->Uninit(); // 終了処理
+	if (pt == nullptr) return;
 
 	// 要素を削除
 	m_Instance->m_Objects.erase(
@@ -163,7 +156,11 @@ void Game::DeleteObject(Object* pt)
 			m_Instance->m_Objects.end(),
 			[pt](const std::unique_ptr<Object>& element) {return element.get() == pt; }),
 		m_Instance->m_Objects.end());
+
 	m_Instance->m_Objects.shrink_to_fit();
+
+	pt = nullptr;
+
 }
 
 // オブジェクトをすべて削除する

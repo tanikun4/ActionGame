@@ -62,7 +62,7 @@ public:
 	void Shot(DirectX::SimpleMath::Vector3 v);
 
 	float GetRadius();
-	Collision::Sphere& GetCollision();
+	Collision::Base& GetCollision();
 	DirectX::SimpleMath::Vector3 GetForwardVector();
 };
 
