@@ -329,6 +329,9 @@
     <ClInclude Include="IColliderBase.h">
       <Filter>ソース ファイル\Object\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="OBBWirerenderer.h">
+      <Filter>ソース ファイル\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl">

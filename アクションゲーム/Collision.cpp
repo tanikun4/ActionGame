@@ -292,12 +292,12 @@ namespace Collision
 	// ■CheckHit関数
 	// 球体と球体の当たり判定
 	//==================================
-	bool CheckHit(Sphere sphere1, Sphere sphere2)
+	bool CheckHit(const Sphere& sphere1, const Sphere& sphere2)
 	{
 		Vector3 p;
 		return CheckHit(sphere1, sphere2, p);
 	}
-	bool CheckHit(Sphere sphere1, Sphere sphere2, Vector3& contact)
+	bool CheckHit(const Sphere& sphere1, const Sphere& sphere2, DirectX::SimpleMath::Vector3& contact)
 	{
 		float len2 = (sphere1.center - sphere2.center).LengthSquared();
 		float r2 = (sphere1.radius + sphere2.radius) * (sphere1.radius + sphere2.radius);
@@ -317,7 +317,7 @@ namespace Collision
 	// ■CheckHit関数
 	// AABBとAABBの当たり判定
 	//==================================
-	bool CheckHit(AABB p1, AABB p2) {
+	bool CheckHit(const AABB& p1, const AABB& p2) {
 
 		// X座標
 		if (p1.max.x < p2.min.x) {
@@ -725,21 +725,27 @@ namespace Collision
 		return aabb;
 	}
 
-	bool CheckHit(OBB obb, Sphere sphere) {//OBBと球の判定
+	bool CheckHit(const OBB& obb, const Sphere& sphere) {//OBBと球の判定
 		if (LenOBBtoPoint(obb, sphere.center) < sphere.radius) {
 			return true;
 		}
 		return false;
 	}
 
-	bool CheckHit(TestCube& obb, Sphere sphere) {//OBBと球の判定
+	// 追加（引数順が逆のときに呼べるように）
+	bool CheckHit(const Sphere& sphere, const OBB& obb) {
+		// 内部で順序を入れ替えて既存関数に委譲
+		return CheckHit(obb, sphere);
+	}
+
+	bool CheckHit(const TestCube& obb, const Sphere& sphere) {//OBBと球の判定
 		if (LenOBBtoPoint(obb, sphere.center) < sphere.radius) {
 			return true;
 		}
 		return false;
 	}
 
-	bool CheckHit(OBB& obb1, OBB& obb2) {
+	bool CheckHit(const OBB& obb1, const OBB& obb2){
 
 		//分離軸
 		DirectX::SimpleMath::Vector3 vecSeparate;
@@ -811,7 +817,7 @@ namespace Collision
 		const DirectX::SimpleMath::Vector3& vecseparate,		// 分離軸
 		const DirectX::SimpleMath::Vector3& vecdistance)		// 中心座標を結んだベクトル
 	{
-
+		
 		float fdistance{};
 
 		// 分離軸に射影した中心間を結ぶベクトル
@@ -869,7 +875,7 @@ namespace Collision
 	}
 
 	//OBBと点の長さ
-	float LenOBBtoPoint(OBB& obb, Vector3& point) {
+	float LenOBBtoPoint(const OBB& obb, const Vector3& point) {
 		Vector3 Vec(0, 0, 0);   // 最終的に長さを求めるベクトル
 
 		// 各軸についてはみ出た部分のベクトルを算出
@@ -890,7 +896,7 @@ namespace Collision
 	}
 
 	//OBBと点の長さ
-	float LenOBBtoPoint(TestCube& obb, Vector3& point) {
+	float LenOBBtoPoint(const TestCube& obb, const Vector3& point) {
 		Vector3 Vec(0, 0, 0);   // 最終的に長さを求めるベクトル
 
 		// 各軸についてはみ出た部分のベクトルを算出

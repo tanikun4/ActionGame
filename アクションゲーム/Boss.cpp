@@ -208,6 +208,7 @@ bool Boss::HitCheckPole(Pole* pole) {
 			return true;
 		}
 	}
+	return false;
 }
 
 int Boss::GetHP() {
@@ -218,8 +219,9 @@ Pole* Boss::GetWeapon() {
 	return m_weapon;
 }
 
-void Boss::HitObject(Pole* po) {
-	if (inviFg) { return; }
+void Boss::OnHit(Pole* po) {
+	if (inviFg)  return; 
+	if (!po->GetPl()) return;
 	Damage(po->atk);
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 	return;

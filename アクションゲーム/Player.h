@@ -33,7 +33,11 @@ public:
 	int GetHP();
 	Pole* GetWeapon();
 	void CheckHitPole(Pole* pole);
-	void HitObject(Boss* bo);
-	void HitObject(Pole* po);
+	void HitObject(Object* ob) override {
+		ob->OnHit(this);
+	}
+	void OnHit(Object* ob) override {};
+	void OnHit(Boss* boss);
+	void OnHit(Pole* pole);
 };
 

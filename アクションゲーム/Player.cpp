@@ -32,6 +32,7 @@ void Player::Init() {
 	GBInit(u8"assets/model/gorufu/GolfBall_v2.fbx");
 	m_Position = Vector3(0.0f, 50.0f, 0.0f);
 	m_pole = Game::GetInstance()->AddObject<Pole>();
+	m_pole->SetPl(true);
 	hp = 9;
 	flamecount = 30;
 }
@@ -296,13 +297,14 @@ void Player::Guard() {
 	return;
 }
 
-void Player::HitObject(Boss* bo) {
+void Player::OnHit(Boss* bo) {
 	Damage(1);
 	return;
 }
 
-void Player::HitObject(Pole* po) {
-	Damage(2);
-	return;
+void Player::OnHit(Pole* po) {
+	const int damage = 2;
+	if (po->GetPl()) return;
+	Damage(damage);
 }
 

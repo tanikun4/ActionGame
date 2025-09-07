@@ -8,14 +8,28 @@ class Weapon :
     public Object , public ICollider
 {
 private:
-    TestCube hitbox;
     int atk;
     int flamecount;
+	bool pl = false;//プレイヤーの武器かどうか
 public:
     Weapon(Camera* cam);//コンストラクタ
     Weapon();
     ~Weapon();//デストラクタ
-
-    Collision::Base& GetCollision() override ;
+    void HitObject(Object* ob) override {
+        ob->OnHit(this);
+    }
+    virtual Collision::ColliderVariant GetCollision();
+    void SetAtk(int a) {
+        atk = a;
+    }
+    int GetAtk() {
+        return atk;
+	}
+    void SetPl(bool p) {
+        pl = p;
+	}
+    bool GetPl() {
+        return pl;
+	}
 };
 

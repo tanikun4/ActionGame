@@ -29,7 +29,13 @@ public:
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 	virtual void Uninit() = 0;
-	virtual void HitObject(Object* ob) { return; }//オブジェクトに当たった時の処理を入れる
+	// 衝突処理の入口
+	virtual void HitObject(Object* ob) { ob->OnHit(this); };//オブジェクトに当たった時、相手側のHit処理を実行
+	
+	virtual void OnHit(Object* ob) { return; }//オブジェクトに当たった時の処理を入れる
+	virtual void OnHit(class Player* player) {} // 派生用
+	virtual void OnHit(class Boss* boss) {}    // 派生用
+	virtual void OnHit(class Pole* pole) {}    // 派生用
 	virtual bool GetLive() { return m_live; }
 
 	//position セッター関数・ゲッター関数

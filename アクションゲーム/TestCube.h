@@ -28,9 +28,9 @@ protected:
 	DirectX::SimpleMath::Vector3 m_length = {20.0f,20.0f,20.0f};
 
 public:
-	DirectX::SimpleMath::Vector3 GetPos();
-	DirectX::SimpleMath::Vector3 GetDirect(int elem);   // 指定軸番号の方向ベクトルを取得
-	float GetLen(int elem);							// 指定軸方向の長さを取得
+	DirectX::SimpleMath::Vector3 GetPos() const;
+	DirectX::SimpleMath::Vector3 GetDirect(int elem) const;   // 指定軸番号の方向ベクトルを取得
+	float GetLen(int elem) const;							// 指定軸方向の長さを取得
 
 	void SetPos(DirectX::SimpleMath::Vector3 v);
 	void SetRotation(DirectX::SimpleMath::Vector3 v);

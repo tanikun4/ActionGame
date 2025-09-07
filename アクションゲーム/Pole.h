@@ -5,6 +5,8 @@
 #include "Texture.h"
 #include "Material.h"
 #include "Weapon.h"
+#include "OBBWirerenderer.h"
+
 
 //-----------------------------------------------------------------------------
 // Poleクラス
@@ -21,7 +23,10 @@ private:
 	std::vector<SUBSET> m_subsets;
 	std::vector<std::unique_ptr<Texture>> m_Textures; // テクスチャ
 
-	int m_State = 0; // 0:非表示・1:方向選択・2:パワー選択
+	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
+	OBBWireRenderer wire;
+
+	int m_State = 0; // 0:非攻撃・1:攻撃中
 	int swing_time = 0;
 public:
 
@@ -36,12 +41,18 @@ public:
 	void Update(DirectX::SimpleMath::Vector3 position, float radius,DirectX::SimpleMath::Vector3 rotation);
 	void Draw();
 	void Uninit();
-
+	
 	// 位置の設定
 	void SetPosition(float x, float y, float z);
 	void SetPosition(DirectX::SimpleMath::Vector3 pos);
-	
+
+	void HitObject(Object* ob) override {
+		if (m_State != 1) { return; };
+		ob->OnHit(this);
+	}
+	void OnHit(Object* ob) override {};
 	void Swing();
 	int GetState();//状態を返す
+	Collision::ColliderVariant GetCollision();
 };
 

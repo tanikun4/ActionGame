@@ -1,6 +1,7 @@
 #pragma once
 
 #include <simplemath.h>
+#include <variant>
 
 class TestCube;
 namespace Collision
@@ -35,11 +36,12 @@ namespace Collision
 		const DirectX::SimpleMath::Vector3 p2{}; //頂点2
 	};
 
+
 	// 球体
 	struct Sphere : public Base {
 		DirectX::SimpleMath::Vector3 center{}; // 中心
 		float radius{}; // 半径
-		Sphere(const DirectX::SimpleMath::Vector3& c, const float r)
+		Sphere(const DirectX::SimpleMath::Vector3& c,const float r)
 			: Base()       // ← 親を明示初期化（必要に応じて引数付きで）
 			, center(c)
 			, radius(r) {
@@ -73,36 +75,39 @@ namespace Collision
 
 	struct OBB : public Base {
 		DirectX::SimpleMath::Vector3 m_pos{};              // 位置
-		DirectX::SimpleMath::Vector3 m_axis[3]{};			 // 方向ベクトル(軸)
-		DirectX::SimpleMath::Vector3 m_length{};           // 各軸方向の長さ(サイズ)
-		OBB(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& rotation, const DirectX::SimpleMath::Vector3& length)
+		DirectX::SimpleMath::Vector3 m_axis[3]{ {1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f} };			 // 方向ベクトル(軸)
+		DirectX::SimpleMath::Vector3 m_length{ 20.0f,20.0f,20.0f };          // 各軸方向の長さ(サイズ)
+		DirectX::SimpleMath::Vector3 m_scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+		OBB(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& rotation, const DirectX::SimpleMath::Vector3& scale)
 			: Base()       // ← 親を明示初期化（必要に応じて引数付きで）
 			, m_pos(pos)
-			, m_length(length) 
+			, m_scale(scale)
 		{
 			DirectX::SimpleMath::Matrix r = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(rotation.y, rotation.x, rotation.z);
 			m_axis[0] = DirectX::SimpleMath::Vector3(r._11, r._12, r._13);
 			m_axis[1] = DirectX::SimpleMath::Vector3(r._21, r._22, r._23);
 			m_axis[2] = DirectX::SimpleMath::Vector3(r._31, r._32, r._33);
 		}
-		float GetLen(int elem) {
+		float GetLen(int elem) const {
 			switch (elem) {
 			case 0:
-				return m_length.x;
+				return m_scale.x * m_length.x;
 			case 1:
-				return m_length.y;
+				return m_scale.y * m_length.y;
 			case 2:
-				return m_length.z;
+				return m_scale.z * m_length.z;
 			default:
 				return 0;
 			}
 			return 0;
 		}
 
-		DirectX::SimpleMath::Vector3 GetDirect(int elem) {
+		DirectX::SimpleMath::Vector3 GetDirect(int elem) const {
 			return m_axis[elem];
 		}
 	};
+
+	using ColliderVariant = std::variant<Sphere, AABB, OBB>;
 
 	//当たり判定
 	bool CheckHit(const Base& a, const Base& b);
@@ -121,12 +126,26 @@ namespace Collision
 	//bool CheckHit(const Capsule& capsule, const Plane& plane); //カプセルと平面(無限の大きさ)
 	//bool CheckHit(const Capsule& capsule, const Polygon& polygon); //カプセルとポリゴン
 	//bool CheckHit(const Capsule& capsule, const Polygon& polygon, DirectX::SimpleMath::Vector3& contact); //同上
-	bool CheckHit(Sphere sphere1, Sphere sphere2); //球体と球体
-	bool CheckHit(Sphere sphere1, Sphere sphere2, DirectX::SimpleMath::Vector3& contact); //同上
-	bool CheckHit(AABB p1, AABB p2); // AABBとAABB
-	bool CheckHit(OBB obb, Sphere sphere);//obbと球の当たり判定
-	bool CheckHit(TestCube& obb, Sphere sphere);
-	bool CheckHit(OBB& obb1, OBB& obb2);//OBB同士の当たり判定
+	bool CheckHit(const Sphere& sphere1, const Sphere& sphere2); //球体と球体
+	bool CheckHit(const Sphere& sphere1, const Sphere& sphere2, DirectX::SimpleMath::Vector3& contact); //同上
+	bool CheckHit(const AABB& p1, const AABB& p2); // AABBとAABB
+	bool CheckHit(const OBB& obb, const Sphere& sphere);//obbと球の当たり判定
+	bool CheckHit(const Sphere& sphere, const OBB& obb);
+	bool CheckHit(const TestCube& obb, const Sphere& sphere);
+	bool CheckHit(const OBB& obb1, const OBB& obb2);//OBB同士の当たり判定
+
+	template<typename T1, typename T2>
+	bool CheckHit(const T1&, const T2&) {
+		// 未対応の組み合わせはfalse
+		return false;
+	}
+
+	// variant 版
+    inline bool CheckHit(const ColliderVariant& a, const ColliderVariant& b) {
+        return std::visit([](auto&& lhs, auto&& rhs) -> bool {
+            return Collision::CheckHit(lhs, rhs); // 適切なオーバーロードが呼ばれる
+        }, a, b);
+    }
 
 	bool CompareLengthOBB(		//OBBの重なりを判定
 		const OBB& obb1,		// OBB1
@@ -153,8 +172,8 @@ namespace Collision
 
 	DirectX::SimpleMath::Vector3 moveSphere(const Segment& capsule, const float& radius, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact, float& distance);
 	DirectX::SimpleMath::Vector3 moveSphere(const Sphere& sphere, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact);
-	float LenOBBtoPoint(TestCube& obb, DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
-	float LenOBBtoPoint(OBB& obb, DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
+	float LenOBBtoPoint(const TestCube& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
+	float LenOBBtoPoint(const OBB& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
 
 
 	//struct Plane {
@@ -166,7 +185,7 @@ namespace Collision
 
 
 
-	// make AABB
+	// AABBを作る
 	AABB SetAABB(DirectX::SimpleMath::Vector3 centerposition, float width, int height, int depth);
 
 /*

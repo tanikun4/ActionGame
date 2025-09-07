@@ -39,6 +39,9 @@ public:
 	int GetHP();
 	bool HitCheckPole(Pole* pole);//UŒ‚‚É“–‚½‚Á‚½‚©‚ð•Ô‚·
 	Pole* GetWeapon();
-	void HitObject(Pole* po);
+	void HitObject(Object* ob) override {
+		ob->OnHit(this);
+	}
+	void OnHit(Pole* pole);
 };
 

@@ -302,7 +302,6 @@ bool GolfBall::CheckGround() {
 	return false;
 }
 
-Collision::Base& GolfBall::GetCollision() {
-	Collision::Sphere collisionSphere = { m_Position, radius };
-	return collisionSphere;
+Collision::ColliderVariant GolfBall::GetCollision(){
+	return Collision::Sphere{ m_Position, radius };
 }

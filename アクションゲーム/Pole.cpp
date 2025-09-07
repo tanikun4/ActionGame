@@ -75,8 +75,7 @@ void Pole::Init()
 	m_Scale.x = 3;
 	m_Scale.y = 6;
 	m_Scale.z = 3;
-
-	hitbox.Init();
+	wire.Init();
 }
 
 //=======================================
@@ -128,9 +127,12 @@ void Pole::Update(Vector3 position, float radius ,Vector3 rotation)
 	}
 	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//角度をラジアンに変換
 	m_Position = { position.x + sin(rotation.y) * radius, position.y,  position.z + cos(rotation.y) * radius };
-	hitbox.SetRotation(m_Rotation);
-	hitbox.SetPos({ m_Position.x + sin(m_Rotation.y - PI / 2) * radius * 1.7f, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * 1.7f });
-	hitbox.SetScale({ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f });
+	//hitbox.SetRotation(m_Rotation);
+	//hitbox.SetPos({ m_Position.x + sin(m_Rotation.y - PI / 2) * radius * 1.7f, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * 1.7f });
+	//hitbox.SetScale({ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f });
+	obb = { {m_Position.x + sin(m_Rotation.y - PI / 2) * radius, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius },
+		m_Rotation,
+		{ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f } };
 }
 
 //=======================================
@@ -171,6 +173,7 @@ void Pole::Draw()
 			m_subsets[i].IndexBase, // 最初のインデックスバッファの位置	
 			m_subsets[i].VertexBase); // 頂点バッファの最初から使用
 	}
+	wire.Draw(obb);
 }
 
 //=======================================
@@ -245,5 +248,9 @@ void Pole::SetPosition(Vector3 pos)
 
 
 	}
+}
+
+Collision::ColliderVariant Pole::GetCollision() {
+	return obb;
 }
 

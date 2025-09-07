@@ -254,6 +254,7 @@ void Stage1Scene::Collision() {
 		for (size_t j = i + 1; j < m_MySceneObjects.size(); ++j) {
 			auto a = m_MySceneObjects[i];
 			auto b = m_MySceneObjects[j];
+
 			if (!(a->GetLive() && b->GetLive())) { continue; };
 
 			auto col_a = dynamic_cast<ICollider*>(a);

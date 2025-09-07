@@ -278,14 +278,14 @@ void TestCube::SetScale(Vector3 v) {
 	return;
 };
 
-DirectX::SimpleMath::Vector3 TestCube::GetDirect(int elem) {
+DirectX::SimpleMath::Vector3 TestCube::GetDirect(int elem) const{
 	return m_NormaDirect[elem];
 }
 
-float TestCube::GetLen(int elem) {
+float TestCube::GetLen(int elem) const {
 	return m_fLength[elem];
 }
 
-DirectX::SimpleMath::Vector3 TestCube::GetPos(){
+DirectX::SimpleMath::Vector3 TestCube::GetPos() const{
 	return m_Position;
 }

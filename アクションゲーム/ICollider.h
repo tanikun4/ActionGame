@@ -2,7 +2,9 @@
 #include "Collision.h"
 class ICollider
 {
+protected:
+
 public:
     virtual ~ICollider() {}
-    virtual Collision::Base& GetCollision() = 0;
+    virtual Collision::ColliderVariant GetCollision() = 0;
 };
