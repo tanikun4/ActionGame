@@ -62,7 +62,7 @@ void Boss::Update() {
 	/*if (m_State != 2) {
 		HitCheck();
 	}*/
-	m_weapon->Update(m_Position, radius, m_Rotation);
+	m_weapon->Update(m_Position, radius, m_Rotation,1.0f);
 	//m_weapon->SetPosition(m_Position);
 	GBUpdate();
 }

@@ -113,7 +113,7 @@ void Player::Update() {
 		m_Position = Vector3(0.0f, 50.0f, 0.0f);
 		m_Velocity = Vector3(0.0f, 0.0f, 0.0f);
 	}
-	m_pole->Update(m_Position, radius, m_Rotation);
+	m_pole->Update(m_Position, radius, m_Rotation,1.7f);
 	GBUpdate();
 }
 

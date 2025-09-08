@@ -109,7 +109,7 @@ void Pole::Update()
 //=======================================
 // çXêVèàóù2
 //=======================================
-void Pole::Update(Vector3 position, float radius ,Vector3 rotation)
+void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset)//offsetÇÕobbÇÃãóó£í≤êÆóp
 {
 
 	if (m_State == 1) {
@@ -129,7 +129,7 @@ void Pole::Update(Vector3 position, float radius ,Vector3 rotation)
 	//hitbox.SetRotation(m_Rotation);
 	//hitbox.SetPos({ m_Position.x + sin(m_Rotation.y - PI / 2) * radius * 1.7f, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * 1.7f });
 	//hitbox.SetScale({ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f });
-	obb = { {m_Position.x + sin(m_Rotation.y - PI / 2) * radius, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius },
+	obb = { {m_Position.x + sin(m_Rotation.y - PI / 2) * radius * offset, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * offset},
 		m_Rotation,
 		{ m_Scale.x ,m_Scale.y * 3 ,m_Scale.z} };
 }

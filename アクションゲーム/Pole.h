@@ -36,7 +36,7 @@ public:
 	int atk = 3;//çUåÇóÕ
 	void Init();
 	void Update();
-	void Update(DirectX::SimpleMath::Vector3 position, float radius,DirectX::SimpleMath::Vector3 rotation);
+	void Update(DirectX::SimpleMath::Vector3 position, float radius,DirectX::SimpleMath::Vector3 rotation, float offset);
 	void Draw();
 	void Uninit();
 	
