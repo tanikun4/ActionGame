@@ -5,7 +5,6 @@
 #include "Texture.h"
 #include "Material.h"
 #include "Weapon.h"
-#include "OBBWirerenderer.h"
 
 
 //-----------------------------------------------------------------------------
@@ -24,7 +23,6 @@ private:
 	std::vector<std::unique_ptr<Texture>> m_Textures; // テクスチャ
 
 	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
-	OBBWireRenderer wire;
 
 	int m_State = 0; // 0:非攻撃・1:攻撃中
 	int swing_time = 0;

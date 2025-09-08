@@ -75,7 +75,6 @@ void Pole::Init()
 	m_Scale.x = 3;
 	m_Scale.y = 6;
 	m_Scale.z = 3;
-	wire.Init();
 }
 
 //=======================================
@@ -132,7 +131,7 @@ void Pole::Update(Vector3 position, float radius ,Vector3 rotation)
 	//hitbox.SetScale({ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f });
 	obb = { {m_Position.x + sin(m_Rotation.y - PI / 2) * radius, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius },
 		m_Rotation,
-		{ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f } };
+		{ m_Scale.x ,m_Scale.y * 3 ,m_Scale.z} };
 }
 
 //=======================================
@@ -173,7 +172,6 @@ void Pole::Draw()
 			m_subsets[i].IndexBase, // 最初のインデックスバッファの位置	
 			m_subsets[i].VertexBase); // 頂点バッファの最初から使用
 	}
-	wire.Draw(obb);
 }
 
 //=======================================

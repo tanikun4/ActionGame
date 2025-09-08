@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "sound.h"
+#include "ICollider.h"
+#include "Object.h"
 
 Game* Game::m_Instance;
 
@@ -9,6 +11,7 @@ Game::Game()
 {
 	m_Input = std::make_unique<Input>(); //入力処理を作成
 	m_Camera = std::make_unique<Camera>(); //カメラを作成
+	m_WireRenderer = std::make_unique<WireRenderer>(); //ワイヤーレンダラーを作成
 }
 
 // デストラクタ
@@ -35,6 +38,8 @@ void Game::Init()
 
 	// カメラ初期化
 	m_Instance->m_Camera->Init();
+
+	m_Instance->m_WireRenderer->Init();
 
 	m_Instance->m_Scene = new TitleScene; //メモリを確保
 
@@ -77,6 +82,12 @@ void Game::Draw()
 	for (auto& o : m_Instance->m_Objects)
 	{
 		o->Draw();
+		if (Input::GetKeyPress(VK_X)) {
+			auto col = dynamic_cast<ICollider*>(o.get());
+			if (col) {
+				m_Instance->m_WireRenderer->Draw(col->GetCollision());
+			}
+		}
 	}
 
 	// 描画後処理

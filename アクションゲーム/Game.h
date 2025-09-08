@@ -7,6 +7,7 @@
 #include "Stage1Scene.h"
 #include "ResultScene.h"
 #include "GameOverScene.h"
+#include "WireRenderer.h"
 
 enum SceneName {
 	TITLE,
@@ -30,6 +31,7 @@ private:
 	std::vector<std::unique_ptr<Object>> m_Objects; // オブジェクト
 	std::unique_ptr<Input> m_Input;  // 入力処理
 	std::unique_ptr<Camera> m_Camera; // カメラ
+	std::unique_ptr<WireRenderer> m_WireRenderer; // ワイヤーレンダラー
 
 public:
 	Game(); // コンストラクタ
