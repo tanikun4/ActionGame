@@ -76,6 +76,25 @@ void Stage1Scene::Init()
 	//	enemy->SetPosition({(float)r1 ,50.0f,(float)r2});
 	//	enemy->SetStageSize(groundsize / 2);
 	//}
+
+	player = Game::GetInstance()->AddObject<Player>();
+	m_MySceneObjects.emplace_back(player);
+	player->SetState(0);
+
+	for (int i = 0; i < 3; i++) {
+		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); // 矢印
+		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects[m_MySceneObjects.size() - 1]); // 矢印
+		bullet->SetState(0); // 矢印を非表示
+	}
+
+	std::vector<Weapon*> weapons = Game::GetInstance()->GetObjects<Weapon>();
+	m_MySceneObjects.insert(
+		m_MySceneObjects.end(),    // 挿入位置
+		weapons.begin(),        // 挿入する範囲の開始
+		weapons.end()           // 挿入する範囲の終了
+	);
+
+
 	// UI(HP)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
 	pt1->SetTexture("assets/texture/ui_back.png"); // 画像を指定
@@ -115,24 +134,9 @@ void Stage1Scene::Init()
 	pt6->SetUV(1, 1, 10, 1); //UVを指定
 	m_MySceneObjects.emplace_back(pt6);
 
-	player = Game::GetInstance()->AddObject<Player>();
-	m_MySceneObjects.emplace_back(player);
-	player->SetState(0);
-
-	for (int i = 0; i < 3; i++) {
-		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); // 矢印
-		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects[m_MySceneObjects.size() - 1]); // 矢印
-		bullet->SetState(0); // 矢印を非表示
-	}
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 
-	std::vector<Weapon*> weapons = Game::GetInstance()->GetObjects<Weapon>();
-	m_MySceneObjects.insert(
-		m_MySceneObjects.end(),    // 挿入位置
-		weapons.begin(),        // 挿入する範囲の開始
-		weapons.end()           // 挿入する範囲の終了
-	);
 
 }
 
