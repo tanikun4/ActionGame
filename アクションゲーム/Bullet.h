@@ -1,27 +1,22 @@
 #pragma once
-#include "TestCube.h"
 #include "Weapon.h"
-
-//-----------------------------------------------------------------------------
-// Arrowクラス
-//-----------------------------------------------------------------------------
-class Arrow :public Weapon
+class Bullet :
+    public Weapon
 {
 private:
-
-	Collision::Sphere sphere { m_Position,m_Scale.x };
-
-	int m_State = 0; // 0:非表示・1:方向選択・2:パワー選択
-	int power = 0;//溜めた量(1フレームで1パワーアップ)
+    int m_State = 0; // 0:非表示・1:方向選択・2:パワー選択
+    const int Bullettime = 120;//弾が飛んでいる時間
+    int id = 0;//弾の種類 0:判定無し,1:プレイヤーの弾,2:敵の弾
+	int power = 0;//溜めた量(弾の速度に関係)
 	const int maxpower = 180;//パワーの最大値
-	const int shottime = 120;//弾が飛んでいる時間
-	int id = 0;//弾の種類 0:判定無し,1:プレイヤーの弾,2:敵の弾
 
+	Collision::Sphere sphere{ m_Position, m_Scale.x };
+
+	Texture m_texture;
 public:
-	Arrow(Camera* cam); // コンストラクタ
-	Arrow();
-	~Arrow(); // デストラクタ
-	TestCube hitbox;
+	Bullet(Camera* cam); // コンストラクタ
+	Bullet();
+	~Bullet(); // デストラクタ
 	void Init();
 	void Update();
 	void Draw();
@@ -40,5 +35,6 @@ public:
 	int GetState();
 	int GetId();
 	int GetAtk();
+	Collision::ColliderVariant GetCollision();
 };
 

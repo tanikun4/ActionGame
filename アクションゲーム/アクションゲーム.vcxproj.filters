@@ -156,9 +156,6 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>ソース ファイル\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>ソース ファイル\Game</Filter>
-    </ClCompile>
     <ClCompile Include="AssimpPerse.cpp">
       <Filter>ソース ファイル\Assimp</Filter>
     </ClCompile>
@@ -188,6 +185,12 @@
     </ClCompile>
     <ClCompile Include="GroundManager.cpp">
       <Filter>ソース ファイル\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>ソース ファイル\Object\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>ソース ファイル\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -332,6 +335,9 @@
     <ClInclude Include="WireRenderer.h">
       <Filter>ソース ファイル\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>ソース ファイル\Object\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl">
@@ -350,6 +356,9 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="shader\unlitWirePS.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\BillBoardTextureVS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

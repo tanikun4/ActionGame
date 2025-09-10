@@ -3,6 +3,8 @@
 class Arrow;
 class Pole;
 class Boss;
+class Bullet;
+
 class Player :
     public GolfBall
 {
@@ -11,7 +13,7 @@ private:
 	int flamecount = 0;
 	int rollcooldown = 30;//回避のクールタイム
 	int rollcount = 0;//回避関連のカウント
-	bool InviFg = false;//無敵状態のフラグ
+	bool inviFg = false;//無敵状態のフラグ
 	bool GuardFg = false;//ガード状態のフラグ
 	float speed = 1.0f;//自分のスピード
 	void Move();
@@ -22,7 +24,7 @@ private:
 	void Damage(int atk);
 	void DodgeRoll();//回避
 	void Guard();//ガード
-	Arrow* m_arrow;
+	Bullet* m_arrow;
 	Pole* m_pole;
 public:
 	Player(Camera* cam); // コンストラクタ
@@ -39,5 +41,6 @@ public:
 	void OnHit(Object* ob) override {};
 	void OnHit(Boss* boss);
 	void OnHit(Pole* pole);
+	void OnHit(Bullet* bu);
 };
 

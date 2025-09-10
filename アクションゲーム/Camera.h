@@ -25,4 +25,6 @@ public:
 	void Uninit();
 
 	void SetCamera(int mode); // ƒJƒƒ‰‚ğİ’è
+	// Views—ñ‚ğæ“¾‚·‚éŠÖ”
+	DirectX::SimpleMath::Matrix GetViewMatrix();
 };

@@ -7,6 +7,7 @@
 #include "Ground.h"
 #include "Texture2D.h"
 #include "Arrow.h"
+#include "Bullet.h"
 #include "Pole.h"
 #include "EnemyManager.h"
 #include "GroundManager.h"
@@ -40,13 +41,9 @@ void Stage1Scene::Init()
 	GroundManager::GetInstance().Initialize();
 	//m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Pole>()); // ポール
 
-	for (int i = 0; i < 3; i++) {
-		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Arrow>()); // 矢印
-		Arrow* arrow = dynamic_cast<Arrow*>(m_MySceneObjects[m_MySceneObjects.size() - 1]); // 矢印
-		arrow->SetState(0); // 矢印を非表示
-	}
 	boss = Game::GetInstance()->AddObject<Boss>();
 	m_MySceneObjects.emplace_back(boss);
+
 	//for (int i = 0; i < 9; i++) {
 	//	int r1 = rand();
 	//	int r2 = rand();
@@ -122,6 +119,12 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(player);
 	player->SetState(0);
 
+	for (int i = 0; i < 3; i++) {
+		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); // 矢印
+		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects[m_MySceneObjects.size() - 1]); // 矢印
+		bullet->SetState(0); // 矢印を非表示
+	}
+
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 
 	std::vector<Weapon*> weapons = Game::GetInstance()->GetObjects<Weapon>();
@@ -130,6 +133,7 @@ void Stage1Scene::Init()
 		weapons.begin(),        // 挿入する範囲の開始
 		weapons.end()           // 挿入する範囲の終了
 	);
+
 }
 
 //更新
@@ -208,7 +212,7 @@ void Stage1Scene::Update()
 			arrow->SetState(m_State);
 
 			Vector3 v = arrow->GetVector();
-			ball->Shot(v);
+			ball->Bullet(v);
 		}*/
 		break;
 	}

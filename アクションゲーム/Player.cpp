@@ -7,6 +7,7 @@
 #include "Ground.h"
 #include "Pole.h"
 #include "Arrow.h"
+#include "Bullet.h"
 #include "Enemy.h"
 #include "sound.h"
 #include "Boss.h"
@@ -76,7 +77,7 @@ void Player::Update() {
 		//m_Position.y = 0.0f;
 		if (flamecount > 10) {
 			m_State = 0;
-			InviFg = false;
+			inviFg = false;
 		}
 		break;
 	case 4:
@@ -85,7 +86,7 @@ void Player::Update() {
 		rollcount++;
 		if (rollcount > 20) {
 			m_State = 0;
-			InviFg = false;
+			inviFg = false;
 			rollcount = 0;
 		}
 		break;
@@ -171,7 +172,7 @@ void Player::Move() {
 void Player::DodgeRoll() {
 	m_State = 4;
 	rollcount = 0;
-	InviFg = true;
+	inviFg = true;
 }
 
 void Player::Attack() {
@@ -189,10 +190,10 @@ void Player::Attack() {
 
 void Player::Charge() {
 	if (!m_arrow) {
-		vector<Arrow*> arrow = Game::GetInstance()->GetObjects<Arrow>();
-		for (auto& ar : arrow) {
-			if (ar->GetState() == 0) {
-				m_arrow = ar;
+		vector<Bullet*> bullet = Game::GetInstance()->GetObjects<Bullet>();
+		for (auto& bu : bullet) {
+			if (bu->GetState() == 0) {
+				m_arrow = bu;
 				break;
 			}
 		}
@@ -205,10 +206,10 @@ void Player::Charge() {
 
 void Player::Shot() {
 	if (!m_arrow) {
-		vector<Arrow*> arrow = Game::GetInstance()->GetObjects<Arrow>();
-		for (auto& ar : arrow) {
-			if (ar->GetState() == 0) {
-				m_arrow = ar;
+		vector<Bullet*> bullet = Game::GetInstance()->GetObjects<Bullet>();
+		for (auto& bu : bullet) {
+			if (bu->GetState() == 0) {
+				m_arrow = bu;
 				break;
 			}
 		}
@@ -268,11 +269,11 @@ void Player::CheckHitPole(Pole* pole) {
 }
 
 void Player::Damage(int atk) {
-	if (InviFg == false) {
+	if (inviFg == false) {
 		hp -= atk;
 		m_State = 3;
 		flamecount = 0;
-		InviFg = true;
+		inviFg = true;
 		Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
 	}
 }
@@ -305,6 +306,12 @@ void Player::OnHit(Boss* bo) {
 void Player::OnHit(Pole* po) {
 	const int damage = 2;
 	if (po->GetPl()) return;
+	Damage(damage);
+}
+
+void Player::OnHit(Bullet* bu) {
+	const int damage = 2;
+	if (bu->GetPl()) return;
 	Damage(damage);
 }
 

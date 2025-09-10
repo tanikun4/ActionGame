@@ -118,3 +118,8 @@ void Camera::SetCamera(int mode)
 		Renderer::SetProjectionMatrix(&projectionMatrix);
 	}
 }
+
+Matrix Camera::GetViewMatrix()
+{
+	return m_ViewMatrix;
+}

@@ -5,6 +5,7 @@
 #include "Pole.h"
 #include "Collision.h"
 #include "Arrow.h"
+#include "Bullet.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -80,10 +81,12 @@ bool Boss::GetLive() {
 }
 
 void Boss::Damage(int atk) {
+	if (inviFg)  return;
 	hp -= atk;
 	invicount = 0.0f;
 	inviFg = true;
 	m_Velocity_f = 0.0f;//ˆÚ“®‘¬“x‚ğ0‚É‚·‚é
+	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 }
 
 bool Boss::HitCheck() {
@@ -220,9 +223,13 @@ Pole* Boss::GetWeapon() {
 }
 
 void Boss::OnHit(Pole* po) {
-	if (inviFg)  return; 
 	if (!po->GetPl()) return;
 	Damage(po->atk);
-	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
+	return;
+}
+
+void Boss::OnHit(Bullet* bu) {
+	if (!bu->GetPl()) return;
+	Damage(bu->GetAtk());
 	return;
 }

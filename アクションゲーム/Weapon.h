@@ -1,15 +1,37 @@
 #pragma once
 #include "Object.h"
-#include "TestCube.h"
 #include "ICollider.h"
 #include "Collision.h"
+#include "Texture.h"
+#include "Material.h"
+#include "MeshRenderer.h"
 
 class Weapon :
     public Object , public ICollider
 {
-private:
-    int atk;
-    int flamecount;
+protected:
+    //速度
+    DirectX::SimpleMath::Vector3 m_Velocity = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+
+    float m_Velocity_f = 0.0; // 現在の移動速度
+
+    //前向きベクトル変数
+    DirectX::SimpleMath::Vector3 m_ForwardVector = { 0.0f,0.0f,1.0f };//初期ベクトル
+
+    // 描画の為の情報（メッシュに関わる情報）
+    MeshRenderer m_MeshRenderer; // 頂点バッファ・インデックスバッファ・インデックス数
+
+    // 描画の為の情報（メッシュに関わる情報）
+    IndexBuffer	 m_IndexBuffer; // インデックスバッファ
+    VertexBuffer<VERTEX_3D>	m_VertexBuffer; // 頂点バッファ
+
+    // 描画の為の情報（見た目に関わる部分）
+    std::vector<std::unique_ptr<Material>> m_Materiales;
+    std::vector<SUBSET> m_subsets;
+    std::vector<std::unique_ptr<Texture>> m_Textures; // テクスチャ
+
+    int atk = 1;//攻撃力
+    int flamecount = 0;//タイマー変数
 	bool pl = false;//プレイヤーの武器かどうか
 public:
     Weapon(Camera* cam);//コンストラクタ

@@ -14,14 +14,6 @@ class Pole :public Weapon
 {
 private:
 
-	// 描画の為の情報（メッシュに関わる情報）
-	MeshRenderer m_MeshRenderer; // 頂点バッファ・インデックスバッファ・インデックス数
-
-	// 描画の為の情報（見た目に関わる部分）
-	std::vector<std::unique_ptr<Material>> m_Materiales;
-	std::vector<SUBSET> m_subsets;
-	std::vector<std::unique_ptr<Texture>> m_Textures; // テクスチャ
-
 	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
 
 	int m_State = 0; // 0:非攻撃・1:攻撃中

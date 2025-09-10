@@ -10,7 +10,8 @@ using Microsoft::WRL::ComPtr;
 //-----------------------------------------------------------------------------
 //Textureクラス
 //-----------------------------------------------------------------------------
-class Texture
+class 
+Texture
 {
 	std::string m_texname{}; // ファイル名
 	ComPtr<ID3D11ShaderResourceView> m_srv{}; // シェーダーリソースビュー

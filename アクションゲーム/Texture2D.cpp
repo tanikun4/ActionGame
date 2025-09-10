@@ -80,6 +80,8 @@ void Texture2D::Update()
 //=======================================
 void Texture2D::Draw()
 {
+	Renderer::SetDepthEnable(false); // 深度書き込みを無効にする
+
 	// SRT情報作成
 	Matrix r = Matrix::CreateFromYawPitchRoll(m_Rotation.x, m_Rotation.y, m_Rotation.z);
 	Matrix t = Matrix::CreateTranslation(m_Position.x, m_Position.y, m_Position.z);
@@ -118,6 +120,8 @@ void Texture2D::Draw()
 		4, // 描画するインデックス数（四角形なんで４）
 		0, // 最初のインデックスバッファの位置
 		0);
+
+	Renderer::SetDepthEnable(true); // 深度書き込みを有効にする
 }
 
 //=======================================

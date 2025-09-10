@@ -351,6 +351,7 @@
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
@@ -390,6 +391,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="WireRenderer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
@@ -415,6 +417,10 @@
     <ClInclude Include="WeaponManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="shader\BillBoardTextureVS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">vs_main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="shader\common.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DirectX 3Dゲーム制作 リリースビルド|x64'">true</ExcludedFromBuild>

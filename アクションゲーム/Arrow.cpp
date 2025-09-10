@@ -75,7 +75,7 @@ void Arrow::Init()
 
 	m_State = 1;
 	id = 0;
-	hitbox.SetPos({ 9999, 9999, 9999});
+	//hitbox.SetPos({ 9999, 9999, 9999});
 }
 
 //=======================================
@@ -122,9 +122,10 @@ void Arrow::Update()
 			m_State = 0;
 			power = 0;
 		}
-		hitbox.SetRotation(m_Rotation);
+		/*hitbox.SetRotation(m_Rotation);
 		hitbox.SetPos({ m_Position.x + sin(m_Rotation.y - PI / 2) * m_Scale.x / 2, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * m_Scale.z / 2 });
-		hitbox.SetScale({ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f });
+		hitbox.SetScale({ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f });*/
+		Collision::Sphere sphere{ m_Position,m_Scale.z / 3 };
 	}
 }
 

@@ -3,6 +3,7 @@
 #include <vector>
 class Arrow;
 class Pole;
+class Bullet;
 
 class Boss :
     public GolfBall
@@ -43,5 +44,6 @@ public:
 		ob->OnHit(this);
 	}
 	void OnHit(Pole* pole);
+	void OnHit(Bullet* bu);
 };
 
