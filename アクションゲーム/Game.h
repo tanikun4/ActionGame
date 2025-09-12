@@ -33,6 +33,8 @@ private:
 	std::unique_ptr<Camera> m_Camera; // カメラ
 	std::unique_ptr<WireRenderer> m_WireRenderer; // ワイヤーレンダラー
 
+	bool change_request = false; // シーン変更要求
+	SceneName m_NextScene;
 public:
 	Game(); // コンストラクタ
 	~Game(); // デストラクタ
@@ -45,9 +47,11 @@ public:
 	static Game* GetInstance();
 
 	void ChangeScene(SceneName sName); // シーンを変更
+	void ChangeSceneFadeOut(SceneName sName); // フェードアウトしてシーンを変更
 	Camera& GetCamera(); // カメラ取得
 	void DeleteObject(Object* pt); // オブジェクトを削除する
 	void DeleteAllObject(); // オブジェクトをすべて削除する
+	
 
 	// オブジェクトを追加する(※テンプレート関数なのでここに直接記述)
 	template<class T> T* AddObject()

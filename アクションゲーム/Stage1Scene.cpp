@@ -12,6 +12,7 @@
 #include "EnemyManager.h"
 #include "GroundManager.h"
 #include "ICollider.h"
+#include "Skydome.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -34,6 +35,14 @@ void Stage1Scene::Init()
 	srand((unsigned)time(NULL));
 
 	// オブジェクトを作成
+
+	// 背景
+	Texture2D* background = Game::GetInstance()->AddObject<Texture2D>();
+	background->SetTexture("assets/texture/sky.png"); // 画像を指定
+	background->SetPosition(-0.0f, 0.0f, 0.0f); // 位置を設定
+	background->SetScale(1280.0f, 720.0f, 0.0f); // 大きさを指定
+	m_MySceneObjects.emplace_back(background);
+
 	ground = Game::GetInstance()->AddObject<Ground>();
 	m_MySceneObjects.emplace_back(ground);
 	groundsize = ground->GetGroundSize();
@@ -167,65 +176,8 @@ void Stage1Scene::Update()
 	//}
 	//count[1]->SetUV(EnemyManager::GetInstance().EnemyCount() + 1, 1, 10, 1); // 敵の数のUVを指定
 
-	// 状態ごとに処理
-	switch (m_State) {
-
-	//	ボール移動中
-	case 0:
-		// ボールが静止したら
-		//if (ball->GetState() == 1)
-		//{
-		//	m_State = 1;
-		//	arrow->SetState(m_State);
-
-		//	// 打数を更新
-		//	Texture2D* count[2];
-		//	count[0] = dynamic_cast<Texture2D*>(m_MySceneObjects[8]);//現在打数の数値 一の位
-		//	count[1] = dynamic_cast<Texture2D*>(m_MySceneObjects[9]);//現在打数の数値 十の位
-		//	m_StrokeCount++; //現在打数をカウントアップ
-
-		//	// 各桁を後ろから取得していく
-		//	for (int i = 0; i < 2; i++) {
-		//		int cnt = m_StrokeCount % (int)pow(10, i + 1) / (int)pow(10, i); // 1桁取り出す
-
-		//		count[i]->SetUV(cnt + 1, 1, 10, 1); // UVを指定
-		//	}
-		//}
-		//// ボールがカップインしたらリザルトへ
-		//if (ball->GetState() == 2)
-		//{
-		//	Game::GetInstance()->ChangeScene(RESULT);
-		//}
-		break;
-	// 方向選択中
-	case 1:
-		// スペースキーでパワー選択へ
-		if (Input::GetKeyTrigger(VK_SPACE))
-		{
-			m_State = 2;
-			//arrow->SetState(m_State);
-		}
-		break;
-	// パワー選択中
-	case 2:
-		// スペースキーでショット
-		/*if (Input::GetKeyTrigger(VK_SPACE))
-		{
-			m_State = 0;
-			ball->SetState(m_State);
-			arrow->SetState(m_State);
-
-			Vector3 v = arrow->GetVector();
-			ball->Bullet(v);
-		}*/
-		break;
-	}
-
-
 	Collision();
 
-	//boss->HitCheckPole(player->GetWeapon());
-	//player->CheckHitPole(boss->GetWeapon());
 	if(boss->GetHP() <= 0){
 		Game::GetInstance()->ChangeScene(RESULT);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);

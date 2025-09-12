@@ -3,6 +3,7 @@
 #include "sound.h"
 #include "ICollider.h"
 #include "Object.h"
+#include "Fade.h"
 
 Game* Game::m_Instance;
 
@@ -25,6 +26,8 @@ void Game::Init()
 {
 	// オブジェクト作成
 	m_Instance = new Game;
+
+	Fade::GetInstance()->Init(m_Instance->m_Camera.get());
 
 	Sound::SoundInit();
 	Sound::GetInstance()->Init();//サウンド初期化
@@ -62,10 +65,20 @@ void Game::Update()
 	// 入力処理更新
 	m_Instance->m_Input->Update();
 
+	// フェード更新
+	Fade::GetInstance()->Update();
+
 	// オブジェクト更新
 	for (auto& o : m_Instance->m_Objects)
 	{
 		o->Update();
+	}
+
+	if(m_Instance->change_request && Fade::GetInstance()->FinishedFadeOut()) {// フェードアウト完了後にシーンを変更する
+		m_Instance->change_request = false;
+		m_Instance->ChangeScene(m_Instance->m_NextScene);
+		delete m_Instance->m_Scene;
+		m_Instance->m_Scene = nullptr;
 	}
 }
 
@@ -89,6 +102,8 @@ void Game::Draw()
 			}
 		}
 	}
+
+	Fade::GetInstance()->Draw();
 
 	// 描画後処理
 	Renderer::End();
@@ -187,3 +202,10 @@ void Game::DeleteAllObject()
 	m_Instance->m_Objects.shrink_to_fit();
 }
 
+void Game::ChangeSceneFadeOut(SceneName sName)// フェードアウト完了後にシーンを変更するための準備をする
+{
+	m_NextScene = sName;
+	change_request = true;
+	Fade::GetInstance()->StartFadeOut();
+
+}

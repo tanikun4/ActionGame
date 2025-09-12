@@ -113,19 +113,19 @@ public:
 	}
 
 	void SetDiffuse(DirectX::XMFLOAT4 diffuse) {
-		//m_Material.Diffuse = diffuse;
+		m_Material.Diffuse = diffuse;
 	}
 
 	void SetAmbient(DirectX::XMFLOAT4 ambient) {
-		//m_Material.Ambient = ambient;
+		m_Material.Ambient = ambient;
 	}
 
 	void SetSpecular(DirectX::XMFLOAT4 specular) {
-		//m_Material.Specular = specular;
+		m_Material.Specular = specular;
 	}
 
 	void SetEmission(DirectX::XMFLOAT4 emission) {
-		//m_Material.Emission = emission;
+		m_Material.Emission = emission;
 	}
 
 	void SetShiness(float shiness) {

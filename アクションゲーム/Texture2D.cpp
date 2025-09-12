@@ -9,6 +9,11 @@ Texture2D::Texture2D(Camera* cam) :Object(cam)
 
 }
 
+Texture2D::Texture2D()
+{
+
+}
+
 // デストラクタ
 Texture2D::~Texture2D()
 {
@@ -61,7 +66,7 @@ void Texture2D::Init()
 	// マテリアル情報取得
 	m_Materiale = std::make_unique<Material>();
 	MATERIAL mtrl;
-	mtrl.Diffuse = Color(1, 1, 1, 1);
+	mtrl.Diffuse = m_color;
 	mtrl.Shiness = 1;
 	mtrl.TextureEnable = true; // テクスチャを使うか否かのフラグ
 	m_Materiale->Create(mtrl);
@@ -80,6 +85,7 @@ void Texture2D::Update()
 //=======================================
 void Texture2D::Draw()
 {
+	if (m_color.w <= 0) { return; } //透明なら描画しない
 	Renderer::SetDepthEnable(false); // 深度書き込みを無効にする
 
 	// SRT情報作成

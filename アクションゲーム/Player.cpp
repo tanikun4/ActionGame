@@ -78,6 +78,7 @@ void Player::Update() {
 		if (flamecount > 10) {
 			m_State = 0;
 			inviFg = false;
+			SetColor({ 1, 1, 1, 1 });
 		}
 		break;
 	case 4:
@@ -114,8 +115,8 @@ void Player::Update() {
 		m_Position = Vector3(0.0f, 50.0f, 0.0f);
 		m_Velocity = Vector3(0.0f, 0.0f, 0.0f);
 	}
-	m_pole->Update(m_Position, radius, m_Rotation,1.7f);
 	GBUpdate();
+	m_pole->Update(m_Position, radius, m_Rotation,1.7f);
 }
 
 void Player::Move() {
@@ -274,6 +275,7 @@ void Player::Damage(int atk) {
 		m_State = 3;
 		flamecount = 0;
 		inviFg = true;
+		SetColor(Vector4(1, 1, 0, 1));
 		Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
 	}
 }

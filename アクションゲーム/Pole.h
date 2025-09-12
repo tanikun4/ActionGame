@@ -1,9 +1,5 @@
 #pragma once
-#include "Object.h"
 #include "TestCube.h"
-#include "MeshRenderer.h"
-#include "Texture.h"
-#include "Material.h"
 #include "Weapon.h"
 
 

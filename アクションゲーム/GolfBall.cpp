@@ -305,3 +305,10 @@ bool GolfBall::CheckGround() {
 Collision::ColliderVariant GolfBall::GetCollision(){
 	return Collision::Sphere{ m_Position, radius };
 }
+
+void GolfBall::SetColor(const DirectX::SimpleMath::Vector4& color) {//F‚ð•Ï‚¦‚é
+	for (auto& m : m_Materiales) {
+		m.get()->SetDiffuse(color);
+		m.get()->Update();
+	}
+}

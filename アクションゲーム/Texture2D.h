@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 class Texture2D : public Object
 {
-private:
+protected:
 	// 描画の為の情報（メッシュに関わる情報）
 	IndexBuffer m_IndexBuffer; // インデックスバッファ
 	VertexBuffer<VERTEX_3D> m_VertexBuffer; // 頂点バッファ
@@ -19,6 +19,7 @@ private:
 	Texture m_Texture; // テクスチャ
 	std::unique_ptr<Material> m_Materiale; //マテリアル
 
+	DirectX::SimpleMath::Vector4 m_color{ 1.0f,1.0f,1.0f,1.0f };
 	// UV座標の情報
 	float m_NumU = 1;
 	float m_NumV = 1;
@@ -28,6 +29,7 @@ private:
 public:
 
 	Texture2D(Camera* cam); // コンストラクタ
+	Texture2D();
 	~Texture2D(); // デストラクタ
 
 	void Init();
@@ -52,5 +54,9 @@ public:
 
 	// UV座標を指定
 	void SetUV(const float& nu, const float& nv, const float& sx, const float& sy);
+
+	// 色を指定
+	void SetColor(const DirectX::SimpleMath::Vector4& color) { m_color = color; }
+	float GetAlpha() { return m_color.w; }
 };
 

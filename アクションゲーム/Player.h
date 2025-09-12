@@ -26,6 +26,7 @@ private:
 	void Guard();//ガード
 	Bullet* m_arrow;
 	Pole* m_pole;
+
 public:
 	Player(Camera* cam); // コンストラクタ
 	~Player();//デストラクタ
