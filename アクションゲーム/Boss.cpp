@@ -59,6 +59,7 @@ void Boss::Update() {
 	if (invicount > 30) {
 		inviFg = false;
 		invicount = 0;
+		SetColor(Vector4(1, 0, 0, 1));
 	}
 	/*if (m_State != 2) {
 		HitCheck();
@@ -86,6 +87,7 @@ void Boss::Damage(int atk) {
 	invicount = 0.0f;
 	inviFg = true;
 	m_Velocity_f = 0.0f;//ˆÚ“®‘¬“x‚ð0‚É‚·‚é
+	SetColor(Vector4(0, 1, 1, 0.5));
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 }
 

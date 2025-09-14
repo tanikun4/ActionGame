@@ -275,7 +275,7 @@ void Player::Damage(int atk) {
 		m_State = 3;
 		flamecount = 0;
 		inviFg = true;
-		SetColor(Vector4(1, 1, 0, 1));
+		SetColor(Vector4(1, 1, 0, 0.5));
 		Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
 	}
 }

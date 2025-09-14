@@ -45,6 +45,8 @@ void Texture2D::Init()
 	vertices[2].uv = Vector2(0, 1);
 	vertices[3].uv = Vector2(1, 1);
 
+	m_Vertices = vertices; // 保存
+
 	// 頂点バッファ生成
 	m_VertexBuffer.Create(vertices);
 
@@ -85,7 +87,8 @@ void Texture2D::Update()
 //=======================================
 void Texture2D::Draw()
 {
-	if (m_color.w <= 0) { return; } //透明なら描画しない
+	if (m_color.w <= 0.0f) { return; } //透明なら描画しない
+	
 	Renderer::SetDepthEnable(false); // 深度書き込みを無効にする
 
 	// SRT情報作成
@@ -110,6 +113,7 @@ void Texture2D::Draw()
 
 	m_Texture.SetGPU();
 	m_Materiale->SetGPU();
+
 
 	// UVの設定を指定
 	float u = m_NumU - 1;
@@ -186,4 +190,13 @@ void Texture2D::SetUV(const float& nu, const float& nv, const float& sx, const f
 	m_NumV = nv;
 	m_SplitX = sx;
 	m_SplitY = sy;
+}
+
+// 色を指定
+void Texture2D::SetColor(const DirectX::SimpleMath::Vector4& color) 
+{ 
+	m_color = color; 
+	for (auto& v : m_Vertices)
+		v.color = m_color;
+	m_VertexBuffer.Modify(m_Vertices);
 }

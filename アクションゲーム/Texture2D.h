@@ -15,6 +15,8 @@ protected:
 	IndexBuffer m_IndexBuffer; // インデックスバッファ
 	VertexBuffer<VERTEX_3D> m_VertexBuffer; // 頂点バッファ
 
+	std::vector<VERTEX_3D> m_Vertices;
+
 	// 描画の為の情報（見た目に関わる部分）
 	Texture m_Texture; // テクスチャ
 	std::unique_ptr<Material> m_Materiale; //マテリアル
@@ -56,7 +58,7 @@ public:
 	void SetUV(const float& nu, const float& nv, const float& sx, const float& sy);
 
 	// 色を指定
-	void SetColor(const DirectX::SimpleMath::Vector4& color) { m_color = color; }
+	void SetColor(const DirectX::SimpleMath::Vector4& color);
 	float GetAlpha() { return m_color.w; }
 };
 

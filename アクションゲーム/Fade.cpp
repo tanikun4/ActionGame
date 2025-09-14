@@ -4,10 +4,9 @@
 
 std::unique_ptr<Fade> Fade::m_Instance = nullptr;
 
-
 void Fade::Init(Camera* cam) 
 {
-	m_Instance = std::make_unique<Fade>();
+	//m_Instance = std::make_unique<Fade>();
 	fadetex = std::make_unique<Texture2D>(cam);
 	fadetex->Init();
 	fadetex->SetTexture("assets/texture/fade.png");
@@ -37,9 +36,9 @@ void Fade::Uninit()
 }
 
 Fade* Fade::GetInstance() {
-	//if (m_Instance == nullptr) {
-	//	m_Instance = std::make_unique<Fade>();
-	//}
+	if (m_Instance == nullptr) {
+		m_Instance = std::make_unique<Fade>();
+	}
 	return m_Instance.get();
 }
 

@@ -13,6 +13,7 @@
 #include "GroundManager.h"
 #include "ICollider.h"
 #include "Skydome.h"
+#include "Fade.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -145,7 +146,7 @@ void Stage1Scene::Init()
 
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
-
+	Fade::GetInstance()->StartFadeIn();
 
 }
 
@@ -161,6 +162,9 @@ void Stage1Scene::Update()
 	//count[2] = texture2D[texture2D.size() - 1];//敵の数1桁目
 
 	count[0]->SetUV(player->GetHP() + 1, 1, 10, 1); // プレイヤーHPのUVを指定
+	if (Input::GetKeyPress(VK_X)) {
+		count[0]->SetColor({ 1,1,1,count[0]->GetAlpha() - 0.01f });
+	}
 	// 各桁を後ろから取得していく
 	//vector<Enemy*> enemy = Game::GetInstance()->GetObjects<Enemy>();
 	//int enemycount = 0;
@@ -179,10 +183,10 @@ void Stage1Scene::Update()
 	Collision();
 
 	if(boss->GetHP() <= 0){
-		Game::GetInstance()->ChangeScene(RESULT);
+		Game::GetInstance()->ChangeSceneFadeOut(RESULT);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
 	}else if (player->GetHP() <= 0) {
-		Game::GetInstance()->ChangeScene(GAMEOVER);
+		Game::GetInstance()->ChangeSceneFadeOut(GAMEOVER);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
 	}
 }

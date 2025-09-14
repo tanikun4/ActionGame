@@ -27,7 +27,6 @@ void Game::Init()
 	// オブジェクト作成
 	m_Instance = new Game;
 
-	Fade::GetInstance()->Init(m_Instance->m_Camera.get());
 
 	Sound::SoundInit();
 	Sound::GetInstance()->Init();//サウンド初期化
@@ -51,6 +50,7 @@ void Game::Init()
 	{
 		o->Init();
 	}
+	Fade::GetInstance()->Init(m_Instance->m_Camera.get());
 }
 
 // 更新
@@ -77,8 +77,6 @@ void Game::Update()
 	if(m_Instance->change_request && Fade::GetInstance()->FinishedFadeOut()) {// フェードアウト完了後にシーンを変更する
 		m_Instance->change_request = false;
 		m_Instance->ChangeScene(m_Instance->m_NextScene);
-		delete m_Instance->m_Scene;
-		m_Instance->m_Scene = nullptr;
 	}
 }
 

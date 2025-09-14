@@ -14,7 +14,7 @@ private:
 	std::unique_ptr<Texture2D> fadetex;
 	bool fadeout = false;
 	bool fadein = false;
-	const float  alpha_val = 1 / maxflame;//1フレームあたりのアルファ値変化量
+	const float  alpha_val = 0.01f;//1フレームあたりのアルファ値変化量
 
 	bool FadeOut();//フェードアウト処理
 	bool FadeIn();//フェードイン処理
