@@ -1,6 +1,7 @@
 #include "GameOverScene.h"
 #include "Game.h"
 #include "Texture2D.h"
+#include "Fade.h"
 
 // コンストラクタ
 GameOverScene::GameOverScene()
@@ -22,14 +23,14 @@ void GameOverScene::Init()
 	pt->SetTexture("assets/texture/gameover.png"); // 画像を指定
 	pt->SetScale(1280.0f, 720.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(pt);
-
+	Fade::GetInstance()->StartFadeIn();
 }
 
 // 更新
 void GameOverScene::Update()
 {
-	// エンターキーを押してタイトルへ
-	if (Input::GetKeyTrigger(VK_RETURN))
+	// スペースキーを押してタイトルへ
+	if (Input::GetKeyTrigger(VK_SPACE))
 	{
 		Game::GetInstance()->ChangeScene(TITLE);
 	}

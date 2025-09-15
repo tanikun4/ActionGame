@@ -31,18 +31,20 @@ void Boss::Init() {
 	m_Scale.y = 2;
 	m_Scale.z = 2;
 	radius *= 2;
-
 }
 
 void Boss::Update() {
-	
+	if (hp <= 0) { return; };
 	switch (m_State) {
 	case 0:
 		LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
 		Move();
-		if (flamecount > 300) {
+		if (flamecount > 360) {
 			m_State = 1;
 			flamecount = 0;
+		}
+		if (flamecount % 90 == 0 && flamecount != 0) {
+			ShotBullet();
 		}
 		break;
 	case 1:
@@ -150,7 +152,28 @@ void Boss::LookAt(Vector3 ta_pos) {
 void Boss::Attack() {
 	m_weapon->Swing();
 	m_State = 0;
-	flamecount = 0;
+}
+
+void Boss::ShotBullet() {
+	int r = rand();
+	int r1 = rand();
+	int r2 = rand();
+	Vector3 ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
+	Vector3 ta_addpos = Vector3((r1 % 20) + 20, 0, (r2 % 20) + 20);
+	if (r1 % 2 == 0) { ta_addpos.x *= -1; };
+	if (r2 % 2 == 0) { ta_addpos.z *= -1; };
+	if (!m_bullet.size()) {
+		vector<Bullet*> bullet = Game::GetInstance()->GetObjects<Bullet>();
+		m_bullet = bullet;
+	}
+	for (auto& bu : m_bullet) {
+		if (bu->GetLive() == false) {
+			bu->LookAtShot(ta_pos + ta_addpos, ta_pos, false);
+			//bu->SetId(1);
+			Sound::GetInstance()->Play(SOUND_SE_ARROWSHOT);
+			break;
+		}
+	}
 }
 
 void Boss::Move() {

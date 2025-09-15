@@ -5,8 +5,9 @@ class Bullet :
 {
 private:
     int m_State = 0; // 0:”ñ•\Ž¦E1:•ûŒü‘I‘ðE2:ƒpƒ[‘I‘ð
-    const int Bullettime = 120;//’e‚ª”ò‚ñ‚Å‚¢‚éŽžŠÔ
+    const int Bullettime = 60;//’e‚ª”ò‚ñ‚Å‚¢‚éŽžŠÔ
     int id = 0;//’e‚ÌŽí—Þ 0:”»’è–³‚µ,1:ƒvƒŒƒCƒ„[‚Ì’e,2:“G‚Ì’e
+	bool pl = false;//ƒvƒŒƒCƒ„[‚Ì’e‚©“G‚Ì’e‚©
 	int power = 0;//—­‚ß‚½—Ê(’e‚Ì‘¬“x‚ÉŠÖŒW)
 	const int maxpower = 180;//ƒpƒ[‚ÌÅ‘å’l
 
@@ -25,6 +26,8 @@ public:
 	void PShot(float rotation_y, float radius, DirectX::SimpleMath::Vector3 position);//ƒvƒŒƒCƒ„[’e‚Ì”­ŽË
 	void EPose(float rotation_y, float radius, DirectX::SimpleMath::Vector3 position);//“G‚Ì’e”­ŽË‘Oó‘Ô
 	void EShot(float rotation_y, float radius, DirectX::SimpleMath::Vector3 position);//“G‚Ì’e”­ŽË
+
+	void LookAtShot(DirectX::SimpleMath::Vector3 position, DirectX::SimpleMath::Vector3 target,bool _pl); // ’Ž‹“_‚ÉŒü‚¯‚Ä”­ŽË
 	// ó‘Ô‚ÌÝ’è
 	void SetState(int s);
 	void SetId(int _id);
@@ -36,5 +39,11 @@ public:
 	int GetId();
 	int GetAtk();
 	Collision::ColliderVariant GetCollision();
+
+	void HitObject(Object* ob) override {
+		if (m_State != 2) { return; };
+		ob->OnHit(this);
+	}
+	void OnHit(Object* ob) override {};
 };
 

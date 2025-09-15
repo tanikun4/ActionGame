@@ -36,6 +36,7 @@ public:
 	virtual void OnHit(class Player* player) {} // 派生用
 	virtual void OnHit(class Boss* boss) {}    // 派生用
 	virtual void OnHit(class Pole* pole) {}    // 派生用
+	virtual void OnHit(class Bullet* bullet) {}    // 派生用
 	virtual bool GetLive() { return m_live; }
 
 	//position セッター関数・ゲッター関数

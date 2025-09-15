@@ -163,11 +163,11 @@ void Player::Move() {
 		m_Velocity_f = speed;
 
 	}
-	if (Input::GetKeyTrigger(VK_CONTROL)) {
+	/*if (Input::GetKeyTrigger(VK_CONTROL)) {
 		if (rollcount >= rollcooldown) {
 			DodgeRoll();
 		}
-	}
+	}*/
 }
 
 void Player::DodgeRoll() {
@@ -177,16 +177,16 @@ void Player::DodgeRoll() {
 }
 
 void Player::Attack() {
-	if (Input::GetKeyTrigger(VK_SPACE)) {
+	if (Input::GetKeyTrigger(VK_K)) {
 		m_pole->Swing();
 		m_State = 1;
 		Sound::GetInstance()->Play(SOUND_SE_SWING);
 	}
-	if (Input::GetKeyTrigger(VK_SHIFT)) {
+	/*if (Input::GetKeyTrigger(VK_SHIFT)) {
 		Charge();
 		m_State = 2;
 		Sound::GetInstance()->Play(SOUND_SE_ARROWCHARGE);
-	}
+	}*/
 }
 
 void Player::Charge() {
@@ -312,8 +312,8 @@ void Player::OnHit(Pole* po) {
 }
 
 void Player::OnHit(Bullet* bu) {
-	const int damage = 2;
 	if (bu->GetPl()) return;
+	const int damage = 1;
 	Damage(damage);
 }
 

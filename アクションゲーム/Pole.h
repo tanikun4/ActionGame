@@ -32,7 +32,7 @@ public:
 	void SetPosition(float x, float y, float z);
 	void SetPosition(DirectX::SimpleMath::Vector3 pos);
 
-	void HitObject(Object* ob) override {
+	void HitObject(Object* ob) override { //“–‚½‚è”»’è‚ð‘‚â‚·ê‡AObject‚ÉŠî’êŠÖ”‚ð’Ç‰Á‚·‚é‚±‚ÆB
 		if (m_State != 1) { return; };
 		ob->OnHit(this);
 	}

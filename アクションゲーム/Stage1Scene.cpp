@@ -155,16 +155,15 @@ void Stage1Scene::Update()
 {
 	//Arrow* arrow = dynamic_cast<Arrow*>(m_MySceneObjects[2]); // 矢印
 	// 数を更新
-	Texture2D* count[1];
+	Texture2D* count[3];
 	vector<Texture2D*> texture2D = Game::GetInstance()->GetObjects<Texture2D>();
 	count[0] = texture2D[texture2D.size() - 3];//プレイヤーHP
-	//count[1] = texture2D[texture2D.size() - 2];//敵の数2桁目
-	//count[2] = texture2D[texture2D.size() - 1];//敵の数1桁目
+	count[1] = texture2D[texture2D.size() - 2];//ボスのHP1桁目
+	count[2] = texture2D[texture2D.size() - 1];//ボスのHP2桁目
 
 	count[0]->SetUV(player->GetHP() + 1, 1, 10, 1); // プレイヤーHPのUVを指定
-	if (Input::GetKeyPress(VK_X)) {
-		count[0]->SetColor({ 1,1,1,count[0]->GetAlpha() - 0.01f });
-	}
+	count[1]->SetUV((boss->GetHP() % 10) + 1, 1, 10, 1); // ボスHP1桁目のUVを指定
+	count[2]->SetUV((boss->GetHP() / 10) + 1, 1, 10, 1); // ボスHP2桁目のUVを指定
 	// 各桁を後ろから取得していく
 	//vector<Enemy*> enemy = Game::GetInstance()->GetObjects<Enemy>();
 	//int enemycount = 0;
@@ -185,6 +184,8 @@ void Stage1Scene::Update()
 	if(boss->GetHP() <= 0){
 		Game::GetInstance()->ChangeSceneFadeOut(RESULT);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
+		count[1]->SetUV(1, 1, 10, 1);
+		count[2]->SetUV(1, 1, 10, 1);
 	}else if (player->GetHP() <= 0) {
 		Game::GetInstance()->ChangeSceneFadeOut(GAMEOVER);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);

@@ -18,7 +18,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_destrot;//回転の目標点
 	DirectX::XMFLOAT2 stagesize;
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
-	std::vector<Arrow*> m_arrow;
+	std::vector<Bullet*> m_bullet;
 	Pole* m_weapon;
 
 	const float gravity = -0.007f;
@@ -36,6 +36,8 @@ public:
 	void Update();
 	void Draw();
 	void Damage(int atk);
+
+	void ShotBullet();
 	bool GetLive();
 	int GetHP();
 	bool HitCheckPole(Pole* pole);//攻撃に当たったかを返す

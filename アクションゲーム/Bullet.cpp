@@ -1,4 +1,5 @@
 #include "Bullet.h"
+#include "Game.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -68,7 +69,7 @@ void Bullet::Init() {
 
 void Bullet::Update()
 {
-	// 発射状態なら
+	// 未発射状態なら
 	if (m_State == 0) {
 		id = 0;
 		return;
@@ -104,7 +105,8 @@ void Bullet::Update()
 		m_ForwardVector = Vector3::Transform(initForward, rotationMatrix);
 
 		// 現在の座標を計算
-		m_Position += m_ForwardVector * m_Velocity_f;//モデルの向きの関係からマイナスで行っている
+		m_Position += m_ForwardVector * m_Velocity_f;
+
 		flamecount++;
 		if (flamecount > Bullettime) {
 			flamecount = 0;
@@ -232,6 +234,18 @@ void Bullet::EShot(float rotation_y, float radius, Vector3 position) {
 	m_State = 2;
 	m_Position = { position.x + sin(rotation_y) * radius * m_Scale.z, position.y,  position.z + cos(rotation_y) * radius * m_Scale.z };
 	m_Velocity_f = power * 0.01;
+	atk = 1;
+}
+
+void Bullet::LookAtShot(Vector3 position, Vector3 target, bool _pl) {
+	m_live = true;
+	m_Scale = { 1,1,1 };
+	pl = _pl;
+	m_State = 2;
+	m_Position = position;
+	// atan2を使用して角度を求める
+	m_Rotation.y = atan2f((target.x - m_Position.x), (target.z - m_Position.z));
+	m_Velocity_f = maxpower * 0.005;
 	atk = 1;
 }
 

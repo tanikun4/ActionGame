@@ -93,7 +93,7 @@ void Game::Draw()
 	for (auto& o : m_Instance->m_Objects)
 	{
 		o->Draw();
-		if (Input::GetKeyPress(VK_X)) {
+		if (Input::GetKeyPress(VK_O)) {
 			auto col = dynamic_cast<ICollider*>(o.get());
 			if (col) {
 				m_Instance->m_WireRenderer->Draw(col->GetCollision());
