@@ -107,12 +107,10 @@ void GolfBall::GBUpdate()
 	// 現在の座標を計算
 	m_Position += m_ForwardVector * m_Velocity_f;
 
-	m_Velocity.y -= gravity;
+	//m_Velocity.y -= gravity;
 
-	//速度を座標に加算
-	m_Position += m_Velocity;
 
-	////Groundの頂点データを取得
+	//Groundの頂点データを取得
 
 	//const auto& ground_polygon = GroundManager::GetInstance().GetGroundPolygons();
 
@@ -149,6 +147,7 @@ void GolfBall::GBUpdate()
 	//		Vector3 np = Collision::moveSphere(collisionSegment, radius, collisionPolygon, cp, md);
 	//		if (moveDistance > md)
 	//		{
+	//			m_Velocity.y = 0;
 	//			moveDistance = md;
 	//			m_Position = np;
 	//			contactPoint = cp;
@@ -177,6 +176,7 @@ void GolfBall::GBUpdate()
 	//			md = (np - oldPos).Length();
 	//			if (moveDistance > md)
 	//			{
+	//				m_Velocity.y = 0;
 	//				moveDistance = md;
 	//				m_Position = np;
 	//				contactPoint = cp;
@@ -191,6 +191,12 @@ void GolfBall::GBUpdate()
 		m_Velocity.y = 0;
 
 	}
+	else {
+		//もし当たっていなければ
+		m_Velocity.y -= gravity;
+	}
+	//速度を座標に加算
+	m_Position += m_Velocity;
 
 }
 
@@ -271,6 +277,7 @@ bool GolfBall::CheckGround() {
 			Vector3 np = Collision::moveSphere(collisionSegment, radius, poly, cp, md);
 			if (moveDistance > md)
 			{
+				
 				moveDistance = md;
 				m_Position = np;
 				contactPoint = cp;
@@ -290,6 +297,7 @@ bool GolfBall::CheckGround() {
 			md = (np - oldPos).Length();
 			if (moveDistance > md)
 			{
+				
 				moveDistance = md;
 				m_Position = np;
 				contactPoint = cp;

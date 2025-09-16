@@ -48,7 +48,7 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(ground);
 	groundsize = ground->GetGroundSize();
 
-	GroundManager::GetInstance().Initialize();
+	GroundManager::GetInstance().Init();
 	//m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Pole>()); // ポール
 
 	boss = Game::GetInstance()->AddObject<Boss>();
@@ -114,7 +114,7 @@ void Stage1Scene::Init()
 	
 	// UI(敵の数)
 	Texture2D* pt2 = Game::GetInstance()->AddObject<Texture2D>();
-	pt2->SetTexture("assets/texture/ui_string.png"); // 画像を指定
+	pt2->SetTexture("assets/texture/ui_BossHP.png"); // 画像を指定
 	pt2->SetPosition(350.0f, 300.0f, 0.0f); // 位置を設定
 	pt2->SetScale(150.0f, 75.0f, 0.0f); // 大きさを指定
 	pt2->SetUV(1, 1, 1, 1); //UVを指定

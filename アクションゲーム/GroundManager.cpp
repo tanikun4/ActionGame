@@ -2,13 +2,13 @@
 #include "Game.h"
 #include "Ground.h"
 
-void GroundManager::Initialize() {
+void GroundManager::Init() {
     m_Polygons.clear();
 
     auto grounds = Game::GetInstance()->GetObjects<Ground>();
     for (auto& g : grounds) {
         const auto& vertices = g->GetVertices();
-        for (size_t i = 0; i + 2 < vertices.size(); i += 3) {
+        for (int i = 0; i < vertices.size(); i += 3) {
             Collision::Polygon poly = {
                 vertices[i + 0].position,
                 vertices[i + 1].position,

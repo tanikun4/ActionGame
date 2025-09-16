@@ -163,8 +163,8 @@
     <LibraryPath>C:\directxtk\lib\x64\Debug;C:\assimp\assimp\5.2.5\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\directxtk\include;C:\assimp\assimp\5.2.5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\assimp\assimp\5.2.5\lib;C:\directxtk\lib\x64\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\directxtk\include;C:\assimp\5.2.5\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\assimp\5.2.5\lib;C:\directxtk\lib\x64\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DirectX 3Dゲーム制作 リリースビルド|x64'">
     <IncludePath>C:\directxtk\include;C:\assimp\assimp\5.2.5\include;$(IncludePath)</IncludePath>
@@ -251,7 +251,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\assimp\assimp\5.2.5\lib;C:\directxtk\lib\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\assimp\5.2.5\lib;C:\directxtk\lib\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DirectX 3Dゲーム制作 デバッグビルド|x64'">
@@ -292,10 +292,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\assimp\assimp\5.2.5\include;C:\directxtk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\assimp\5.2.5\include;C:\directxtk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -303,7 +303,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\assimp\assimp\5.2.5\lib;C:\directxtk\lib\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\assimp\5.2.5\lib;C:\directxtk\lib\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DirectX 3Dゲーム制作 リリースビルド|x64'">

@@ -163,11 +163,15 @@ void Player::Move() {
 		m_Velocity_f = speed;
 
 	}
-	/*if (Input::GetKeyTrigger(VK_CONTROL)) {
-		if (rollcount >= rollcooldown) {
+	if (Input::GetKeyTrigger(VK_CONTROL)) {
+		inviFg = true;
+		/*if (rollcount >= rollcooldown) {
 			DodgeRoll();
-		}
-	}*/
+		}*/
+	}
+	if (Input::GetKeyRelease(VK_CONTROL)) {
+		inviFg = false;
+	}
 }
 
 void Player::DodgeRoll() {
