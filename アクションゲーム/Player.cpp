@@ -73,12 +73,10 @@ void Player::Update() {
 		break;
 	case 3:
 		// Œ»Ý‚ÌÀ•W‚ðŒvŽZ
-		m_Position -= m_ForwardVector;
-		//m_Position.y = 0.0f;
+		//m_Position -= m_ForwardVector * speed;
+		m_Velocity_f = speed * -1;
 		if (flamecount > 10) {
 			m_State = 0;
-			inviFg = false;
-			SetColor({ 1, 1, 1, 1 });
 		}
 		break;
 	case 4:
@@ -96,13 +94,19 @@ void Player::Update() {
 		break;
 	}
 
+	if (inviFg && flamecount >= 60) {
+		inviFg = false;
+		SetColor({ 1, 1, 1, 1 });
+		flamecount = 0;
+	}
+
 	if (m_State != 4) {
 		if (rollcount < rollcooldown) {
 			++rollcount;
 		}
 	}
 
-	if (flamecount < 30) {
+	if (flamecount < 60) {
 		++flamecount;
 	}
 	else {
@@ -275,6 +279,10 @@ void Player::CheckHitPole(Pole* pole) {
 
 void Player::Damage(int atk) {
 	if (inviFg == false) {
+		if(GuardFg){
+			if (atk > 1) 
+				atk = atk / 2;
+		}
 		hp -= atk;
 		m_State = 3;
 		flamecount = 0;
@@ -293,13 +301,15 @@ Pole* Player::GetWeapon() {
 }
 
 void Player::Guard() {
-	if (Input::GetKeyTrigger(VK_E)) {
-		m_State = 5;
+	if (Input::GetKeyTrigger(VK_I)) {
 		GuardFg = true;
+		speed = 0.1;
+		SetColor({ 1, 0.8, 0.8, 1 });
 	}
-	if (Input::GetButtonRelease(VK_E)) {
-		m_State = 0;
+	if (Input::GetKeyRelease(VK_I)) {
 		GuardFg = false;
+		speed = 1;
+		SetColor({ 1, 1, 1, 1 });
 	}
 	return;
 }
