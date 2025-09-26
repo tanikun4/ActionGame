@@ -167,13 +167,13 @@ void Boss::ShotBullet() {
 		m_bullet = bullet;
 	}
 	for (auto& bu : m_bullet) {
-		if (bu->GetLive() == false) {
+		if (!bu->GetLive()) {
 			bu->LookAtShot(ta_pos + ta_addpos, ta_pos, false);
-			//bu->SetId(1);
 			Sound::GetInstance()->Play(SOUND_SE_ARROWSHOT);
 			break;
 		}
 	}
+	
 }
 
 void Boss::Move() {

@@ -43,5 +43,5 @@ public:
 	int GetState();//ó‘Ô‚ğ•Ô‚·
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
+	int GetSwingTime() { return swing_time; }
 };
-

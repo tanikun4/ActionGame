@@ -41,11 +41,14 @@ void Player::Init() {
 void Player::Update() {
 	m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	//状態ごとの処理
-	switch (m_State) {//0:通常時、1:近接攻撃中,2:遠距離攻撃中,3:ダメージ中,4:回避状態5:ガード状態
+	switch (m_State) {//0:通常時、1:近接攻撃中,2:遠距離攻撃中,3:ダメージ中,4:回避状態5:カウンター状態
 	case 0:
 		Move();
 		Attack();
 		Guard();
+		if (Input::GetKeyPress(VK_CONTROL)) {
+			Counter();
+		}
 		break;
 	case 1:
 		if (m_pole->GetState() == 0) {
@@ -83,32 +86,53 @@ void Player::Update() {
 		m_Position += m_ForwardVector * speed * 2.0f;
 		//m_Position.y = 0.0f;
 		rollcount++;
-		if (rollcount > 20) {
+		if (rollcount > 10) {
+			RollFg = false;
 			m_State = 0;
 			inviFg = false;
 			rollcount = 0;
+			SetColor({ 1, 1, 1, 1 });
 		}
 		break;
 	case 5:
-		Guard();
+		//Guard();
+		if (fabs(m_Position.x - m_ta_pos.x) < radius * 6 && fabs(m_Position.z - m_ta_pos.z) < radius * 6) {
+			m_pole->Swing();
+			m_State = 1;
+			inviFg = false;
+			SetColor({ 1, 1, 1, 1 });
+		}
+		else {
+			Boss* boss = Game::GetInstance()->GetObjects<Boss>()[0];
+			boss->GetPosition();
+			LookAt(boss->GetPosition());
+			m_Velocity_f = speed * 3;
+		}
 		break;
-	}
-
-	if (inviFg && flamecount >= 60) {
-		inviFg = false;
-		SetColor({ 1, 1, 1, 1 });
-		flamecount = 0;
 	}
 
 	if (m_State != 4) {
 		if (rollcount < rollcooldown) {
 			++rollcount;
 		}
+		if (inviFg) {
+			if (invicount < 60) {
+				++invicount;
+			}
+			else {
+				inviFg = false;
+				SetColor({ 1, 1, 1, 1 });
+				invicount = 0;
+			}
+		}
+		if (flamecount < 60) {
+			++flamecount;
+		}
+		if (GuardFg) {
+			++guardcount;
+		}
 	}
 
-	if (flamecount < 60) {
-		++flamecount;
-	}
 	else {
 		//CheckHit();
 	}
@@ -122,6 +146,8 @@ void Player::Update() {
 	GBUpdate();
 	m_pole->Update(m_Position, radius, m_Rotation,1.7f);
 }
+
+
 
 void Player::Move() {
 	//キー入力による移動
@@ -167,14 +193,10 @@ void Player::Move() {
 		m_Velocity_f = speed;
 
 	}
-	if (Input::GetKeyTrigger(VK_CONTROL)) {
-		inviFg = true;
-		/*if (rollcount >= rollcooldown) {
+	if (Input::GetKeyTrigger(VK_J)) {
+		if (rollcount >= rollcooldown) {
 			DodgeRoll();
-		}*/
-	}
-	if (Input::GetKeyRelease(VK_CONTROL)) {
-		inviFg = false;
+		}
 	}
 }
 
@@ -182,6 +204,8 @@ void Player::DodgeRoll() {
 	m_State = 4;
 	rollcount = 0;
 	inviFg = true;
+	RollFg = true;
+	SetColor({0, 0, 1, 0.5});
 }
 
 void Player::Attack() {
@@ -303,6 +327,7 @@ Pole* Player::GetWeapon() {
 void Player::Guard() {
 	if (Input::GetKeyTrigger(VK_I)) {
 		GuardFg = true;
+		guardcount = 0;
 		speed = 0.1;
 		SetColor({ 1, 0.8, 0.8, 1 });
 	}
@@ -314,6 +339,26 @@ void Player::Guard() {
 	return;
 }
 
+void Player::Counter()
+{
+	Boss* boss = Game::GetInstance()->GetObjects<Boss>()[0];
+	boss->GetPosition();
+	LookAt(boss->GetPosition());
+	rollcount = 0;
+	m_State = 5;
+	speed = 1.0f;
+	RollFg = false;
+	GuardFg = false;
+	inviFg = true;
+	SetColor({ 0, 0, 1, 0.5 });
+}
+
+void Player::LookAt(Vector3 ta_pos) {
+	// atan2を使用して角度を求める
+	m_Rotation.y = atan2f((ta_pos.x - m_Position.x), (ta_pos.z - m_Position.z));
+	m_ta_pos = ta_pos;
+}
+
 void Player::OnHit(Boss* bo) {
 	Damage(1);
 	return;
@@ -322,11 +367,15 @@ void Player::OnHit(Boss* bo) {
 void Player::OnHit(Pole* po) {
 	const int damage = 2;
 	if (po->GetPl()) return;
+	if (RollFg && rollcount < 5 && po->GetSwingTime() < 5) { Counter(); return; };
+	if (GuardFg && guardcount < 60 && po->GetSwingTime() < 10) { Counter(); return; }
 	Damage(damage);
+
 }
 
 void Player::OnHit(Bullet* bu) {
 	if (bu->GetPl()) return;
+	if (GuardFg && guardcount < 60) { Counter(); return; }
 	const int damage = 1;
 	Damage(damage);
 }

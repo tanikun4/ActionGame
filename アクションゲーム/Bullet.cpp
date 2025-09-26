@@ -252,7 +252,7 @@ void Bullet::LookAtShot(Vector3 position, Vector3 target, bool _pl) {
 
 void Bullet::OnHit(Pole* po) {
 	if (m_State != 2) return;
-	if (po->GetPl() && !pl) {
+	if (po->GetPl() && !pl) { //’e‚Ì‘Å‚¿•Ô‚µ
 		atk = 5;
 		m_Rotation.y = po->GetBaseRotation().y - PI / 2;
 		flamecount = 0;
