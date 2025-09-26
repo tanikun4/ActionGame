@@ -123,6 +123,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	if (m_State == 0) {
 		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
+		m_baseRotation = m_Rotation;
 	}
 	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//Šp“x‚ðƒ‰ƒWƒAƒ“‚É•ÏŠ·
 	m_Position = { position.x + sin(rotation.y) * radius, position.y,  position.z + cos(rotation.y) * radius };

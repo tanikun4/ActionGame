@@ -1,5 +1,6 @@
 #include "Bullet.h"
 #include "Game.h"
+#include "Pole.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -247,6 +248,17 @@ void Bullet::LookAtShot(Vector3 position, Vector3 target, bool _pl) {
 	m_Rotation.y = atan2f((target.x - m_Position.x), (target.z - m_Position.z));
 	m_Velocity_f = maxpower * 0.005;
 	atk = 1;
+}
+
+void Bullet::OnHit(Pole* po) {
+	if (m_State != 2) return;
+	if (po->GetPl() && !pl) {
+		atk = 5;
+		m_Rotation.y = po->GetBaseRotation().y - PI / 2;
+		flamecount = 0;
+		m_Velocity_f *= 2;
+		pl = true;
+	}
 }
 
 void Bullet::SetId(int _id) {

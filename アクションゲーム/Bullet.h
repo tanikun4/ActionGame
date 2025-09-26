@@ -7,7 +7,6 @@ private:
     int m_State = 0; // 0:”ñ•\Ž¦E1:•ûŒü‘I‘ðE2:ƒpƒ[‘I‘ð
     const int Bullettime = 60;//’e‚ª”ò‚ñ‚Å‚¢‚éŽžŠÔ
     int id = 0;//’e‚ÌŽí—Þ 0:”»’è–³‚µ,1:ƒvƒŒƒCƒ„[‚Ì’e,2:“G‚Ì’e
-	bool pl = false;//ƒvƒŒƒCƒ„[‚Ì’e‚©“G‚Ì’e‚©
 	int power = 0;//—­‚ß‚½—Ê(’e‚Ì‘¬“x‚ÉŠÖŒW)
 	const int maxpower = 180;//ƒpƒ[‚ÌÅ‘å’l
 
@@ -45,5 +44,6 @@ public:
 		ob->OnHit(this);
 	}
 	void OnHit(Object* ob) override {};
+	void OnHit(Pole* po) override ;
 };
 

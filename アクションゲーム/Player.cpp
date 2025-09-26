@@ -73,8 +73,8 @@ void Player::Update() {
 		break;
 	case 3:
 		// Œ»İ‚ÌÀ•W‚ğŒvZ
-		//m_Position -= m_ForwardVector * speed;
 		m_Velocity_f = speed * -1;
+		Guard();
 		if (flamecount > 10) {
 			m_State = 0;
 		}
@@ -139,7 +139,7 @@ void Player::Move() {
 		}
 		m_Velocity_f = speed;
 	}
-	else if (Input::GetKeyPress(VK_S) == true)
+	else if (Input::GetKeyPress(VK_S))
 	{
 		// Œã‘Ş
 		if (Input::GetKeyPress(VK_A)) {
@@ -153,14 +153,14 @@ void Player::Move() {
 		}
 		m_Velocity_f = speed;
 	}
-	else if (Input::GetKeyPress(VK_A) == true)
+	else if (Input::GetKeyPress(VK_A))
 	{
 		//¶ˆÚ“®
 		m_Rotation.y = PI / 2;
 		m_Velocity_f = speed;
 
 	}
-	else if (Input::GetKeyPress(VK_D) == true)
+	else if (Input::GetKeyPress(VK_D))
 	{
 		//‰EˆÚ“®
 		m_Rotation.y = 3 * PI / 2;

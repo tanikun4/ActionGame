@@ -14,6 +14,8 @@ private:
 
 	int m_State = 0; // 0:非攻撃・1:攻撃中
 	int swing_time = 0;
+
+	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
 public:
 
 	Pole(Camera* cam); // コンストラクタ
@@ -40,5 +42,6 @@ public:
 	void Swing();
 	int GetState();//状態を返す
 	Collision::ColliderVariant GetCollision();
+	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
 };
 
