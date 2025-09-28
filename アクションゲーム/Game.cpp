@@ -4,6 +4,7 @@
 #include "ICollider.h"
 #include "Object.h"
 #include "Fade.h"
+#include "DebugUI.h"
 
 Game* Game::m_Instance;
 
@@ -33,6 +34,9 @@ void Game::Init()
 
 	// 描画初期化
 	Renderer::Init();
+
+	// デバッグUIの初期化
+	DebugUI::Init(Renderer::GetDevice(), Renderer::GetDeviceContext());
 
 	// オブジェクト配列作成
 	//m_Instance->m_Objects.emplace_back(new GolfBall);
@@ -103,6 +107,9 @@ void Game::Draw()
 
 	Fade::GetInstance()->Draw();
 
+	// デバッグUIの描画
+	DebugUI::Render();
+
 	// 描画後処理
 	Renderer::End();
 }
@@ -110,6 +117,9 @@ void Game::Draw()
 // 終了処理
 void Game::Uninit()
 {
+
+	// デバッグUIの終了処理
+	DebugUI::DisposeUI();
 
 	//オブジェクトを全て削除
 	m_Instance->DeleteAllObject();

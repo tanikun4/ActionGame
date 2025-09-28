@@ -14,6 +14,7 @@
 #include "ICollider.h"
 #include "Skydome.h"
 #include "Fade.h"
+#include "imgui.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
