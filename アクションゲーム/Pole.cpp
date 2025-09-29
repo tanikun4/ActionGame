@@ -6,6 +6,8 @@
 #include "Game.h"
 #include "Ground.h"
 #include "Collision.h"
+#include "DebugUI.h"
+
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -75,6 +77,7 @@ void Pole::Init()
 	m_Scale.x = 3;
 	m_Scale.y = 6;
 	m_Scale.z = 3;
+
 }
 
 //=======================================
@@ -112,24 +115,48 @@ void Pole::Update()
 void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset)//offsetはobbの距離調整用
 {
 
-	if (m_State == 1) {
+	switch (m_State) {
+	case 0:
+		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
+		m_baseRotation = m_Rotation;
+		break;
+	case 1:
 		m_Rotation.y += PI / 20;
 		swing_time++;
 		if (swing_time > 18) {
 			m_State = 0;
 			swing_time = 0;
 		}
+		break;
+	case 2:
+		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
+		m_baseRotation = m_Rotation;
+		m_offset = { sin(m_Rotation.y) * offset_debug.x ,0, cos(m_Rotation.y) * offset_debug.z };
+		break;
 	}
 
-	if (m_State == 0) {
-		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
-		m_baseRotation = m_Rotation;
-	}
+	//if (m_State == 1) { //攻撃状態
+	//	m_Rotation.y += PI / 20;
+	//	swing_time++;
+	//	if (swing_time > 18) {
+	//		m_State = 0;
+	//		swing_time = 0;
+	//	}
+	//}
+
+	//if (m_State == 0) { //通常状態
+	//	m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
+	//	m_baseRotation = m_Rotation;
+	//}
+
+	//if (m_State == 2) { //ガード状態
+	//	m_Rotation = { PI / 2, rotation.y ,PI / 2 };
+	//	m_baseRotation = m_Rotation;
+	//}
+
 	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//角度をラジアンに変換
 	m_Position = { position.x + sin(rotation.y) * radius, position.y,  position.z + cos(rotation.y) * radius };
-	//hitbox.SetRotation(m_Rotation);
-	//hitbox.SetPos({ m_Position.x + sin(m_Rotation.y - PI / 2) * radius * 1.7f, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * 1.7f });
-	//hitbox.SetScale({ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f });
+	m_Position += m_offset;
 	obb = { {m_Position.x + sin(m_Rotation.y - PI / 2) * radius * offset, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * offset},
 		m_Rotation,
 		{ m_Scale.x ,m_Scale.y * 3 ,m_Scale.z} };
@@ -253,3 +280,11 @@ Collision::ColliderVariant Pole::GetCollision() {
 	return obb;
 }
 
+void Pole::GuardStart() {
+	m_State = 2;
+}
+
+void Pole::GuardEnd() {
+	m_State = 0;
+	m_offset = { 0,0,0 };
+}

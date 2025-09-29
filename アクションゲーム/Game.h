@@ -35,6 +35,8 @@ private:
 
 	bool change_request = false; // シーン変更要求
 	SceneName m_NextScene;
+
+	bool debugmode = false; // デバッグモード
 public:
 	Game(); // コンストラクタ
 	~Game(); // デストラクタ

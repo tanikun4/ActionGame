@@ -30,6 +30,12 @@ private:
 	void Counter();//カウンター攻撃
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);//ターゲットの方向を見る
 
+	void UpdateNormal();
+	void UpdateAttack();
+	void UpdateDamage();
+	void UpdateDodge();
+	void UpdateCounter();
+
 	DirectX::SimpleMath::Vector3 m_ta_pos;//接近の目標点
 	Bullet* m_arrow;
 	Pole* m_pole;

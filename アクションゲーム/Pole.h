@@ -12,8 +12,12 @@ private:
 
 	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
 
-	int m_State = 0; // 0:非攻撃・1:攻撃中
+	int m_State = 0; // 0:通常状態・1:攻撃中 2:ガード中 
 	int swing_time = 0;
+
+	DirectX::SimpleMath::Vector3 m_offset{};//位置の補正値
+
+	DirectX::SimpleMath::Vector3 offset_debug{};//位置の補正値
 
 	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
 public:
@@ -40,6 +44,9 @@ public:
 	}
 	void OnHit(Object* ob) override {};
 	void Swing();
+	void GuardStart();
+	void GuardEnd();
+	void ChangeState(int state) {}; // 状態を変更する(現在未使用)
 	int GetState();//状態を返す
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }

@@ -43,17 +43,19 @@ void Player::Update() {
 	//状態ごとの処理
 	switch (m_State) {//0:通常時、1:近接攻撃中,2:遠距離攻撃中,3:ダメージ中,4:回避状態5:カウンター状態
 	case 0:
-		Move();
+		UpdateNormal();
+		/*Move();
 		Attack();
 		Guard();
 		if (Input::GetKeyPress(VK_CONTROL)) {
 			Counter();
-		}
+		}*/
 		break;
 	case 1:
-		if (m_pole->GetState() == 0) {
+		UpdateAttack();
+		/*if (m_pole->GetState() == 0) {
 			m_State = 0;
-		}
+		}*/
 		break;
 	case 2:
 		if (Input::GetKeyPress(VK_A))
@@ -75,16 +77,16 @@ void Player::Update() {
 		}
 		break;
 	case 3:
-		// 現在の座標を計算
-		m_Velocity_f = speed * -1;
+		UpdateDamage();
+		/*m_Velocity_f = speed * -1;
 		Guard();
 		if (flamecount > 10) {
 			m_State = 0;
-		}
+		}*/
 		break;
 	case 4:
-		m_Position += m_ForwardVector * speed * 2.0f;
-		//m_Position.y = 0.0f;
+		UpdateDodge();
+		/*m_Position += m_ForwardVector * speed * 2.0f;
 		rollcount++;
 		if (rollcount > 10) {
 			RollFg = false;
@@ -92,11 +94,11 @@ void Player::Update() {
 			inviFg = false;
 			rollcount = 0;
 			SetColor({ 1, 1, 1, 1 });
-		}
+		}*/
 		break;
 	case 5:
-		//Guard();
-		if (fabs(m_Position.x - m_ta_pos.x) < radius * 6 && fabs(m_Position.z - m_ta_pos.z) < radius * 6) {
+		UpdateCounter();
+		/*if (fabs(m_Position.x - m_ta_pos.x) < radius * 6 && fabs(m_Position.z - m_ta_pos.z) < radius * 6) {
 			m_pole->Swing();
 			m_State = 1;
 			inviFg = false;
@@ -107,7 +109,7 @@ void Player::Update() {
 			boss->GetPosition();
 			LookAt(boss->GetPosition());
 			m_Velocity_f = speed * 3;
-		}
+		}*/
 		break;
 	}
 
@@ -209,7 +211,7 @@ void Player::DodgeRoll() {
 }
 
 void Player::Attack() {
-	if (Input::GetKeyTrigger(VK_K)) {
+	if (Input::GetKeyTrigger(VK_K) && !GuardFg) { //ガード状態でなければ攻撃する
 		m_pole->Swing();
 		m_State = 1;
 		Sound::GetInstance()->Play(SOUND_SE_SWING);
@@ -254,7 +256,7 @@ void Player::Shot() {
 	m_arrow = nullptr;
 }
 
-void Player::CheckHit() {
+void Player::CheckHit() { // 以前に使っていた当たり判定(もう使わない)
 	Collision::Sphere balCollision = { m_Position, radius };
 	/*vector<Enemy*> enemy = Game::GetInstance()->GetObjects<Enemy>();
 	for (auto& en : enemy) {
@@ -289,7 +291,7 @@ void Player::CheckHit() {
 	return;
 }
 
-void Player::CheckHitPole(Pole* pole) {
+void Player::CheckHitPole(Pole* pole) { // 以前に使っていたPoleの当たり判定(もう使わない)
 	if (m_State == 3) { return; }
 	Collision::Sphere balCollision = { m_Position , radius };
 	if (pole->GetState() == 1) {
@@ -301,7 +303,7 @@ void Player::CheckHitPole(Pole* pole) {
 	return;
 }
 
-void Player::Damage(int atk) {
+void Player::Damage(int atk) { //ダメージ時の処理
 	if (inviFg == false) {
 		if(GuardFg){
 			if (atk > 1) 
@@ -329,11 +331,13 @@ void Player::Guard() {
 		GuardFg = true;
 		guardcount = 0;
 		speed = 0.1;
+		m_pole->GuardStart();
 		SetColor({ 1, 0.8, 0.8, 1 });
 	}
 	if (Input::GetKeyRelease(VK_I)) {
 		GuardFg = false;
 		speed = 1;
+		m_pole->GuardEnd();
 		SetColor({ 1, 1, 1, 1 });
 	}
 	return;
@@ -378,5 +382,58 @@ void Player::OnHit(Bullet* bu) {
 	if (GuardFg && guardcount < 60) { Counter(); return; }
 	const int damage = 1;
 	Damage(damage);
+}
+
+void Player::UpdateNormal() {
+	Move();
+	Attack();
+	Guard();
+	if (Input::GetKeyPress(VK_CONTROL)) {//テスト用
+		Counter();
+	}
+}
+
+void Player::UpdateAttack() {
+	if (m_pole->GetState() == 0) {
+		m_State = 0;
+	}
+}
+
+void Player::UpdateDamage() {
+	// ノックバックする
+	m_Velocity_f = speed * -1;
+	Guard();
+	if (flamecount > 10) {
+		m_State = 0;
+	}
+}
+
+void Player::UpdateDodge() {
+	//回避中
+	m_Position += m_ForwardVector * speed * 2.0f;
+	rollcount++;
+	if (rollcount > 10) {
+		RollFg = false;
+		m_State = 0;
+		inviFg = false;
+		rollcount = 0;
+		SetColor({ 1, 1, 1, 1 });
+	}
+}
+
+void Player::UpdateCounter() {
+	//カウンター攻撃中
+	if (fabs(m_Position.x - m_ta_pos.x) < radius * 6 && fabs(m_Position.z - m_ta_pos.z) < radius * 6) {
+		m_pole->Swing();
+		m_State = 1;
+		inviFg = false;
+		SetColor({ 1, 1, 1, 1 });
+	}
+	else {
+		Boss* boss = Game::GetInstance()->GetObjects<Boss>()[0];
+		boss->GetPosition();
+		LookAt(boss->GetPosition());
+		m_Velocity_f = speed * 3;
+	}
 }
 

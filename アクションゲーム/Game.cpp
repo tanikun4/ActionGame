@@ -82,6 +82,10 @@ void Game::Update()
 		m_Instance->change_request = false;
 		m_Instance->ChangeScene(m_Instance->m_NextScene);
 	}
+
+	if (Input::GetKeyTrigger(VK_O)) { // デバッグモード切り替え
+		m_Instance->debugmode = !m_Instance->debugmode;
+	}
 }
 
 // 描画
@@ -97,7 +101,7 @@ void Game::Draw()
 	for (auto& o : m_Instance->m_Objects)
 	{
 		o->Draw();
-		if (Input::GetKeyPress(VK_O)) {
+		if (m_Instance->debugmode) {
 			auto col = dynamic_cast<ICollider*>(o.get());
 			if (col) {
 				m_Instance->m_WireRenderer->Draw(col->GetCollision());
@@ -108,7 +112,7 @@ void Game::Draw()
 	Fade::GetInstance()->Draw();
 
 	// デバッグUIの描画
-	DebugUI::Render();
+	if(m_Instance->debugmode) DebugUI::Render();
 
 	// 描画後処理
 	Renderer::End();
@@ -212,6 +216,7 @@ void Game::DeleteAllObject()
 
 void Game::ChangeSceneFadeOut(SceneName sName)// フェードアウト完了後にシーンを変更するための準備をする
 {
+	if (!Fade::GetInstance()->FinishedFadeIn()) return;// フェードイン中は無効
 	m_NextScene = sName;
 	change_request = true;
 	Fade::GetInstance()->StartFadeOut();
