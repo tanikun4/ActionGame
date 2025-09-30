@@ -115,11 +115,11 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 {
 
 	switch (m_State) {
-	case 0:
+	case 0: //通常状態
 		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
 		m_baseRotation = m_Rotation;
 		break;
-	case 1:
+	case 1: //攻撃中
 		m_Rotation.y += PI / 20;
 		swing_time++;
 		if (swing_time > 18) {
@@ -127,31 +127,12 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 			swing_time = 0;
 		}
 		break;
-	case 2:
+	case 2: //ガード中
 		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
 		m_baseRotation = m_Rotation;
-		m_offset = { cos(m_Rotation.y) * offset_debug.x/*radius * 2*/ , offset_debug.y, sin(m_Rotation.y) * offset_debug.z/*radius * -2*/ };
+		m_offset = { cos(m_Rotation.y) * radius * 2 , offset_debug.y, sin(m_Rotation.y) * radius * -2 };
 		break;
 	}
-
-	//if (m_State == 1) { //攻撃状態
-	//	m_Rotation.y += PI / 20;
-	//	swing_time++;
-	//	if (swing_time > 18) {
-	//		m_State = 0;
-	//		swing_time = 0;
-	//	}
-	//}
-
-	//if (m_State == 0) { //通常状態
-	//	m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
-	//	m_baseRotation = m_Rotation;
-	//}
-
-	//if (m_State == 2) { //ガード状態
-	//	m_Rotation = { PI / 2, rotation.y ,PI / 2 };
-	//	m_baseRotation = m_Rotation;
-	//}
 
 	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//角度をラジアンに変換
 	m_Position = { position.x + sin(rotation.y) * radius, position.y,  position.z + cos(rotation.y) * radius };
