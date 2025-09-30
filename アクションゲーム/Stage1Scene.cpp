@@ -205,7 +205,7 @@ void Stage1Scene::Uninit()
 		Game::GetInstance()->DeleteObject(o);
 	}
 	m_MySceneObjects.clear();
-	Game::GetInstance()->DeleteAllObject();
+	//Game::GetInstance()->DeleteAllObject();
 }
 
 // ƒXƒRƒA‚ğæ“¾

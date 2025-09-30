@@ -19,6 +19,9 @@ private:
 	bool GuardFg = false;//ガード状態のフラグ
 	bool RollFg = false;//回避状態のフラグ
 	float speed = 1.0f;//自分のスピード
+
+	int justguardframe = 30;//ジャストガードの有効フレーム
+
 	void Move();
 	void Attack();
 	void Charge();

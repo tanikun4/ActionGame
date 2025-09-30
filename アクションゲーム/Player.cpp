@@ -56,6 +56,9 @@ void Player::DebugPlayerStatus() {//プレイヤーの状態を操作する
 	if (ImGui::Button("Reset radius"))
 		radius = 4;
 
+	if (ImGui::Button("HP MAX"))
+		hp = 9;
+
 	static int select = 0;
 	ImGui::RadioButton("Invisible", &select, 1);
 	ImGui::RadioButton("Not_Invisible", &select, 0);
@@ -403,6 +406,7 @@ void Player::Counter()
 	RollFg = false;
 	GuardFg = false;
 	inviFg = true;
+	m_pole->GuardEnd();
 	SetColor({ 0, 0, 1, 0.5 });
 	Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 }
@@ -418,19 +422,19 @@ void Player::OnHit(Boss* bo) {
 	return;
 }
 
-void Player::OnHit(Pole* po) {
+void Player::OnHit(Pole* po) {//近接攻撃に当たった時の処理
 	const int damage = 2;
 	if (po->GetPl()) return;
-	if (RollFg && rollcount < 5 && po->GetSwingTime() < 5) { Counter(); return; };
-	if (GuardFg && guardcount < 60 && po->GetSwingTime() < 10) { Counter(); return; }
+	if (RollFg && rollcount < 5 && po->GetSwingTime() < 5) { Counter(); return; };//回避の初めに攻撃を受けたらカウンター
+	if (GuardFg && guardcount < justguardframe && po->GetSwingTime() < 10) { Counter(); return; }//ガードの初めに攻撃を受けたらカウンター
 	Damage(damage);
 
 }
 
-void Player::OnHit(Bullet* bu) {
+void Player::OnHit(Bullet* bu) {//弾に当たった時の処理
 	if (bu->GetPl()) return;
-	if (GuardFg && guardcount < 60) { Counter(); return; }
-	const int damage = 1;
+	if (GuardFg && guardcount < justguardframe) { Counter(); return; }//ガードの初めに攻撃を受けたらカウンター
+	const int damage = 2;
 	Damage(damage);
 }
 
