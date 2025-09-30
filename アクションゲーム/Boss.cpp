@@ -22,7 +22,7 @@ Boss::~Boss()
 
 }
 
-void Boss::DebugBossStatus() {
+void Boss::DebugBossStatus() {//ƒ{ƒX‚Ìó‘Ô‚ğ‘€ì‚·‚é
 	ImGui::Begin("BossStatus");
 	static int select = 0;
 	ImGui::RadioButton("Not_Update", &select, 1);

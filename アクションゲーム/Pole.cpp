@@ -130,7 +130,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	case 2:
 		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
 		m_baseRotation = m_Rotation;
-		m_offset = { cos(m_Rotation.y) * 8 , offset_debug.y, sin(m_Rotation.y) * -8 };
+		m_offset = { cos(m_Rotation.y) * offset_debug.x/*radius * 2*/ , offset_debug.y, sin(m_Rotation.y) * offset_debug.z/*radius * -2*/ };
 		break;
 	}
 

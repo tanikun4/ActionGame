@@ -258,6 +258,7 @@ void Bullet::OnHit(Pole* po) {
 		flamecount = 0;
 		m_Velocity_f *= 2;
 		pl = true;
+		Sound::GetInstance()->Play(SOUND_SE_PLAYERSHOOTBACK);
 	}
 }
 

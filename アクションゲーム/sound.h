@@ -13,7 +13,10 @@ typedef enum
 	SOUND_SE_ARROWSHOT,				
 	SOUND_SE_ARROWHIT,
 	SOUND_SE_PLAYERHIT,
-	
+	SOUND_SE_PLAYERGUARD,
+	SOUND_SE_PLAYERJUSTGUARD,
+	SOUND_SE_PLAYERSHOOTBACK,
+
 	SOUND_LABEL_MAX,
 } SOUND_LABEL;
 
@@ -36,8 +39,9 @@ private:
 		{"assets/Sound/SE/arrowshot.wav", false},
 		{"assets/Sound/SE/arrowhit.wav", false},
 		{"assets/Sound/SE/hit.wav", false},		
-
-		
+		{"assets/Sound/SE/guard.wav", false},
+		{"assets/Sound/SE/justguard.wav", false},
+		{"assets/Sound/SE/shootback.wav", false},
 
 	};
 

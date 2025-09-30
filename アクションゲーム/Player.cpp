@@ -30,11 +30,17 @@ Player::~Player()
 
 }
 
-void Player::DebugWeaponOffset() {
+void Player::DebugWeaponOffset() {//武器の位置を操作する
 	ImGui::Begin("WeaponOffset");
 
 	static Vector3 weapon_offset{};
 	ImGui::SliderFloat3("WeaponOffset", &weapon_offset.x, -10.0f, 10.0f);
+
+	if (ImGui::Button("Reset OffSet"))
+			weapon_offset = Vector3(0, 0, 0);
+
+	if (ImGui::Button("Set Int"))
+			weapon_offset = Vector3((int)weapon_offset.x, (int)weapon_offset.y, (int)weapon_offset.z);
 
 	if(m_pole)
 		m_pole->SetOffsetDebug(weapon_offset);
@@ -42,8 +48,13 @@ void Player::DebugWeaponOffset() {
 	ImGui::End();
 }
 
-void Player::DebugPlayerStatus() {
+void Player::DebugPlayerStatus() {//プレイヤーの状態を操作する
 	ImGui::Begin("PlayerStatus");
+
+	ImGui::SliderFloat("radius", &radius, 0.0f, 10.0f);
+
+	if (ImGui::Button("Reset radius"))
+		radius = 4;
 
 	static int select = 0;
 	ImGui::RadioButton("Invisible", &select, 1);
@@ -183,7 +194,7 @@ void Player::Update() {
 		m_Velocity = Vector3(0.0f, 0.0f, 0.0f);
 	}
 	GBUpdate();
-	m_pole->Update(m_Position, radius, m_Rotation,1.7f);
+	m_pole->Update(m_Position, radius, m_Rotation,1.7f );
 }
 
 
@@ -351,7 +362,10 @@ void Player::Damage(int atk) { //ダメージ時の処理
 		flamecount = 0;
 		inviFg = true;
 		SetColor(Vector4(1, 1, 0, 0.5));
-		Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
+		if(GuardFg)
+			Sound::GetInstance()->Play(SOUND_SE_PLAYERGUARD);
+		else
+			Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
 	}
 }
 
@@ -390,6 +404,7 @@ void Player::Counter()
 	GuardFg = false;
 	inviFg = true;
 	SetColor({ 0, 0, 1, 0.5 });
+	Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 }
 
 void Player::LookAt(Vector3 ta_pos) {
@@ -423,7 +438,7 @@ void Player::UpdateNormal() {
 	Move();
 	Attack();
 	Guard();
-	if (Input::GetKeyPress(VK_CONTROL)) {//テスト用
+	if (Input::GetKeyPress(VK_CONTROL)) {//テスト用、カウンター攻撃を発動する
 		Counter();
 	}
 }
