@@ -30,6 +30,11 @@ protected:
     std::vector<SUBSET> m_subsets;
     std::vector<std::unique_ptr<Texture>> m_Textures; // テクスチャ
 
+
+    DirectX::SimpleMath::Vector3 m_offset{};//位置の補正値
+
+    DirectX::SimpleMath::Vector3 offset_debug{};//位置の補正値(デバッグ用)
+
     int atk = 1;//攻撃力
     int flamecount = 0;//タイマー変数
 	bool pl = false;//プレイヤーの武器かどうか
@@ -53,5 +58,9 @@ public:
     bool GetPl() {
         return pl;
 	}
+
+	void SetOffset(DirectX::SimpleMath::Vector3 off) { m_offset = off; }
+
+	void SetOffsetDebug(DirectX::SimpleMath::Vector3 off) { offset_debug = off; }
 };
 

@@ -6,7 +6,6 @@
 #include "Game.h"
 #include "Ground.h"
 #include "Collision.h"
-#include "DebugUI.h"
 
 
 using namespace std;
@@ -131,7 +130,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	case 2:
 		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
 		m_baseRotation = m_Rotation;
-		m_offset = { sin(m_Rotation.y) * offset_debug.x ,0, cos(m_Rotation.y) * offset_debug.z };
+		m_offset = { cos(m_Rotation.y) * 8 , offset_debug.y, sin(m_Rotation.y) * -8 };
 		break;
 	}
 

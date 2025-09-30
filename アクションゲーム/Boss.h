@@ -15,6 +15,8 @@ private:
 	bool inviFg = false;
 	int invicount = 0;
 	const float rotate_speed = 0.01;
+
+	bool notUpdate = false;//更新を止めるかどうか
 	DirectX::SimpleMath::Vector3 m_destrot;//回転の目標点
 	DirectX::XMFLOAT2 stagesize;
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
@@ -28,6 +30,8 @@ private:
 	void Attack();
 	void SetArrow();
 	bool HitCheck();//攻撃に当たったかを返す
+
+	void DebugBossStatus();
 public:
 	Boss(Camera * cam); // コンストラクタ
 	~Boss();//デストラクタ

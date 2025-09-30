@@ -12,6 +12,7 @@
 #include "sound.h"
 #include "Boss.h"
 #include "WeaponManager.h"
+#include "DebugUI.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -29,6 +30,33 @@ Player::~Player()
 
 }
 
+void Player::DebugWeaponOffset() {
+	ImGui::Begin("WeaponOffset");
+
+	static Vector3 weapon_offset{};
+	ImGui::SliderFloat3("WeaponOffset", &weapon_offset.x, -10.0f, 10.0f);
+
+	if(m_pole)
+		m_pole->SetOffsetDebug(weapon_offset);
+
+	ImGui::End();
+}
+
+void Player::DebugPlayerStatus() {
+	ImGui::Begin("PlayerStatus");
+
+	static int select = 0;
+	ImGui::RadioButton("Invisible", &select, 1);
+	ImGui::RadioButton("Not_Invisible", &select, 0);
+	
+	if(select == 1) {
+		inviFg = true;
+		SetColor({ 0, 0, 1, 0.5f });
+	}
+
+	ImGui::End();
+}
+
 void Player::Init() {
 	GBInit(u8"assets/model/gorufu/GolfBall_v2.fbx");
 	m_Position = Vector3(0.0f, 50.0f, 0.0f);
@@ -36,6 +64,15 @@ void Player::Init() {
 	m_pole->SetPl(true);
 	hp = 9;
 	flamecount = 30;
+
+	// ƒfƒoƒbƒOŠÖ”‚Ì“o˜^
+	DebugUI::RedistDebugFunction([this]() {
+		DebugWeaponOffset();
+		});
+
+	DebugUI::RedistDebugFunction([this]() {
+		DebugPlayerStatus();
+		});
 }
 
 void Player::Update() {
@@ -332,13 +369,11 @@ void Player::Guard() {
 		guardcount = 0;
 		speed = 0.1;
 		m_pole->GuardStart();
-		SetColor({ 1, 0.8, 0.8, 1 });
 	}
 	if (Input::GetKeyRelease(VK_I)) {
 		GuardFg = false;
 		speed = 1;
 		m_pole->GuardEnd();
-		SetColor({ 1, 1, 1, 1 });
 	}
 	return;
 }

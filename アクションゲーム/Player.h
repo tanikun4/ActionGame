@@ -36,6 +36,9 @@ private:
 	void UpdateDodge();
 	void UpdateCounter();
 
+	void DebugWeaponOffset();
+	void DebugPlayerStatus();
+
 	DirectX::SimpleMath::Vector3 m_ta_pos;//�ڋ߂̖ڕW�_
 	Bullet* m_arrow;
 	Pole* m_pole;

@@ -6,6 +6,7 @@
 #include "Collision.h"
 #include "Arrow.h"
 #include "Bullet.h"
+#include "DebugUI.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -21,6 +22,20 @@ Boss::~Boss()
 
 }
 
+void Boss::DebugBossStatus() {
+	ImGui::Begin("BossStatus");
+	static int select = 0;
+	ImGui::RadioButton("Not_Update", &select, 1);
+	ImGui::RadioButton("Update", &select, 0);
+	if (select == 1) {
+		notUpdate = true;
+	}
+	else {
+		notUpdate = false;
+	}
+	ImGui::End();
+}
+
 void Boss::Init() {
 	GBInit(u8"assets/model/gorufu/GolfBall_v2_red.fbx");
 	m_Position = Vector3(0.0f, 50.0f, -50.0f);
@@ -31,10 +46,11 @@ void Boss::Init() {
 	m_Scale.y = 2;
 	m_Scale.z = 2;
 	radius *= 2;
+	DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
 
 void Boss::Update() {
-	if (hp <= 0) { return; };
+	if (hp <= 0 || notUpdate) { return; };
 	switch (m_State) {
 	case 0:
 		LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
