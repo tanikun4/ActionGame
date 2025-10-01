@@ -21,5 +21,7 @@ public:
     static void Render();
 
     static void DisposeUI();
+
+    static void Clear();
 };
 

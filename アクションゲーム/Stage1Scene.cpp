@@ -203,9 +203,9 @@ void Stage1Scene::Uninit()
 	// このシーンのオブジェクトを削除する
 	for (auto& o : m_MySceneObjects) {
 		Game::GetInstance()->DeleteObject(o);
+		o = nullptr;
 	}
 	m_MySceneObjects.clear();
-	//Game::GetInstance()->DeleteAllObject();
 }
 
 // スコアを取得

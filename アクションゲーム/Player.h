@@ -52,6 +52,7 @@ public:
 
 	void Init();
 	void Update();
+	void Uninit();
 	int GetHP();
 	Pole* GetWeapon();
 	void CheckHitPole(Pole* pole);

@@ -491,3 +491,7 @@ void Player::UpdateCounter() {
 	}
 }
 
+void Player::Uninit() {
+	m_pole = nullptr;
+}
+

@@ -78,14 +78,15 @@ void Game::Update()
 		o->Update();
 	}
 
+	if (Input::GetKeyTrigger(VK_O)) { // デバッグモード切り替え
+		m_Instance->debugmode = !m_Instance->debugmode;
+	}
+
 	if(m_Instance->change_request && Fade::GetInstance()->FinishedFadeOut()) {// フェードアウト完了後にシーンを変更する
 		m_Instance->change_request = false;
 		m_Instance->ChangeScene(m_Instance->m_NextScene);
 	}
 
-	if (Input::GetKeyTrigger(VK_O)) { // デバッグモード切り替え
-		m_Instance->debugmode = !m_Instance->debugmode;
-	}
 }
 
 // 描画
@@ -163,6 +164,7 @@ void Game::ChangeScene(SceneName sName)
 		}
 		delete m_Instance->m_Scene;
 		m_Instance->m_Scene = nullptr;
+		DebugUI::Clear();
 	}
 
 	switch (sName)

@@ -56,3 +56,8 @@ void DebugUI::Render() {
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
+
+void DebugUI::Clear() // 登録されたデバッグ関数をクリア
+{
+    m_debugfunction.clear();
+}
