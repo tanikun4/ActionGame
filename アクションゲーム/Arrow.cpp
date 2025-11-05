@@ -240,7 +240,6 @@ void Arrow::EPose(float rotation_y, float radius, Vector3 position) {
 }
 
 void Arrow::EShot(float rotation_y, float radius, Vector3 position) {
-	hitbox.SetPos({ 9999, 9999, 9999 });
 	id = 2;
 	m_State = 2;
 	m_Position = { position.x + sin(rotation_y) * radius * m_Scale.z, position.y,  position.z + cos(rotation_y) * radius * m_Scale.z };

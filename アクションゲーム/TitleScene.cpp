@@ -30,7 +30,7 @@ void TitleScene::Init()
 void TitleScene::Update()
 {
 	// スペースキーを押してステージ1へ
-	if (Input::GetKeyTrigger(VK_SPACE))
+	if (Input::GetKeyTrigger(VK_RETURN))
 	{
 		Game::GetInstance()->ChangeSceneFadeOut(STAGE1);
 	}

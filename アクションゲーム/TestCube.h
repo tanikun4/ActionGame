@@ -4,11 +4,17 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Object.h"
+#include "ICollider.h"
+
+class GolfBall;
 
 //-----------------------------------------------------------------------------
 //TestCubeクラス
 //-----------------------------------------------------------------------------
-class TestCube {
+class TestCube : 
+	public Object , public ICollider
+{ 
 protected:
 	DirectX::SimpleMath::Vector3 m_NormaDirect[3] = { {1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f} };   // 方向ベクトル
 	float m_fLength[3] = {10.0f,10.0f,10.0f};             // 各軸方向の長さ
@@ -28,9 +34,12 @@ protected:
 	DirectX::SimpleMath::Vector3 m_length = {20.0f,20.0f,20.0f};
 
 public:
+	TestCube(Camera* cam); // コンストラクタ
+	TestCube(); // コンストラクタ
+	~TestCube();//デストラクタ
 	DirectX::SimpleMath::Vector3 GetPos() const;
 	DirectX::SimpleMath::Vector3 GetDirect(int elem) const;   // 指定軸番号の方向ベクトルを取得
-	float GetLen(int elem) const;							// 指定軸方向の長さを取得
+	float GetLen(int elem) const;							  // 指定軸方向の長さを取得
 
 	void SetPos(DirectX::SimpleMath::Vector3 v);
 	void SetRotation(DirectX::SimpleMath::Vector3 v);
@@ -43,6 +52,13 @@ public:
 	void UpdateCube();
 	void Update();
 	void Uninit();
+
+	void HitObject(Object* ob) override {
+		ob->OnHit(this);
+	}
+	void OnHit(Object* ob) {};
+
+	Collision::ColliderVariant GetCollision();
 	//=======================================
 	//移動処理
 	//=======================================

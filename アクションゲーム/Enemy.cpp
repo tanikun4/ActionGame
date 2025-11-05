@@ -176,7 +176,7 @@ bool Enemy::GetLive() {
 }
 
 bool Enemy::HitCheck() {
-	vector<Pole*> pole = Game::GetInstance()->GetObjects<Pole>();
+	/*vector<Pole*> pole = Game::GetInstance()->GetObjects<Pole>();
 	Collision::Sphere balCollision = { m_Position, radius };
 	if (pole[0]->GetState() == 1) {
 		if (CheckHit(pole[0]->hitbox, balCollision)) {
@@ -197,7 +197,7 @@ bool Enemy::HitCheck() {
 				return true;
 			}
 		}
-	}
+	}*/
 	return false;
 }
 

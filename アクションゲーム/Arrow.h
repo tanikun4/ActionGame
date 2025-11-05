@@ -21,7 +21,6 @@ public:
 	Arrow(Camera* cam); // コンストラクタ
 	Arrow();
 	~Arrow(); // デストラクタ
-	TestCube hitbox;
 	void Init();
 	void Update();
 	void Draw();

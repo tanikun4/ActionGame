@@ -2,6 +2,23 @@
 
 using namespace DirectX::SimpleMath;
 
+// コンストラクタ
+TestCube::TestCube(Camera* cam) : Object(cam)
+{
+
+}
+
+TestCube::TestCube()
+{
+
+}
+
+// デストラクタ
+TestCube::~TestCube()
+{
+
+}
+
 void TestCube::Init() {
 	InitCube();
 }
@@ -288,4 +305,8 @@ float TestCube::GetLen(int elem) const {
 
 DirectX::SimpleMath::Vector3 TestCube::GetPos() const{
 	return m_Position;
+}
+
+Collision::ColliderVariant TestCube::GetCollision() {
+	return Collision::OBB{ m_Position, m_Rotation, Vector3(GetLen(0),GetLen(1),GetLen(2)) };
 }

@@ -85,6 +85,9 @@
     <Filter Include="ソース ファイル\system\imgui\backends">
       <UniqueIdentifier>{de1a32da-211d-4c27-b4df-7edacdc0b983}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Object\HitObject">
+      <UniqueIdentifier>{0d675cfa-cc91-4444-94d7-059597f96e09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -230,6 +233,12 @@
     </ClCompile>
     <ClCompile Include="DebugUI.cpp">
       <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="HitObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionHelper.h">
+      <Filter>ソース ファイル\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -409,6 +418,12 @@
     </ClInclude>
     <ClInclude Include="DebugUI.h">
       <Filter>ソース ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="HitObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionResult.h">
+      <Filter>ソース ファイル\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

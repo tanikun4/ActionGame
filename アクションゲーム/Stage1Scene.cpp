@@ -15,6 +15,7 @@
 #include "Skydome.h"
 #include "Fade.h"
 #include "imgui.h"
+#include "CollisionHelper.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -105,6 +106,9 @@ void Stage1Scene::Init()
 		weapons.end()           // ‘}“ü‚·‚é”ÍˆÍ‚ÌI—¹
 	);
 
+	TestCube* cube = Game::GetInstance()->AddObject<TestCube>();
+	cube->SetPosition(Vector3(200.0f, 1000.0f, 200.0f));
+	m_MySceneObjects.emplace_back(cube);
 
 	// UI(HP)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
@@ -225,12 +229,17 @@ void Stage1Scene::Collision() {
 
 			auto col_a = dynamic_cast<ICollider*>(a);
 			auto col_b = dynamic_cast<ICollider*>(b);
-			if (col_a && col_b) {
-				if (Collision::CheckHit(col_a->GetCollision(), col_b->GetCollision())) {
+			if (!(col_a && col_b)) { continue; }
+				/*if (Collision::CheckHit(col_a->GetCollision(), col_b->GetCollision())) {
 					a->HitObject(b);
 					b->HitObject(a);
-				}
+				}*/
+
+			if (Collision::CheckHit(*col_a, *col_b)) {
+				a->HitObject(b);
+				b->HitObject(a);
 			}
+			
 		}
 	}
 }

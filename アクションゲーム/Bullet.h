@@ -44,6 +44,6 @@ public:
 		ob->OnHit(this);
 	}
 	void OnHit(Object* ob) override {};
-	void OnHit(Pole* po) override ;
+	void OnHit(Pole* po) override;
 };
 

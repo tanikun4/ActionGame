@@ -333,6 +333,7 @@
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="CollisionHelper.h" />
     <ClCompile Include="DebugUI.cpp" />
     <ClCompile Include="dx11helper.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -343,6 +344,7 @@
     <ClCompile Include="GolfBall.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="GroundManager.cpp" />
+    <ClCompile Include="HitObject.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -383,6 +385,7 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="CollisionResult.h" />
     <ClInclude Include="DebugUI.h" />
     <ClInclude Include="dx11helper.h" />
     <ClInclude Include="Enemy.h" />
@@ -393,6 +396,7 @@
     <ClInclude Include="GolfBall.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="GroundManager.h" />
+    <ClInclude Include="HitObject.h" />
     <ClInclude Include="ICollider.h" />
     <ClInclude Include="IColliderBase.h" />
     <ClInclude Include="IDamage.h" />

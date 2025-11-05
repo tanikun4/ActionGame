@@ -33,10 +33,15 @@ public:
 	virtual void HitObject(Object* ob) { ob->OnHit(this); };//オブジェクトに当たった時、相手側のHit処理を実行
 	
 	virtual void OnHit(Object* ob) { return; }//オブジェクトに当たった時の処理を入れる
-	virtual void OnHit(class Player* player) {} // 派生用
-	virtual void OnHit(class Boss* boss) {}    // 派生用
-	virtual void OnHit(class Pole* pole) {}    // 派生用
-	virtual void OnHit(class Bullet* bullet) {}    // 派生用
+
+	// 派生用
+	virtual void OnHit(class Player* player) {} 
+	virtual void OnHit(class Boss* boss) {}    
+	virtual void OnHit(class Pole* pole) {}    
+	virtual void OnHit(class Bullet* bullet) {} 
+	virtual void OnHit(class GolfBall* ball) {} 
+	virtual void OnHit(class TestCube* cube) {};
+
 	virtual bool GetLive() { return m_live; }
 
 	//position セッター関数・ゲッター関数

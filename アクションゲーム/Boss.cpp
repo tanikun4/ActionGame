@@ -110,28 +110,28 @@ void Boss::Damage(int atk) {
 }
 
 bool Boss::HitCheck() {
-	vector<Pole*> pole = Game::GetInstance()->GetObjects<Pole>();
-	Collision::Sphere balCollision = { m_Position, radius };
-	if (pole[0]->GetState() == 1) {
-		if (CheckHit(pole[0]->hitbox, balCollision)) {
-			//vector<Player*> player = Game::GetInstance()->GetObjects<Player>();
-			//hitbackrotation = -1.0f * player[0]->GetForwardVector();
-			Damage(pole[0]->atk);
-			Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
-			return true;
-		}
-	}
-	vector<Arrow*> arrow = Game::GetInstance()->GetObjects<Arrow>();
-	for (auto& ar : arrow) {
-		if (ar->GetId() == 1) {
-			if (CheckHit(ar->hitbox, balCollision)) {
-				hitbackrotation = ar->GetForwardVector();
-				Damage(ar->GetAtk());
-				Sound::GetInstance()->Play(SOUND_SE_ARROWHIT);
-				return true;
-			}
-		}
-	}
+	//vector<Pole*> pole = Game::GetInstance()->GetObjects<Pole>();
+	//Collision::Sphere balCollision = { m_Position, radius };
+	//if (pole[0]->GetState() == 1) {
+	//	if (CheckHit(pole[0]->hitbox, balCollision)) {
+	//		//vector<Player*> player = Game::GetInstance()->GetObjects<Player>();
+	//		//hitbackrotation = -1.0f * player[0]->GetForwardVector();
+	//		Damage(pole[0]->atk);
+	//		Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
+	//		return true;
+	//	}
+	//}
+	//vector<Arrow*> arrow = Game::GetInstance()->GetObjects<Arrow>();
+	//for (auto& ar : arrow) {
+	//	if (ar->GetId() == 1) {
+	//		if (CheckHit(ar->hitbox, balCollision)) {
+	//			hitbackrotation = ar->GetForwardVector();
+	//			Damage(ar->GetAtk());
+	//			Sound::GetInstance()->Play(SOUND_SE_ARROWHIT);
+	//			return true;
+	//		}
+	//	}
+	//}
 	return false;
 }
 
@@ -240,20 +240,20 @@ void Boss::Move() {
 
 }
 
-bool Boss::HitCheckPole(Pole* pole) {
-	if (inviFg) { return false; }
-	if (pole->GetState() == 1) {
-		Collision::Sphere balCollision = { m_Position, radius };
-		if (CheckHit(pole->hitbox, balCollision)) {
-			//vector<Player*> player = Game::GetInstance()->GetObjects<Player>();
-			//hitbackrotation = -1.0f * player[0]->GetForwardVector();
-			Damage(pole->atk);
-			Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
-			return true;
-		}
-	}
-	return false;
-}
+//bool Boss::HitCheckPole(Pole* pole) {
+//	if (inviFg) { return false; }
+//	if (pole->GetState() == 1) {
+//		Collision::Sphere balCollision = { m_Position, radius };
+//		if (CheckHit(pole->hitbox, balCollision)) {
+//			//vector<Player*> player = Game::GetInstance()->GetObjects<Player>();
+//			//hitbackrotation = -1.0f * player[0]->GetForwardVector();
+//			Damage(pole->atk);
+//			Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 
 int Boss::GetHP() {
 	return hp;

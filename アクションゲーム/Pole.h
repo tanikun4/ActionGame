@@ -22,7 +22,7 @@ public:
 	Pole(); // コンストラクタ
 	~Pole(); // デストラクタ
 
-	TestCube hitbox;
+	//TestCube hitbox;
 	int atk = 3;//攻撃力
 	void Init();
 	void Update();

@@ -31,6 +31,7 @@ private:
 	void DodgeRoll();//回避
 	void Guard();//ガード
 	void Counter();//カウンター攻撃
+	void Jump();
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);//ターゲットの方向を見る
 
 	void UpdateNormal();
@@ -63,5 +64,6 @@ public:
 	void OnHit(Boss* boss);
 	void OnHit(Pole* pole);
 	void OnHit(Bullet* bu);
+	void OnHit(TestCube* cube);
 };
 

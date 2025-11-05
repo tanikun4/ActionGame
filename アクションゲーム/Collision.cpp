@@ -284,7 +284,6 @@ namespace Collision
 	//			return true;
 	//		}
 	//	}
-
 	//	return false;
 	//}
 
@@ -297,9 +296,10 @@ namespace Collision
 		Vector3 p;
 		return CheckHit(sphere1, sphere2, p);
 	}
+
 	bool CheckHit(const Sphere& sphere1, const Sphere& sphere2, DirectX::SimpleMath::Vector3& contact)
 	{
-		float len2 = (sphere1.center - sphere2.center).LengthSquared();
+		float len2 = (sphere1.center - sphere2.center).LengthSquared();// 中心間の距離の2乗
 		float r2 = (sphere1.radius + sphere2.radius) * (sphere1.radius + sphere2.radius);
 		if (r2 > len2) {
 
@@ -916,8 +916,57 @@ namespace Collision
 
 	}
 
+	// 球 vs 球
+	bool CheckHit(const Sphere& s1, const Sphere& s2, CollisionResult& out)
+	{
+		Vector3 diff = s1.center - s2.center;
+		float distSq = diff.LengthSquared();
+		float r = s1.radius + s2.radius;
+
+		if (distSq < r * r)
+		{
+			float dist = sqrtf(distSq);
+			out.hit = true;
+
+			if (dist > 0.0001f)
+				out.normal = diff / dist;
+			else
+
+				out.normal = Vector3(0, 1, 0);
+
+			out.penetration = r - dist;
+			out.contactPoint = s2.center + out.normal * s2.radius;
+			return true;
+		}
+		return false;
+	}
+
+	// 球 vs OBB
+	bool CheckHit(const Sphere& sphere, const OBB& obb, CollisionResult& out) 
+	{
+		float len = LenOBBtoPoint(obb, sphere.center);
+		if (len < sphere.radius)
+		{
+			out.hit = true;
+			// 法線方向を算出
+			Vector3 closestPoint = obb.GetClosestPoint(sphere.center);
+			out.normal = (sphere.center - closestPoint);
+			out.normal.Normalize();
+
+			out.penetration = sphere.radius - len;
+			out.contactPoint = closestPoint;
+			return true;
+		}
+		return false;
+	}
+
+	// 球 vs OBB(逆順処理)
+	bool CheckHit(const OBB& obb, const Sphere& sphere, CollisionResult& out)
+	{
+		return CheckHit(sphere, obb, out);
+	}
+
 	//点とOBBの最短距離を使えばポリゴンのやつも行けそう
 
-	bool CheckHit(const Base& a, const Base& b) { return false; } //ダミー
 }
 

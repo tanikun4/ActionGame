@@ -80,9 +80,9 @@ void Player::Init() {
 	flamecount = 30;
 
 	// デバッグ関数の登録
-	DebugUI::RedistDebugFunction([this]() {
+	/*DebugUI::RedistDebugFunction([this]() {
 		DebugWeaponOffset();
-		});
+		});*/
 
 	DebugUI::RedistDebugFunction([this]() {
 		DebugPlayerStatus();
@@ -90,77 +90,49 @@ void Player::Init() {
 }
 
 void Player::Update() {
+	if (hp <= 0) return; //死亡していたら更新しない
 	m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	//状態ごとの処理
 	switch (m_State) {//0:通常時、1:近接攻撃中,2:遠距離攻撃中,3:ダメージ中,4:回避状態5:カウンター状態
 	case 0:
 		UpdateNormal();
-		/*Move();
-		Attack();
-		Guard();
-		if (Input::GetKeyPress(VK_CONTROL)) {
-			Counter();
-		}*/
+
 		break;
 	case 1:
 		UpdateAttack();
-		/*if (m_pole->GetState() == 0) {
-			m_State = 0;
-		}*/
+
 		break;
 	case 2:
-		if (Input::GetKeyPress(VK_A))
-		{
-			m_Rotation.y -= 0.1;
+		//射撃は一旦コメントアウト
+		//if (Input::GetKeyPress(VK_A))
+		//{
+		//	m_Rotation.y -= 0.1;
 
-		}
-		else if (Input::GetKeyPress(VK_D))
-		{
-			m_Rotation.y += 0.1;
-		}
+		//}
+		//else if (Input::GetKeyPress(VK_D))
+		//{
+		//	m_Rotation.y += 0.1;
+		//}
 
-		Charge();
+		//Charge();
 
-		if (Input::GetKeyRelease(VK_SHIFT)) {
-			Shot();
-			m_State = 0;
-			Sound::GetInstance()->Play(SOUND_SE_ARROWSHOT);
-		}
+		//if (Input::GetKeyRelease(VK_SHIFT)) {
+		//	Shot();
+		//	m_State = 0;
+		//	Sound::GetInstance()->Play(SOUND_SE_ARROWSHOT);
+		//}
 		break;
 	case 3:
 		UpdateDamage();
-		/*m_Velocity_f = speed * -1;
-		Guard();
-		if (flamecount > 10) {
-			m_State = 0;
-		}*/
+
 		break;
 	case 4:
 		UpdateDodge();
-		/*m_Position += m_ForwardVector * speed * 2.0f;
-		rollcount++;
-		if (rollcount > 10) {
-			RollFg = false;
-			m_State = 0;
-			inviFg = false;
-			rollcount = 0;
-			SetColor({ 1, 1, 1, 1 });
-		}*/
+
 		break;
 	case 5:
 		UpdateCounter();
-		/*if (fabs(m_Position.x - m_ta_pos.x) < radius * 6 && fabs(m_Position.z - m_ta_pos.z) < radius * 6) {
-			m_pole->Swing();
-			m_State = 1;
-			inviFg = false;
-			SetColor({ 1, 1, 1, 1 });
-		}
-		else {
-			Boss* boss = Game::GetInstance()->GetObjects<Boss>()[0];
-			boss->GetPosition();
-			LookAt(boss->GetPosition());
-			m_Velocity_f = speed * 3;
-		}*/
+
 		break;
 	}
 
@@ -186,9 +158,6 @@ void Player::Update() {
 		}
 	}
 
-	else {
-		//CheckHit();
-	}
 	// 下に落ちた時はダメージを受けてリスポーン
 	if (m_Position.y < -100)
 	{
@@ -196,6 +165,7 @@ void Player::Update() {
 		m_Position = Vector3(0.0f, 50.0f, 0.0f);
 		m_Velocity = Vector3(0.0f, 0.0f, 0.0f);
 	}
+
 	GBUpdate();
 	m_pole->Update(m_Position, radius, m_Rotation,1.7f );
 }
@@ -274,6 +244,14 @@ void Player::Attack() {
 	}*/
 }
 
+void Player::Jump() {
+	if (Input::GetKeyTrigger(VK_SPACE)) { //ジャンプする
+		m_Velocity.y = 2.0f;
+		is_GROUND = false;
+		m_Position.y += 0.1f;
+	}
+}
+
 void Player::Charge() {
 	if (!m_arrow) {
 		vector<Bullet*> bullet = Game::GetInstance()->GetObjects<Bullet>();
@@ -321,7 +299,7 @@ void Player::CheckHit() { // 以前に使っていた当たり判定(もう使わない)
 		}
 	}*/
 
-	Boss* boss = Game::GetInstance()->GetObjects<Boss>()[0];
+	/*Boss* boss = Game::GetInstance()->GetObjects<Boss>()[0];
 	Collision::Sphere bossbalCollision = { boss->GetPosition(), boss->GetRadius() };
 	if (Collision::CheckHit(bossbalCollision, balCollision)) {
 		Damage(1);
@@ -338,21 +316,21 @@ void Player::CheckHit() { // 以前に使っていた当たり判定(もう使わない)
 				return;
 			}
 		}
-	}
+	}*/
 	return;
 }
 
-void Player::CheckHitPole(Pole* pole) { // 以前に使っていたPoleの当たり判定(もう使わない)
-	if (m_State == 3) { return; }
-	Collision::Sphere balCollision = { m_Position , radius };
-	if (pole->GetState() == 1) {
-		if (Collision::CheckHit(pole->hitbox, balCollision)) {
-			Damage(2);
-			Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
-		}
-	}
-	return;
-}
+//void Player::CheckHitPole(Pole* pole) { // 以前に使っていたPoleの当たり判定(もう使わない)
+//	if (m_State == 3) { return; }
+//	Collision::Sphere balCollision = { m_Position , radius };
+//	if (pole->GetState() == 1) {
+//		if (Collision::CheckHit(pole->hitbox, balCollision)) {
+//			Damage(2);
+//			Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
+//		}
+//	}
+//	return;
+//}
 
 void Player::Damage(int atk) { //ダメージ時の処理
 	if (inviFg == false) {
@@ -438,10 +416,41 @@ void Player::OnHit(Bullet* bu) {//弾に当たった時の処理
 	Damage(damage);
 }
 
+void Player::OnHit(TestCube* cube) {//箱に当たった時の処理
+	// 法線方向への速度成分
+	auto col = GetLastCollision();
+	float vn = m_Velocity.Dot(col.normal);
+
+	if (vn < 0.0f)
+	{
+		// 法線方向の速度を打ち消す（めり込み防止）
+		m_Velocity -= col.normal * vn;
+
+		// 床・壁・天井の区別
+		if (col.normal.y > 0.6f)
+		{
+			// 床（上向きの法線）
+			m_Velocity.y = 0.0f;
+		}
+		else if (col.normal.y < -0.6f)
+		{
+			// 天井（下向きの法線）
+			m_Velocity.y = 0.0f;
+		}
+		else
+		{
+			// 壁（ほぼ垂直）
+			m_Velocity.x = 0.0f;
+			m_Velocity.z = 0.0f;
+		}
+	}
+}
+
 void Player::UpdateNormal() {
 	Move();
 	Attack();
 	Guard();
+	Jump();
 	if (Input::GetKeyPress(VK_CONTROL)) {//テスト用、カウンター攻撃を発動する
 		Counter();
 	}

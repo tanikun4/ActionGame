@@ -80,7 +80,7 @@ void GolfBall::GBInit(std::u8string modelfilename)
 	}
 	m_Position = DirectX::SimpleMath::Vector3(0.0f, 50.0f, 0.0f);
 
-	//モデルによってスケールを調整
+	//初期スケールを設定
 	m_Scale.x = 1;
 	m_Scale.y = 1;
 	m_Scale.z = 1;
@@ -106,6 +106,7 @@ void GolfBall::GBUpdate()
 
 	// 現在の座標を計算
 	m_Position += m_ForwardVector * m_Velocity_f;
+
 
 	//m_Velocity.y -= gravity;
 
@@ -186,15 +187,24 @@ void GolfBall::GBUpdate()
 	//	}
 	//}
 
+
 	if (CheckGround())//もし当たっていれば
 	{
-		m_Velocity.y = 0;
+		is_GROUND = true;
 
 	}
 	else {
 		//もし当たっていなければ
+		is_GROUND = false;
+	}
+
+	if (is_GROUND) {
+		m_Velocity.y = 0;//Y方向の速度を0にする
+	}
+	else {
 		m_Velocity.y -= gravity;
 	}
+
 	//速度を座標に加算
 	m_Position += m_Velocity;
 
@@ -310,10 +320,10 @@ bool GolfBall::CheckGround() {
 	return false;
 }
 
+
 Collision::ColliderVariant GolfBall::GetCollision(){
 	return Collision::Sphere{ m_Position, radius };
 }
-
 void GolfBall::SetColor(const DirectX::SimpleMath::Vector4& color) {//色を変える
 	for (auto& m : m_Materiales) {
 		m.get()->SetDiffuse(color);
