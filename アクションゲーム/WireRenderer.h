@@ -48,7 +48,7 @@ struct WireRenderer {
     // -------------------------
     void InitOBB() {
         std::vector<VERTEX_3D> vertices(24);
-        float hx = 0.5f, hy = 0.5f, hz = 0.5f;
+        float hx = 1.0f, hy = 1.0f, hz = 1.0f;//Ç±Ç±Ç™0.5fÇæÇ¡ÇΩÇÃÇ≈ÅAï\é¶Ç™è¨Ç≥Ç≠Ç»Ç¡ÇƒÇ¢ÇΩ
 
         // è„ñ 
         vertices[0].position = { -hx, hy, hz };

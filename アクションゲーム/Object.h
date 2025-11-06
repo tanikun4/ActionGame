@@ -11,12 +11,23 @@ protected:
 	DirectX::SimpleMath::Vector3 m_Rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
 	DirectX::SimpleMath::Vector3 m_Scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 
+	DirectX::SimpleMath::Vector3 m_OldRotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);//前フレームの回転情報
+
+	//速度
+	DirectX::SimpleMath::Vector3 m_Velocity = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+	//加速度
+	DirectX::SimpleMath::Vector3 m_Acceralation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+	//前向きベクトル変数
+	DirectX::SimpleMath::Vector3 m_ForwardVector = { 0.0f,0.0f,1.0f };//初期ベクトル
+
 	// 描画の為の情報（見た目に関わる部分）
 	Shader m_Shader; // シェーダー
 
 	// カメラ
 	Camera* m_Camera;
 	bool m_live = true;
+
+	bool UpdateDirectionVectors();//行列更新関数
 
 public:
 

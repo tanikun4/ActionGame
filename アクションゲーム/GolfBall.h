@@ -10,11 +10,6 @@
 class GolfBall :public Object , public ICollider
 {
 protected:
-	//速度
-	DirectX::SimpleMath::Vector3 m_Velocity = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
-
-	//加速度
-	DirectX::SimpleMath::Vector3 m_Acceralation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
 
 	// 描画の為の情報（メッシュに関わる情報）
 	MeshRenderer m_MeshRenderer; // 頂点バッファ・インデックスバッファ・インデックス数
@@ -37,8 +32,6 @@ protected:
 	
 	const float gravity = 0.07f; //重力
 
-	//前向きベクトル変数
-	DirectX::SimpleMath::Vector3 m_ForwardVector = { 0.0f,0.0f,1.0f };//初期ベクトル
 
 public:
 

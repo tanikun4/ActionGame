@@ -91,16 +91,18 @@ void GolfBall::GBInit(std::u8string modelfilename)
 
 void GolfBall::GBUpdate()
 {
+	//行列の更新
+	UpdateDirectionVectors();
 
 	//現在の前向きベクトル
 	//まずは回転行列を作成する
-	Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
+	//Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
 
-	// 次に初期前向きベクトルを作る
-	Vector3 initForward = { 0.0f,0.0f,1.0f };
+	//// 次に初期前向きベクトルを作る
+	//Vector3 initForward = { 0.0f,0.0f,1.0f };
 
-	//初期前向きベクトル*回転行列
-	m_ForwardVector = Vector3::Transform(initForward, rotationMatrix);
+	////初期前向きベクトル*回転行列
+	//m_ForwardVector = Vector3::Transform(initForward, rotationMatrix);
 
 	oldPos = m_Position; //1フレーム前の位置を記憶しておく
 

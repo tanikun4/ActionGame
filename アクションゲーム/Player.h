@@ -18,6 +18,7 @@ private:
 	bool inviFg = false;//無敵状態のフラグ
 	bool GuardFg = false;//ガード状態のフラグ
 	bool RollFg = false;//回避状態のフラグ
+	bool is_JUMP = false;//ジャンプ状態のフラグ
 	float speed = 1.0f;//自分のスピード
 
 	int justguardframe = 30;//ジャストガードの有効フレーム

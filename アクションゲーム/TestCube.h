@@ -31,7 +31,7 @@ protected:
 	// 描画の為の情報（見た目に関わる部分）
 	Shader m_Shader; // シェーダー
 	Texture m_Texture; // テクスチャ
-	DirectX::SimpleMath::Vector3 m_length = {20.0f,20.0f,20.0f};
+	DirectX::SimpleMath::Vector3 m_length = {10.0f,10.0f,10.0f};
 
 public:
 	TestCube(Camera* cam); // コンストラクタ

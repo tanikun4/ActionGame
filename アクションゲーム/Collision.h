@@ -73,7 +73,7 @@ namespace Collision
 	struct OBB{
 		DirectX::SimpleMath::Vector3 m_pos{};              // 位置
 		DirectX::SimpleMath::Vector3 m_axis[3]{ {1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f} };			 // 方向ベクトル(軸)
-		DirectX::SimpleMath::Vector3 m_length{ 1.0f,1.0f,1.0f };          // 各軸方向の長さ(サイズ)
+		DirectX::SimpleMath::Vector3 m_length{ 1.0f,1.0f,1.0f };          // 各軸方向の長さ(サイズ)、一辺の長さではなく、半径を表す
 		DirectX::SimpleMath::Vector3 m_scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 		OBB(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& rotation, const DirectX::SimpleMath::Vector3& scale)
 			: m_pos(pos)

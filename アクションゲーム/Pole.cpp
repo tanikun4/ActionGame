@@ -139,7 +139,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	m_Position += m_offset;
 	obb = { {m_Position.x + sin(m_Rotation.y - PI / 2) * radius * offset, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * offset},
 		m_Rotation,
-		{ m_Scale.x ,m_Scale.y * 3 ,m_Scale.z} };
+		{ m_Scale.x,m_Scale.y * 1.5f ,m_Scale.z} };
 }
 
 //=======================================

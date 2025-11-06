@@ -166,6 +166,8 @@ void Player::Update() {
 		m_Velocity = Vector3(0.0f, 0.0f, 0.0f);
 	}
 
+	if (is_GROUND) is_JUMP = false; //地面に接地していたらジャンプ状態を解除
+
 	GBUpdate();
 	m_pole->Update(m_Position, radius, m_Rotation,1.7f );
 }
@@ -245,9 +247,10 @@ void Player::Attack() {
 }
 
 void Player::Jump() {
-	if (Input::GetKeyTrigger(VK_SPACE)) { //ジャンプする
+	if (Input::GetKeyTrigger(VK_SPACE) && !is_JUMP) { //ジャンプする
 		m_Velocity.y = 2.0f;
 		is_GROUND = false;
+		is_JUMP = true;
 		m_Position.y += 0.1f;
 	}
 }

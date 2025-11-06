@@ -39,3 +39,17 @@ Vector3 Object::GetScale() const
 {
 	return m_Scale;
 }
+
+bool Object::UpdateDirectionVectors() 
+{
+	// 回転が変わった場合のみ再計算
+	if (m_Rotation != m_OldRotation)
+	{
+		Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
+		Vector3 initForward = { 0.0f, 0.0f, 1.0f };
+		m_ForwardVector = Vector3::Transform(initForward, rotationMatrix);
+		m_OldRotation = m_Rotation;
+		return true; // 更新あり
+	}
+	return false;// 更新なし
+}

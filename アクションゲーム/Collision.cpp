@@ -895,7 +895,7 @@ namespace Collision
 
 	}
 
-	//OBBと点の長さ
+	//OBBと点の長さ(Test用)
 	float LenOBBtoPoint(const TestCube& obb, const Vector3& point) {
 		Vector3 Vec(0, 0, 0);   // 最終的に長さを求めるベクトル
 
