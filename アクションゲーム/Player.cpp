@@ -434,6 +434,8 @@ void Player::OnHit(TestCube* cube) {//” ‚É“–‚½‚Á‚½‚Ìˆ—
 		{
 			// °iãŒü‚«‚Ì–@üj
 			m_Velocity.y = 0.0f;
+			m_Position.y = m_oldPos.y;
+			is_GROUND = true;
 		}
 		else if (col.normal.y < -0.6f)
 		{
