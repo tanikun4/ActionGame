@@ -25,7 +25,7 @@ protected:
 	bool is_GROUND = false;//地面に接地しているかどうかのフラグ
 
 	float m_Velocity_f = 0.0; // 現在の移動速度（前進後退）
-	DirectX::SimpleMath::Vector3 oldPos;
+	DirectX::SimpleMath::Vector3 m_oldPos;
 	static constexpr float ForwardVelocity = 0.5f; // 前進速度定数
 	static constexpr float BackwardVelocity = 0.5f; // 後退速度定数
 	static constexpr float LeftRightVelocity = 0.5f; // 左右移動速度定数

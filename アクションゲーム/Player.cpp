@@ -445,6 +445,7 @@ void Player::OnHit(TestCube* cube) {//” ‚É“–‚½‚Á‚½‚Ìˆ—
 			// •Çi‚Ù‚Ú‚’¼j
 			m_Velocity.x = 0.0f;
 			m_Velocity.z = 0.0f;
+			m_Position = m_oldPos;
 		}
 	}
 }

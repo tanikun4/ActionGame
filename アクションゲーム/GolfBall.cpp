@@ -94,101 +94,14 @@ void GolfBall::GBUpdate()
 	//行列の更新
 	UpdateDirectionVectors();
 
-	//現在の前向きベクトル
-	//まずは回転行列を作成する
-	//Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
+	m_oldPos = m_Position; //1フレーム前の位置を記憶しておく
 
-	//// 次に初期前向きベクトルを作る
-	//Vector3 initForward = { 0.0f,0.0f,1.0f };
-
-	////初期前向きベクトル*回転行列
-	//m_ForwardVector = Vector3::Transform(initForward, rotationMatrix);
-
-	oldPos = m_Position; //1フレーム前の位置を記憶しておく
+	float keepY = m_Velocity.y;
 
 	// 現在の座標を計算
-	m_Position += m_ForwardVector * m_Velocity_f;
+	m_Velocity = m_ForwardVector * m_Velocity_f;
 
-
-	//m_Velocity.y -= gravity;
-
-
-	//Groundの頂点データを取得
-
-	//const auto& ground_polygon = GroundManager::GetInstance().GetGroundPolygons();
-
-	//vector<Ground*>grounds = Game::GetInstance()->GetObjects<Ground>();
-	//vector<VERTEX_3D> vertices;
-	//for (auto& g : grounds) //Groundオブジェクトの数ループ
-	//{
-	//	vector<VERTEX_3D> vecs = g->GetVertices();
-	//	for (auto& v : vecs) //頂点の数ループ
-	//	{
-	//		vertices.emplace_back(v);
-	//	}
-	//}
-	//float moveDistance = 9999; //移動距離
-	//Vector3 contactPoint; //接触点
-	//Vector3 normal;
-
-	////線分とポリゴンの当たり判定
-	//bool senbunFg = false;
-	//for (int i = 0; i < vertices.size(); i += 3) 
-	//{
-	//	//三角形ポリゴン
-	//	Collision::Polygon collisionPolygon =
-	//	{
-	//		vertices[i + 0].position,
-	//		vertices[i + 1].position,
-	//		vertices[i + 2].position,
-	//	};
-	//	Vector3 cp; //接触点
-	//	Collision::Segment collisionSegment = { oldPos, m_Position };
-	//	if (Collision::CheckHit(collisionSegment, collisionPolygon, cp))
-	//	{
-	//		float md = 0;
-	//		Vector3 np = Collision::moveSphere(collisionSegment, radius, collisionPolygon, cp, md);
-	//		if (moveDistance > md)
-	//		{
-	//			m_Velocity.y = 0;
-	//			moveDistance = md;
-	//			m_Position = np;
-	//			contactPoint = cp;
-	//			normal = Collision::GetNormal(collisionPolygon);
-	//		}
-	//		senbunFg = true;
-	//	}
-	//}
-
-	////球体とポリゴンの当たり判定
-	//if (!senbunFg)
-	//{
-	//	for (int i = 0; i < vertices.size(); i += 3) {
-	//		//三角形ポリゴン
-	//		Collision::Polygon collisionPolygon = {
-	//			vertices[i + 0].position,
-	//			vertices[i + 1].position,
-	//			vertices[i + 2].position,
-	//		};
-
-	//		Vector3 cp; //接触点
-	//		Collision::Sphere collisionSphere = { m_Position, radius };
-	//		if (Collision::CheckHit(collisionSphere, collisionPolygon, cp)) {
-	//			float md = 0;
-	//			Vector3 np = Collision::moveSphere(collisionSphere, collisionPolygon, cp);
-	//			md = (np - oldPos).Length();
-	//			if (moveDistance > md)
-	//			{
-	//				m_Velocity.y = 0;
-	//				moveDistance = md;
-	//				m_Position = np;
-	//				contactPoint = cp;
-	//				normal = Collision::GetNormal(collisionPolygon);
-	//			}
-	//		}
-	//	}
-	//}
-
+	m_Velocity.y = keepY;
 
 	if (CheckGround())//もし当たっていれば
 	{
@@ -282,7 +195,7 @@ bool GolfBall::CheckGround() {
 	for (const auto& poly : ground_polygon)
 	{
 		Vector3 cp; //接触点
-		Collision::Segment collisionSegment = { oldPos, m_Position };
+		Collision::Segment collisionSegment = { m_oldPos, m_Position };
 		if (Collision::CheckHit(collisionSegment, poly, cp))
 		{
 			float md = 0;
@@ -306,7 +219,7 @@ bool GolfBall::CheckGround() {
 		if (Collision::CheckHit(collisionSphere, poly, cp)) {
 			float md = 0;
 			Vector3 np = Collision::moveSphere(collisionSphere, poly, cp);
-			md = (np - oldPos).Length();
+			md = (np - m_oldPos).Length();
 			if (moveDistance > md)
 			{
 				
