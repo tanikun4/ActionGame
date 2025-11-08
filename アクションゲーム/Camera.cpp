@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include "Application.h"
 #include "Game.h"
-#include "Player.h"
+#include "Object.h"
 
 using namespace DirectX::SimpleMath;
 extern Input input;//externは、元の変数が宣言されているファイルをインクルードしなくても、コンパイル時に自動で読み取ってくれる
@@ -38,10 +38,9 @@ void Camera::Update()
 		m_CameraDirection.y += 0.02;
 	}
 
-	//ゴルフボールの位置を取得
-	vector<Player*> ppt = Game::GetInstance()->GetObjects<Player>();
-	if (ppt.size() > 0) {
-		Vector3 pPos = ppt[0]->GetPosition();
+	//ターゲットの位置を取得
+	if (m_TargetObject) {
+		Vector3 pPos = m_TargetObject->GetPosition();
 
 		//カメラの位置を更新
 		m_Position.x = pPos.x + sin(m_CameraDirection.x) * 50;

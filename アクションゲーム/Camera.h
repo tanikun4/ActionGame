@@ -3,6 +3,7 @@
 #include	<SimpleMath.h>
 #include	"input.h"
 
+class Object;//前方宣言
 //-----------------------------------------------------------------------------
 //Cameraクラス
 //-----------------------------------------------------------------------------
@@ -17,6 +18,7 @@ private:
 
 	DirectX::SimpleMath::Vector2 m_CameraDirection = DirectX::SimpleMath::Vector2(0,0); //カメラの方向
 	const float pi = DirectX::XM_PI;
+	Object* m_TargetObject; //注視点オブジェクト
 public:
 
 	void Init();
@@ -25,6 +27,7 @@ public:
 	void Uninit();
 
 	void SetCamera(int mode); // カメラを設定
+	void SetTarget(Object& ob) { m_TargetObject = &ob; } // 注視点を設定
 	// View行列を取得する関数
 	DirectX::SimpleMath::Matrix GetViewMatrix();
 	DirectX::SimpleMath::Vector2 GetCameraDirection() { return m_CameraDirection; }
