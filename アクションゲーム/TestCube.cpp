@@ -264,37 +264,6 @@ void TestCube::Uninit()
 
 }
 
-//=======================================
-//座標をセット
-//=======================================
-void TestCube::SetPos(Vector3 v) {
-	m_Position.x = v.x;
-	m_Position.y = v.y;
-	m_Position.z = v.z;
-	return;
-};
-
-
-//=======================================
-//角度をセット
-//=======================================
-void TestCube::SetRotation(Vector3 v) {
-	m_Rotation.x = v.x;
-	m_Rotation.y = v.y;
-	m_Rotation.z = v.z;
-	return;
-};
-
-//=======================================
-//大きさをセット
-//=======================================
-void TestCube::SetScale(Vector3 v) {
-	m_Scale.x = v.x;
-	m_Scale.y = v.y;
-	m_Scale.z = v.z;
-	return;
-};
-
 DirectX::SimpleMath::Vector3 TestCube::GetDirect(int elem) const{
 	return m_NormaDirect[elem];
 }

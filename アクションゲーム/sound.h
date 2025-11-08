@@ -73,6 +73,12 @@ public:
 	// 引数で指定したサウンドの再生を再開する
 	void Resume(SOUND_LABEL label);
 
+	// 引数で指定したサウンドの音量を変更する
+	void SetVolume(SOUND_LABEL label, float volume);
+
+	// 全体のマスターボリュームを変更する
+	void SetMasterVolume(float volume);
+	
 	static Sound* GetInstance();
 
 };

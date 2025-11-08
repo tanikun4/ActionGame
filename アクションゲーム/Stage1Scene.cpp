@@ -35,6 +35,8 @@ Stage1Scene::~Stage1Scene()
 // 初期化
 void Stage1Scene::Init()
 {
+	Sound::GetInstance()->SetMasterVolume(0.0f); // 全体音量を0%に
+
 	srand((unsigned)time(NULL));
 
 	// オブジェクトを作成
@@ -51,11 +53,11 @@ void Stage1Scene::Init()
 	groundsize = ground->GetGroundSize();
 
 	GroundManager::GetInstance().Init();
-	//m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Pole>()); // ポール
 
 	boss = Game::GetInstance()->AddObject<Boss>();
 	m_MySceneObjects.emplace_back(boss);
 
+	//通常敵の配置
 	//for (int i = 0; i < 9; i++) {
 	//	int r1 = rand();
 	//	int r2 = rand();
@@ -107,8 +109,8 @@ void Stage1Scene::Init()
 	);
 
 	TestCube* cube = Game::GetInstance()->AddObject<TestCube>();
-	cube->SetPosition(Vector3(200.0f, 1000.0f, 200.0f));
 	m_MySceneObjects.emplace_back(cube);
+	cube->SetPosition(Vector3(0.0f, 25.0f, 100.0f));
 
 	// UI(HP)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();

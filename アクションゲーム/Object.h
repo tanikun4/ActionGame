@@ -55,8 +55,10 @@ public:
 
 	virtual bool GetLive() { return m_live; }
 
-	//position セッター関数・ゲッター関数
+	//position、rotation、scale セッター関数・ゲッター関数
 	void SetPosition(const DirectX::SimpleMath::Vector3& pos);
+	void SetRotation(const DirectX::SimpleMath::Vector3& rot);
+	void SetScale(const DirectX::SimpleMath::Vector3& sca);
 	DirectX::SimpleMath::Vector3 GetPosition() const;
 	DirectX::SimpleMath::Vector3 GetRotation() const;
 	DirectX::SimpleMath::Vector3 GetScale() const;

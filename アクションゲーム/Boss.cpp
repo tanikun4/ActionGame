@@ -79,11 +79,7 @@ void Boss::Update() {
 		invicount = 0;
 		SetColor(Vector4(1, 0, 0, 1));
 	}
-	/*if (m_State != 2) {
-		HitCheck();
-	}*/
 	m_weapon->Update(m_Position, radius, m_Rotation,1.0f);
-	//m_weapon->SetPosition(m_Position);
 	GBUpdate();
 }
 
@@ -280,30 +276,30 @@ void Boss::OnHit(TestCube* cube) {//箱に当たった時の処理
 	auto col = GetLastCollision();
 	float vn = m_Velocity.Dot(col.normal);
 
-	if (vn < 0.0f)
-	{
-		// 法線方向の速度を打ち消す（めり込み防止）
-		m_Velocity -= col.normal * vn;
+	if (vn >= 0.0f) { return; }
+	
+	// 法線方向の速度を打ち消す（めり込み防止）
+	m_Velocity -= col.normal * vn;
 
-		// 床・壁・天井の区別
-		if (col.normal.y > 0.6f)
-		{
-			// 床（上向きの法線）
-			m_Velocity.y = 0.0f;
-			m_Position.y = m_oldPos.y;
-			is_GROUND = true;
-		}
-		else if (col.normal.y < -0.6f)
-		{
-			// 天井（下向きの法線）
-			m_Velocity.y = 0.0f;
-		}
-		else
-		{
-			// 壁（ほぼ垂直）
-			m_Velocity.x = 0.0f;
-			m_Velocity.z = 0.0f;
-			m_Position = m_oldPos;
-		}
+	// 床・壁・天井の区別
+	if (col.normal.y > 0.6f)
+	{
+		// 床（上向きの法線）
+		m_Velocity.y = 0.0f;
+		m_Position.y = m_oldPos.y;
+		is_GROUND = true;
 	}
+	else if (col.normal.y < -0.6f)
+	{
+		// 天井（下向きの法線）
+		m_Velocity.y = 0.0f;
+	}
+	else
+	{
+		// 壁（ほぼ垂直）
+		m_Velocity.x = 0.0f;
+		m_Velocity.z = 0.0f;
+		m_Position = m_oldPos;
+	}
+	
 }

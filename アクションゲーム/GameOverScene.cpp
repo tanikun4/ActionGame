@@ -29,8 +29,8 @@ void GameOverScene::Init()
 // 更新
 void GameOverScene::Update()
 {
-	// スペースキーを押してタイトルへ
-	if (Input::GetKeyTrigger(VK_SPACE))
+	// エンターキーを押してタイトルへ
+	if (Input::GetKeyTrigger(VK_RETURN))
 	{
 		Game::GetInstance()->ChangeScene(TITLE);
 	}

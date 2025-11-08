@@ -18,23 +18,50 @@ Object::~Object()
 
 }
 
-void Object::SetPosition(const Vector3& pos) 
-{
-	m_Position.x = pos.x;
-	m_Position.y = pos.y;
-	m_Position.z = pos.z;
-}
+//=======================================
+//座標をセット
+//=======================================
+void Object::SetPosition(const Vector3& pos) {
+	m_Position = pos;
+	return;
+};
 
+
+//=======================================
+//角度をセット
+//=======================================
+void Object::SetRotation(const Vector3& rot) {
+	m_Rotation = rot;
+	return;
+};
+
+//=======================================
+//大きさをセット
+//=======================================
+void Object::SetScale(const Vector3& sca) {
+	m_Scale = sca;
+	return;
+};
+
+//=======================================
+//座標をゲット
+//=======================================
 Vector3 Object::GetPosition() const
 {
 	return m_Position;
 }
 
+//=======================================
+//角度をゲット
+//=======================================
 Vector3 Object::GetRotation() const
 {
 	return m_Rotation;
 }
 
+//=======================================
+//大きさをゲット
+//=======================================
 Vector3 Object::GetScale() const
 {
 	return m_Scale;

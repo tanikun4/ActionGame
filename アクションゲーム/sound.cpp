@@ -235,6 +235,24 @@ HRESULT Sound::ReadChunkData(HANDLE hFile, void* buffer, DWORD buffersize, DWORD
 	return hr;
 }
 
+void Sound::SetVolume(SOUND_LABEL label, float volume)
+{
+	if (label < 0 || label >= SOUND_LABEL_MAX) return;
+	if (m_pSourceVoice[label])
+	{
+		// volume: 0.0f（無音）～ 1.0f（通常）～ 2.0f（2倍）
+		m_pSourceVoice[label]->SetVolume(volume);
+	}
+}
+
+void Sound::SetMasterVolume(float volume)
+{
+	if (m_pMasteringVoice)
+	{
+		m_pMasteringVoice->SetVolume(volume);
+	}
+}
+
 // インスタンスを取得
 Sound* Sound::GetInstance()
 {

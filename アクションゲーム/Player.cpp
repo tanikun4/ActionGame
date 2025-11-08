@@ -91,10 +91,10 @@ void Player::Init() {
 
 void Player::Update() {
 	if (hp <= 0) return; //死亡していたら更新しない
-	m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	//状態ごとの処理
 	switch (m_State) {//0:通常時、1:近接攻撃中,2:遠距離攻撃中,3:ダメージ中,4:回避状態5:カウンター状態
 	case 0:
+		m_Velocity_f = 0.0f;//移動速度をリセット
 		UpdateNormal();
 
 		break;
@@ -123,14 +123,17 @@ void Player::Update() {
 		//}
 		break;
 	case 3:
+		m_Velocity_f = 0.0f;//移動速度をリセット
 		UpdateDamage();
 
 		break;
 	case 4:
+		m_Velocity_f = 0.0f;//移動速度をリセット
 		UpdateDodge();
 
 		break;
 	case 5:
+		m_Velocity_f = 0.0f;//移動速度をリセット
 		UpdateCounter();
 
 		break;
@@ -246,12 +249,13 @@ void Player::Attack() {
 	}*/
 }
 
+//ジャンプ処理
 void Player::Jump() {
-	if (Input::GetKeyTrigger(VK_SPACE) && !is_JUMP) { //ジャンプする
+	if (Input::GetKeyTrigger(VK_L) && !is_JUMP) { //ジャンプする
 		m_Velocity.y = 2.0f;
 		is_GROUND = false;
 		is_JUMP = true;
-		m_Position.y += 0.1f;
+		m_Position.y += 0.1f;//設置判定を避けるために少し上に移動
 	}
 }
 
@@ -376,6 +380,7 @@ void Player::Guard() {
 	return;
 }
 
+//カウンター攻撃の処理
 void Player::Counter()
 {
 	Boss* boss = Game::GetInstance()->GetObjects<Boss>()[0];
@@ -398,12 +403,15 @@ void Player::LookAt(Vector3 ta_pos) {
 	m_ta_pos = ta_pos;
 }
 
+
+//ボスに当たった時の処理
 void Player::OnHit(Boss* bo) {
 	Damage(1);
 	return;
 }
 
-void Player::OnHit(Pole* po) {//近接攻撃に当たった時の処理
+//近接攻撃に当たった時の処理
+void Player::OnHit(Pole* po) {
 	const int damage = 2;
 	if (po->GetPl()) return;
 	if (RollFg && rollcount < 5 && po->GetSwingTime() < 5) { Counter(); return; };//回避の初めに攻撃を受けたらカウンター
@@ -412,14 +420,16 @@ void Player::OnHit(Pole* po) {//近接攻撃に当たった時の処理
 
 }
 
-void Player::OnHit(Bullet* bu) {//弾に当たった時の処理
-	if (bu->GetPl()) return;
+//弾に当たった時の処理
+void Player::OnHit(Bullet* bu) {
+	if (bu->GetPl()) return; // 自分の弾には当たらない
 	if (GuardFg && guardcount < justguardframe) { Counter(); return; }//ガードの初めに攻撃を受けたらカウンター
 	const int damage = 2;
 	Damage(damage);
 }
 
-void Player::OnHit(TestCube* cube) {//箱に当たった時の処理
+//箱に当たった時の処理
+void Player::OnHit(TestCube* cube) {
 	// 法線方向への速度成分
 	auto col = GetLastCollision();
 	float vn = m_Velocity.Dot(col.normal);
@@ -452,14 +462,15 @@ void Player::OnHit(TestCube* cube) {//箱に当たった時の処理
 	}
 }
 
+//通常時の更新処理
 void Player::UpdateNormal() {
 	Move();
 	Attack();
 	Guard();
 	Jump();
-	if (Input::GetKeyPress(VK_CONTROL)) {//テスト用、カウンター攻撃を発動する
-		Counter();
-	}
+	//if (Input::GetKeyPress(VK_CONTROL)) {//テスト用、カウンター攻撃を発動する
+	//	Counter();
+	//}
 }
 
 void Player::UpdateAttack() {
@@ -479,7 +490,7 @@ void Player::UpdateDamage() {
 
 void Player::UpdateDodge() {
 	//回避中
-	m_Position += m_ForwardVector * speed * 2.0f;
+	m_Velocity_f = speed * 2.0f;
 	rollcount++;
 	if (rollcount > 10) {
 		RollFg = false;
@@ -489,9 +500,11 @@ void Player::UpdateDodge() {
 		SetColor({ 1, 1, 1, 1 });
 	}
 }
-
+//カウンター攻撃中
 void Player::UpdateCounter() {
-	//カウンター攻撃中
+
+
+	//一定距離まで接近すると停止し、攻撃する
 	if (fabs(m_Position.x - m_ta_pos.x) < radius * 6 && fabs(m_Position.z - m_ta_pos.z) < radius * 6) {
 		m_pole->Swing();
 		m_State = 1;
