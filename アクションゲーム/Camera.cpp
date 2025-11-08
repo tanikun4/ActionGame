@@ -24,26 +24,38 @@ void Camera::Init()
 //=======================================
 void Camera::Update()
 {
-	//左右キーでカメラ回転
-	//if (Input::GetKeyPress(VK_LEFT)) {
-	//	m_CameraDirection += 0.02;
-	//}
-	//if (Input::GetKeyPress(VK_RIGHT)) {
-	//	m_CameraDirection -= 0.02;
-	//}
+	//上下左右キーでカメラ回転
+	if (Input::GetKeyPress(VK_LEFT)) {
+		m_CameraDirection.x += 0.02;
+	}
+	if (Input::GetKeyPress(VK_RIGHT)) {
+		m_CameraDirection.x -= 0.02;
+	}
+	if (Input::GetKeyPress(VK_UP)) {
+		m_CameraDirection.y -= 0.02;
+	}
+	if (Input::GetKeyPress(VK_DOWN)) {
+		m_CameraDirection.y += 0.02;
+	}
+
 	//ゴルフボールの位置を取得
 	vector<Player*> ppt = Game::GetInstance()->GetObjects<Player>();
 	if (ppt.size() > 0) {
 		Vector3 pPos = ppt[0]->GetPosition();
 
 		//カメラの位置を更新
-		m_Position.x = pPos.x + sin(m_CameraDirection) * 50;
-		m_Position.y = pPos.y + 40;
-		m_Position.z = pPos.z + cos(m_CameraDirection) * 50;
+		m_Position.x = pPos.x + sin(m_CameraDirection.x) * 50;
+		m_Position.y = pPos.y + 40 + sin(m_CameraDirection.y) * 40;
+		m_Position.z = pPos.z + cos(m_CameraDirection.x) * 50;
 
 		//カメラの注視点を更新
 		m_Target = pPos;
 	}
+
+	//カメラの角度制限
+	if (m_CameraDirection.x >= pi * 2 || m_CameraDirection.x <= -pi * 2) m_CameraDirection.x = 0.0f;
+	if (m_CameraDirection.y >= pi * 0.5f) m_CameraDirection.y = pi * 0.5f;
+	else if (m_CameraDirection.y <= -pi * 0.5f) m_CameraDirection.y = -pi * 0.5f;
 
 }
 

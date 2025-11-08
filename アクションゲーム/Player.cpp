@@ -99,6 +99,7 @@ void Player::Update() {
 
 		break;
 	case 1:
+		if (is_GROUND) m_Velocity_f = 0.0f;//接地していれば、移動速度をリセット
 		UpdateAttack();
 
 		break;
@@ -182,35 +183,39 @@ void Player::Move() {
 	if (Input::GetKeyPress(VK_W))
 	{
 		// 前進
-		if (Input::GetKeyPress(VK_A)) {
+		if (Input::GetKeyPress(VK_A)) {//前進左斜め
 			m_Rotation.y = 3 * PI / 4;
 		}
-		else if (Input::GetKeyPress(VK_D)) {
+		else if (Input::GetKeyPress(VK_D)) {//前進右斜め
 			m_Rotation.y = 5 * PI / 4;
 		}
 		else {
-			m_Rotation.y = PI;
+			m_Rotation.y = PI;//直進
+			
 		}
+		m_Rotation.y += m_Camera->GetCameraDirection().x;
 		m_Velocity_f = speed;
 	}
 	else if (Input::GetKeyPress(VK_S))
 	{
 		// 後退
-		if (Input::GetKeyPress(VK_A)) {
+		if (Input::GetKeyPress(VK_A)) {//後退左斜め
 			m_Rotation.y = PI / 4;
 		}
-		else if (Input::GetKeyPress(VK_D)) {
+		else if (Input::GetKeyPress(VK_D)) {//後退右斜め
 			m_Rotation.y = 7 * PI / 4;
 		}
 		else {
-			m_Rotation.y = 0.0f;
+			m_Rotation.y = 0.0f;//直進後退
 		}
+		m_Rotation.y += m_Camera->GetCameraDirection().x;
 		m_Velocity_f = speed;
 	}
 	else if (Input::GetKeyPress(VK_A))
 	{
 		//左移動
 		m_Rotation.y = PI / 2;
+		m_Rotation.y += m_Camera->GetCameraDirection().x;
 		m_Velocity_f = speed;
 
 	}
@@ -218,6 +223,7 @@ void Player::Move() {
 	{
 		//右移動
 		m_Rotation.y = 3 * PI / 2;
+		m_Rotation.y += m_Camera->GetCameraDirection().x;
 		m_Velocity_f = speed;
 
 	}
@@ -226,6 +232,7 @@ void Player::Move() {
 			DodgeRoll();
 		}
 	}
+
 }
 
 void Player::DodgeRoll() {

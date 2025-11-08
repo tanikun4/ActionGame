@@ -110,7 +110,7 @@ void Stage1Scene::Init()
 
 	TestCube* cube = Game::GetInstance()->AddObject<TestCube>();
 	m_MySceneObjects.emplace_back(cube);
-	cube->SetPosition(Vector3(0.0f, 25.0f, 100.0f));
+	cube->SetPosition(Vector3(0.0f, 0.0f, 5.0f));
 
 	// UI(HP)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();

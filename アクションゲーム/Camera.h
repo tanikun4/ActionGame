@@ -15,8 +15,8 @@ private:
 	DirectX::SimpleMath::Vector3	m_Target{};
 	DirectX::SimpleMath::Matrix		m_ViewMatrix{};
 
-	float m_CameraDirection = 0; //カメラの方向
-	float pi = DirectX::XM_PI;
+	DirectX::SimpleMath::Vector2 m_CameraDirection = DirectX::SimpleMath::Vector2(0,0); //カメラの方向
+	const float pi = DirectX::XM_PI;
 public:
 
 	void Init();
@@ -27,4 +27,5 @@ public:
 	void SetCamera(int mode); // カメラを設定
 	// View行列を取得する関数
 	DirectX::SimpleMath::Matrix GetViewMatrix();
+	DirectX::SimpleMath::Vector2 GetCameraDirection() { return m_CameraDirection; }
 };
