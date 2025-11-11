@@ -30,6 +30,7 @@ private:
 	Ground* ground;
 
 	void SetWall();
+	void DebugWallStatus();
 
 public:
 	Stage1Scene(); // コンストラクタ

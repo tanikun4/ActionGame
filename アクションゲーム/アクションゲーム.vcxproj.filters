@@ -85,8 +85,8 @@
     <Filter Include="ソース ファイル\system\imgui\backends">
       <UniqueIdentifier>{de1a32da-211d-4c27-b4df-7edacdc0b983}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Object\HitObject">
-      <UniqueIdentifier>{0d675cfa-cc91-4444-94d7-059597f96e09}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\system\Fade">
+      <UniqueIdentifier>{9f41cfba-fb99-478e-b2aa-509530a8baeb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -207,9 +207,6 @@
     <ClCompile Include="Skydome.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Fade.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>ソース ファイル\system\imgui</Filter>
     </ClCompile>
@@ -234,11 +231,11 @@
     <ClCompile Include="DebugUI.cpp">
       <Filter>ソース ファイル\system</Filter>
     </ClCompile>
-    <ClCompile Include="HitObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionHelper.h">
       <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp">
+      <Filter>ソース ファイル\system\Fade</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -389,9 +386,6 @@
     <ClInclude Include="Skydome.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Fade.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>ソース ファイル\system\imgui</Filter>
     </ClInclude>
@@ -419,11 +413,11 @@
     <ClInclude Include="DebugUI.h">
       <Filter>ソース ファイル\system</Filter>
     </ClInclude>
-    <ClInclude Include="HitObject.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionResult.h">
       <Filter>ソース ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Fade.h">
+      <Filter>ソース ファイル\system\Fade</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

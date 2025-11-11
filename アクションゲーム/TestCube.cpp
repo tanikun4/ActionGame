@@ -161,6 +161,8 @@ void TestCube::InitCube()
 	// 頂点バッファ生成
 	m_VertexBuffer.Create(vertices);
 
+	m_Vertices = vertices;//頂点データを保存
+
 	// インデックスバッファ生成
 	std::vector<unsigned int> indices;
 	indices.resize(36);
@@ -189,7 +191,7 @@ void TestCube::InitCube()
 	//m_Shader.Create("shader/litTextureVS.hlsl", "shader/litTexturePS.hlsl");//マテリアルを持つモデルの場合はこっち
 
 	// テクスチャロード
-	bool sts = m_Texture.Load("assets/texture/blue.png");
+	bool sts = m_Texture.Load("assets/texture/blue.png");//青色一色のテクスチャ
 	assert(sts == true);
 
 }
@@ -278,4 +280,11 @@ DirectX::SimpleMath::Vector3 TestCube::GetPos() const{
 
 Collision::ColliderVariant TestCube::GetCollision() {
 	return Collision::OBB{ m_Position, m_Rotation, Vector3(GetLen(0),GetLen(1),GetLen(2)) };
+}
+
+void TestCube::SetColor(const DirectX::SimpleMath::Vector4& color)
+{
+	for (auto& v : m_Vertices)
+		v.color = color;
+	m_VertexBuffer.Modify(m_Vertices);
 }

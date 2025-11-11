@@ -15,7 +15,7 @@ protected:
 	IndexBuffer m_IndexBuffer; // インデックスバッファ
 	VertexBuffer<VERTEX_3D> m_VertexBuffer; // 頂点バッファ
 
-	std::vector<VERTEX_3D> m_Vertices;
+	std::vector<VERTEX_3D> m_Vertices;//頂点データ
 
 	// 描画の為の情報（見た目に関わる部分）
 	Texture m_Texture; // テクスチャ

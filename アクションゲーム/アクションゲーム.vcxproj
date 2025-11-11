@@ -344,7 +344,6 @@
     <ClCompile Include="GolfBall.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="GroundManager.cpp" />
-    <ClCompile Include="HitObject.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -396,7 +395,6 @@
     <ClInclude Include="GolfBall.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="GroundManager.h" />
-    <ClInclude Include="HitObject.h" />
     <ClInclude Include="ICollider.h" />
     <ClInclude Include="IColliderBase.h" />
     <ClInclude Include="IDamage.h" />

@@ -23,6 +23,8 @@ protected:
 	IndexBuffer	 m_IndexBuffer; // インデックスバッファ
 	VertexBuffer<VERTEX_3D>	m_VertexBuffer; // 頂点バッファ
 
+	std::vector<VERTEX_3D> m_Vertices;//頂点データ
+
 	// 描画の為の情報（見た目に関わる部分）
 	Texture m_Texture; // テクスチャ
 	DirectX::SimpleMath::Vector3 m_length = {10.0f,10.0f,10.0f};
@@ -43,6 +45,9 @@ public:
 	void UpdateCube();
 	void Update();
 	void Uninit();
+
+	// 色を指定
+	void SetColor(const DirectX::SimpleMath::Vector4& color);
 
 	void HitObject(Object* ob) override {
 		ob->OnHit(this);
