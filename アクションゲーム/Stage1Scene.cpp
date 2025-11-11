@@ -97,7 +97,7 @@ void Stage1Scene::Init()
 
 	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); // 矢印
-		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects[m_MySceneObjects.size() - 1]); // 矢印
+		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects.back().get()); // 矢印
 		bullet->SetState(0); // 矢印を非表示
 	}
 
@@ -209,10 +209,10 @@ void Stage1Scene::Uninit()
 		o->Uninit();
 	}
 	// このシーンのオブジェクトを削除する
-	for (auto& o : m_MySceneObjects) {
-		Game::GetInstance()->DeleteObject(o);
-		o = nullptr;
-	}
+	//for (auto& o : m_MySceneObjects) {
+	//	Game::GetInstance()->DeleteObject(o);
+	//	o = nullptr;
+	//}
 	m_MySceneObjects.clear();
 }
 
@@ -298,7 +298,7 @@ void Stage1Scene::DebugWallStatus() {//壁の大きさや位置を操作する
 	if (ImGui::Button("Reset Status")) {
 		wall_size = Vector3(0, 0, 0);
 		wall_pos = Vector3(0, 0, 0);
-		wall_color = Vector4(1, 1, 1, 1);
+		wall_color = Vector4(1, 1, 1, 0.5f);
 	}
 
 	vector<TestCube*> cube = Game::GetInstance()->GetObjects<TestCube>();
@@ -316,8 +316,8 @@ void Stage1Scene::DebugWallStatus() {//壁の大きさや位置を操作する
 void Stage1Scene::Collision() {
 	for (size_t i = 0; i < m_MySceneObjects.size(); ++i) {
 		for (size_t j = i + 1; j < m_MySceneObjects.size(); ++j) {
-			auto a = m_MySceneObjects[i];
-			auto b = m_MySceneObjects[j];
+			auto a = m_MySceneObjects[i].get();
+			auto b = m_MySceneObjects[j].get();
 
 			if (!(a->GetLive() && b->GetLive())) { continue; };
 
