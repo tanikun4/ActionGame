@@ -35,9 +35,6 @@ public:
 	DirectX::SimpleMath::Vector3 GetDirect(int elem) const;   // 指定軸番号の方向ベクトルを取得
 	float GetLen(int elem) const;							  // 指定軸方向の長さを取得
 
-	void SetPos(DirectX::SimpleMath::Vector3 v);
-	void SetRotation(DirectX::SimpleMath::Vector3 v);
-	void SetScale(DirectX::SimpleMath::Vector3 v);
 	void SetMaxMinVertices();
 	void InitCube();
 	void Init();

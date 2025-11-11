@@ -180,59 +180,42 @@ void Player::Update() {
 
 void Player::Move() {
 	//キー入力による移動
-	if (Input::GetKeyPress(VK_W))
-	{
-		// 前進
-		if (Input::GetKeyPress(VK_A)) {//前進左斜め
-			m_Rotation.y = 3 * PI / 4;
-		}
-		else if (Input::GetKeyPress(VK_D)) {//前進右斜め
-			m_Rotation.y = 5 * PI / 4;
-		}
-		else {
-			m_Rotation.y = PI;//直進
-			
-		}
-		m_Rotation.y += m_Camera->GetCameraDirection().x;
+	float dir = SetMoveDirection();
+	//入力がある場合
+	if (dir >= 0.0f) {
+		m_Rotation.y = dir + m_Camera->GetCameraDirection().x;
 		m_Velocity_f = speed;
 	}
-	else if (Input::GetKeyPress(VK_S))
-	{
-		// 後退
-		if (Input::GetKeyPress(VK_A)) {//後退左斜め
-			m_Rotation.y = PI / 4;
-		}
-		else if (Input::GetKeyPress(VK_D)) {//後退右斜め
-			m_Rotation.y = 7 * PI / 4;
-		}
-		else {
-			m_Rotation.y = 0.0f;//直進後退
-		}
-		m_Rotation.y += m_Camera->GetCameraDirection().x;
-		m_Velocity_f = speed;
+	else {//入力が無ければ
+		m_Velocity_f = 0.0f;
 	}
-	else if (Input::GetKeyPress(VK_A))
-	{
-		//左移動
-		m_Rotation.y = PI / 2;
-		m_Rotation.y += m_Camera->GetCameraDirection().x;
-		m_Velocity_f = speed;
-
-	}
-	else if (Input::GetKeyPress(VK_D))
-	{
-		//右移動
-		m_Rotation.y = 3 * PI / 2;
-		m_Rotation.y += m_Camera->GetCameraDirection().x;
-		m_Velocity_f = speed;
-
-	}
+	//回避処理
 	if (Input::GetKeyTrigger(VK_J)) {
 		if (rollcount >= rollcooldown) {
 			DodgeRoll();
 		}
 	}
 
+}
+
+float Player::SetMoveDirection()
+{
+	bool w = Input::GetKeyPress(VK_W);
+	bool s = Input::GetKeyPress(VK_S);
+	bool a = Input::GetKeyPress(VK_A);
+	bool d = Input::GetKeyPress(VK_D);
+
+	if (w && a) return 3.0f * PI / 4.0f;//前左
+	if (w && d) return 5.0f * PI / 4.0f;//前右
+	if (s && a) return PI / 4.0f;//後ろ左
+	if (s && d) return 7.0f * PI / 4.0f;//後ろ右
+	if (w)      return PI; //前
+	if (s)      return 0.0f; //後ろ
+	if (a)      return PI / 2.0f; //左
+	if (d)      return 3.0f * PI / 2.0f;//右
+
+	// 入力がないとき
+	return -1.0f;
 }
 
 void Player::DodgeRoll() {

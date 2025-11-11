@@ -24,6 +24,7 @@ private:
 	int justguardframe = 30;//ジャストガードの有効フレーム
 
 	void Move();
+	float SetMoveDirection();
 	void Attack();
 	void Charge();
 	void Shot();

@@ -29,6 +29,8 @@ private:
 	Boss* boss;
 	Ground* ground;
 
+	void SetWall();
+
 public:
 	Stage1Scene(); // コンストラクタ
 	~Stage1Scene(); // デストラクタ

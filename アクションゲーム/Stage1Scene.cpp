@@ -108,9 +108,8 @@ void Stage1Scene::Init()
 		weapons.end()           // 挿入する範囲の終了
 	);
 
-	TestCube* cube = Game::GetInstance()->AddObject<TestCube>();
-	m_MySceneObjects.emplace_back(cube);
-	cube->SetPosition(Vector3(0.0f, 0.0f, 5.0f));
+	//壁の設置
+	SetWall();
 
 	// UI(HP)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
@@ -150,7 +149,6 @@ void Stage1Scene::Init()
 	pt6->SetScale(95.0f, 72.0f, 0.0f); // 大きさを指定
 	pt6->SetUV(1, 1, 10, 1); //UVを指定
 	m_MySceneObjects.emplace_back(pt6);
-
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 	Fade::GetInstance()->StartFadeIn();
@@ -219,6 +217,39 @@ int Stage1Scene::GetScore()
 {
 	// 現在打数から標準打数ｗｐ引いた数値をreturn
 	return (m_StrokeCount - m_Par);
+}
+
+void Stage1Scene::SetWall() {
+	// Ground のサイズ
+	float halfX = groundsize.x / 2.0f;
+	float halfZ = groundsize.y / 2.0f;
+
+	// Cube の厚み（Z方向とX方向で壁として使う分）
+	float thickness = 1.0f; // 例：10 units
+
+	// 上辺（+Z側）
+	TestCube* top = Game::GetInstance()->AddObject<TestCube>();
+	top->SetScale(Vector3(groundsize.x * 0.05f, 1.2f, thickness)); // X幅は地面いっぱい、Zは薄く
+	top->SetPosition(Vector3(-halfX * 0.1f, 12.0f, halfZ + halfZ * 0.1f)); // Yは高さ調整
+	m_MySceneObjects.emplace_back(top);
+
+	// 下辺（-Z側）
+	TestCube* bottom = Game::GetInstance()->AddObject<TestCube>();
+	bottom->SetScale(Vector3(groundsize.x * 0.05f, 1.2f, thickness));
+	bottom->SetPosition(Vector3(-halfX * 0.1f, 12.0f, -halfZ));
+	m_MySceneObjects.emplace_back(bottom);
+
+	// 右辺（+X側）
+	TestCube* right = Game::GetInstance()->AddObject<TestCube>();
+	right->SetScale(Vector3(thickness, 1.2f, groundsize.y * 0.05f));
+	right->SetPosition(Vector3(halfX, 12.0f, 0.0f));
+	m_MySceneObjects.emplace_back(right);
+
+	// 左辺（-X側）
+	TestCube* left = Game::GetInstance()->AddObject<TestCube>();
+	left->SetScale(Vector3(thickness, 1.2f, groundsize.y * 0.05f));
+	left->SetPosition(Vector3(-halfX - halfX * 0.15f, 12.0f, 0.0f));
+	m_MySceneObjects.emplace_back(left);
 }
 
 void Stage1Scene::Collision() {
