@@ -745,6 +745,7 @@ namespace Collision
 		return false;
 	}
 
+	// OBB同士の当たり判定
 	bool CheckHit(const OBB& obb1, const OBB& obb2){
 
 		//分離軸
@@ -799,7 +800,7 @@ namespace Collision
 				sts = CompareLengthOBB(
 					obb1,			// OBB-A
 					obb2,			// OBB-B
-					vecSeparate,	// 分離軸
+					crossseparate,	// 分離軸
 					vecDistance);	// 2つのオブジェクトを結ぶベクトル
 				if (sts == false) {
 					return false;

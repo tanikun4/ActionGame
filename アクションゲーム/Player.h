@@ -58,7 +58,6 @@ public:
 	void Uninit();
 	int GetHP();
 	Pole* GetWeapon();
-	void CheckHitPole(Pole* pole);
 	void HitObject(Object* ob) override {
 		ob->OnHit(this);
 	}
