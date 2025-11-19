@@ -115,11 +115,11 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 {
 
 	switch (m_State) {
-	case 0: //通常状態
+	case NORMAL: //通常状態
 		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
 		m_baseRotation = m_Rotation;
 		break;
-	case 1: //攻撃中
+	case ATTACK: //攻撃中
 		m_Rotation.y += PI / 20;
 		swing_time++;
 		if (swing_time > 18) {
@@ -127,10 +127,12 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 			swing_time = 0;
 		}
 		break;
-	case 2: //ガード中
+	case GUARD: //ガード中
 		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
 		m_baseRotation = m_Rotation;
 		m_offset = { cos(m_Rotation.y) * radius * 2 , offset_debug.y, sin(m_Rotation.y) * radius * -2 };
+		break;
+	case STANCE: //構え中
 		break;
 	}
 
@@ -195,6 +197,26 @@ void Pole::Swing() {
 		m_Rotation.y -= PI / 2;
 		m_State = 1;
 	}
+}
+
+//構え開始
+void Pole::StanceStart() {
+	m_State = STANCE;
+	m_baseRotation = m_Rotation;
+}
+
+//構え中の処理
+void Pole::StanceUpdate() {
+	m_Rotation.y -= (PI / 2) * 0.05f;
+	if( m_Rotation.y < m_baseRotation.y - (PI / 2)) {
+		m_Rotation.y = m_baseRotation.y - (PI / 2);
+	}
+	
+}
+
+void Pole::StanceEnd() {
+	m_State = NORMAL;
+	m_offset = { 0,0,0 };
 }
 
 int Pole::GetState() { return m_State; }
@@ -262,6 +284,7 @@ Collision::ColliderVariant Pole::GetCollision() {
 
 void Pole::GuardStart() {
 	m_State = 2;
+	m_baseRotation = m_Rotation;
 }
 
 void Pole::GuardEnd() {

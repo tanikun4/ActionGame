@@ -9,6 +9,12 @@
 class Pole :public Weapon
 {
 private:
+	enum STATE {
+		NORMAL = 0,
+		ATTACK,
+		GUARD,
+		STANCE
+	};
 
 	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
 
@@ -42,6 +48,10 @@ public:
 	void Swing();
 	void GuardStart();
 	void GuardEnd();
+
+	void StanceStart();
+	void StanceUpdate();
+	void StanceEnd();
 	void ChangeState(int state) {}; // ó‘Ô‚ğ•ÏX‚·‚é(Œ»İ–¢g—p)
 	int GetState();//ó‘Ô‚ğ•Ô‚·
 	Collision::ColliderVariant GetCollision();

@@ -52,7 +52,7 @@ void Boss::Init() {
 void Boss::Update() {
 	if (hp <= 0 || notUpdate) { return; };
 	switch (m_State) {
-	case 0:
+	case IDLE:
 		LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
 		Move();
 		if (flamecount > 360) {
@@ -63,7 +63,7 @@ void Boss::Update() {
 			ShotBullet();
 		}
 		break;
-	case 1:
+	case ATTACK:
 		Attack();
 		break;
 	}

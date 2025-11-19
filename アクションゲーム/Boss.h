@@ -9,6 +9,10 @@ class Boss :
     public GolfBall
 {
 private:
+	enum STATE {
+		IDLE = 0,
+		ATTACK
+	};
 	int hp = 10;
 	int flamecount = 0;
 	int m_State = 0;//ó‘Ô@1‚Ås“®’†
