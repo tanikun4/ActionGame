@@ -133,6 +133,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		m_offset = { cos(m_Rotation.y) * radius * 2 , offset_debug.y, sin(m_Rotation.y) * radius * -2 };
 		break;
 	case STANCE: //ç\Ç¶íÜ
+		StanceUpdate();
 		break;
 	}
 
@@ -193,9 +194,12 @@ void Pole::Uninit()
 }
 
 void Pole::Swing() {
-	if (m_State == 0) {
+	if (m_State == NORMAL) {
 		m_Rotation.y -= PI / 2;
-		m_State = 1;
+		m_State = ATTACK;
+	}
+	else if (m_State == STANCE) {
+		m_State = ATTACK;
 	}
 }
 
@@ -203,6 +207,7 @@ void Pole::Swing() {
 void Pole::StanceStart() {
 	m_State = STANCE;
 	m_baseRotation = m_Rotation;
+	m_stance_time = 0;
 }
 
 //ç\Ç¶íÜÇÃèàóù
@@ -211,7 +216,7 @@ void Pole::StanceUpdate() {
 	if( m_Rotation.y < m_baseRotation.y - (PI / 2)) {
 		m_Rotation.y = m_baseRotation.y - (PI / 2);
 	}
-	
+	++m_stance_time;
 }
 
 void Pole::StanceEnd() {

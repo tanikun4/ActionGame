@@ -31,7 +31,8 @@ private:
 
 	void LookAt(DirectX::SimpleMath::Vector3);
 	void Move();
-	void Attack();
+	void AttackUpdate();
+	void Stance();//\‚¦ó‘Ô‚É‚È‚é
 	void SetArrow();
 	bool HitCheck();//UŒ‚‚É“–‚½‚Á‚½‚©‚ğ•Ô‚·
 

@@ -9,20 +9,22 @@
 class Pole :public Weapon
 {
 private:
+
+	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
+
+	int m_State = 0; // 0:通常状態・1:攻撃中 2:ガード中 
+	int swing_time = 0; //スイング時間カウント
+	int m_stance_time = 0;//構え時間カウント
+
+	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
+public:
+
 	enum STATE {
 		NORMAL = 0,
 		ATTACK,
 		GUARD,
 		STANCE
 	};
-
-	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
-
-	int m_State = 0; // 0:通常状態・1:攻撃中 2:ガード中 
-	int swing_time = 0;
-
-	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
-public:
 
 	Pole(Camera* cam); // コンストラクタ
 	Pole(); // コンストラクタ
@@ -57,4 +59,5 @@ public:
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
 	int GetSwingTime() { return swing_time; }
+	int GetStanceTime() { return m_stance_time; }
 };

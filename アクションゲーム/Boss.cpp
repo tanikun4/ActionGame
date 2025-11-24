@@ -56,15 +56,16 @@ void Boss::Update() {
 		LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
 		Move();
 		if (flamecount > 360) {
-			m_State = 1;
+			m_State = ATTACK;
 			flamecount = 0;
+			m_Velocity_f = 0;
 		}
 		if (flamecount % 90 == 0 && flamecount != 0) {
 			ShotBullet();
 		}
 		break;
 	case ATTACK:
-		Attack();
+		AttackUpdate();
 		break;
 	}
 
@@ -161,9 +162,15 @@ void Boss::LookAt(Vector3 ta_pos) {
 	}
 }
 
-void Boss::Attack() {
-	m_weapon->Swing();
-	m_State = 0;
+void Boss::AttackUpdate() {
+	int weapon_state = m_weapon->GetState();
+	if (weapon_state == Pole::STATE::NORMAL) {
+		m_weapon->StanceStart();
+	}
+	else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
+		m_weapon->Swing();
+		m_State = IDLE;
+	}
 }
 
 void Boss::ShotBullet() {
