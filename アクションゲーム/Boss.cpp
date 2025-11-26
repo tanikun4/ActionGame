@@ -59,17 +59,17 @@ void Boss::Update() {
 			m_State = ATTACK;
 			flamecount = 0;
 			m_Velocity_f = 0;
+			attack_kind = 0;//rand() % KIND_MAX;
 		}
 		if (flamecount % 90 == 0 && flamecount != 0) {
 			ShotBullet();
 		}
+		++flamecount;
 		break;
 	case ATTACK:
 		AttackUpdate();
 		break;
 	}
-
-	++flamecount;
 
 
 	if (inviFg) {
@@ -163,18 +163,29 @@ void Boss::LookAt(Vector3 ta_pos) {
 }
 
 void Boss::AttackUpdate() {
+	LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
 	int weapon_state = m_weapon->GetState();
-	if (weapon_state == Pole::STATE::NORMAL) {
-		m_weapon->StanceStart();
-	}
-	else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
-		m_weapon->Swing();
-		m_State = IDLE;
+	switch (attack_kind) {
+	case SWING: 
+		if (weapon_state == Pole::STATE::NORMAL) {
+			m_weapon->StanceStart();
+		}
+		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
+			m_weapon->Swing();
+		}
+		else if (weapon_state == Pole::STATE::ATTACK && m_weapon->GetSwingTime() > 18) {
+			m_State = IDLE;
+			flamecount = 0;
+			m_weapon->SwingEnd();
+		}
+		break;
+	case SHOT:
+
+		break;
 	}
 }
 
 void Boss::ShotBullet() {
-	int r = rand();
 	int r1 = rand();
 	int r2 = rand();
 	Vector3 ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
@@ -196,7 +207,6 @@ void Boss::ShotBullet() {
 }
 
 void Boss::Move() {
-	int r = rand();
 	m_Velocity_f = ForwardVelocity / 2;
 	if (m_State == 0) {
 
@@ -242,21 +252,6 @@ void Boss::Move() {
 	//}
 
 }
-
-//bool Boss::HitCheckPole(Pole* pole) {
-//	if (inviFg) { return false; }
-//	if (pole->GetState() == 1) {
-//		Collision::Sphere balCollision = { m_Position, radius };
-//		if (CheckHit(pole->hitbox, balCollision)) {
-//			//vector<Player*> player = Game::GetInstance()->GetObjects<Player>();
-//			//hitbackrotation = -1.0f * player[0]->GetForwardVector();
-//			Damage(pole->atk);
-//			Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
-//			return true;
-//		}
-//	}
-//	return false;
-//}
 
 int Boss::GetHP() {
 	return hp;

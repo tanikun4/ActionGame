@@ -88,7 +88,7 @@ void Bullet::Update()
 		m_live = true;
 		m_Scale.x = power * 0.006 + 1;
 		m_Scale.y = power * 0.006 + 1;
-		m_Scale.z = power * 0.006 + 1; // í∑Ç≥ÇÇΩÇﬂéûä‘Ç…âûÇ∂ÇΩÇ‡ÇÃÇ…Ç∑ÇÈ
+		m_Scale.z = power * 0.006 + 1; // ëÂÇ´Ç≥ÇÇΩÇﬂéûä‘Ç…âûÇ∂ÇΩÇ‡ÇÃÇ…Ç∑ÇÈ
 
 	}
 	// î≠éÀèÛë‘Ç»ÇÁ
@@ -236,6 +236,16 @@ void Bullet::EShot(float rotation_y, float radius, Vector3 position) {
 	m_Position = { position.x + sin(rotation_y) * radius * m_Scale.z, position.y,  position.z + cos(rotation_y) * radius * m_Scale.z };
 	m_Velocity_f = power * 0.01;
 	atk = 1;
+}
+
+void Bullet::ChargeStart(BulletParams param) {
+	m_State = 1;
+
+}
+
+void Bullet::Charge(BulletParams param , float rotation_y, Vector3 position ,float radius ,bool _pl) {
+	m_State = 1;
+	m_Position = { position.x + sin(rotation_y) *  m_Scale.z, position.y,  position.z + cos(rotation_y) * radius * m_Scale.z };
 }
 
 void Bullet::LookAtShot(Vector3 position, Vector3 target, bool _pl) {

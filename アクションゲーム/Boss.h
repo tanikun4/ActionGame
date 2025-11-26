@@ -13,12 +13,19 @@ private:
 		IDLE = 0,
 		ATTACK
 	};
+
+	enum ATTACK_KIND {
+		SWING = 0,
+		SHOT,
+		KIND_MAX
+	};
 	int hp = 10;
 	int flamecount = 0;
 	int m_State = 0;//状態　1で行動中
 	bool inviFg = false;
 	int invicount = 0;
 	const float rotate_speed = 0.01;
+	int attack_kind = 0;//攻撃の種類
 
 	bool notUpdate = false;//更新を止めるかどうか
 	DirectX::SimpleMath::Vector3 m_destrot;//回転の目標点

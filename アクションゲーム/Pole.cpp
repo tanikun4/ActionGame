@@ -121,11 +121,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		break;
 	case ATTACK: //攻撃中
 		m_Rotation.y += PI / 20;
-		swing_time++;
-		if (swing_time > 18) {
-			m_State = 0;
-			swing_time = 0;
-		}
+		++m_swing_time;
 		break;
 	case GUARD: //ガード中
 		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
@@ -197,10 +193,17 @@ void Pole::Swing() {
 	if (m_State == NORMAL) {
 		m_Rotation.y -= PI / 2;
 		m_State = ATTACK;
+		m_swing_time = 0;
 	}
 	else if (m_State == STANCE) {
 		m_State = ATTACK;
+		m_swing_time = 0;
+		m_stance_time = 0;
 	}
+}
+
+void Pole::SwingEnd() {
+	m_State = NORMAL;
 }
 
 //構え開始
@@ -212,10 +215,12 @@ void Pole::StanceStart() {
 
 //構え中の処理
 void Pole::StanceUpdate() {
-	m_Rotation.y -= (PI / 2) * 0.05f;
-	if( m_Rotation.y < m_baseRotation.y - (PI / 2)) {
-		m_Rotation.y = m_baseRotation.y - (PI / 2);
+	if (m_stance_time < 20) {
+		m_Rotation.y -= (PI / 2) * 0.05f;
 	}
+	/*if( m_Rotation.y < m_baseRotation.y - (PI / 2)) {
+		m_Rotation.y = m_baseRotation.y - (PI / 2);
+	}*/
 	++m_stance_time;
 }
 

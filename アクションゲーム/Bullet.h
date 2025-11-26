@@ -1,5 +1,15 @@
 #pragma once
 #include "Weapon.h"
+struct BulletParams { //弾のパラメーター構造体
+	int chargeMax = 60;//溜め時間最大値
+	float powerMax = 180;//貯めの威力最大値
+	float radiusScale = 1;//弾の大きさ倍率
+	float powerRate = 1;//貯めの威力上昇率
+	int atkSmall = 1;//貯め無しの攻撃力
+	int atkMid = 2;//貯め中の攻撃力
+	int atkMax = 3;//貯め最大の攻撃力
+};
+
 class Bullet :
     public Weapon
 {
@@ -13,6 +23,7 @@ private:
 	Collision::Sphere sphere{ m_Position, m_Scale.x };
 
 	Texture m_texture;
+	BulletParams m_param;//自身のパラメーター
 public:
 	Bullet(Camera* cam); // コンストラクタ
 	Bullet();
@@ -26,6 +37,8 @@ public:
 	void EPose(float rotation_y, float radius, DirectX::SimpleMath::Vector3 position);//敵の弾発射前状態
 	void EShot(float rotation_y, float radius, DirectX::SimpleMath::Vector3 position);//敵の弾発射
 
+	void ChargeStart(BulletParams param);//溜め開始
+	void Charge(BulletParams param, float rotation_y, DirectX::SimpleMath::Vector3 position, float radius, bool _pl);//溜めの処理
 	void LookAtShot(DirectX::SimpleMath::Vector3 position, DirectX::SimpleMath::Vector3 target,bool _pl); // 注視点に向けて発射
 	// 状態の設定
 	void SetState(int s);
