@@ -173,7 +173,8 @@ void Player::Update() {
 	if (is_GROUND) is_JUMP = false; //地面に接地していたらジャンプ状態を解除
 
 	GBUpdate();
-	m_pole->Update(m_Position, radius, m_Rotation,1.7f );
+	if (m_pole)
+	 m_pole->Update(m_Position, radius, m_Rotation,1.7f );
 }
 
 
@@ -339,6 +340,7 @@ void Player::Damage(int atk) { //ダメージ時の処理
 		m_State = 3;
 		flamecount = 0;
 		inviFg = true;
+		m_pole->SwingEnd();//攻撃をキャンセルさせる
 		SetColor(Vector4(1, 1, 0, 0.5));
 		if(GuardFg)
 			Sound::GetInstance()->Play(SOUND_SE_PLAYERGUARD);
@@ -464,8 +466,9 @@ void Player::UpdateNormal() {
 }
 
 void Player::UpdateAttack() {
-	if (m_pole->GetState() == 0) {
+	if (m_pole->GetSwingTime() > 18) {
 		m_State = 0;
+		m_pole->SwingEnd();
 	}
 }
 

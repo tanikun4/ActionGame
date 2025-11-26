@@ -97,7 +97,7 @@ void Game::Draw()
 
 	// カメラ描画
 	m_Instance->m_Camera->Draw();
-
+	int a = 0;
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)
 	{
@@ -108,6 +108,7 @@ void Game::Draw()
 				m_Instance->m_WireRenderer->Draw(col->GetCollision());
 			}
 		}
+		a++;
 	}
 
 	Fade::GetInstance()->Draw();
@@ -164,8 +165,13 @@ void Game::ChangeScene(SceneName sName)
 		}
 		delete m_Instance->m_Scene;
 		m_Instance->m_Scene = nullptr;
+
+		//DeleteAllObject();
+
 		DebugUI::Clear();
 	}
+
+	m_Camera->Init();
 
 	switch (sName)
 	{

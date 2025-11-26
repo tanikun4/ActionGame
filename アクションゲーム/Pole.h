@@ -15,15 +15,17 @@ private:
 	int m_State = 0; // 0:通常状態・1:攻撃中 2:ガード中 
 	int m_swing_time = 0; //スイング時間カウント
 	int m_stance_time = 0;//構え時間カウント
+	bool atkFg = false;//攻撃判定があるかどうか
 
 	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
 public:
 
 	enum STATE {
 		NORMAL = 0,
-		ATTACK,
+		SWING,
 		GUARD,
-		STANCE
+		STANCE,
+		ATTACK
 	};
 
 	Pole(Camera* cam); // コンストラクタ
@@ -43,7 +45,7 @@ public:
 	void SetPosition(DirectX::SimpleMath::Vector3 pos);
 
 	void HitObject(Object* ob) override { //当たり判定を増やす場合、Objectに基底関数を追加すること。
-		if (m_State != 1) { return; };
+		if (!atkFg) { return; };//攻撃判定フラグが無ければ判定を行わない
 		ob->OnHit(this);
 	}
 	void OnHit(Object* ob) override {};
@@ -51,6 +53,9 @@ public:
 	void SwingEnd();
 	void GuardStart();
 	void GuardEnd();
+
+	void AttackStart();
+	void AttackEnd();
 
 	void StanceStart();
 	void StanceUpdate();
@@ -61,4 +66,5 @@ public:
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
 	int GetSwingTime() { return m_swing_time; }
 	int GetStanceTime() { return m_stance_time; }
+	bool GetAttack() { return atkFg; }
 };

@@ -17,6 +17,7 @@ private:
 	enum ATTACK_KIND {
 		SWING = 0,
 		SHOT,
+		ROTATESWING,
 		KIND_MAX
 	};
 	int hp = 10;

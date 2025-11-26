@@ -119,7 +119,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
 		m_baseRotation = m_Rotation;
 		break;
-	case ATTACK: //攻撃中
+	case SWING: //振り攻撃中
 		m_Rotation.y += PI / 20;
 		++m_swing_time;
 		break;
@@ -192,18 +192,32 @@ void Pole::Uninit()
 void Pole::Swing() {
 	if (m_State == NORMAL) {
 		m_Rotation.y -= PI / 2;
-		m_State = ATTACK;
+		m_State = SWING;
 		m_swing_time = 0;
+		atkFg = true;
 	}
 	else if (m_State == STANCE) {
-		m_State = ATTACK;
+		m_State = SWING;
 		m_swing_time = 0;
 		m_stance_time = 0;
+		atkFg = true;
 	}
 }
 
 void Pole::SwingEnd() {
 	m_State = NORMAL;
+	atkFg = false;
+}
+
+void Pole::AttackStart() { //攻撃状態になるだけの関数、回転切り等で使用
+	m_State = ATTACK;
+	m_swing_time = 0;
+	atkFg = true;
+}
+
+void Pole::AttackEnd() { //攻撃状態になるだけの関数、回転切り等で使用
+	m_State = NORMAL;
+	atkFg = false;
 }
 
 //構え開始

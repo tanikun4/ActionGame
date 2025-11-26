@@ -96,12 +96,12 @@ void Stage1Scene::Init()
 	player->SetState(0);
 
 	for (int i = 0; i < 3; i++) {
-		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); // 矢印
-		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects.back().get()); // 矢印
-		bullet->SetState(0); // 矢印を非表示
+		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //弾
+		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects.back()); //弾
+		bullet->SetState(0); // //弾を非表示
 	}
 
-	std::vector<Weapon*> weapons = Game::GetInstance()->GetObjects<Weapon>();
+	std::vector<Pole*> weapons = Game::GetInstance()->GetObjects<Pole>();
 	m_MySceneObjects.insert(
 		m_MySceneObjects.end(),    // 挿入位置
 		weapons.begin(),        // 挿入する範囲の開始
@@ -206,13 +206,13 @@ void Stage1Scene::Uninit()
 {
 
 	for (auto& o : m_MySceneObjects) {//ループ中にポインタを削除するとバグるので、終了処理のみを先に行う
-		o->Uninit();
+		if (o) o->Uninit();
 	}
 	// このシーンのオブジェクトを削除する
-	//for (auto& o : m_MySceneObjects) {
-	//	Game::GetInstance()->DeleteObject(o);
-	//	o = nullptr;
-	//}
+	for (auto& o : m_MySceneObjects) {
+		if(o) Game::GetInstance()->DeleteObject(o);
+		o = nullptr;
+	}
 	m_MySceneObjects.clear();
 }
 
@@ -316,8 +316,8 @@ void Stage1Scene::DebugWallStatus() {//壁の大きさや位置を操作する
 void Stage1Scene::Collision() {
 	for (size_t i = 0; i < m_MySceneObjects.size(); ++i) {
 		for (size_t j = i + 1; j < m_MySceneObjects.size(); ++j) {
-			auto a = m_MySceneObjects[i].get();
-			auto b = m_MySceneObjects[j].get();
+			auto a = m_MySceneObjects[i];
+			auto b = m_MySceneObjects[j];
 
 			if (!(a->GetLive() && b->GetLive())) { continue; };
 

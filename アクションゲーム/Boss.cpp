@@ -24,14 +24,18 @@ Boss::~Boss()
 
 void Boss::DebugBossStatus() {//ƒ{ƒX‚Ìó‘Ô‚ð‘€ì‚·‚é
 	ImGui::Begin("BossStatus");
-	static int select = 0;
-	ImGui::RadioButton("Not_Update", &select, 1);
-	ImGui::RadioButton("Update", &select, 0);
-	if (select == 1) {
-		notUpdate = true;
+	static bool update = true;
+	static bool death;
+	ImGui::Checkbox("Update", &update);
+	ImGui::Checkbox("BOSSDEATH", &death);
+	if (update) {
+		notUpdate = false;
 	}
 	else {
-		notUpdate = false;
+		notUpdate = true;
+	}
+	if(death){
+		hp = 0;
 	}
 	ImGui::End();
 }
@@ -80,7 +84,8 @@ void Boss::Update() {
 		invicount = 0;
 		SetColor(Vector4(1, 0, 0, 1));
 	}
-	m_weapon->Update(m_Position, radius, m_Rotation,1.0f);
+	if (m_weapon)
+	 m_weapon->Update(m_Position, radius, m_Rotation,1.0f);
 	GBUpdate();
 }
 
@@ -181,6 +186,22 @@ void Boss::AttackUpdate() {
 		break;
 	case SHOT:
 
+		break;
+
+	case ROTATESWING:
+		if (weapon_state == Pole::STATE::NORMAL) {
+			m_weapon->StanceStart();
+		}
+		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 90) {
+			m_weapon->Swing();
+		}
+		else if (weapon_state == Pole::STATE::ATTACK) {
+			m_Rotation.y += PI / 20;
+			Move();
+			m_State = IDLE;
+			flamecount = 0;
+			m_weapon->SwingEnd();
+		}
 		break;
 	}
 }
