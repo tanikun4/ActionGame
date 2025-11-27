@@ -97,7 +97,7 @@ void Bullet::Update()
 		//現在の前向きベクトル
 
 		//まずは回転行列を作成する
-		Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
+		Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(m_ForwardRotation.y, m_ForwardRotation.x, m_ForwardRotation.z);
 
 		// 次に初期前向きベクトルを作る
 		Vector3 initForward = { 0.0f,0.0f,1.0f };
@@ -255,7 +255,7 @@ void Bullet::LookAtShot(Vector3 position, Vector3 target, bool _pl) {
 	m_State = 2;
 	m_Position = position;
 	// atan2を使用して角度を求める
-	m_Rotation.y = atan2f((target.x - m_Position.x), (target.z - m_Position.z));
+	m_ForwardRotation.y = atan2f((target.x - m_Position.x), (target.z - m_Position.z));
 	m_Velocity_f = maxpower * 0.005;
 	atk = 1;
 }
@@ -264,7 +264,7 @@ void Bullet::OnHit(Pole* po) {
 	if (m_State != 2) return;
 	if (po->GetPl() && !pl) { //弾の打ち返し
 		atk = 5;
-		m_Rotation.y = po->GetBaseRotation().y - PI / 2;
+		m_ForwardRotation.y = po->GetBaseRotation().y - PI / 2;
 		flamecount = 0;
 		m_Velocity_f *= 2;
 		pl = true;

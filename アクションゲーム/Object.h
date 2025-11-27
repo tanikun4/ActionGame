@@ -13,6 +13,9 @@ protected:
 
 	DirectX::SimpleMath::Vector3 m_OldRotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);//前フレームの回転情報
 
+	DirectX::SimpleMath::Vector3 m_ForwardRotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);//前向きベクトルの回転情報(進行方向)
+	DirectX::SimpleMath::Vector3 m_OldForwardRotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);//前フレームの回転情報
+
 	//速度
 	DirectX::SimpleMath::Vector3 m_Velocity = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
 	//加速度
@@ -28,6 +31,7 @@ protected:
 	bool m_live = true;
 
 	bool UpdateDirectionVectors();//行列更新関数
+	bool UpdateForwardDirectionVectors();//行列更新関数(進行方向版)
 
 public:
 

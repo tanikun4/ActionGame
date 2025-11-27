@@ -131,6 +131,9 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	case STANCE: //構え中
 		StanceUpdate();
 		break;
+	case ATTACK: //攻撃中(回転攻撃など)
+		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
+		break;
 	}
 
 	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//角度をラジアンに変換
@@ -212,6 +215,7 @@ void Pole::SwingEnd() {
 void Pole::AttackStart() { //攻撃状態になるだけの関数、回転切り等で使用
 	m_State = ATTACK;
 	m_swing_time = 0;
+	m_Rotation = m_baseRotation;
 	atkFg = true;
 }
 

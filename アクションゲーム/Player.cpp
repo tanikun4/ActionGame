@@ -172,6 +172,7 @@ void Player::Update() {
 
 	if (is_GROUND) is_JUMP = false; //地面に接地していたらジャンプ状態を解除
 
+	m_Rotation = m_ForwardRotation;
 	GBUpdate();
 	if (m_pole)
 	 m_pole->Update(m_Position, radius, m_Rotation,1.7f );
@@ -184,7 +185,7 @@ void Player::Move() {
 	float dir = SetMoveDirection();
 	//入力がある場合
 	if (dir >= 0.0f) {
-		m_Rotation.y = dir + m_Camera->GetCameraDirection().x;
+		m_ForwardRotation.y = dir + m_Camera->GetCameraDirection().x;
 		m_Velocity_f = speed;
 	}
 	else {//入力が無ければ
@@ -391,7 +392,7 @@ void Player::Counter()
 
 void Player::LookAt(Vector3 ta_pos) {
 	// atan2を使用して角度を求める
-	m_Rotation.y = atan2f((ta_pos.x - m_Position.x), (ta_pos.z - m_Position.z));
+	m_ForwardRotation.y = atan2f((ta_pos.x - m_Position.x), (ta_pos.z - m_Position.z));
 	m_ta_pos = ta_pos;
 }
 

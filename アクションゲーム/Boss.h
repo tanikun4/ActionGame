@@ -15,9 +15,11 @@ private:
 	};
 
 	enum ATTACK_KIND {
+		NONE = -1, //UŒ‚‚È‚µ
 		SWING = 0,
 		SHOT,
 		ROTATESWING,
+
 		KIND_MAX
 	};
 	int hp = 10;
@@ -27,6 +29,7 @@ private:
 	int invicount = 0;
 	const float rotate_speed = 0.01;
 	int attack_kind = 0;//UŒ‚‚Ìí—Ş
+	int attack_time = 0;//UŒ‚ŠÔ
 
 	bool notUpdate = false;//XV‚ğ~‚ß‚é‚©‚Ç‚¤‚©
 	DirectX::SimpleMath::Vector3 m_destrot;//‰ñ“]‚Ì–Ú•W“_

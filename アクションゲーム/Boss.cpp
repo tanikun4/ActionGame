@@ -63,7 +63,7 @@ void Boss::Update() {
 			m_State = ATTACK;
 			flamecount = 0;
 			m_Velocity_f = 0;
-			attack_kind = 0;//rand() % KIND_MAX;
+			attack_kind = 2;//rand() % KIND_MAX;
 		}
 		if (flamecount % 90 == 0 && flamecount != 0) {
 			ShotBullet();
@@ -86,6 +86,10 @@ void Boss::Update() {
 	}
 	if (m_weapon)
 	 m_weapon->Update(m_Position, radius, m_Rotation,1.0f);
+
+	if(!(attack_kind == ROTATESWING))
+	 m_Rotation = m_ForwardRotation;
+
 	GBUpdate();
 }
 
@@ -143,7 +147,7 @@ void Boss::LookAt(Vector3 ta_pos) {
 	m_destrot.y = atan2f((ta_pos.x - m_Position.x), (ta_pos.z - m_Position.z));
 
 	// åªç›ÇÃå¸Ç´Ç∆ÇÃç∑ï™ÇåvéZÇ∑ÇÈ
-	float fDiffRotY = m_destrot.y - m_Rotation.y;
+	float fDiffRotY = m_destrot.y - m_ForwardRotation.y;
 
 	// ï‚ê≥ÅiÅ|ÇPÇWÇOÅ`ÇPÇWÇOÇÃîÕàÕÅj
 	if (fDiffRotY > PI)
@@ -156,14 +160,14 @@ void Boss::LookAt(Vector3 ta_pos) {
 	}
 
 	// âÒì]äpìxåvéZ
-	m_Rotation.y += fDiffRotY * rotate_speed * 2;
-	if (m_Rotation.y > PI)
+	m_ForwardRotation.y += fDiffRotY * rotate_speed * 2;
+	if (m_ForwardRotation.y > PI)
 	{
-		m_Rotation.y -= PI * 2.0f;
+		m_ForwardRotation.y -= PI * 2.0f;
 	}
-	if (m_Rotation.y < -PI)
+	if (m_ForwardRotation.y < -PI)
 	{
-		m_Rotation.y += PI * 2.0f;
+		m_ForwardRotation.y += PI * 2.0f;
 	}
 }
 
@@ -178,7 +182,7 @@ void Boss::AttackUpdate() {
 		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
 			m_weapon->Swing();
 		}
-		else if (weapon_state == Pole::STATE::ATTACK && m_weapon->GetSwingTime() > 18) {
+		else if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
 			m_State = IDLE;
 			flamecount = 0;
 			m_weapon->SwingEnd();
@@ -188,20 +192,27 @@ void Boss::AttackUpdate() {
 
 		break;
 
-	case ROTATESWING:
+	case ROTATESWING://âÒì]êÿÇË
 		if (weapon_state == Pole::STATE::NORMAL) {
 			m_weapon->StanceStart();
 		}
 		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 90) {
-			m_weapon->Swing();
+			m_weapon->AttackStart();
+			attack_time = 0;
 		}
 		else if (weapon_state == Pole::STATE::ATTACK) {
 			m_Rotation.y += PI / 20;
 			Move();
+			++attack_time;
+		}
+
+		if (attack_time > 600) {
+			m_weapon->AttackEnd();
 			m_State = IDLE;
 			flamecount = 0;
-			m_weapon->SwingEnd();
+			attack_kind = NONE;//çUåÇèIóπ
 		}
+
 		break;
 	}
 }

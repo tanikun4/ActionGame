@@ -92,7 +92,7 @@ void GolfBall::GBInit(std::u8string modelfilename)
 void GolfBall::GBUpdate()
 {
 	//行列の更新
-	UpdateDirectionVectors();
+	UpdateForwardDirectionVectors();
 
 	m_oldPos = m_Position; //1フレーム前の位置を記憶しておく
 
