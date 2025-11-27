@@ -93,17 +93,17 @@ void Player::Update() {
 	if (hp <= 0) return; //死亡していたら更新しない
 	//状態ごとの処理
 	switch (m_State) {//0:通常時、1:近接攻撃中,2:遠距離攻撃中,3:ダメージ中,4:回避状態5:カウンター状態
-	case 0:
+	case NORMAL:
 		m_Velocity_f = 0.0f;//移動速度をリセット
 		UpdateNormal();
 
 		break;
-	case 1:
+	case ATTACK:
 		if (is_GROUND) m_Velocity_f = 0.0f;//接地していれば、移動速度をリセット
 		UpdateAttack();
 
 		break;
-	case 2:
+	case SHOT:
 		//射撃は一旦コメントアウト
 		//if (Input::GetKeyPress(VK_A))
 		//{
@@ -123,24 +123,24 @@ void Player::Update() {
 		//	Sound::GetInstance()->Play(SOUND_SE_ARROWSHOT);
 		//}
 		break;
-	case 3:
+	case DAMAGE:
 		m_Velocity_f = 0.0f;//移動速度をリセット
 		UpdateDamage();
 
 		break;
-	case 4:
+	case DODGE:
 		m_Velocity_f = 0.0f;//移動速度をリセット
 		UpdateDodge();
 
 		break;
-	case 5:
+	case COUNTER:
 		m_Velocity_f = 0.0f;//移動速度をリセット
 		UpdateCounter();
 
 		break;
 	}
 
-	if (m_State != 4) {
+	if (m_State != DODGE) {
 		if (rollcount < rollcooldown) {
 			++rollcount;
 		}
@@ -221,7 +221,7 @@ float Player::SetMoveDirection()
 }
 
 void Player::DodgeRoll() {
-	m_State = 4;
+	m_State = DODGE;
 	rollcount = 0;
 	inviFg = true;
 	RollFg = true;
@@ -231,7 +231,7 @@ void Player::DodgeRoll() {
 void Player::Attack() {
 	if (Input::GetKeyTrigger(VK_K) && !GuardFg) { //ガード状態でなければ攻撃する
 		m_pole->Swing();
-		m_State = 1;
+		m_State = ATTACK;
 		Sound::GetInstance()->Play(SOUND_SE_SWING);
 	}
 	/*if (Input::GetKeyTrigger(VK_SHIFT)) {
@@ -338,7 +338,7 @@ void Player::Damage(int atk) { //ダメージ時の処理
 				atk = atk / 2;
 		}
 		hp -= atk;
-		m_State = 3;
+		m_State = DAMAGE;
 		flamecount = 0;
 		inviFg = true;
 		m_pole->SwingEnd();//攻撃をキャンセルさせる
@@ -358,6 +358,7 @@ Pole* Player::GetWeapon() {
 	return m_pole;
 }
 
+//ガード状態の切り替え処理
 void Player::Guard() {
 	if (Input::GetKeyTrigger(VK_I)) {
 		GuardFg = true;
@@ -380,7 +381,7 @@ void Player::Counter()
 	boss->GetPosition();
 	LookAt(boss->GetPosition());
 	rollcount = 0;
-	m_State = 5;
+	m_State = COUNTER;
 	speed = 1.0f;
 	RollFg = false;
 	GuardFg = false;
@@ -390,6 +391,7 @@ void Player::Counter()
 	Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 }
 
+//指定の座標に向く
 void Player::LookAt(Vector3 ta_pos) {
 	// atan2を使用して角度を求める
 	m_ForwardRotation.y = atan2f((ta_pos.x - m_Position.x), (ta_pos.z - m_Position.z));
@@ -468,7 +470,7 @@ void Player::UpdateNormal() {
 
 void Player::UpdateAttack() {
 	if (m_pole->GetSwingTime() > 18) {
-		m_State = 0;
+		m_State = NORMAL;
 		m_pole->SwingEnd();
 	}
 }
@@ -478,7 +480,7 @@ void Player::UpdateDamage() {
 	m_Velocity_f = speed * -1;
 	Guard();
 	if (flamecount > 10) {
-		m_State = 0;
+		m_State = NORMAL;
 	}
 }
 
@@ -488,7 +490,7 @@ void Player::UpdateDodge() {
 	rollcount++;
 	if (rollcount > 10) {
 		RollFg = false;
-		m_State = 0;
+		m_State = NORMAL;
 		inviFg = false;
 		rollcount = 0;
 		SetColor({ 1, 1, 1, 1 });
@@ -501,7 +503,7 @@ void Player::UpdateCounter() {
 	//一定距離まで接近すると停止し、攻撃する
 	if (fabs(m_Position.x - m_ta_pos.x) < radius * 6 && fabs(m_Position.z - m_ta_pos.z) < radius * 6) {
 		m_pole->Swing();
-		m_State = 1;
+		m_State = ATTACK;
 		inviFg = false;
 		SetColor({ 1, 1, 1, 1 });
 	}

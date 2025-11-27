@@ -56,7 +56,7 @@ void Boss::Init() {
 void Boss::Update() {
 	if (hp <= 0 || notUpdate) { return; };
 	switch (m_State) {
-	case IDLE:
+	case NORMAL:
 		LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
 		Move();
 		if (flamecount > 360) {
@@ -183,7 +183,7 @@ void Boss::AttackUpdate() {
 			m_weapon->Swing();
 		}
 		else if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
-			m_State = IDLE;
+			m_State = NORMAL;
 			flamecount = 0;
 			m_weapon->SwingEnd();
 		}
@@ -208,7 +208,7 @@ void Boss::AttackUpdate() {
 
 		if (attack_time > 600) {
 			m_weapon->AttackEnd();
-			m_State = IDLE;
+			m_State = NORMAL;
 			flamecount = 0;
 			attack_kind = NONE;//UŒ‚I—¹
 		}

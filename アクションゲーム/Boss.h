@@ -10,7 +10,7 @@ class Boss :
 {
 private:
 	enum STATE {
-		IDLE = 0,
+		NORMAL = 0,
 		ATTACK
 	};
 

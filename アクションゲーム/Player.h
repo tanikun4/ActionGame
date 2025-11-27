@@ -9,6 +9,14 @@ class Player :
     public GolfBall
 {
 private:
+	enum STATE {
+		NORMAL = 0,
+		ATTACK,
+		SHOT,
+		DAMAGE,
+		DODGE,
+		COUNTER
+	};
 	int hp = 9;
 	int flamecount = 0;
 	int invicount = 0;//–³“GŽžŠÔ‚ÌƒJƒEƒ“ƒg
