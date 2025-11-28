@@ -356,6 +356,7 @@
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerImpl.cpp" />
     <ClCompile Include="Pole.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResultScene.cpp" />
@@ -414,6 +415,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="PlayerImpl.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="WireRenderer.h" />
     <ClInclude Include="Object.h" />

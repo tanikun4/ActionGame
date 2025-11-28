@@ -237,6 +237,9 @@
     <ClCompile Include="Fade.cpp">
       <Filter>ソース ファイル\system\Fade</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerImpl.cpp">
+      <Filter>ソース ファイル\Object\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
@@ -418,6 +421,9 @@
     </ClInclude>
     <ClInclude Include="Fade.h">
       <Filter>ソース ファイル\system\Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerImpl.h">
+      <Filter>ソース ファイル\Object\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

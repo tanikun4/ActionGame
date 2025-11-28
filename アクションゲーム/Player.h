@@ -1,78 +1,38 @@
 #pragma once
+#include <memory>
 #include "GolfBall.h"
-class Arrow;
+
+class Camera;
 class Pole;
 class Boss;
 class Bullet;
+class TestCube;
+class PlayerImpl;
 
-class Player :
-    public GolfBall
+class Player : public GolfBall
 {
-private:
-	enum STATE {
-		NORMAL = 0,
-		ATTACK,
-		SHOT,
-		DAMAGE,
-		DODGE,
-		COUNTER
-	};
-	int hp = 9;
-	int flamecount = 0;
-	int invicount = 0;//無敵時間のカウント
-	int rollcooldown = 30;//回避のクールタイム
-	int rollcount = 0;//回避関連のカウント
-	int guardcount = 0;//ガード時間のカウント
-	bool inviFg = false;//無敵状態のフラグ
-	bool GuardFg = false;//ガード状態のフラグ
-	bool RollFg = false;//回避状態のフラグ
-	bool is_JUMP = false;//ジャンプ状態のフラグ
-	float speed = 1.0f;//自分のスピード
-
-	int justguardframe = 30;//ジャストガードの有効フレーム
-
-	void Move();
-	float SetMoveDirection();
-	void Attack();
-	void Charge();
-	void Shot();
-	void CheckHit();
-	void Damage(int atk);
-	void DodgeRoll();//回避
-	void Guard();//ガード
-	void Counter();//カウンター攻撃
-	void Jump();
-	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);//ターゲットの方向を見る
-
-	void UpdateNormal();
-	void UpdateAttack();
-	void UpdateDamage();
-	void UpdateDodge();
-	void UpdateCounter();
-
-	void DebugWeaponOffset();
-	void DebugPlayerStatus();
-
-	DirectX::SimpleMath::Vector3 m_ta_pos;//接近の目標点
-	Bullet* m_arrow;
-	Pole* m_pole;
-
 public:
-	Player(Camera* cam); // コンストラクタ
-	~Player();//デストラクタ
+    Player(Camera* cam);
+    ~Player();
 
-	void Init();
-	void Update();
-	void Uninit();
-	int GetHP();
-	Pole* GetWeapon();
-	void HitObject(Object* ob) override {
-		ob->OnHit(this);
-	}
-	void OnHit(Object* ob) override {};
-	void OnHit(Boss* boss);
-	void OnHit(Pole* pole);
-	void OnHit(Bullet* bu);
-	void OnHit(TestCube* cube);
+    void Init() override;
+    void Update() override;
+    void Uninit() override;
+
+    int GetHP();
+    Pole* GetWeapon();
+
+    // Hit 系（外部から呼ばれるので public のまま）
+    void HitObject(Object* ob) override { ob->OnHit(this); }
+
+    void OnHit(Boss* bo);
+    void OnHit(Pole* po);
+    void OnHit(Bullet* bu);
+    void OnHit(TestCube* cube);
+    void OnHit(Object* ob) override {};
+
+private:
+    class Impl;
+    std::unique_ptr<Impl> impl;
+
 };
-

@@ -210,6 +210,7 @@ void Boss::AttackUpdate() {
 			m_weapon->AttackEnd();
 			m_State = NORMAL;
 			flamecount = 0;
+			attack_time = 0;
 			attack_kind = NONE;//UŒ‚I—¹
 		}
 
