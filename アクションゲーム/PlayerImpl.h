@@ -10,6 +10,8 @@ class Boss;
 class Bullet;
 class TestCube;
 
+
+//Player::Impl クラス、これとcppにPrivateの実装を記述することで、ビルド時間を短縮する。
 class Player::Impl
 {
 public:
@@ -33,7 +35,6 @@ private:
     Player* m_Owner = nullptr;
     Camera* m_Camera = nullptr;
 
-    // 元の private メンバ（Player.cpp に書かれていたもの）
     enum STATE {
         NORMAL = 0,
         ATTACK,
@@ -63,7 +64,6 @@ private:
     Bullet* m_arrow = nullptr;
     Pole* m_pole = nullptr;
 
-    // 元の private メソッドをすべて移植
     void Move();
     float SetMoveDirection();
     void Attack();

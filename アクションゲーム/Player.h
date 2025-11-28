@@ -32,6 +32,8 @@ public:
     void OnHit(Object* ob) override {};
 
 private:
+    //pimplパターン、実装を隠す
+    //Implクラスの宣言
     class Impl;
     std::unique_ptr<Impl> impl;
 

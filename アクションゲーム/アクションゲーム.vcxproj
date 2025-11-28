@@ -331,6 +331,7 @@
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="AssimpPerse.cpp" />
     <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossImpl.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionHelper.h" />
@@ -383,6 +384,7 @@
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="AssimpPerse.h" />
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossImpl.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionResult.h" />

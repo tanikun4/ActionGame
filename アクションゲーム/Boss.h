@@ -9,45 +9,10 @@ class Boss :
     public GolfBall
 {
 private:
-	enum STATE {
-		NORMAL = 0,
-		ATTACK
-	};
-
-	enum ATTACK_KIND {
-		NONE = -1, //攻撃なし
-		SWING = 0,
-		SHOT,
-		ROTATESWING,
-
-		KIND_MAX
-	};
-	int hp = 10;
-	int flamecount = 0;
-	int m_State = 0;//状態　1で行動中
-	bool inviFg = false;
-	int invicount = 0;
-	const float rotate_speed = 0.01;
-	int attack_kind = 0;//攻撃の種類
-	int attack_time = 0;//攻撃時間
-
-	bool notUpdate = false;//更新を止めるかどうか
-	DirectX::SimpleMath::Vector3 m_destrot;//回転の目標点
-	DirectX::XMFLOAT2 stagesize;
-	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
-	std::vector<Bullet*> m_bullet;
-	Pole* m_weapon;
-
-	const float gravity = -0.007f;
-
-	void LookAt(DirectX::SimpleMath::Vector3);
-	void Move();
-	void AttackUpdate();
-	void Stance();//構え状態になる
-	void SetArrow();
-	bool HitCheck();//攻撃に当たったかを返す
-
-	void DebugBossStatus();
+	//pimplパターン、実装を隠す
+	//Implクラスの宣言
+	class Impl;
+	std::unique_ptr<Impl> impl;
 public:
 	Boss(Camera * cam); // コンストラクタ
 	~Boss();//デストラクタ
@@ -60,7 +25,6 @@ public:
 	void ShotBullet();
 	bool GetLive();
 	int GetHP();
-	bool HitCheckPole(Pole* pole);//攻撃に当たったかを返す
 	Pole* GetWeapon();
 	void HitObject(Object* ob) override {
 		ob->OnHit(this);

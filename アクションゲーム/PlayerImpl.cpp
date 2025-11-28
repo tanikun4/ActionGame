@@ -21,9 +21,7 @@
 using namespace DirectX::SimpleMath;
 using namespace std;
 
-// 外部 Input が既存コードで使われている場合があるのでそのまま。
-// もしプロジェクトで Input::GetKey... を使う場合はそちらを参照してください.
-// extern Input input;
+//Player::Implクラスの実装
 
 // -------------------------
 // コンストラクタ / デストラクタ
@@ -40,10 +38,9 @@ Player::Impl::~Impl()
 }
 
 // -------------------------
-// public API
+// public関数
 // -------------------------
 void Player::Impl::Init() {
-    // 元コード: GBInit(...) は GolfBall のメソッドとして使用
     m_Owner->GBInit(u8"assets/model/gorufu/GolfBall_v2.fbx");
     m_Owner->m_Position = Vector3(0.0f, 50.0f, 0.0f);
     m_pole = Game::GetInstance()->AddObject<Pole>();
@@ -58,7 +55,6 @@ void Player::Impl::Init() {
 }
 
 void Player::Impl::Update() {
-    // 元の Update をほぼそのまま移植
     if (hp <= 0) return; // 死亡していたら更新しない
 
     // 状態ごとの処理
