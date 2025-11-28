@@ -240,6 +240,9 @@
     <ClCompile Include="PlayerImpl.cpp">
       <Filter>ソース ファイル\Object\Player</Filter>
     </ClCompile>
+    <ClCompile Include="BossImpl.cpp">
+      <Filter>ソース ファイル\Object\Boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
@@ -424,6 +427,9 @@
     </ClInclude>
     <ClInclude Include="PlayerImpl.h">
       <Filter>ソース ファイル\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BossImpl.h">
+      <Filter>ソース ファイル\Object\Boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
