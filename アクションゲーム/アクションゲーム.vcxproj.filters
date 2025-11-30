@@ -88,6 +88,15 @@
     <Filter Include="ソース ファイル\system\Fade">
       <UniqueIdentifier>{9f41cfba-fb99-478e-b2aa-509530a8baeb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Effect">
+      <UniqueIdentifier>{041a7b51-8302-4ad0-9bae-8253bdddae09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\EfectObject%283D%29">
+      <UniqueIdentifier>{0e283b26-692b-4d96-ba8f-fb00dd121563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\EffectBillBoad%282D%29">
+      <UniqueIdentifier>{92bd4fd9-284a-4f67-b84c-c1cc6f029d79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -242,6 +251,12 @@
     </ClCompile>
     <ClCompile Include="BossImpl.cpp">
       <Filter>ソース ファイル\Object\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectObject.cpp">
+      <Filter>ソース ファイル\Effect\EfectObject%283D%29</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectBase.cpp">
+      <Filter>ソース ファイル\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -430,6 +445,12 @@
     </ClInclude>
     <ClInclude Include="BossImpl.h">
       <Filter>ソース ファイル\Object\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectObject.h">
+      <Filter>ソース ファイル\Effect\EfectObject%283D%29</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectBase.h">
+      <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

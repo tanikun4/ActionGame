@@ -101,6 +101,7 @@ void Game::Draw()
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)
 	{
+		if (!o->GetLive()) continue;// 生存フラグがオフなら非表示
 		o->Draw();
 		if (m_Instance->debugmode) {
 			auto col = dynamic_cast<ICollider*>(o.get());

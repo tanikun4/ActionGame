@@ -337,6 +337,8 @@
     <ClCompile Include="CollisionHelper.h" />
     <ClCompile Include="DebugUI.cpp" />
     <ClCompile Include="dx11helper.cpp" />
+    <ClCompile Include="EffectBase.cpp" />
+    <ClCompile Include="EffectObject.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -390,6 +392,8 @@
     <ClInclude Include="CollisionResult.h" />
     <ClInclude Include="DebugUI.h" />
     <ClInclude Include="dx11helper.h" />
+    <ClInclude Include="EffectBase.h" />
+    <ClInclude Include="EffectObject.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Fade.h" />
