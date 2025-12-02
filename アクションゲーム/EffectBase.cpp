@@ -3,6 +3,24 @@
 using namespace std;
 using namespace DirectX::SimpleMath;
 
+// コンストラクタ
+EffectBase::EffectBase(Camera* cam) : Object(cam)
+{
+
+}
+
+EffectBase::EffectBase() 
+{
+
+}
+
+// デストラクタ
+EffectBase::~EffectBase()
+{
+
+}
+
+
 //エフェクト再生関数、引数で位置、回転、スケール、最大生存フレーム、最終スケールを指定
 void EffectBase::PlayEffect(int _id,Vector3 _pos, Vector3 _rot, Vector3 _scale, int _maxlife, Vector3 _ta_scale) {
 	m_Position = _pos;

@@ -18,9 +18,6 @@ enum SceneName {
 
 class Game
 {
-public:
-
-
 
 private:
 

@@ -338,6 +338,7 @@
     <ClCompile Include="DebugUI.cpp" />
     <ClCompile Include="dx11helper.cpp" />
     <ClCompile Include="EffectBase.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EffectObject.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
@@ -393,6 +394,8 @@
     <ClInclude Include="DebugUI.h" />
     <ClInclude Include="dx11helper.h" />
     <ClInclude Include="EffectBase.h" />
+    <ClInclude Include="EffectData.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EffectObject.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />

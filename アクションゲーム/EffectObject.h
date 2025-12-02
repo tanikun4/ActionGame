@@ -3,10 +3,15 @@
 #include "MeshRenderer.h"
 #include "Texture.h"
 #include "Material.h"
+
 class EffectObject :
 	public EffectBase
 {
 public:
+    EffectObject();
+    EffectObject(Camera* cam);
+    ~EffectObject();
+
     // 描画の為の情報（メッシュに関わる情報）
     MeshRenderer m_MeshRenderer; // 頂点バッファ・インデックスバッファ・インデックス数
 

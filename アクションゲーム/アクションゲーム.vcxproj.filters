@@ -97,6 +97,9 @@
     <Filter Include="ソース ファイル\Effect\EffectBillBoad%282D%29">
       <UniqueIdentifier>{92bd4fd9-284a-4f67-b84c-c1cc6f029d79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Effect\EffectManager">
+      <UniqueIdentifier>{7586cab4-08d0-4cd0-80a8-27e5e2be824b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -257,6 +260,9 @@
     </ClCompile>
     <ClCompile Include="EffectBase.cpp">
       <Filter>ソース ファイル\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
+      <Filter>ソース ファイル\Effect\EffectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -450,6 +456,12 @@
       <Filter>ソース ファイル\Effect\EfectObject%283D%29</Filter>
     </ClInclude>
     <ClInclude Include="EffectBase.h">
+      <Filter>ソース ファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager.h">
+      <Filter>ソース ファイル\Effect\EffectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectData.h">
       <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
   </ItemGroup>

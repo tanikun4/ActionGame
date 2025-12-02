@@ -4,6 +4,23 @@
 using namespace std;
 using namespace DirectX::SimpleMath;
 
+// コンストラクタ
+EffectObject::EffectObject(Camera* cam) : EffectBase(cam)
+{
+
+}
+
+EffectObject::EffectObject()
+{
+
+}
+
+// デストラクタ
+EffectObject::~EffectObject()
+{
+
+}
+
 void EffectObject::Init(std::u8string model, std::u8string tex) {
 	// メッシュ読み込み
 	StaticMesh staticmesh;

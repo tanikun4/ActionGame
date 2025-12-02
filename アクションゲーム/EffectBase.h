@@ -11,7 +11,9 @@ protected:
 
 	DirectX::SimpleMath::Vector3 scale_changerate = DirectX::SimpleMath::Vector3::One;//ƒXƒP[ƒ‹•Ï‰»—¦
 public:
-
+	EffectBase();
+	EffectBase(Camera* cam);
+	~EffectBase();
     virtual void Update() override = 0;
     virtual void Draw() override = 0;
 
