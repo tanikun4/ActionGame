@@ -77,7 +77,7 @@ void EffectObject::Update() {
 
 	//エフェクトのライフタイムを加算
 	++m_lifeflame;
-	if(m_lifeflame >= m_maxlife) {
+	if(m_lifeflame >= m_Data.maxlife) {
 		m_live = false;
 	}
 }
@@ -117,4 +117,9 @@ void EffectObject::Draw()
 			m_subsets[i].IndexBase,		// 最初のインデックスバッファの位置	
 			m_subsets[i].VertexBase);	// 頂点バッファの最初から使用
 	}
+}
+
+void EffectObject::Uninit()
+{
+
 }

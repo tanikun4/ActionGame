@@ -39,8 +39,6 @@ void Game::Init()
 	DebugUI::Init(Renderer::GetDevice(), Renderer::GetDeviceContext());
 
 	// オブジェクト配列作成
-	//m_Instance->m_Objects.emplace_back(new GolfBall);
-	//m_Instance->m_Objects.emplace_back(new Ground);
 
 	// カメラ初期化
 	m_Instance->m_Camera->Init();
@@ -97,7 +95,6 @@ void Game::Draw()
 
 	// カメラ描画
 	m_Instance->m_Camera->Draw();
-	int a = 0;
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)
 	{
@@ -109,7 +106,6 @@ void Game::Draw()
 				m_Instance->m_WireRenderer->Draw(col->GetCollision());
 			}
 		}
-		a++;
 	}
 
 	Fade::GetInstance()->Draw();

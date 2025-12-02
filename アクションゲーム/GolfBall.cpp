@@ -42,7 +42,6 @@ void GolfBall::GBInit(std::u8string modelfilename)
 	StaticMesh staticmesh;
 
 	//3Dモデルデータ
-	//std::u8string modelFile = u8"assets/model/gorufu/GolfBall_v2.fbx";
 	std::u8string modelFile = modelfilename;
 
 	//テクスチャディレクトリ
