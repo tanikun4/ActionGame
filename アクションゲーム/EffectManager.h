@@ -37,9 +37,12 @@ public:
 
 	static EffectManager* GetInstance();
 
-	void Play(
-		int _id,
-		int _maxlife = 60,
-		DirectX::SimpleMath::Vector3 _first_scale = {1,1,1}, 
-		DirectX::SimpleMath::Vector3 _ta_scale = { 0,0,0 }); // エフェクト再生関数
+	// エフェクト再生関数
+	static void Play(
+		int _id,// エフェクトID
+		int _maxlife = 60,// エフェクト最大生存フレーム
+		DirectX::SimpleMath::Vector3 _pos = { 0,0,0 }, // エフェクト再生位置
+		DirectX::SimpleMath::Vector3 _rot = { 0,0,0 }, // エフェクト再生角度
+		DirectX::SimpleMath::Vector3 _first_scale = { 1,1,1 },  // エフェクト初期スケール
+		DirectX::SimpleMath::Vector3 _ta_scale = { 0,0,0 }); // エフェクト最終スケール
 };

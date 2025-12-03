@@ -14,6 +14,9 @@
 #include "WeaponManager.h"
 #include "DebugUI.h"
 
+#include "EffectManager.h"
+
+
 #include <imgui.h>
 #include <cmath>
 #include <vector>
@@ -285,6 +288,7 @@ void Player::Impl::Attack() {
     if (Input::GetKeyTrigger(VK_K) && !GuardFg) {
         if (m_pole) m_pole->Swing();
         m_Owner->m_State = ATTACK;
+        EffectManager::Play(TEST_EFFECT,10, m_Owner->m_Position,m_Owner->m_Rotation,m_Owner->m_Scale, m_Owner->m_Scale * 3);
         Sound::GetInstance()->Play(SOUND_SE_SWING);
     }
 }

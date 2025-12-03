@@ -6,6 +6,8 @@
 #include "Fade.h"
 #include "DebugUI.h"
 
+#include "EffectManager.h"
+
 Game* Game::m_Instance;
 
 // コンストラクタ
@@ -38,14 +40,19 @@ void Game::Init()
 	// デバッグUIの初期化
 	DebugUI::Init(Renderer::GetDevice(), Renderer::GetDeviceContext());
 
-	// オブジェクト配列作成
 
 	// カメラ初期化
 	m_Instance->m_Camera->Init();
 
+	// ワイヤーフレーム表示クラス初期化
 	m_Instance->m_WireRenderer->Init();
 
+	//エフェクトマネージャ初期化
+	EffectManager::Init();
+
+
 	m_Instance->m_Scene = new TitleScene; //メモリを確保
+
 
 	// オブジェクト初期化
 	for (auto& o : m_Instance->m_Objects)
@@ -70,11 +77,15 @@ void Game::Update()
 	// フェード更新
 	Fade::GetInstance()->Update();
 
+	//エフェクトマネージャ更新
+	EffectManager::Update();
+
 	// オブジェクト更新
 	for (auto& o : m_Instance->m_Objects)
 	{
 		o->Update();
 	}
+
 
 	if (Input::GetKeyTrigger(VK_O)) { // デバッグモード切り替え
 		m_Instance->debugmode = !m_Instance->debugmode;
@@ -95,6 +106,10 @@ void Game::Draw()
 
 	// カメラ描画
 	m_Instance->m_Camera->Draw();
+
+	//エフェクトマネージャ描画	
+	EffectManager::Draw();
+
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)
 	{
@@ -108,6 +123,7 @@ void Game::Draw()
 		}
 	}
 
+	// フェード描画
 	Fade::GetInstance()->Draw();
 
 	// デバッグUIの描画
@@ -124,9 +140,12 @@ void Game::Uninit()
 	// デバッグUIの終了処理
 	DebugUI::DisposeUI();
 
+
+	//エフェクトマネージャ終了処理
+	EffectManager::Uninit();
+
 	//オブジェクトを全て削除
 	m_Instance->DeleteAllObject();
-
 
 	// カメラ終了処理
 	m_Instance->m_Camera->Uninit();

@@ -45,23 +45,6 @@ void EffectObject::Init(LoadedEffectData& data, int _maxlife, Vector3 ta_scale) 
 		m_Materiales[i] = data.materials[i].get();
 	}
 
-
-	//// マテリアル情報取得	
-	//std::vector<MATERIAL> materials = staticmesh.GetMaterials();
-
-	//// マテリアル数分ループ
-	//for (int i = 0; i < materials.size(); i++)
-	//{
-	//	// マテリアルオブジェクト生成
-	//	std::unique_ptr<Material> m = std::make_unique<Material>();
-
-	//	// マテリアル情報をセット
-	//	m->Create(materials[i]);
-
-	//	// マテリアルオブジェクトを配列に追加
-	//	m_Materiales.push_back(std::move(m));
-	//}
-
 	BaseInit(_maxlife,ta_scale);
 }
 
