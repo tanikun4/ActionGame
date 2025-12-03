@@ -107,8 +107,6 @@ void Game::Draw()
 	// カメラ描画
 	m_Instance->m_Camera->Draw();
 
-	//エフェクトマネージャ描画	
-	EffectManager::Draw();
 
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)
@@ -122,6 +120,9 @@ void Game::Draw()
 			}
 		}
 	}
+
+	//エフェクトマネージャ描画	
+	EffectManager::Draw();
 
 	// フェード描画
 	Fade::GetInstance()->Draw();

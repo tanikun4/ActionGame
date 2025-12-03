@@ -70,7 +70,7 @@ LoadedEffectData EffectManager::LoadEffect(
     data.mesh = move(mesh);
 
     // テクスチャ取得
-    auto loadedTextures = mesh->GetTextures();
+    auto loadedTextures = data.mesh->GetTextures();
 
     for (auto& t : loadedTextures)
     {
@@ -79,13 +79,13 @@ LoadedEffectData EffectManager::LoadEffect(
     }
 
     // マテリアル取得
-    std::vector<MATERIAL> mats = mesh->GetMaterials();
+    std::vector<MATERIAL> mats = data.mesh->GetMaterials();
 
     for (auto& m : mats)
     {
         auto mat = make_unique<Material>();
         mat->Create(m);
-        data.materials.push_back(move(mat));
+        data.materials.emplace_back(move(mat));
     }
 
     // シェーダー生成
@@ -100,7 +100,8 @@ LoadedEffectData EffectManager::LoadEffect(
 void EffectManager::Update()
 {
     for (auto& obj : m_Instance->m_Effects) {
-        obj->Update();
+		if(obj->GetLive())
+         obj->Update();
     }
 }
 
@@ -108,7 +109,8 @@ void EffectManager::Update()
 void EffectManager::Draw()
 {
     for (auto& obj : m_Instance->m_Effects) {
-       obj->Draw();
+        if (obj->GetLive())
+         obj->Draw();
     }
 }
 
