@@ -461,7 +461,7 @@
     <ClInclude Include="EffectManager.h">
       <Filter>ソース ファイル\Effect\EffectManager</Filter>
     </ClInclude>
-    <ClInclude Include="EffectData.h">
+    <ClInclude Include="LoadedEffectData.h">
       <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
   </ItemGroup>

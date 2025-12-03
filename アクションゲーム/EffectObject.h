@@ -16,11 +16,12 @@ public:
     MeshRenderer m_MeshRenderer; // 頂点バッファ・インデックスバッファ・インデックス数
 
     // 描画の為の情報（見た目に関わる部分）
-    std::vector<std::unique_ptr<Material>> m_Materiales;
+    std::vector<Material*> m_Materiales;
     std::vector<SUBSET> m_subsets;
-    std::vector<std::unique_ptr<Texture>> m_Textures; // テクスチャ
+    std::vector<Texture*> m_Textures; // テクスチャ
 
-    void Init(std::u8string model, std::u8string tex);
+    void Init(LoadedEffectData& data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale = { -1,-1,-1 });
+	void Init() {};//オーバーライド用ダミー
     void Update();
     void Draw();
     void Uninit();

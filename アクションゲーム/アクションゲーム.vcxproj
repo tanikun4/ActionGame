@@ -394,7 +394,7 @@
     <ClInclude Include="DebugUI.h" />
     <ClInclude Include="dx11helper.h" />
     <ClInclude Include="EffectBase.h" />
-    <ClInclude Include="EffectData.h" />
+    <ClInclude Include="LoadedEffectData.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EffectObject.h" />
     <ClInclude Include="Enemy.h" />

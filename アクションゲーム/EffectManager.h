@@ -11,24 +11,22 @@ enum {
 class EffectManager
 {
 private:
+	//エフェクトデータ配列
+	std::vector<LoadedEffectData> m_LoadData;
 
 	static std::unique_ptr<EffectManager> m_Instance; // ゲームインスタンス
 	std::vector<EffectBase*> m_Effects; // エフェクトオブジェクト配列
 
-	void LoadEffect(std::string modelfilename, std::string texturefilename); // エフェクトリソース読込関数
+	LoadedEffectData LoadEffect(
+	const std::string textureName,
+	const std::string modelName,
+	const int texDivX = 1,
+	const int texDivY = 1,
+	const std::string VSshaderName = "shader/litTextureVS.hlsl",
+	const std::string PSshaderName = "shader/litTexturePS.hlsl"); // エフェクトリソース読込関数
 
-	//ロード済みエフェクトデータ構造体
-	struct LoadEffectData {
-		std::shared_ptr<StaticMesh> mesh;                    // メッシュ
-		std::vector<std::shared_ptr<Texture>> textures;      // テクスチャ
-		std::vector<std::shared_ptr<Material>> materials;    // マテリアル
-		std::unique_ptr<Shader> shader;						 // シェーダー
-	};
-	//エフェクトデータ配列
-	std::vector<LoadEffectData> m_LoadData;
-
+	Camera* m_Camera;//自身のカメラ、Gameからポインタ参照を取ってくる
 public:
-
 	EffectManager(); // コンストラクタ
 	~EffectManager(); // デストラクタ
 
@@ -39,5 +37,9 @@ public:
 
 	static EffectManager* GetInstance();
 
-	void Play(int _id); // エフェクト再生関数
+	void Play(
+		int _id,
+		int _maxlife = 60,
+		DirectX::SimpleMath::Vector3 _first_scale = {1,1,1}, 
+		DirectX::SimpleMath::Vector3 _ta_scale = { 0,0,0 }); // エフェクト再生関数
 };

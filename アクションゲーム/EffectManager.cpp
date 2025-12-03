@@ -36,51 +36,64 @@ void EffectManager::Init()
 	};
 
 	m_Instance = make_unique<EffectManager>();
+
+    for(auto& g : g_EffectResources)
+    {
+        m_Instance->m_LoadData.emplace_back(m_Instance->LoadEffect(
+            g.textureName, 
+            g.modelName, 
+            g.texDivX,
+            g.texDivY,
+            g.VSshaderName,
+            g.PSshaderName));
+	}
+
+	m_Instance->m_Camera = &Game::GetInstance()->GetCamera();
 }
 
-void EffectManager::LoadEffect(std::string modelfilename, std::string texturefilename)
+// エフェクトリソース読込関数
+LoadedEffectData EffectManager::LoadEffect(
+    const std::string textureName,
+    const std::string modelName,
+    const int texDivX,
+    const int texDivY,
+    const std::string VSshaderName,
+    const std::string PSshaderName)
 {
-	LoadEffectData data;
+    LoadedEffectData data;
 
-	// メッシュ読み込み
-	StaticMesh staticmesh;
+    //  メッシュ読み込み
+    auto mesh = make_unique<StaticMesh>();
 
-	//3Dモデルデータ
-	std::u8string modelFile = modelfilename;
+    mesh->Load(textureName, modelName);
+    data.mesh = move(mesh);
 
-	//テクスチャディレクトリ
-	std::string texDirectory = "assets/texture/gorufu";
 
-	//Meshを読み込む
-	std::string tmpStr1(reinterpret_cast<const char*>(modelFile.c_str()), modelFile.size());
-	staticmesh.Load(tmpStr1, texDirectory);
+    // テクスチャ取得
+    auto loadedTextures = mesh->GetTextures();
 
-	m_MeshRenderer.Init(staticmesh);
+    for (auto& t : loadedTextures)
+    {
+        // StaticMesh内は unique_ptr<Texture> を返すなら moveするだけ
+        data.textures.emplace_back(move(t));
+    }
 
-	// シェーダオブジェクト生成
-	data.shader->Create("shader/litTextureVS.hlsl", "shader/litTexturePS.hlsl");
+    // マテリアル取得
+    std::vector<MATERIAL> mats = mesh->GetMaterials();
 
-	// サブセット情報取得
-	m_subsets = staticmesh.GetSubsets();
+    for (auto& m : mats)
+    {
+        auto mat = std::make_unique<Material>();
+        mat->Create(m);
+        data.materials.push_back(move(mat));
+    }
 
-	// テクスチャ情報取得
-	m_Textures = staticmesh.GetTextures();
+    // シェーダー生成
 
-	// マテリアル情報取得	
-	std::vector<MATERIAL> materials = staticmesh.GetMaterials();
+    data.shader = make_unique<Shader>();
+    data.shader->Create(VSshaderName, PSshaderName);
 
-	// マテリアル数分ループ
-	for (int i = 0; i < materials.size(); i++)
-	{
-		// マテリアルオブジェクト生成
-		std::unique_ptr<Material> m = std::make_unique<Material>();
-
-		// マテリアル情報をセット
-		m->Create(materials[i]);
-
-		// マテリアルオブジェクトを配列に追加
-		m_Materiales.push_back(std::move(m));
-	}
+    return data;
 }
 
 // 更新
@@ -101,8 +114,24 @@ void EffectManager::Uninit()
 
 }
 
+//エフェクト再生関数
+void EffectManager::Play(int _id,
+    int _maxlife = 60,
+    DirectX::SimpleMath::Vector3 _first_scale = { 1,1,1 },
+    DirectX::SimpleMath::Vector3 _ta_scale = { 0,0,0 })
+{
+    //エフェクトオブジェクト生成
+    EffectObject* effect = new EffectObject(m_Camera);
+    //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
+	effect->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
+    effect->Init(m_LoadData[_id],_maxlife,_ta_scale);
+    //エフェクトオブジェクト配列に追加
+    m_Effects.emplace_back(effect);
+}
+
 // インスタンスを取得
 EffectManager* EffectManager::GetInstance()
 {
 	return m_Instance.get();
 }
+
