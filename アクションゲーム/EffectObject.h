@@ -16,7 +16,7 @@ public:
     MeshRenderer m_MeshRenderer; // 頂点バッファ・インデックスバッファ・インデックス数
 
     // 描画の為の情報（見た目に関わる部分）
-    std::vector<Material*> m_Materiales;
+    std::vector<Material> m_Materiales;
     std::vector<SUBSET> m_subsets;
     std::vector<Texture*> m_Textures; // テクスチャ
 

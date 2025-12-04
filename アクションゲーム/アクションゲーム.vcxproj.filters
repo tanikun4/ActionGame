@@ -264,6 +264,9 @@
     <ClCompile Include="EffectManager.cpp">
       <Filter>ソース ファイル\Effect\EffectManager</Filter>
     </ClCompile>
+    <ClCompile Include="EffectBillBoad.cpp">
+      <Filter>ソース ファイル\Effect\EffectBillBoad%282D%29</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
@@ -463,6 +466,9 @@
     </ClInclude>
     <ClInclude Include="LoadedEffectData.h">
       <Filter>ソース ファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectBillBoad.h">
+      <Filter>ソース ファイル\Effect\EffectBillBoad%282D%29</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

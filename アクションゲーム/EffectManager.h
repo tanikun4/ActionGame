@@ -1,21 +1,29 @@
 #pragma once
 #include "EffectObject.h"
-#include "StaticMesh.h"
+
+constexpr int EFFECT_POOLSIZE_3D = 5;
+constexpr int EFFECT_POOLSIZE_2D = 5;
+
 enum {
-	TEST_EFFECT = 0,
+	TEST_EFFECT3D = 0,
+	TEST_EFFECT2D,
 
 	EFFECT_MAX,
 };
+
+
 
 //エフェクト管理クラス、シングルトンパターンで、エフェクトの初回読込、生成処理をまとめて行う
 class EffectManager
 {
 private:
+	
 	//エフェクトデータ配列
 	std::vector<LoadedEffectData> m_LoadData;
 
 	static std::unique_ptr<EffectManager> m_Instance; // ゲームインスタンス
-	std::vector<EffectBase*> m_Effects; // エフェクトオブジェクト配列
+	std::vector<EffectBase*> m_Effects3D; // 3Dエフェクトオブジェクト配列
+	std::vector<EffectBase*> m_Effects2D; // 2Dエフェクトオブジェクト配列
 
 	LoadedEffectData LoadEffect(
 	const std::string textureName,

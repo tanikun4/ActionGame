@@ -1,5 +1,6 @@
 #include "EffectManager.h"
 #include "Game.h"
+#include "StaticMesh.h"
 using namespace std;
 using namespace DirectX::SimpleMath;
 
@@ -50,6 +51,17 @@ void EffectManager::Init()
 	}
 
 	m_Instance->m_Camera = &Game::GetInstance()->GetCamera();
+
+    //3Dエフェクトのプールを確保
+    for (int i = 0; i < EFFECT_POOLSIZE_3D; ++i) {
+        m_Instance->m_Effects3D.emplace_back(new EffectObject(m_Instance->m_Camera));
+    }
+
+    //2Dエフェクトのプールを確保
+    for (int i = 0; i < EFFECT_POOLSIZE_2D; ++i) {
+        //2Dのクラスが完成したら書く
+  
+    }
 }
 
 // エフェクトリソース読込関数
@@ -63,35 +75,42 @@ LoadedEffectData EffectManager::LoadEffect(
 {
     LoadedEffectData data;
 
-    //  メッシュ読み込み
-    auto mesh = make_unique<StaticMesh>();
-
-    mesh->Load(modelName,textureName);
-    data.mesh = move(mesh);
-
-    // テクスチャ取得
-    auto loadedTextures = data.mesh->GetTextures();
-
-    for (auto& t : loadedTextures)
-    {
-        // StaticMesh内は unique_ptr<Texture> を返すなら moveするだけ
-        data.textures.emplace_back(move(t));
+    if(modelName.empty())
+    { //2D
+        
     }
+    else 
+    { //3D
+        //  メッシュ読み込み
+        auto mesh = make_unique<StaticMesh>();
 
-    // マテリアル取得
-    std::vector<MATERIAL> mats = data.mesh->GetMaterials();
+        mesh->Load(modelName, textureName);
+        data.mesh = move(mesh);
 
-    for (auto& m : mats)
-    {
-        auto mat = make_unique<Material>();
-        mat->Create(m);
-        data.materials.emplace_back(move(mat));
+        // テクスチャ取得
+        auto loadedTextures = data.mesh->GetTextures();
+
+        for (auto& t : loadedTextures)
+        {
+            // StaticMesh内は unique_ptr<Texture> を返すなら moveするだけ
+            data.textures.emplace_back(move(t));
+        }
+
+        // マテリアル取得
+        std::vector<MATERIAL> mats = data.mesh->GetMaterials();
+
+        for (auto& m : mats)
+        {
+            auto mat = make_unique<Material>();
+            mat->Create(m);
+            data.materials.emplace_back(move(mat));
+        }
+
+        // シェーダー生成
+
+        data.shader = make_unique<Shader>();
+        data.shader->Create(VSshaderName, PSshaderName);
     }
-
-    // シェーダー生成
-
-    data.shader = make_unique<Shader>();
-    data.shader->Create(VSshaderName, PSshaderName);
 
     return data;
 }
@@ -99,18 +118,32 @@ LoadedEffectData EffectManager::LoadEffect(
 // 更新
 void EffectManager::Update()
 {
-    for (auto& obj : m_Instance->m_Effects) {
+    //3D
+    for (auto& obj : m_Instance->m_Effects3D) {
 		if(obj->GetLive())
-         obj->Update();
+            obj->Update();
+    }
+
+    //2D
+    for (auto& obj : m_Instance->m_Effects2D) {
+        if (obj->GetLive())
+            obj->Update();
     }
 }
 
 // 描画
 void EffectManager::Draw()
 {
-    for (auto& obj : m_Instance->m_Effects) {
+    //3D
+    for (auto& obj : m_Instance->m_Effects3D) {
         if (obj->GetLive())
-         obj->Draw();
+            obj->Draw();
+    }
+
+    //2D
+    for (auto& obj : m_Instance->m_Effects2D) {
+        if (obj->GetLive())
+            obj->Draw();
     }
 }
 
@@ -119,11 +152,11 @@ void EffectManager::Uninit()
 {
 
     // m_Effects に格納された全ての EffectObject を削除
-    for (auto& obj : m_Instance->m_Effects) {
+    for (auto& obj : m_Instance->m_Effects3D) {
 		obj->Uninit();
         delete obj;
     }
-    m_Instance->m_Effects.clear();
+    m_Instance->m_Effects3D.clear();
 
     // m_LoadData は unique_ptr が含まれているので自動解放される
     m_Instance->m_LoadData.clear();
@@ -138,6 +171,9 @@ void EffectManager::Play(int _id,
     Vector3 _first_scale,
     Vector3 _ta_scale)
 {
+
+    //2D部分制作後、プール方式に変更する
+   
     //エフェクトオブジェクト生成
     EffectObject* effect = new EffectObject(m_Instance->m_Camera);
     //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
@@ -146,7 +182,7 @@ void EffectManager::Play(int _id,
 	effect->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
     effect->Init(m_Instance->m_LoadData[_id],_maxlife,_ta_scale);
     //エフェクトオブジェクト配列に追加
-    m_Instance->m_Effects.emplace_back(effect);
+    m_Instance->m_Effects3D.emplace_back(effect);
 }
 
 // インスタンスを取得
