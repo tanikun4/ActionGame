@@ -396,7 +396,7 @@
     <ClInclude Include="dx11helper.h" />
     <ClInclude Include="EffectBase.h" />
     <ClInclude Include="EffectBillBoad.h" />
-    <ClInclude Include="LoadedEffectData.h" />
+    <ClInclude Include="EffectDataStruct.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EffectObject.h" />
     <ClInclude Include="Enemy.h" />
@@ -476,6 +476,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DirectX 3Dゲーム制作 デバッグビルド|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DirectX ゲーム制作|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shader\EffectTexturePS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ps_main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="shader\litTexturePS.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ps_main</EntryPointName>

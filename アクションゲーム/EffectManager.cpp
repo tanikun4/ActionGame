@@ -22,19 +22,19 @@ EffectManager::~EffectManager()
 void EffectManager::Init()
 {
 	//初回読込にしか使わないのでここに記述
-
 	// エフェクト読込用の構造体
 	struct EffectLoadData {
 		string textureName;// テクスチャ名、3Dの場合はテクスチャディレクトリ名
 		string modelName;
-		int texDivX = 1;
-		int texDivY = 1;
-		string VSshaderName = "shader/litTextureVS.hlsl";
-		string PSshaderName = "shader/litTexturePS.hlsl";
+		string VSshaderName;
+		string PSshaderName;
+		Int2 texture_uv = { 1,1 };// テクスチャのUV分割数
 	};
 
+	// 読み込むデータの配列、ここにエフェクトリソースを追加していく
 	const EffectLoadData g_EffectResources[] = {
-		{"assets/texture/gorufu", "assets/model/gorufu/GolfBall_v2.fbx"}
+		{"assets/texture/gorufu", "assets/model/gorufu/GolfBall_v2.fbx"},
+        { "assets/number.png","","","",10,1}
 	};
 
 	m_Instance = make_unique<EffectManager>();
@@ -44,8 +44,8 @@ void EffectManager::Init()
         m_Instance->m_LoadData.emplace_back(m_Instance->LoadEffect(
             g.textureName, 
             g.modelName, 
-            g.texDivX,
-            g.texDivY,
+            g.texture_uv.x,
+            g.texture_uv.y,
             g.VSshaderName,
             g.PSshaderName));
 	}
@@ -60,8 +60,55 @@ void EffectManager::Init()
     //2Dエフェクトのプールを確保
     for (int i = 0; i < EFFECT_POOLSIZE_2D; ++i) {
         //2Dのクラスが完成したら書く
-  
+        m_Instance->m_Effects2D.emplace_back(new EffectBillBoad(m_Instance->m_Camera));
     }
+
+	m_Instance->m_Shared2D_Data = m_Instance->Init2D();
+
+}
+
+SharedEffect2DData EffectManager::Init2D()
+{
+    //2Dエフェクト共通データ初期化処理
+    
+	SharedEffect2DData data;
+
+    // 頂点データ
+    std::vector<VERTEX_3D> vertices;
+
+    vertices.resize(4);
+
+    vertices[0].position = Vector3(-0.5f, 0.5f, 0);
+    vertices[1].position = Vector3(0.5f, 0.5f, 0);
+    vertices[2].position = Vector3(-0.5f, -0.5f, 0);
+    vertices[3].position = Vector3(0.5f, -0.5f, 0);
+
+    vertices[0].color = Color(1, 1, 1, 1);
+    vertices[1].color = Color(1, 1, 1, 1);
+    vertices[2].color = Color(1, 1, 1, 1);
+    vertices[3].color = Color(1, 1, 1, 1);
+
+    vertices[0].uv = Vector2(0, 0);
+    vertices[1].uv = Vector2(1, 0);
+    vertices[2].uv = Vector2(0, 1);
+    vertices[3].uv = Vector2(1, 1);
+
+    // 頂点バッファ生成
+    data.m_2DVertexBuffer->Create(vertices);
+
+    // インデックスバッファ生成
+    std::vector<unsigned int> indices;
+    indices.resize(4);
+
+    indices[0] = 0;
+    indices[1] = 1;
+    indices[2] = 2;
+    indices[3] = 3;
+
+    // インデックスバッファ生成
+    data.m_2DIndexBuffer->Create(indices);
+
+    return data;
 }
 
 // エフェクトリソース読込関数
@@ -70,31 +117,21 @@ LoadedEffectData EffectManager::LoadEffect(
     const string modelName,
     const int texDivX,
     const int texDivY,
-    const string VSshaderName,
-    const string PSshaderName)
+    string VSshaderName,
+    string PSshaderName)
 {
     LoadedEffectData data;
 
-    if(modelName.empty())
-    { //2D
-        
-    }
-    else 
-    { //3D
+	// モデル名が空でない場合、3Dエフェクト用の読み込みを行う
+    if (!modelName.empty())//3Dエフェクト用読み込み
+    {
+
         //  メッシュ読み込み
         auto mesh = make_unique<StaticMesh>();
 
         mesh->Load(modelName, textureName);
         data.mesh = move(mesh);
 
-        // テクスチャ取得
-        auto loadedTextures = data.mesh->GetTextures();
-
-        for (auto& t : loadedTextures)
-        {
-            // StaticMesh内は unique_ptr<Texture> を返すなら moveするだけ
-            data.textures.emplace_back(move(t));
-        }
 
         // マテリアル取得
         std::vector<MATERIAL> mats = data.mesh->GetMaterials();
@@ -106,12 +143,51 @@ LoadedEffectData EffectManager::LoadEffect(
             data.materials.emplace_back(move(mat));
         }
 
-        // シェーダー生成
+        // テクスチャ取得
+        auto loadedTextures = data.mesh->GetTextures();
 
-        data.shader = make_unique<Shader>();
-        data.shader->Create(VSshaderName, PSshaderName);
+        for (auto& t : loadedTextures)
+        {
+            // StaticMesh内は unique_ptr<Texture> を返すなら moveするだけ
+            data.textures.emplace_back(move(t));
+        }
+
+		// シェーダー名が空の場合、デフォルトシェーダー名を設定
+        if(VSshaderName.empty()) 
+        { //VS
+			VSshaderName = "shader/litTextureVS.hlsl"; //3Dデフォルトシェーダー名 VS
+		}
+
+        if (PSshaderName.empty()) 
+        { //PS
+            PSshaderName = "shader/litTexturePS.hlsl"; //3Dデフォルトシェーダー名 PS
+        }
+    }
+	else {//2Dエフェクト用読み込み
+		// テクスチャ単体の読み込み
+        auto tex = std::make_unique<Texture>();
+        tex->Load(textureName);
+        data.textures.emplace_back(std::move(tex));
+
+        // シェーダー名が空の場合、デフォルトシェーダー名を設定
+        if (VSshaderName.empty())
+        { //VS
+            VSshaderName = "shader/unlitTextureVS.hlsl"; //2Dデフォルトシェーダー名 VS
+        }
+
+        if (PSshaderName.empty())
+        { //PS
+            PSshaderName = "shader/unlitTexturePS.hlsl"; //2Dデフォルトシェーダー名 PS
+        }
     }
 
+    // シェーダー生成
+    data.shader = make_unique<Shader>();
+    data.shader->Create(VSshaderName, PSshaderName);
+
+	// テクスチャのUV分割数を保存
+    data.texture_uv = Int2(texDivX, texDivY);
+    
     return data;
 }
 
@@ -173,16 +249,33 @@ void EffectManager::Play(int _id,
 {
 
     //2D部分制作後、プール方式に変更する
-   
-    //エフェクトオブジェクト生成
-    EffectObject* effect = new EffectObject(m_Instance->m_Camera);
-    //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
-	effect->SetPosition(_pos);//位置を設定
-	effect->SetRotation(_rot);//回転を設定
-	effect->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
-    effect->Init(m_Instance->m_LoadData[_id],_maxlife,_ta_scale);
-    //エフェクトオブジェクト配列に追加
-    m_Instance->m_Effects3D.emplace_back(effect);
+    if (m_Instance->m_LoadData[_id].mesh != nullptr) {
+
+        for (auto& e : m_Instance->m_Effects3D) {
+            //非生存エフェクトオブジェクトを発見
+            if (!e->GetLive()) {
+                //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
+                e->SetPosition(_pos);//位置を設定
+                e->SetRotation(_rot);//回転を設定
+                e->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
+				e->Init(m_Instance->m_LoadData[_id], _maxlife, _ta_scale);//3Dエフェクト用Initを呼ぶ
+				break;//1つだけ再生したいのでループを抜ける
+            }
+        }
+    }
+    else {
+        for (auto& e : m_Instance->m_Effects2D) {
+            //非生存エフェクトオブジェクトを発見
+            if (!e->GetLive()) {
+                //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
+                e->SetPosition(_pos);//位置を設定
+                e->SetRotation(_rot);//回転を設定
+                e->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
+                e->Init(m_Instance->m_LoadData[_id], m_Instance->m_Shared2D_Data, _maxlife, _ta_scale);//2Dエフェクト用Initを呼ぶ
+                break;//1つだけ再生したいのでループを抜ける
+            }
+        }
+    }
 }
 
 // インスタンスを取得

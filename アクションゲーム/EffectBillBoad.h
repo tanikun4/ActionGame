@@ -10,16 +10,16 @@ class EffectBillBoad: public EffectBase
 {
 protected:
 	// 描画の為の情報（メッシュに関わる情報）
-	IndexBuffer m_IndexBuffer; // インデックスバッファ
-	VertexBuffer<VERTEX_3D> m_VertexBuffer; // 頂点バッファ
+	IndexBuffer* m_IndexBuffer; // インデックスバッファ
+	VertexBuffer<VERTEX_3D>* m_VertexBuffer; // 頂点バッファ
 
 	std::vector<VERTEX_3D> m_Vertices;//頂点データ
 
 	// 描画の為の情報（見た目に関わる部分）
 	Texture* m_Texture; // テクスチャ
-	std::unique_ptr<Material> m_Materiale; //マテリアル
+	std::unique_ptr<Material> m_Materiale; //マテリアル(こちらは個別で持つ)
 
-	DirectX::SimpleMath::Vector4 m_color{ 1.0f,1.0f,1.0f,1.0f };
+	//DirectX::SimpleMath::Vector4 m_color{ 1.0f,1.0f,1.0f,1.0f };
 	// UV座標の情報
 	float m_NumU = 1;
 	float m_NumV = 1;
@@ -32,7 +32,8 @@ public:
 	EffectBillBoad();
 	~EffectBillBoad(); // デストラクタ
 
-	void Init(LoadedEffectData& data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale = { -1,-1,-1 });
+	void Init(LoadedEffectData& data,int _maxlife, DirectX::SimpleMath::Vector3 ta_scale = { -1,-1,-1 });
+	void Init(LoadedEffectData& data, SharedEffect2DData& shared_data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale = { -1,-1,-1 });
 	void Init();
 	void Update();
 	void Draw();
@@ -46,5 +47,4 @@ public:
 
 	// 色を指定
 	void SetColor(const DirectX::SimpleMath::Vector4& color);
-	float GetAlpha() { return m_color.w; }
 };

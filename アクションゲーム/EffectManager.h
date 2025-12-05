@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectObject.h"
+#include "EffectBillBoad.h"
 
 constexpr int EFFECT_POOLSIZE_3D = 5;
 constexpr int EFFECT_POOLSIZE_2D = 5;
@@ -22,18 +23,22 @@ private:
 	std::vector<LoadedEffectData> m_LoadData;
 
 	static std::unique_ptr<EffectManager> m_Instance; // ゲームインスタンス
-	std::vector<EffectBase*> m_Effects3D; // 3Dエフェクトオブジェクト配列
-	std::vector<EffectBase*> m_Effects2D; // 2Dエフェクトオブジェクト配列
+	std::vector<EffectObject*> m_Effects3D; // 3Dエフェクトオブジェクト配列
+	std::vector<EffectBillBoad*> m_Effects2D; // 2Dエフェクトオブジェクト配列
 
-	LoadedEffectData LoadEffect(
-	const std::string textureName,
-	const std::string modelName,
-	const int texDivX = 1,
-	const int texDivY = 1,
-	const std::string VSshaderName = "shader/litTextureVS.hlsl",
-	const std::string PSshaderName = "shader/litTexturePS.hlsl"); // エフェクトリソース読込関数
+	SharedEffect2DData m_Shared2D_Data;//2Dエフェクト共通データ
 
 	Camera* m_Camera;//自身のカメラ、Gameからポインタ参照を取ってくる
+
+	LoadedEffectData LoadEffect( // エフェクトリソース読込関数
+		const std::string textureName,
+		const std::string modelName,
+		const int texDivX,
+		const int texDivY,
+		std::string VSshaderName,
+		std::string PSshaderName);
+
+	SharedEffect2DData Init2D();// 2Dエフェクト用共通変数の初期化処理
 public:
 	EffectManager(); // コンストラクタ
 	~EffectManager(); // デストラクタ

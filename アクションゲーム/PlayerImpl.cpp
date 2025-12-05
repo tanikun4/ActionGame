@@ -288,7 +288,7 @@ void Player::Impl::Attack() {
     if (Input::GetKeyTrigger(VK_K) && !GuardFg) {
         if (m_pole) m_pole->Swing();
         m_Owner->m_State = ATTACK;
-        EffectManager::Play(TEST_EFFECT3D,180, m_Owner->m_Position,m_Owner->m_Rotation,m_Owner->m_Scale * 0.1f, m_Owner->m_Scale * 0.5f);
+        EffectManager::Play(TEST_EFFECT2D,180, m_Owner->m_Position,m_Owner->m_Rotation,m_Owner->m_Scale * 0.5f, m_Owner->m_Scale);
         Sound::GetInstance()->Play(SOUND_SE_SWING);
     }
 }

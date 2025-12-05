@@ -464,7 +464,7 @@
     <ClInclude Include="EffectManager.h">
       <Filter>ソース ファイル\Effect\EffectManager</Filter>
     </ClInclude>
-    <ClInclude Include="LoadedEffectData.h">
+    <ClInclude Include="EffectDataStruct.h">
       <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
     <ClInclude Include="EffectBillBoad.h">
@@ -491,6 +491,9 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="shader\BillBoardTextureVS.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\EffectTexturePS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

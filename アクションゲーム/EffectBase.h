@@ -1,6 +1,6 @@
 #pragma once
 #include "Object.h"
-#include "LoadedEffectData.h"
+#include "EffectDataStruct.h"
 
 //エフェクト基底クラス
 class EffectBase : public Object
