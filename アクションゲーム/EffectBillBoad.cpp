@@ -81,36 +81,36 @@ void EffectBillBoad::Update()
 	//生存フレーム限界に達したら、存在フラグをfalseにする
 	if (m_lifeflame >= m_maxlife) {
 		m_live = false;
-		//テスト用
-		m_NumU++;
-		if (m_NumU > m_SplitX) {
-			m_NumU = 1;
-		}
 	}
 }
 
 // 描画処理
 void EffectBillBoad::Draw()
 {
+	// カメラ設定
+	m_Camera->SetCamera(0);
+
 	// 深度書き込みを有効にする（Billboard でも ON にする）
 	Renderer::SetDepthEnable(true);
 
-	// BillBoard（カメラの方向を向く行列）作成
-	Matrix invView = m_Camera->GetViewMatrix();
-	invView.Translation(Vector3(0, 0, 0));  // 平行移動成分を消す
+	// ビュー行列取得
+	Matrix view = m_Camera->GetViewMatrix();
 
-	// 回転成分だけ反転したものがビルボード行列
-	Matrix billboard = invView;
+	// ビュー行列から回転成分を取り出す（平行移動は消す）
+	view.Translation(Vector3(0, 0, 0));
 
-	//自身の Y 回転を作成
-	Matrix selfRotY = Matrix::CreateRotationY(m_Rotation.y);
+	// 回転成分の逆回転を作るために転置する
+	Matrix billboard = view.Transpose();
+
+	//自身の Z 回転を作成
+	Matrix selfRotZ = Matrix::CreateRotationZ(m_Rotation.z);
 
 	// SRT 行列作成
 	Matrix s = Matrix::CreateScale(m_Scale);
 	Matrix t = Matrix::CreateTranslation(m_Position);
 
 	// ビルボードなので自身の回転はyのみ反映
-	Matrix worldmtx = s * selfRotY * billboard * t;
+	Matrix worldmtx = s * selfRotZ * billboard * t;
 
 	Renderer::SetWorldMatrix(&worldmtx);
 
@@ -134,9 +134,6 @@ void EffectBillBoad::Draw()
 	float vh = 1.0f / m_SplitY;
 
 	Renderer::SetUV(u, v, uw, vh);
-
-	// カメラ設定
-	m_Camera->SetCamera(0);
 
 	// 描画
 	devicecontext->DrawIndexed(4, 0, 0);
