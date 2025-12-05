@@ -28,13 +28,14 @@ void EffectManager::Init()
 		string modelName;
 		string VSshaderName;
 		string PSshaderName;
-		Int2 texture_uv = { 1,1 };// テクスチャのUV分割数
+        int u = 1;
+        int v = 1;// テクスチャのUV分割数
 	};
 
 	// 読み込むデータの配列、ここにエフェクトリソースを追加していく
 	const EffectLoadData g_EffectResources[] = {
 		{"assets/texture/gorufu", "assets/model/gorufu/GolfBall_v2.fbx"},
-        { "assets/number.png","","","",10,1}
+        {"assets/texture/number.png","","","", 1,1}
 	};
 
 	m_Instance = make_unique<EffectManager>();
@@ -44,8 +45,8 @@ void EffectManager::Init()
         m_Instance->m_LoadData.emplace_back(m_Instance->LoadEffect(
             g.textureName, 
             g.modelName, 
-            g.texture_uv.x,
-            g.texture_uv.y,
+            g.u,
+            g.v,
             g.VSshaderName,
             g.PSshaderName));
 	}
@@ -94,6 +95,7 @@ SharedEffect2DData EffectManager::Init2D()
     vertices[3].uv = Vector2(1, 1);
 
     // 頂点バッファ生成
+    data.m_2DVertexBuffer = std::make_unique<VertexBuffer<VERTEX_3D>>();
     data.m_2DVertexBuffer->Create(vertices);
 
     // インデックスバッファ生成
@@ -106,6 +108,7 @@ SharedEffect2DData EffectManager::Init2D()
     indices[3] = 3;
 
     // インデックスバッファ生成
+    data.m_2DIndexBuffer = std::make_unique<IndexBuffer>();
     data.m_2DIndexBuffer->Create(indices);
 
     return data;

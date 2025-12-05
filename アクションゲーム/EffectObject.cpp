@@ -8,12 +8,12 @@ using namespace DirectX::SimpleMath;
 // コンストラクタ
 EffectObject::EffectObject(Camera* cam) : EffectBase(cam)
 {
-
+	m_live = false;
 }
 
 EffectObject::EffectObject()
 {
-
+	m_live = false;
 }
 
 // デストラクタ

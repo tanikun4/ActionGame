@@ -26,4 +26,5 @@ void EffectBase::BaseInit(int _maxlife,Vector3 ta_scale) {
 		if (m_maxlife <= 0) m_maxlife = 1;
 		scale_changerate = (ta_scale - m_Scale) / m_maxlife;
 	}
+	m_live = true;
 }

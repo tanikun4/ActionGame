@@ -40,7 +40,6 @@ void Game::Init()
 	// デバッグUIの初期化
 	DebugUI::Init(Renderer::GetDevice(), Renderer::GetDeviceContext());
 
-
 	// カメラ初期化
 	m_Instance->m_Camera->Init();
 
@@ -49,7 +48,6 @@ void Game::Init()
 
 	//エフェクトマネージャ初期化
 	EffectManager::Init();
-
 
 	m_Instance->m_Scene = new TitleScene; //メモリを確保
 

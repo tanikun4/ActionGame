@@ -13,6 +13,7 @@ EffectBillBoad::EffectBillBoad(Camera* cam) :EffectBase(cam)
 	mtrl.Shiness = 1;
 	mtrl.TextureEnable = true; // テクスチャを使うか否かのフラグ
 	m_Materiale->Create(mtrl);
+	m_live = false;
 }
 
 EffectBillBoad::EffectBillBoad() : EffectBase()
@@ -24,6 +25,7 @@ EffectBillBoad::EffectBillBoad() : EffectBase()
 	mtrl.Shiness = 1;
 	mtrl.TextureEnable = true; // テクスチャを使うか否かのフラグ
 	m_Materiale->Create(mtrl);
+	m_live = false;
 }
 
 // デストラクタ
