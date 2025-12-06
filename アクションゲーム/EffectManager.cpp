@@ -237,9 +237,27 @@ void EffectManager::Uninit()
     }
     m_Instance->m_Effects3D.clear();
 
+    for (auto& obj : m_Instance->m_Effects2D) {
+        obj->Uninit();
+        delete obj;
+    }
+    m_Instance->m_Effects2D.clear();
+
     // m_LoadData は unique_ptr が含まれているので自動解放される
     m_Instance->m_LoadData.clear();
 
+}
+
+void EffectManager::EffectsReset()
+{
+    //3Dエフェクトリセット
+    for (auto& obj : m_Instance->m_Effects3D) {
+		obj->SetLive(false);
+    }
+    //2Dエフェクトリセット
+    for (auto& obj : m_Instance->m_Effects2D) {
+        obj->SetLive(false);
+    }
 }
 
 //エフェクト再生関数

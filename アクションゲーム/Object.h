@@ -63,6 +63,7 @@ public:
 	void SetPosition(const DirectX::SimpleMath::Vector3& pos);
 	void SetRotation(const DirectX::SimpleMath::Vector3& rot);
 	void SetScale(const DirectX::SimpleMath::Vector3& sca);
+	void SetLive(const bool& live);
 	DirectX::SimpleMath::Vector3 GetPosition() const;
 	DirectX::SimpleMath::Vector3 GetRotation() const;
 	DirectX::SimpleMath::Vector3 GetScale() const;

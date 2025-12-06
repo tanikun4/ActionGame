@@ -47,6 +47,7 @@ public:
 	static void Update(); // 更新
 	static void Draw(); // 描画
 	static void Uninit(); // 終了処理
+	static void EffectsReset(); //エフェクトをリセット
 
 	static EffectManager* GetInstance();
 

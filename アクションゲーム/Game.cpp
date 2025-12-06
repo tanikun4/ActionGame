@@ -183,6 +183,8 @@ void Game::ChangeScene(SceneName sName)
 
 		//DeleteAllObject();
 
+		EffectManager::EffectsReset();// エフェクトをリセット
+
 		DebugUI::Clear();
 	}
 

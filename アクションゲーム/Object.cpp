@@ -44,6 +44,14 @@ void Object::SetScale(const Vector3& sca) {
 };
 
 //=======================================
+//生存フラグをセット
+//=======================================
+void Object::SetLive(const bool& live) {
+	m_live = live;
+	return;
+};
+
+//=======================================
 //座標をゲット
 //=======================================
 Vector3 Object::GetPosition() const
