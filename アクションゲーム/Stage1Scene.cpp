@@ -117,7 +117,7 @@ void Stage1Scene::Init()
 	pt1->SetPosition(-560.0f, -300.0f, 0.0f); // 位置を設定
 	pt1->SetScale(100.0f, 100.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(pt1);
-	
+
 	// UI(敵の数)
 	Texture2D* pt2 = Game::GetInstance()->AddObject<Texture2D>();
 	pt2->SetTexture("assets/texture/ui_BossHP.png"); // 画像を指定
@@ -153,6 +153,17 @@ void Stage1Scene::Init()
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 	Fade::GetInstance()->StartFadeIn();
 	Game::GetInstance()->GetCamera().SetTarget(*player);
+
+	// 以前のカメラ開始位置（ターゲットから見た相対位置）
+	Vector3 initialOffset(0.0f, 80.0f, -180.0f);
+	initialOffset.Normalize();
+
+	// yaw, pitch を計算
+	Vector2 CameraDirection;
+	CameraDirection.x = 0;//PI - atan2(initialOffset.x, initialOffset.z); // yaw
+	CameraDirection.y = -2.14f;//PI + asin(initialOffset.y);                   // pitch
+
+	Game::GetInstance()->GetCamera().SetDirection(CameraDirection);
 
 	DebugUI::RedistDebugFunction([this]() {
 		DebugWallStatus();

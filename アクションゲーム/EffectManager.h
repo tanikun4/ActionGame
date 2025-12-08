@@ -7,7 +7,7 @@ constexpr int EFFECT_POOLSIZE_2D = 5;
 
 enum {
 	TEST_EFFECT3D = 0,
-	TEST_EFFECT2D,
+	SLASH,
 
 	EFFECT_MAX,
 };

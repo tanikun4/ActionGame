@@ -8,6 +8,7 @@
 #include "Arrow.h"
 #include "Bullet.h"
 #include "DebugUI.h"
+#include "EffectManager.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -115,6 +116,31 @@ void Boss::Impl::Damage(int atk) {
 	inviFg = true;
 	m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 	m_Owner->SetColor(Vector4(0, 1, 1, 0.5));
+	//Vector3 forward = m_Camera->GetForwardVector();
+	//Vector3 pos = m_Owner->m_Position - (forward * m_Owner->m_Scale * m_Owner->radius); // 手前に寄せる
+
+	//EffectManager::Play(SLASH, 16, pos, m_Owner->m_Rotation, m_Owner->m_Scale * 10);
+
+	//エフェクト再生の位置調整
+	Vector3 forward = m_Camera->GetForwardVector();
+	Vector3 toCamera = m_Camera->GetPosition() - m_Owner->m_Position;
+	toCamera.Normalize();
+
+	// forward を toCamera 方向へ投影し、横ズレ除去
+	Vector3 adjustedForward = toCamera * forward.Dot(toCamera);
+
+	// 長さを維持したい場合は再正規化
+	adjustedForward.Normalize();
+
+	// 奥行き距離
+	float dist = m_Owner->radius * m_Owner->m_Scale.x;
+
+	// ボスから前方にずらす
+	Vector3 pos = m_Owner->m_Position - adjustedForward * dist;
+
+	EffectManager::Play(SLASH, 16, pos, m_Owner->m_Rotation, m_Owner->m_Scale * 10);
+
+
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 }
 

@@ -53,7 +53,7 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	m_SplitX = data.texture_uv.x;
 	m_SplitY = data.texture_uv.y;
 
-	m_aminflame = (int)(m_SplitX * m_SplitY) / _maxlife; //アニメーション遷移フレーム数設定
+	m_aminflame =  _maxlife / (int)(m_SplitX * m_SplitY); //アニメーション遷移フレーム数設定
 
 	BaseInit(_maxlife, ta_scale, _change_flame);
 }
