@@ -26,15 +26,17 @@ protected:
 	float m_SplitX = 1;
 	float m_SplitY = 1;
 
+	int m_aminflame = 4; //アニメーション遷移フレーム
+
 public:
 
 	EffectBillBoad(Camera* cam); // コンストラクタ
 	EffectBillBoad();
 	~EffectBillBoad(); // デストラクタ
 
-	void Init(LoadedEffectData& data,int _maxlife, DirectX::SimpleMath::Vector3 ta_scale = { -1,-1,-1 });
-	void Init(LoadedEffectData& data, SharedEffect2DData& shared_data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale = { -1,-1,-1 });
-	void Init();
+	void Init(LoadedEffectData& data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale = { -1,-1,-1 }, int _change_flame = 0) { };//オーバーライド用ダミー
+	void Init(LoadedEffectData& data, SharedEffect2DData& shared_data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale = { -1,-1,-1 }, int _change_flame = 0);
+	void Init() {};//オーバーライド用ダミー定義
 	void Update();
 	void Draw();
 	void Uninit();

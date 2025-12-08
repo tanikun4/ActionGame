@@ -22,7 +22,7 @@ EffectObject::~EffectObject()
 
 }
 
-void EffectObject::Init(LoadedEffectData& data, int _maxlife, Vector3 ta_scale) {
+void EffectObject::Init(LoadedEffectData& data, int _maxlife, Vector3 ta_scale, int _change_flame) {
 	// メッシュ読み込み
 	StaticMesh* staticmesh = data.mesh.get();
 
@@ -46,21 +46,13 @@ void EffectObject::Init(LoadedEffectData& data, int _maxlife, Vector3 ta_scale) 
 		m_Materiales[i] = *data.materials[i].get();
 	}
 
-	BaseInit(_maxlife,ta_scale);
+	BaseInit(_maxlife,ta_scale,_change_flame);
 }
 
-void EffectObject::Update() {
-
-	//スケールを変化量分増加
-	m_Scale += scale_changerate;
-
-	//エフェクトのライフタイムを加算
-	++m_lifeflame;
-
-	//生存フレーム限界に達したら、存在フラグをfalseにする
-	if(m_lifeflame >= m_maxlife) {
-		m_live = false;
-	}
+void EffectObject::Update() 
+{
+	BaseUpdate();
+	
 }
 
 void EffectObject::Draw()

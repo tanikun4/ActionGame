@@ -58,5 +58,6 @@ public:
 		DirectX::SimpleMath::Vector3 _pos = { 0,0,0 }, // エフェクト再生位置
 		DirectX::SimpleMath::Vector3 _rot = { 0,0,0 }, // エフェクト再生角度
 		DirectX::SimpleMath::Vector3 _first_scale = { 1,1,1 },  // エフェクト初期スケール
-		DirectX::SimpleMath::Vector3 _ta_scale = { 0,0,0 }); // エフェクト最終スケール
+		DirectX::SimpleMath::Vector3 _ta_scale = { 0,0,0 },  // エフェクト最終スケール
+		int _change_flame = 0); // エフェクト変化開始フレーム
 };

@@ -35,7 +35,7 @@ void EffectManager::Init()
 	// 読み込むデータの配列、ここにエフェクトリソースを追加していく
 	const EffectLoadData g_EffectResources[] = {
 		{"assets/texture/gorufu", "assets/model/gorufu/GolfBall_v2.fbx"},
-        {"assets/texture/number.png","","","", 10,1}
+        {"assets/texture/2DEffect/issen.png","","","", 4,2}
 	};
 
 	m_Instance = make_unique<EffectManager>();
@@ -266,7 +266,8 @@ void EffectManager::Play(int _id,
     Vector3 _pos,
 	Vector3 _rot,
     Vector3 _first_scale,
-    Vector3 _ta_scale)
+    Vector3 _ta_scale,
+    int _change_flame)
 {
 
     //2D部分制作後、プール方式に変更する
@@ -279,7 +280,7 @@ void EffectManager::Play(int _id,
                 e->SetPosition(_pos);//位置を設定
                 e->SetRotation(_rot);//回転を設定
                 e->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
-				e->Init(m_Instance->m_LoadData[_id], _maxlife, _ta_scale);//3Dエフェクト用Initを呼ぶ
+				e->Init(m_Instance->m_LoadData[_id], _maxlife, _ta_scale, _change_flame);//3Dエフェクト用Initを呼ぶ
 				break;//1つだけ再生したいのでループを抜ける
             }
         }
@@ -292,7 +293,7 @@ void EffectManager::Play(int _id,
                 e->SetPosition(_pos);//位置を設定
                 e->SetRotation(_rot);//回転を設定
                 e->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
-                e->Init(m_Instance->m_LoadData[_id], m_Instance->m_Shared2D_Data, _maxlife, _ta_scale);//2Dエフェクト用Initを呼ぶ
+                e->Init(m_Instance->m_LoadData[_id], m_Instance->m_Shared2D_Data, _maxlife, _ta_scale,_change_flame);//2Dエフェクト用Initを呼ぶ
                 break;//1つだけ再生したいのでループを抜ける
             }
         }

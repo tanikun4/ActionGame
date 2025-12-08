@@ -34,20 +34,8 @@ EffectBillBoad::~EffectBillBoad()
 
 }
 
-// 初期化処理(ダミー定義)
-void EffectBillBoad::Init()
-{
-
-}
-
-//初期化処理(ダミー定義)
-void EffectBillBoad::Init(LoadedEffectData& data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale)
-{
-
-}
-
-//初期化処理(多分これしか使わない)
-void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale)
+//初期化処理
+void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale, int _change_flame)
 {
 	// 頂点バッファ取得
 	m_VertexBuffer = shared_data.m_2DVertexBuffer.get();
@@ -65,22 +53,26 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	m_SplitX = data.texture_uv.x;
 	m_SplitY = data.texture_uv.y;
 
-	BaseInit(_maxlife, ta_scale);
+	m_aminflame = (int)(m_SplitX * m_SplitY) / _maxlife; //アニメーション遷移フレーム数設定
+
+	BaseInit(_maxlife, ta_scale, _change_flame);
 }
 
 
 // 更新処理
 void EffectBillBoad::Update()
 {
-	//スケールを変化量分増加
-	m_Scale += scale_changerate;
+	BaseUpdate();
 
-	//エフェクトのライフタイムを加算
-	++m_lifeflame;
-
-	//生存フレーム限界に達したら、存在フラグをfalseにする
-	if (m_lifeflame >= m_maxlife) {
-		m_live = false;
+	if(m_lifeflame % m_aminflame == 0) {//アニメーション用フレームカウントが最大値に達したら
+		++m_NumU;
+		if (m_NumU > m_SplitX) {//U座標が最大値を超えたら
+			m_NumU = 1;
+			++m_NumV;
+			if (m_NumV > m_SplitY) {//V座標が最大値を超えたら
+				m_NumV = 1;
+			}
+		}
 	}
 }
 
