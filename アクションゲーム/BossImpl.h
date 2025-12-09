@@ -54,7 +54,6 @@ private:
 	const float rotate_speed = 0.01;
 	int attack_kind = 0;//UŒ‚‚Ìí—Ş
 	int attack_time = 0;//UŒ‚ŠÔ
-
 	bool notUpdate = false;//XV‚ğ~‚ß‚é‚©‚Ç‚¤‚©
 	DirectX::SimpleMath::Vector3 m_destrot;//‰ñ“]‚Ì–Ú•W“_
 	DirectX::XMFLOAT2 stagesize;
@@ -68,7 +67,6 @@ private:
 	void Move();
 	void AttackUpdate();
 	void SetArrow();
-	bool HitCheck();//UŒ‚‚É“–‚½‚Á‚½‚©‚ğ•Ô‚·
 
 	void DebugBossStatus();
 

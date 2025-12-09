@@ -165,3 +165,21 @@ DirectX::SimpleMath::Vector3 Camera::GetForwardVector() {
 	forward.Normalize();
 	return forward;
 }
+
+Vector3 Camera::GetRightVector() {
+	Vector3 forward = GetForwardVector();
+	Vector3 worldUp(0, 1, 0);
+
+	Vector3 right = forward.Cross(worldUp);
+	right.Normalize();
+	return right;
+}
+
+Vector3 Camera::GetUpVector() {
+	Vector3 forward = GetForwardVector();
+	Vector3 right = GetRightVector();
+
+	Vector3 up = right.Cross(forward);
+	up.Normalize();
+	return up;
+}

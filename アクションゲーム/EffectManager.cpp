@@ -270,30 +270,70 @@ void EffectManager::Play(int _id,
     int _change_flame)
 {
 
-    //2D部分制作後、プール方式に変更する
-    if (m_Instance->m_LoadData[_id].mesh != nullptr) {
+    ////2D部分制作後、プール方式に変更する
+    //if (m_Instance->m_LoadData[_id].mesh != nullptr) {
+
+    //    for (auto& e : m_Instance->m_Effects3D) {
+    //        //非生存エフェクトオブジェクトを発見
+    //        if (!e->GetLive()) {
+    //            //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
+    //            e->SetPosition(_pos);//位置を設定
+    //            e->SetRotation(_rot);//回転を設定
+    //            e->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
+				//e->Init(m_Instance->m_LoadData[_id], _maxlife, _ta_scale, _change_flame);//3Dエフェクト用Initを呼ぶ
+				//break;//1つだけ再生したいのでループを抜ける
+    //        }
+    //    }
+    //}
+    //else {
+    //    for (auto& e : m_Instance->m_Effects2D) {
+    //        //非生存エフェクトオブジェクトを発見
+    //        if (!e->GetLive()) {
+    //            //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
+    //            e->SetPosition(_pos);//位置を設定
+    //            e->SetRotation(_rot);//回転を設定
+    //            e->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
+    //            e->Init(m_Instance->m_LoadData[_id], m_Instance->m_Shared2D_Data, _maxlife, _ta_scale,_change_flame);//2Dエフェクト用Initを呼ぶ
+    //            break;//1つだけ再生したいのでループを抜ける
+    //        }
+    //    }
+    //}
+}
+
+//エフェクト再生関数、EffectParams版
+void EffectManager::Play(int _id,
+    EffectParams _param)
+{
+
+    if (m_Instance->m_LoadData[_id].mesh != nullptr) {// 3D初期化
 
         for (auto& e : m_Instance->m_Effects3D) {
             //非生存エフェクトオブジェクトを発見
             if (!e->GetLive()) {
                 //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
-                e->SetPosition(_pos);//位置を設定
-                e->SetRotation(_rot);//回転を設定
-                e->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
-				e->Init(m_Instance->m_LoadData[_id], _maxlife, _ta_scale, _change_flame);//3Dエフェクト用Initを呼ぶ
-				break;//1つだけ再生したいのでループを抜ける
+                e->SetPosition(_param.pos);//位置を設定
+                e->SetRotation(_param.rot);//回転を設定
+                e->SetScale(_param.scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
+                e->Init(m_Instance->m_LoadData[_id], _param.maxLife, 
+                    _param.endpos, _param.change_posFrame,
+                    _param.endrot, _param.change_rotFrame,
+                    _param.endscale, _param.change_scaleFrame);//3Dエフェクト用Initを呼ぶ
+                break;//1つだけ再生したいのでループを抜ける
             }
         }
     }
-    else {
+    else { // 2D初期化
         for (auto& e : m_Instance->m_Effects2D) {
             //非生存エフェクトオブジェクトを発見
             if (!e->GetLive()) {
                 //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
-                e->SetPosition(_pos);//位置を設定
-                e->SetRotation(_rot);//回転を設定
-                e->SetScale(_first_scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
-                e->Init(m_Instance->m_LoadData[_id], m_Instance->m_Shared2D_Data, _maxlife, _ta_scale,_change_flame);//2Dエフェクト用Initを呼ぶ
+                e->SetPosition(_param.pos);//位置を設定
+                e->SetRotation(_param.rot);//回転を設定
+                e->SetScale(_param.scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
+                e->Init(m_Instance->m_LoadData[_id], m_Instance->m_Shared2D_Data, _param.maxLife,
+                    _param.endpos, _param.change_posFrame, 
+                    _param.endrot, _param.change_rotFrame, 
+                    _param.endscale, _param.change_scaleFrame);//2Dエフェクト用Initを呼ぶ
                 break;//1つだけ再生したいのでループを抜ける
             }
         }

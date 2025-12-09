@@ -22,7 +22,11 @@ EffectObject::~EffectObject()
 
 }
 
-void EffectObject::Init(LoadedEffectData& data, int _maxlife, Vector3 ta_scale, int _change_flame) {
+void EffectObject::Init(LoadedEffectData& data, int _maxlife,
+	DirectX::SimpleMath::Vector3 _ta_pos, int _pos_changeframe,
+	DirectX::SimpleMath::Vector3 _ta_rot, int _rot_changeframe,
+	DirectX::SimpleMath::Vector3 _ta_scale, int _scale_changeframe)//‰Šú‰»ˆ— 
+{
 	// ƒƒbƒVƒ…“Ç‚İ‚İ
 	StaticMesh* staticmesh = data.mesh.get();
 
@@ -46,7 +50,7 @@ void EffectObject::Init(LoadedEffectData& data, int _maxlife, Vector3 ta_scale, 
 		m_Materiales[i] = *data.materials[i].get();
 	}
 
-	BaseInit(_maxlife,ta_scale,_change_flame);
+	BaseInit(_maxlife, _ta_pos, _pos_changeframe, _ta_rot, _rot_changeframe, _ta_scale, _scale_changeframe);
 }
 
 void EffectObject::Update() 

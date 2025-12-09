@@ -38,6 +38,8 @@ public:
 	DirectX::SimpleMath::Vector2 GetCameraDirection() { return m_CameraDirection; }
 
 	DirectX::SimpleMath::Vector3 GetForwardVector(); // カメラの前方向ベクトルを取得
+	DirectX::SimpleMath::Vector3 GetRightVector(); // カメラの右方向ベクトルを取得
+	DirectX::SimpleMath::Vector3 GetUpVector(); // カメラの上方向ベクトルを取得
 
 	DirectX::SimpleMath::Vector3 GetPosition() { return m_Position; }
 

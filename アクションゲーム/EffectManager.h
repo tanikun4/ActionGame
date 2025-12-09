@@ -12,8 +12,6 @@ enum {
 	EFFECT_MAX,
 };
 
-
-
 //エフェクト管理クラス、シングルトンパターンで、エフェクトの初回読込、生成処理をまとめて行う
 class EffectManager
 {
@@ -60,4 +58,9 @@ public:
 		DirectX::SimpleMath::Vector3 _first_scale = { 1,1,1 },  // エフェクト初期スケール
 		DirectX::SimpleMath::Vector3 _ta_scale = { 0,0,0 },  // エフェクト最終スケール
 		int _change_flame = 0); // エフェクト変化開始フレーム
+
+	// エフェクト再生関数
+	static void Play(
+		int _id,// エフェクトID
+		EffectParams _param); // エフェクト変化開始フレーム
 };

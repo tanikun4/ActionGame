@@ -244,3 +244,20 @@ void GolfBall::SetColor(const DirectX::SimpleMath::Vector4& color) {//色を変える
 		m.get()->Update();
 	}
 }
+
+Vector3 GolfBall::ToCameraEffectPos(Vector3 _pos, float _dist) {
+	//エフェクト再生の位置調整
+	Vector3 forward = m_Camera->GetForwardVector();
+	Vector3 toCamera = m_Camera->GetPosition() - _pos;
+	toCamera.Normalize();
+
+	// forward を toCamera 方向へ投影し、横ズレ除去
+	Vector3 adjustedForward = toCamera * forward.Dot(toCamera);
+
+	// 長さを維持したい場合は再正規化
+	adjustedForward.Normalize();
+
+	// 対象座標からdist分前方にずらすした座標を返す
+	Vector3 pos = _pos - adjustedForward * _dist;
+	return pos;
+}

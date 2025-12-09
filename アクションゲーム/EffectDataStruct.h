@@ -33,3 +33,22 @@ struct SharedEffect2DData {
 	std::unique_ptr<VertexBuffer<VERTEX_3D>> m_2DVertexBuffer;
 	std::unique_ptr<IndexBuffer> m_2DIndexBuffer;
 };
+
+// エフェクトパラメータ構造体、エフェクト再生時のパラメータをまとめて渡すために使用
+//-FLT_MAXは変数が未代入であることを示す、この値のままの場合は変化させない
+struct EffectParams
+{
+    DirectX::SimpleMath::Vector3 pos = {0,0,0};                                     // 開始位置
+    DirectX::SimpleMath::Vector3 endpos = { -FLT_MAX ,-FLT_MAX ,-FLT_MAX };         // 終了位置
+
+    DirectX::SimpleMath::Vector3 rot = { 0,0,0 };                                   // 開始回転
+    DirectX::SimpleMath::Vector3 endrot = { -FLT_MAX ,-FLT_MAX ,-FLT_MAX };         // 終了回転(2Dで使う場合は、z回転量のみを使用)
+
+    DirectX::SimpleMath::Vector3 scale = { 0,0,0 };                             // 開始スケール
+    DirectX::SimpleMath::Vector3 endscale = { -FLT_MAX ,-FLT_MAX ,-FLT_MAX };   // 終了スケール(2Dで使う場合は、縦横の拡大縮小量xyのみを使用)
+
+    int maxLife = 0;                             // 寿命
+    int change_posFrame = 0;                     // 座標変化開始フレーム
+    int change_rotFrame = 0;                     // 回転変化開始フレーム
+    int change_scaleFrame = 0;                   // スケール変化開始フレーム
+};

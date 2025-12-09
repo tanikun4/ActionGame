@@ -32,6 +32,7 @@ protected:
 	
 	const float gravity = 0.07f; //重力
 
+	DirectX::SimpleMath::Vector3 ToCameraEffectPos(DirectX::SimpleMath::Vector3 _pos,float _dist);//対象の位置からカメラ方向へ指定距離だけ向かう座標を返す(エフェクトの位置調整に使用)
 
 public:
 
@@ -47,6 +48,8 @@ public:
 	void Draw();
 	void Uninit();
 	bool CheckGround();
+
+	
 
 	// 状態の設定・取得
 	void SetState(int s);

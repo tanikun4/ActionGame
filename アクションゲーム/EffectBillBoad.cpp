@@ -35,7 +35,10 @@ EffectBillBoad::~EffectBillBoad()
 }
 
 //初期化処理
-void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_data, int _maxlife, DirectX::SimpleMath::Vector3 ta_scale, int _change_flame)
+void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_data, int _maxlife,
+	DirectX::SimpleMath::Vector3 _ta_pos, int _pos_changeframe,
+	DirectX::SimpleMath::Vector3 _ta_rot, int _rot_changeframe,
+	DirectX::SimpleMath::Vector3 _ta_scale, int _scale_changeframe)
 {
 	// 頂点バッファ取得
 	m_VertexBuffer = shared_data.m_2DVertexBuffer.get();
@@ -53,9 +56,22 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	m_SplitX = data.texture_uv.x;
 	m_SplitY = data.texture_uv.y;
 
-	m_aminflame =  _maxlife / (int)(m_SplitX * m_SplitY); //アニメーション遷移フレーム数設定
+	m_aminframe =  _maxlife / (int)(m_SplitX * m_SplitY); //アニメーション遷移フレーム数設定
 
-	BaseInit(_maxlife, ta_scale, _change_flame);
+	BaseInit(_maxlife, _ta_pos, _pos_changeframe, _ta_rot, _rot_changeframe, _ta_scale, _scale_changeframe);
+
+	// ビルボード用に座標変化量と回転変化量、スケール変化量を調整
+	// 3D移動ベクトルに変換
+	Vector3 new_pos_changerate =
+		pos_changerate.x * m_Camera->GetForwardVector() +
+		pos_changerate.y * m_Camera->GetUpVector() +
+		pos_changerate.z * m_Camera->GetForwardVector();
+
+	pos_changerate = new_pos_changerate;
+
+	rot_changerate.x = 0;
+	rot_changerate.y = 0;
+	scale_changerate.z = 0;
 }
 
 
@@ -64,7 +80,7 @@ void EffectBillBoad::Update()
 {
 	BaseUpdate();
 
-	if(m_lifeflame % m_aminflame == 0) {//アニメーション用フレームカウントが最大値に達したら
+	if(m_lifeframe % m_aminframe == 0) {//アニメーション用フレームカウントが最大値に達したら
 		++m_NumU;
 		if (m_NumU > m_SplitX) {//U座標が最大値を超えたら
 			m_NumU = 1;

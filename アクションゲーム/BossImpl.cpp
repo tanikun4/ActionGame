@@ -116,58 +116,13 @@ void Boss::Impl::Damage(int atk) {
 	inviFg = true;
 	m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 	m_Owner->SetColor(Vector4(0, 1, 1, 0.5));
-	//Vector3 forward = m_Camera->GetForwardVector();
-	//Vector3 pos = m_Owner->m_Position - (forward * m_Owner->m_Scale * m_Owner->radius); // 手前に寄せる
 
+	Vector3 pos = m_Owner->ToCameraEffectPos(m_Owner->m_Position, m_Owner->radius * m_Owner->m_Scale.x);
+	
 	//EffectManager::Play(SLASH, 16, pos, m_Owner->m_Rotation, m_Owner->m_Scale * 10);
-
-	//エフェクト再生の位置調整
-	Vector3 forward = m_Camera->GetForwardVector();
-	Vector3 toCamera = m_Camera->GetPosition() - m_Owner->m_Position;
-	toCamera.Normalize();
-
-	// forward を toCamera 方向へ投影し、横ズレ除去
-	Vector3 adjustedForward = toCamera * forward.Dot(toCamera);
-
-	// 長さを維持したい場合は再正規化
-	adjustedForward.Normalize();
-
-	// 奥行き距離
-	float dist = m_Owner->radius * m_Owner->m_Scale.x;
-
-	// ボスから前方にずらす
-	Vector3 pos = m_Owner->m_Position - adjustedForward * dist;
-
-	EffectManager::Play(SLASH, 16, pos, m_Owner->m_Rotation, m_Owner->m_Scale * 10);
 
 
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
-}
-
-bool Boss::Impl::HitCheck() {
-	//vector<Pole*> pole = Game::GetInstance()->GetObjects<Pole>();
-	//Collision::Sphere balCollision = { m_Position, radius };
-	//if (pole[0]->GetState() == 1) {
-	//	if (CheckHit(pole[0]->hitbox, balCollision)) {
-	//		//vector<Player*> player = Game::GetInstance()->GetObjects<Player>();
-	//		//hitbackrotation = -1.0f * player[0]->GetForwardVector();
-	//		Damage(pole[0]->atk);
-	//		Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
-	//		return true;
-	//	}
-	//}
-	//vector<Arrow*> arrow = Game::GetInstance()->GetObjects<Arrow>();
-	//for (auto& ar : arrow) {
-	//	if (ar->GetId() == 1) {
-	//		if (CheckHit(ar->hitbox, balCollision)) {
-	//			hitbackrotation = ar->GetForwardVector();
-	//			Damage(ar->GetAtk());
-	//			Sound::GetInstance()->Play(SOUND_SE_ARROWHIT);
-	//			return true;
-	//		}
-	//	}
-	//}
-	return false;
 }
 
 void Boss::Impl::LookAt(Vector3 ta_pos) {
