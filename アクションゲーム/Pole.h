@@ -25,7 +25,8 @@ public:
 		SWING,
 		GUARD,
 		STANCE,
-		ATTACK
+		ATTACK,
+		SWING_VERTICAL
 	};
 
 	Pole(Camera* cam); // コンストラクタ
@@ -50,6 +51,7 @@ public:
 	}
 	void OnHit(Object* ob) override {};
 	void Swing();
+	void Swing_Vertical();
 	void SwingEnd();
 	void GuardStart();
 	void GuardEnd();

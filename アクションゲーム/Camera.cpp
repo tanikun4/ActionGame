@@ -59,11 +59,9 @@ void Camera::Update()
 	//ターゲットの位置を取得し、距離をとる
 	if (m_TargetObject) {
 
-		Vector3 forward = GetForwardVector();
-
 		// ターゲットから一定距離後方にカメラを置く
-		float distance = 60.0f;
-		Vector3 offset = forward * distance;
+		float distance = 80.0f;
+		Vector3 offset = GetForwardVector() * distance;
 
 		Vector3 pPos = m_TargetObject->GetPosition();
 

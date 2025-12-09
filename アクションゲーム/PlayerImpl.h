@@ -82,6 +82,6 @@ private:
     void UpdateDodge();
     void UpdateCounter();
 
-    void DebugWeaponOffset();
+    void DebugWeaponStatus();
     void DebugPlayerStatus();
 };

@@ -35,7 +35,8 @@ void EffectManager::Init()
 	// 読み込むデータの配列、ここにエフェクトリソースを追加していく
 	const EffectLoadData g_EffectResources[] = {
 		{"assets/texture/gorufu", "assets/model/gorufu/GolfBall_v2.fbx"},
-        {"assets/texture/2DEffect/issen_one.png","","","", 1,1}
+        {"assets/texture/2DEffect/issen_one.png","","","", 1,1},
+        { "assets/texture/2DEffect/issen.png","","","", 4,2 },
 	};
 
 	m_Instance = make_unique<EffectManager>();

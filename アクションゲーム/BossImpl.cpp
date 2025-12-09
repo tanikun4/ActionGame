@@ -31,16 +31,19 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	static bool update = true;
 	static bool death;
 	ImGui::Checkbox("Update", &update);
-	ImGui::Checkbox("BOSSDEATH", &death);
+	if (ImGui::Button("BOSS DEATH"))
+		hp = 0;
+
+	if (ImGui::Button("BOSSHP MAX"))
+		hp = 50;
+
 	if (update) {
 		notUpdate = false;
 	}
 	else {
 		notUpdate = true;
 	}
-	if (death) {
-		hp = 0;
-	}
+
 	ImGui::End();
 }
 
@@ -122,14 +125,17 @@ void Boss::Impl::Damage(int atk) {
 	pos = m_Owner->ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x);
 	pos -= m_Camera->GetRightVector() * m_Owner->radius;
 
+	//エフェクトパラメーター構造体作成
 	EffectParams param;
 	param.pos = pos;
 	param.pos_amount = { m_Owner->radius * 2, 0 ,0};
-	param.scale = m_Owner->m_Scale * 5;
+	param.scale = m_Owner->m_Scale * 10;
 	param.maxLife = 12;
 
-	EffectManager::Play(SLASH, param);
+	// エフェクト再生
+	EffectManager::Play(EFFECT_SLASH, param);
 
+	// SE再生
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 }
 

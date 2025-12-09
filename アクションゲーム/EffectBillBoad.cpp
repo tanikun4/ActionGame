@@ -52,6 +52,9 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	// テクスチャ情報取得(単体)
 	m_Texture = data.textures.back().get();
 
+	m_NumU = 1;
+	m_NumV = 1;
+
 	// UV分割数取得
 	m_SplitX = data.texture_uv.x;
 	m_SplitY = data.texture_uv.y;

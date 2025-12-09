@@ -54,6 +54,7 @@ void Player::Impl::Init() {
     // デバッグ関数の登録
     DebugUI::RedistDebugFunction([this]() {
         DebugPlayerStatus();
+        DebugWeaponStatus();
         });
 }
 
@@ -192,8 +193,8 @@ void Player::Impl::OnHit(TestCube* cube) {
 // -------------------------
 
 // 武器のオフセット調整
-void Player::Impl::DebugWeaponOffset() {
-    ImGui::Begin("WeaponOffset");
+void Player::Impl::DebugWeaponStatus() {
+    ImGui::Begin("WeaponStatus");
 
     static Vector3 weapon_offset{};
     ImGui::SliderFloat3("WeaponOffset", &weapon_offset.x, -10.0f, 10.0f);
@@ -204,8 +205,16 @@ void Player::Impl::DebugWeaponOffset() {
     if (ImGui::Button("Set Int"))
         weapon_offset = Vector3((int)weapon_offset.x, (int)weapon_offset.y, (int)weapon_offset.z);
 
-    if (m_pole)
+    static Vector3 weapon_angle{};
+    ImGui::SliderFloat3("WeaponAngle", &weapon_angle.x, -PI, PI);
+
+    if (ImGui::Button("Reset Angle"))
+        weapon_angle = Vector3(0, 0, 0);
+
+    if (m_pole) {
         m_pole->SetOffsetDebug(weapon_offset);
+        m_pole->SetAngleDebug(weapon_angle);
+    }
 
     ImGui::End();
 }

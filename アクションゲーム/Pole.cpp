@@ -116,7 +116,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	switch (m_State) {
 	case NORMAL: //’Êíó‘Ô
-		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
+		m_Rotation = { PI / 2 + angle_debug.x, rotation.y + PI / 2 + angle_debug.y, PI / 2 + angle_debug.z};
 		m_baseRotation = m_Rotation;
 		break;
 	case SWING: //U‚èUŒ‚’†
@@ -134,10 +134,14 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	case ATTACK: //UŒ‚’†(‰ñ“]UŒ‚‚È‚Ç)
 		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
 		break;
+	case SWING_VERTICAL: //cU‚èUŒ‚’†
+		m_Rotation.z -= PI / 20;
+		++m_swing_time;
+		break;
 	}
 
 	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//Šp“x‚ğƒ‰ƒWƒAƒ“‚É•ÏŠ·
-	m_Position = { position.x + sin(rotation.y) * radius, position.y,  position.z + cos(rotation.y) * radius };
+	m_Position = { position.x + sin(rotation.y + angle_debug.y) * radius, position.y,  position.z + cos(rotation.y + angle_debug.y) * radius };
 	m_Position += m_offset;
 	obb = { {m_Position.x + sin(m_Rotation.y - PI / 2) * radius * offset, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * offset},
 		m_Rotation,
@@ -193,6 +197,10 @@ void Pole::Uninit()
 }
 
 void Pole::Swing() {
+	//‚È‚ñ‚©‚µ‚½‚Æ‚«‚É‹–ìŠp
+	//UŒ‚‚É“–‚½‚Á‚½‚çƒJƒƒ‰—h‚ç‚·
+	//U‚Á‚½‚ÌŠ´G
+	//“®‚«‚É‰Á‘¬“x‚ğ•t‚¯‚Ä•Ï‰»‚ğ‚½‚¹‚é‚Æ‚¢‚¢
 	if (m_State == NORMAL) {
 		m_Rotation.y -= PI / 2;
 		m_State = SWING;
@@ -201,6 +209,28 @@ void Pole::Swing() {
 	}
 	else if (m_State == STANCE) {
 		m_State = SWING;
+		m_swing_time = 0;
+		m_stance_time = 0;
+		atkFg = true;
+	}
+}
+
+void Pole::Swing_Vertical() {
+	//‚È‚ñ‚©‚µ‚½‚Æ‚«‚É‹–ìŠp
+	//UŒ‚‚É“–‚½‚Á‚½‚çƒJƒƒ‰—h‚ç‚·
+	//U‚Á‚½‚ÌŠ´G
+	//“®‚«‚É‰Á‘¬“x‚ğ•t‚¯‚Ä•Ï‰»‚ğ‚½‚¹‚é‚Æ‚¢‚¢
+
+	// x‚ğPI / 2‘«‚µ‚Ä‚©‚çAz‚ğ•Ï‰»‚³‚¹‚é‚ÆcU‚è‚ª‰Â”\
+	if (m_State == NORMAL) {
+		m_Rotation.x += PI / 2;
+		m_Rotation.z += 1.8f;
+		m_State = SWING_VERTICAL;
+		m_swing_time = 0;
+		atkFg = true;
+	}
+	else if (m_State == STANCE) {
+		m_State = SWING_VERTICAL;
 		m_swing_time = 0;
 		m_stance_time = 0;
 		atkFg = true;

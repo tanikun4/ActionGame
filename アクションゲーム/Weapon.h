@@ -35,6 +35,9 @@ protected:
 
     DirectX::SimpleMath::Vector3 offset_debug{};//位置の補正値(デバッグ用)
 
+
+    DirectX::SimpleMath::Vector3 angle_debug{};//角度の補正値(デバッグ用)
+
     int atk = 1;//攻撃力
     int flamecount = 0;//タイマー変数
 	bool pl = false;//プレイヤーの武器かどうか
@@ -62,5 +65,7 @@ public:
 	void SetOffset(DirectX::SimpleMath::Vector3 off) { m_offset = off; }
 
 	void SetOffsetDebug(DirectX::SimpleMath::Vector3 off) { offset_debug = off; }
+
+    void SetAngleDebug(DirectX::SimpleMath::Vector3 an) { angle_debug = an; }
 };
 
