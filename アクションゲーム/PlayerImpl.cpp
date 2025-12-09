@@ -295,7 +295,7 @@ void Player::Impl::DodgeRoll() {
 // UŒ‚ˆ—
 void Player::Impl::Attack() {
     if (Input::GetKeyTrigger(VK_K) && !GuardFg) {
-        if (m_pole) m_pole->Swing();
+        if (m_pole) m_pole->Swing_Vertical();
         m_Owner->m_State = ATTACK;
         Sound::GetInstance()->Play(SOUND_SE_SWING);
     }

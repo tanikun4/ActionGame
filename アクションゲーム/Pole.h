@@ -50,9 +50,14 @@ public:
 		ob->OnHit(this);
 	}
 	void OnHit(Object* ob) override {};
+
+
 	void Swing();
 	void Swing_Vertical();
 	void SwingEnd();
+
+	void SwingUpdate();
+
 	void GuardStart();
 	void GuardEnd();
 
@@ -63,6 +68,8 @@ public:
 	void StanceUpdate();
 	void StanceEnd();
 	void ChangeState(int state) {}; // ó‘Ô‚ğ•ÏX‚·‚é(Œ»İ–¢g—p)
+
+
 	int GetState();//ó‘Ô‚ğ•Ô‚·
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }

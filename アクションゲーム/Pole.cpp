@@ -141,11 +141,45 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	}
 
 	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//角度をラジアンに変換
-	m_Position = { position.x + sin(rotation.y + angle_debug.y) * radius, position.y,  position.z + cos(rotation.y + angle_debug.y) * radius };
+
+	m_Position = { 
+		position.x + sin(rotation.y + angle_debug.y) * radius, 
+		position.y ,  
+		position.z + cos(rotation.y + angle_debug.y) * radius };
 	m_Position += m_offset;
-	obb = { {m_Position.x + sin(m_Rotation.y - PI / 2) * radius * offset, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * offset},
+	//obb = { 
+	//    {
+	//	m_Position.x + sin(m_Rotation.y - PI / 2) * radius * offset, 
+	//	m_Position.y,
+	//	m_Position.z + cos(m_Rotation.y - PI / 2) * radius * offset
+	//	},
+	//	m_Rotation,
+	//	{ m_Scale.x,m_Scale.y * 1.5f ,m_Scale.z} };
+
+	// 回転行列とワールド行列
+	Matrix S = Matrix::CreateScale(m_Scale);
+	Matrix R = Matrix::CreateFromYawPitchRoll(
+		m_Rotation.y,
+		m_Rotation.x,
+		m_Rotation.z
+	);
+	Matrix T = Matrix::CreateTranslation(m_Position);
+
+	Matrix world = S * R * T;
+
+	// --- OBB の中心位置を「武器の中心」に補正 ---
+	// 武器モデルの pivot は "持ち手先端"
+	Vector3 obbLocalCenter = { 0.0f, m_Scale.y * 0.2f, 0.0f };
+
+	// ワールド座標へ変換
+	Vector3 obbWorldCenter = Vector3::Transform(obbLocalCenter, world);
+
+	// --- OBBの更新 ---
+	obb = {
+		obbWorldCenter,           // ← 完全に一致する OBB中心
 		m_Rotation,
-		{ m_Scale.x,m_Scale.y * 1.5f ,m_Scale.z} };
+		{ m_Scale.x, m_Scale.y * 1.5f, m_Scale.z }
+	};
 }
 
 //=======================================
@@ -249,7 +283,7 @@ void Pole::AttackStart() { //攻撃状態になるだけの関数、回転切り等で使用
 	atkFg = true;
 }
 
-void Pole::AttackEnd() { //攻撃状態になるだけの関数、回転切り等で使用
+void Pole::AttackEnd() { //攻撃状態終了
 	m_State = NORMAL;
 	atkFg = false;
 }
