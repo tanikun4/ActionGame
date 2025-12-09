@@ -117,10 +117,18 @@ void Boss::Impl::Damage(int atk) {
 	m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 	m_Owner->SetColor(Vector4(0, 1, 1, 0.5));
 
-	Vector3 pos = m_Owner->ToCameraEffectPos(m_Owner->m_Position, m_Owner->radius * m_Owner->m_Scale.x);
-	
-	//EffectManager::Play(SLASH, 16, pos, m_Owner->m_Rotation, m_Owner->m_Scale * 10);
+	//左から右へ移動するエフェクト再生
+	Vector3 pos = m_Owner->m_Position;
+	pos = m_Owner->ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x);
+	pos -= m_Camera->GetRightVector() * m_Owner->radius;
 
+	EffectParams param;
+	param.pos = pos;
+	param.pos_amount = { m_Owner->radius * 2, 0 ,0};
+	param.scale = m_Owner->m_Scale * 5;
+	param.maxLife = 12;
+
+	EffectManager::Play(SLASH, param);
 
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 }

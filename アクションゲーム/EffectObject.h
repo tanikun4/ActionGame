@@ -21,9 +21,9 @@ public:
     std::vector<Texture*> m_Textures; // テクスチャ
 
     void Init(LoadedEffectData& data, int _maxlife,
-        DirectX::SimpleMath::Vector3 _ta_pos, int _pos_changeframe,
-        DirectX::SimpleMath::Vector3 _ta_rot, int _rot_changeframe,
-        DirectX::SimpleMath::Vector3 _ta_scale, int _scale_changeframe);//初期化処理
+        DirectX::SimpleMath::Vector3 _pos_amount, int _pos_changeframe,
+        DirectX::SimpleMath::Vector3 _rot_amount, int _rot_changeframe,
+        DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe);//初期化処理
 	void Init() {};//オーバーライド用ダミー
     void Update();
     void Draw();

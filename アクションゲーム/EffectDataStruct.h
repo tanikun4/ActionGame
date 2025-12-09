@@ -39,15 +39,14 @@ struct SharedEffect2DData {
 struct EffectParams
 {
     DirectX::SimpleMath::Vector3 pos = {0,0,0};                                     // 開始位置
-    DirectX::SimpleMath::Vector3 endpos = { -FLT_MAX ,-FLT_MAX ,-FLT_MAX };         // 終了位置
+    DirectX::SimpleMath::Vector3 pos_amount = { 0,0,0 };                            // 座標変化量
 
     DirectX::SimpleMath::Vector3 rot = { 0,0,0 };                                   // 開始回転
-    DirectX::SimpleMath::Vector3 endrot = { -FLT_MAX ,-FLT_MAX ,-FLT_MAX };         // 終了回転(2Dで使う場合は、z回転量のみを使用)
+    DirectX::SimpleMath::Vector3 rot_amount = { 0,0,0 };                            // 回転変化量(2Dで使う場合はzのみを使用)
 
-    DirectX::SimpleMath::Vector3 scale = { 0,0,0 };                             // 開始スケール
-    DirectX::SimpleMath::Vector3 endscale = { -FLT_MAX ,-FLT_MAX ,-FLT_MAX };   // 終了スケール(2Dで使う場合は、縦横の拡大縮小量xyのみを使用)
-
-    int maxLife = 0;                             // 寿命
+    DirectX::SimpleMath::Vector3 scale = { 1,1,1 };                                 // 開始スケール
+	DirectX::SimpleMath::Vector3 scale_amount = { 0,0,0 };                          // スケール変化量(2Dで使う場合はxyのみを使用)
+    int maxLife = 10;                             // 寿命
     int change_posFrame = 0;                     // 座標変化開始フレーム
     int change_rotFrame = 0;                     // 回転変化開始フレーム
     int change_scaleFrame = 0;                   // スケール変化開始フレーム

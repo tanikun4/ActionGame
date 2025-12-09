@@ -94,11 +94,11 @@
     <Filter Include="ソース ファイル\Effect\EfectObject%283D%29">
       <UniqueIdentifier>{0e283b26-692b-4d96-ba8f-fb00dd121563}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Effect\EffectBillBoad%282D%29">
-      <UniqueIdentifier>{92bd4fd9-284a-4f67-b84c-c1cc6f029d79}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Effect\EffectManager">
       <UniqueIdentifier>{7586cab4-08d0-4cd0-80a8-27e5e2be824b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29">
+      <UniqueIdentifier>{92bd4fd9-284a-4f67-b84c-c1cc6f029d79}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -265,7 +265,7 @@
       <Filter>ソース ファイル\Effect\EffectManager</Filter>
     </ClCompile>
     <ClCompile Include="EffectBillBoad.cpp">
-      <Filter>ソース ファイル\Effect\EffectBillBoad%282D%29</Filter>
+      <Filter>ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -468,7 +468,7 @@
       <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
     <ClInclude Include="EffectBillBoad.h">
-      <Filter>ソース ファイル\Effect\EffectBillBoad%282D%29</Filter>
+      <Filter>ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
