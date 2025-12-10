@@ -470,6 +470,9 @@
     <ClInclude Include="EffectBillBoad.h">
       <Filter>ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29</Filter>
     </ClInclude>
+    <ClInclude Include="AngleAnim.h">
+      <Filter>ソース ファイル\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl">

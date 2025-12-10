@@ -64,13 +64,12 @@ void Boss::Impl::Update() {
 	if (hp <= 0 || notUpdate) { return; };
 	switch (m_State) {
 	case NORMAL:
-		LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
 		Move();
 		if (flamecount > 360) {
 			m_State = ATTACK;
 			flamecount = 0;
 			m_Owner->m_Velocity_f = 0;
-			attack_kind = 2;//rand() % KIND_MAX;
+			attack_kind = rand() % KIND_MAX;
 		}
 		if (flamecount % 90 == 0 && flamecount != 0) {
 			ShotBullet();
@@ -83,6 +82,9 @@ void Boss::Impl::Update() {
 	}
 
 
+	if (m_lookatFg)
+	  LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
+	
 	if (inviFg) {
 		++invicount;
 	}
@@ -133,7 +135,7 @@ void Boss::Impl::Damage(int atk) {
 	param.maxLife = 12;
 
 	// ƒGƒtƒFƒNƒgÄ¶
-	EffectManager::Play(EFFECT_SLASH, param);
+	EffectManager::GetInstance()->Play(EFFECT_SLASH, param);
 
 	// SEÄ¶
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
@@ -170,7 +172,6 @@ void Boss::Impl::LookAt(Vector3 ta_pos) {
 }
 
 void Boss::Impl::AttackUpdate() {
-	LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
 	int weapon_state = m_weapon->GetState();
 	switch (attack_kind) {
 	case SWING:
@@ -185,9 +186,6 @@ void Boss::Impl::AttackUpdate() {
 			flamecount = 0;
 			m_weapon->SwingEnd();
 		}
-		break;
-	case SHOT:
-
 		break;
 
 	case ROTATESWING://‰ñ“]Ø‚è
@@ -204,12 +202,43 @@ void Boss::Impl::AttackUpdate() {
 			++attack_time;
 		}
 
-		if (attack_time > 600) {
+		if (attack_time > 300) {
 			m_weapon->AttackEnd();
 			m_State = NORMAL;
 			flamecount = 0;
 			attack_time = 0;
 			attack_kind = NONE;//UŒ‚I—¹
+		}
+
+		break;
+	
+	case SWING_VERTICAL://cU‚è
+		if (weapon_state == Pole::STATE::NORMAL) {
+			m_weapon->Stance_Vertical();
+		}
+		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 120 && !m_rushFg) {
+			m_lookatFg = false;
+			m_ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
+			m_ta_pos.y = m_Owner->m_Position.y;//‚‚³‚Í‚»‚Ì‚Ü‚Ü
+			m_rushFg = true;
+
+		}
+
+		if (weapon_state == Pole::STATE::STANCE && m_rushFg) {
+			//‹ß‚Ã‚¢‚½‚çU‚é
+			Move();
+			if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 5 &&
+				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
+				m_weapon->Swing_Vertical();
+				m_rushFg = false;
+			}
+		}
+
+		if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
+			m_State = NORMAL;
+			flamecount = 0;
+			m_weapon->SwingEnd();
+			m_lookatFg = true;
 		}
 
 		break;
@@ -237,8 +266,13 @@ void Boss::Impl::ShotBullet() {
 
 }
 
-void Boss::Impl::Move() {
-	m_Owner->m_Velocity_f = ForwardVelocity / 2;
+void Boss::Impl::Move(){
+	if (m_rushFg) {
+		m_Owner->m_Velocity_f = m_speed * 8;
+	}
+	else {
+		m_Owner->m_Velocity_f = m_speed;
+	}
 	if (m_State == 0) {
 
 	}

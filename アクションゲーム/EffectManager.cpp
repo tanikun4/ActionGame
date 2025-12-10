@@ -306,16 +306,16 @@ void EffectManager::Play(int _id,
     EffectParams _param)
 {
 
-    if (m_Instance->m_LoadData[_id].mesh != nullptr) {// 3D初期化
+    if (m_LoadData[_id].mesh != nullptr) {// 3D初期化
 
-        for (auto& e : m_Instance->m_Effects3D) {
+        for (auto& e : m_Effects3D) {
             //非生存エフェクトオブジェクトを発見
             if (!e->GetLive()) {
                 //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
                 e->SetPosition(_param.pos);//位置を設定
                 e->SetRotation(_param.rot);//回転を設定
                 e->SetScale(_param.scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
-                e->Init(m_Instance->m_LoadData[_id], _param.maxLife, 
+                e->Init(m_LoadData[_id], _param.maxLife, 
                     _param.pos_amount, _param.change_posFrame,
                     _param.rot_amount, _param.change_rotFrame,
                     _param.scale_amount, _param.change_scaleFrame);//3Dエフェクト用Initを呼ぶ
@@ -324,14 +324,14 @@ void EffectManager::Play(int _id,
         }
     }
     else { // 2D初期化
-        for (auto& e : m_Instance->m_Effects2D) {
+        for (auto& e : m_Effects2D) {
             //非生存エフェクトオブジェクトを発見
             if (!e->GetLive()) {
                 //ロード済みデータと引数を使い、エフェクトオブジェクト初期化
                 e->SetPosition(_param.pos);//位置を設定
                 e->SetRotation(_param.rot);//回転を設定
                 e->SetScale(_param.scale);//最初のスケールを設定後、Initでスケール変化率を計算するので先に行う必要あり
-                e->Init(m_Instance->m_LoadData[_id], m_Instance->m_Shared2D_Data, _param.maxLife,
+                e->Init(m_LoadData[_id], m_Shared2D_Data, _param.maxLife,
                     _param.pos_amount, _param.change_posFrame,
                     _param.rot_amount, _param.change_rotFrame,
                     _param.scale_amount, _param.change_scaleFrame);//2Dエフェクト用Initを呼ぶ

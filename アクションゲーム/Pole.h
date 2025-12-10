@@ -1,7 +1,7 @@
 #pragma once
 #include "TestCube.h"
 #include "Weapon.h"
-
+#include "AngleAnim.h"
 
 //-----------------------------------------------------------------------------
 // Poleクラス
@@ -15,9 +15,12 @@ private:
 	int m_State = 0; // 0:通常状態・1:攻撃中 2:ガード中 
 	int m_swing_time = 0; //スイング時間カウント
 	int m_stance_time = 0;//構え時間カウント
+	int m_stance_swingframe = -1;//構えから振りに移行する場合の振り開始フレーム
 	bool atkFg = false;//攻撃判定があるかどうか
 
 	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
+
+	AngleAnim m_SwingAnim;
 public:
 
 	enum STATE {
@@ -56,7 +59,14 @@ public:
 	void Swing_Vertical();
 	void SwingEnd();
 
+	void SwingStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t);
 	void SwingUpdate();
+
+	void Stance_Vertical();
+
+	void StanceStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t);
+	void StanceToSwing(const DirectX::SimpleMath::Vector3& s_stance, const DirectX::SimpleMath::Vector3& e_stance, int t_stance,
+						const DirectX::SimpleMath::Vector3& s_swing, const DirectX::SimpleMath::Vector3& e_swing, int t_swing,int swingframe = -1);
 
 	void GuardStart();
 	void GuardEnd();

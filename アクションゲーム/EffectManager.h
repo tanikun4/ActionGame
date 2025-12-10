@@ -52,7 +52,7 @@ public:
 	static EffectManager* GetInstance();
 
 	// エフェクト再生関数
-	static void Play(
+	void Play(
 		int _id,// エフェクトID
 		int _maxlife = 60,// エフェクト最大生存フレーム
 		DirectX::SimpleMath::Vector3 _pos = { 0,0,0 }, // エフェクト再生位置
@@ -62,7 +62,7 @@ public:
 		int _change_flame = 0); // エフェクト変化開始フレーム
 
 	// エフェクト再生関数
-	static void Play(
+	void Play(
 		int _id,// エフェクトID
 		EffectParams _param); // エフェクト変化開始フレーム
 };

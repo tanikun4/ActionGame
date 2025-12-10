@@ -41,8 +41,8 @@ private:
 	enum ATTACK_KIND {
 		NONE = -1, //攻撃なし
 		SWING = 0,
-		SHOT,
 		ROTATESWING,
+		SWING_VERTICAL,
 
 		KIND_MAX
 	};
@@ -51,15 +51,20 @@ private:
 	int m_State = 0;//状態　1で行動中
 	bool inviFg = false;
 	int invicount = 0;
+	float m_speed = 0.25f;
 	const float rotate_speed = 0.01;
 	int attack_kind = 0;//攻撃の種類
 	int attack_time = 0;//攻撃時間
 	bool notUpdate = false;//更新を止めるかどうか
+	bool m_lookatFg = true;//プレイヤーへの追従をするかどうか
+	bool m_rushFg = false;//突進しているかどうか
+
 	DirectX::SimpleMath::Vector3 m_destrot;//回転の目標点
 	DirectX::XMFLOAT2 stagesize;
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
 	std::vector<Bullet*> m_bullet;
 	Pole* m_weapon;
+	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 
 	const float gravity = -0.007f;
 

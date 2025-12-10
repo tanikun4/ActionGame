@@ -120,8 +120,9 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		m_baseRotation = m_Rotation;
 		break;
 	case SWING: //振り攻撃中
-		m_Rotation.y += PI / 20;
-		++m_swing_time;
+		/*m_Rotation.y += PI / 20;
+		++m_swing_time;*/
+		SwingUpdate();
 		break;
 	case GUARD: //ガード中
 		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
@@ -130,6 +131,10 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		break;
 	case STANCE: //構え中
 		StanceUpdate();
+		//縦構え中の暫定処理
+		if (m_Rotation.x != PI / 2) {
+			m_Rotation.y = rotation.y + PI / 2;
+		}
 		break;
 	case ATTACK: //攻撃中(回転攻撃など)
 		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
@@ -167,16 +172,16 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	Matrix world = S * R * T;
 
-	// --- OBB の中心位置を「武器の中心」に補正 ---
-	// 武器モデルの pivot は "持ち手先端"
+	// OBB の中心位置を「武器の中心」に補正
+	// ポールモデルの pivot は "持ち手先端"
 	Vector3 obbLocalCenter = { 0.0f, m_Scale.y * 0.2f, 0.0f };
 
 	// ワールド座標へ変換
 	Vector3 obbWorldCenter = Vector3::Transform(obbLocalCenter, world);
 
-	// --- OBBの更新 ---
+	// OBBの更新
 	obb = {
-		obbWorldCenter,           // ← 完全に一致する OBB中心
+		obbWorldCenter,           
 		m_Rotation,
 		{ m_Scale.x, m_Scale.y * 1.5f, m_Scale.z }
 	};
@@ -237,16 +242,10 @@ void Pole::Swing() {
 	//動きに加速度を付けて変化を持たせるといい
 	if (m_State == NORMAL) {
 		m_Rotation.y -= PI / 2;
-		m_State = SWING;
-		m_swing_time = 0;
-		atkFg = true;
 	}
-	else if (m_State == STANCE) {
-		m_State = SWING;
-		m_swing_time = 0;
-		m_stance_time = 0;
-		atkFg = true;
-	}
+	Vector3 endrot = m_Rotation;
+	endrot.y += PI;
+	SwingStart(m_Rotation, endrot, 18);
 }
 
 void Pole::Swing_Vertical() {
@@ -256,7 +255,7 @@ void Pole::Swing_Vertical() {
 	//動きに加速度を付けて変化を持たせるといい
 
 	// xをPI / 2足してから、zを変化させると縦振りが可能
-	if (m_State == NORMAL) {
+	/*if (m_State == NORMAL) {
 		m_Rotation.x += PI / 2;
 		m_Rotation.z += 1.8f;
 		m_State = SWING_VERTICAL;
@@ -268,7 +267,30 @@ void Pole::Swing_Vertical() {
 		m_swing_time = 0;
 		m_stance_time = 0;
 		atkFg = true;
-	}
+	}*/
+
+	//m_Rotation.x += PI / 2;
+	//m_Rotation.z += 1.8f;
+
+	m_Rotation.x = PI;
+	m_Rotation.z = PI + 0.2f;
+	Vector3 endrot = m_Rotation;
+	endrot.z = PI * 0.5f;
+	SwingStart(m_Rotation, endrot,10);
+}
+
+void Pole::SwingStart(const Vector3& s, const Vector3& e, int t)
+{
+	m_SwingAnim.Start(s, e, t);
+	m_stance_time = 0;
+	m_swing_time = 0;
+	m_State = SWING;
+	atkFg = true;
+}
+
+void Pole::SwingUpdate() {
+	m_Rotation = m_SwingAnim.Update();
+	++m_swing_time;
 }
 
 void Pole::SwingEnd() {
@@ -288,21 +310,51 @@ void Pole::AttackEnd() { //攻撃状態終了
 	atkFg = false;
 }
 
+void Pole::Stance_Vertical() {
+	Vector3 endrot = m_Rotation;
+	endrot.x = PI;
+	endrot.z = PI + 0.2f;
+	StanceStart(m_Rotation, endrot, 60);
+}
+
+void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {
+	m_SwingAnim.Start(s, e, t);
+	m_stance_time = 0;
+	m_State = STANCE;
+}
+
 //構え開始
 void Pole::StanceStart() {
 	m_State = STANCE;
 	m_baseRotation = m_Rotation;
 	m_stance_time = 0;
+
+	Vector3 endrot = m_Rotation;
+	endrot.y -= PI / 2;
+	StanceStart(m_Rotation, endrot, 18);
+}
+
+//構えてから振る
+void Pole::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t_stance,
+	const Vector3& s_swing, const Vector3& e_swing, int t_swing, int swingframe) 
+{
+	m_SwingAnim.Start(s_stance, e_stance, t_stance);
+	m_stance_time = 0;
+	m_stance_swingframe = swingframe;
+	m_State = STANCE;
+	m_baseRotation = m_Rotation;
 }
 
 //構え中の処理
 void Pole::StanceUpdate() {
-	if (m_stance_time < 20) {
+	/*if (m_stance_time < 20) {
 		m_Rotation.y -= (PI / 2) * 0.05f;
-	}
+	}*/
 	/*if( m_Rotation.y < m_baseRotation.y - (PI / 2)) {
 		m_Rotation.y = m_baseRotation.y - (PI / 2);
 	}*/
+
+	m_Rotation = m_SwingAnim.Update();
 	++m_stance_time;
 }
 

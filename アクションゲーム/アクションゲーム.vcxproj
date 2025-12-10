@@ -384,6 +384,7 @@
     <ClCompile Include="WeaponManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AngleAnim.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="AssimpPerse.h" />
