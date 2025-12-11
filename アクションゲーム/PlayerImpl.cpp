@@ -270,7 +270,6 @@ void Player::Impl::DebugEffectPlay() {
     debug_param.maxLife = debug_effect_life;
 
     // エフェクト再生
-
     if (ImGui::Button("Play Effect")) {
         EffectManager::GetInstance()->Play(debug_effect_type,debug_param);
     }

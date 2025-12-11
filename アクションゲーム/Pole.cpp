@@ -281,7 +281,7 @@ void Pole::Swing_Vertical() {
 
 void Pole::SwingStart(const Vector3& s, const Vector3& e, int t)
 {
-	m_SwingAnim.Start(s, e, t);
+	m_SwingAnim.Start(s, e, t,0.3f);
 	m_stance_time = 0;
 	m_swing_time = 0;
 	m_State = SWING;
