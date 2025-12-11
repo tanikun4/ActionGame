@@ -36,7 +36,11 @@ void EffectManager::Init()
 	const EffectLoadData g_EffectResources[] = {
 		{"assets/texture/gorufu", "assets/model/gorufu/GolfBall_v2.fbx"},
         {"assets/texture/2DEffect/issen_one.png","","","", 1,1},
-        { "assets/texture/2DEffect/issen.png","","","", 4,2 },
+        {"assets/texture/2DEffect/honoo.png","","","",5,24},
+        {"assets/texture/2DEffect/hibana.png","","","",5,4},
+        {"assets/texture/2DEffect/kemuri_syou.png","","","",5,14},
+		{"assets/texture/2DEffect/kemuri_dai.png","","","",5,22},
+
 	};
 
 	m_Instance = make_unique<EffectManager>();

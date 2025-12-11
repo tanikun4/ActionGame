@@ -55,6 +55,7 @@ void Player::Impl::Init() {
     DebugUI::RedistDebugFunction([this]() {
         DebugPlayerStatus();
         DebugWeaponStatus();
+        DebugEffectPlay();
         });
 }
 
@@ -239,6 +240,39 @@ void Player::Impl::DebugPlayerStatus() {
     if (select == 1) {
         inviFg = true;
         m_Owner->SetColor({ 0,0,1,0.5f });
+    }
+
+    ImGui::End();
+}
+
+void Player::Impl::DebugEffectPlay() {
+    ImGui::Begin("EffectPlay");
+
+	static int debug_effect_type = 0;
+    ImGui::SliderInt("ID", &debug_effect_type, 0, EFFECT_MAX - 1);
+
+    static int debug_effect_life = 0;
+    ImGui::SliderInt("Life", &debug_effect_life, 0, 60);
+
+    static Vector3 offset_pos{};
+	ImGui::SliderFloat3("OffsetPosition", &offset_pos.x, -50.0f, 50.0f);
+
+    static Vector3 offset_rotation{};
+    ImGui::SliderFloat3("OffsetRotation", &offset_rotation.x, -PI, PI);
+
+    static Vector3 offset_scale = {1,1,1};
+    ImGui::SliderFloat3("OffsetScale", &offset_scale.x, -10.0f, 10.0f);
+    //エフェクトパラメーター構造体作成
+    static EffectParams debug_param;
+    debug_param.pos = m_Owner->m_Position + offset_pos;
+	debug_param.rot = offset_rotation;
+    debug_param.scale = offset_scale;
+    debug_param.maxLife = debug_effect_life;
+
+    // エフェクト再生
+
+    if (ImGui::Button("Play Effect")) {
+        EffectManager::GetInstance()->Play(debug_effect_type,debug_param);
     }
 
     ImGui::End();

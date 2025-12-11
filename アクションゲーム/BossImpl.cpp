@@ -37,6 +37,15 @@ void Boss::Impl::DebugBossStatus() {//ƒ{ƒX‚Ìó‘Ô‚ð‘€ì‚·‚é
 	if (ImGui::Button("BOSSHP MAX"))
 		hp = 50;
 
+	static int debug_attack_kind = -1;
+	ImGui::SliderInt("AttackKind", &debug_attack_kind, -1, KIND_MAX - 1);
+	if (ImGui::Button("BOSSATTACK")) {
+		m_State = ATTACK;
+		flamecount = 0;
+		m_Owner->m_Velocity_f = 0;
+		attack_kind = debug_attack_kind;
+	}
+
 	if (update) {
 		notUpdate = false;
 	}
@@ -69,7 +78,7 @@ void Boss::Impl::Update() {
 			m_State = ATTACK;
 			flamecount = 0;
 			m_Owner->m_Velocity_f = 0;
-			attack_kind = rand() % KIND_MAX;
+			attack_kind = (rand() % 2) + 1;
 		}
 		if (flamecount % 90 == 0 && flamecount != 0) {
 			ShotBullet();
