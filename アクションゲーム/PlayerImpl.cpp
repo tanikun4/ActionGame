@@ -116,7 +116,7 @@ void Player::Impl::Update() {
 
     if (m_Owner->is_GROUND) is_JUMP = false;
 
-    m_Owner->m_Rotation = m_Owner->m_ForwardRotation;
+    m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
     m_Owner->GBUpdate();
 
     if (m_pole)
@@ -225,7 +225,9 @@ void Player::Impl::DebugWeaponStatus() {
 void Player::Impl::DebugPlayerStatus() {
     ImGui::Begin("PlayerStatus");
 
-    ImGui::SliderFloat("radius", &m_Owner->radius, 0.0f, 10.0f);
+    //ImGui::SliderFloat("radius", &m_Owner->radius, 0.0f, 10.0f);
+
+    ImGui::SliderFloat3("Rotation", &m_Owner->m_Rotation.x, -PI, PI);
 
     if (ImGui::Button("Reset radius"))
         m_Owner->radius = 4;
@@ -283,10 +285,12 @@ void Player::Impl::Move() {
     float dir = SetMoveDirection();
     if (dir >= 0.0f) {
         m_Owner->m_ForwardRotation.y = dir + m_Owner->m_Camera->GetCameraDirection().x;
-        m_Owner->m_Velocity_f = speed;
+        m_Owner->m_Velocity_f = speed;		
+		m_Owner->m_Rotation.x += 0.1f;//回転、zだとドリルみたいになる。そういう突進技もありかも。
     }
     else {
         m_Owner->m_Velocity_f = 0.0f;
+		m_Owner->m_Rotation.x = 0.0f;
     }
 
     // 回避処理
