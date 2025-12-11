@@ -30,7 +30,10 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	ImGui::Begin("BossStatus");
 	static bool update = true;
 	static bool death;
+
 	ImGui::Checkbox("Update", &update);
+	ImGui::Checkbox("Slow", &m_slowFg);
+	ImGui::SliderInt("Slowrate", &slow_rate, 1, 59);
 	if (ImGui::Button("BOSS DEATH"))
 		hp = 0;
 
@@ -41,7 +44,7 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	ImGui::SliderInt("AttackKind", &debug_attack_kind, -1, KIND_MAX - 1);
 	if (ImGui::Button("BOSSATTACK")) {
 		m_State = ATTACK;
-		flamecount = 0;
+		framecount = 0;
 		m_Owner->m_Velocity_f = 0;
 		attack_kind = debug_attack_kind;
 	}
@@ -71,19 +74,27 @@ void Boss::Impl::Init() {
 
 void Boss::Impl::Update() {
 	if (hp <= 0 || notUpdate) { return; };
+	//　簡易的なスローモーション処理
+	if (m_slowFg) {
+		++slow_frame;
+		if (slow_frame % slow_rate != 0) {
+			return;
+		}
+	}
+
 	switch (m_State) {
 	case NORMAL:
 		Move();
-		if (flamecount > 360) {
+		if (framecount > 360) {
 			m_State = ATTACK;
-			flamecount = 0;
+			framecount = 0;
 			m_Owner->m_Velocity_f = 0;
 			attack_kind = (rand() % 2) + 1;
 		}
-		if (flamecount % 90 == 0 && flamecount != 0) {
+		if (framecount % 90 == 0 && framecount != 0) {
 			ShotBullet();
 		}
-		++flamecount;
+		++framecount;
 		break;
 	case ATTACK:
 		AttackUpdate();
@@ -106,7 +117,7 @@ void Boss::Impl::Update() {
 		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation, 1.0f);
 
 	if (!(attack_kind == ROTATESWING))
-		m_Owner->m_Rotation = m_Owner->m_ForwardRotation;
+		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
 	m_Owner->GBUpdate();
 }
@@ -192,7 +203,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 		else if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
 			m_State = NORMAL;
-			flamecount = 0;
+			framecount = 0;
 			m_weapon->SwingEnd();
 		}
 		break;
@@ -214,7 +225,7 @@ void Boss::Impl::AttackUpdate() {
 		if (attack_time > 300) {
 			m_weapon->AttackEnd();
 			m_State = NORMAL;
-			flamecount = 0;
+			framecount = 0;
 			attack_time = 0;
 			attack_kind = NONE;//攻撃終了
 		}
@@ -240,12 +251,13 @@ void Boss::Impl::AttackUpdate() {
 				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
 				m_weapon->Swing_Vertical();
 				m_rushFg = false;
+				m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 			}
 		}
 
 		if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
 			m_State = NORMAL;
-			flamecount = 0;
+			framecount = 0;
 			m_weapon->SwingEnd();
 			m_lookatFg = true;
 		}
@@ -278,10 +290,15 @@ void Boss::Impl::ShotBullet() {
 void Boss::Impl::Move(){
 	if (m_rushFg) {
 		m_Owner->m_Velocity_f = m_speed * 8;
+		m_Owner->m_Rotation.x += 0.2f;
 	}
 	else {
 		m_Owner->m_Velocity_f = m_speed;
+		m_Owner->m_Rotation.x += 0.025f;
 	}
+
+	if (m_Owner->m_Rotation.x > PI * 2) m_Owner->m_Rotation.x -= PI * 2;
+
 	if (m_State == 0) {
 
 	}

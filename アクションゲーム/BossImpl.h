@@ -47,7 +47,7 @@ private:
 		KIND_MAX
 	};
 	int hp = 10;
-	int flamecount = 0;
+	int framecount = 0;
 	int m_State = 0;//状態　1で行動中
 	bool inviFg = false;
 	int invicount = 0;
@@ -58,6 +58,10 @@ private:
 	bool notUpdate = false;//更新を止めるかどうか
 	bool m_lookatFg = true;//プレイヤーへの追従をするかどうか
 	bool m_rushFg = false;//突進しているかどうか
+
+	bool m_slowFg = false;//動きが遅い状態か
+	int slow_frame = 0;//遅くなっているフレーム数
+	int slow_rate = 6;//元の速度の何分の1にするか
 
 	DirectX::SimpleMath::Vector3 m_destrot;//回転の目標点
 	DirectX::XMFLOAT2 stagesize;

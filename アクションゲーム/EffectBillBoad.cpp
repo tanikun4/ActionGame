@@ -60,6 +60,7 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	m_SplitY = data.texture_uv.y;
 
 	m_aminframe =  _maxlife / (int)(m_SplitX * m_SplitY); //アニメーション遷移フレーム数設定
+	if (m_aminframe <= 0) m_aminframe = 1;
 
 	BaseInit(_maxlife, _pos_amount, _pos_changeframe, _rot_amount, _rot_changeframe, _scale_amount, _scale_changeframe);
 

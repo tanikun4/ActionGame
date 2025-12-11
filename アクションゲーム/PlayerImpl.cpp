@@ -253,8 +253,8 @@ void Player::Impl::DebugEffectPlay() {
 	static int debug_effect_type = 0;
     ImGui::SliderInt("ID", &debug_effect_type, 0, EFFECT_MAX - 1);
 
-    static int debug_effect_life = 0;
-    ImGui::SliderInt("Life", &debug_effect_life, 0, 60);
+    static int debug_effect_life = 1;
+    ImGui::SliderInt("Life", &debug_effect_life, 1, 60);
 
     static Vector3 offset_pos{};
 	ImGui::SliderFloat3("OffsetPosition", &offset_pos.x, -50.0f, 50.0f);
@@ -264,6 +264,13 @@ void Player::Impl::DebugEffectPlay() {
 
     static Vector3 offset_scale = {1,1,1};
     ImGui::SliderFloat3("OffsetScale", &offset_scale.x, -10.0f, 10.0f);
+
+    if(ImGui::Button("Reset Offsets")) {
+        offset_pos = Vector3(0,0,0);
+        offset_rotation = Vector3(0,0,0);
+        offset_scale = Vector3(1,1,1);
+	}
+
     //エフェクトパラメーター構造体作成
     static EffectParams debug_param;
     debug_param.pos = m_Owner->m_Position + offset_pos;
@@ -287,10 +294,10 @@ void Player::Impl::Move() {
         m_Owner->m_ForwardRotation.y = dir + m_Owner->m_Camera->GetCameraDirection().x;
         m_Owner->m_Velocity_f = speed;		
 		m_Owner->m_Rotation.x += 0.1f;//回転、zだとドリルみたいになる。そういう突進技もありかも。
+		if (m_Owner->m_Rotation.x > PI * 2) m_Owner->m_Rotation.x -= PI * 2;//回転リセット、値が大きくなりすぎないように
     }
     else {
         m_Owner->m_Velocity_f = 0.0f;
-		m_Owner->m_Rotation.x = 0.0f;
     }
 
     // 回避処理
