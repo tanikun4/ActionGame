@@ -35,7 +35,7 @@ Stage1Scene::~Stage1Scene()
 // ‰Šú‰»
 void Stage1Scene::Init()
 {
-	Sound::GetInstance()->SetMasterVolume(0.0f); // ‘S‘Ì‰¹—Ê‚ğ0%‚É
+	//Sound::GetInstance()->SetMasterVolume(0.0f); // ‘S‘Ì‰¹—Ê‚ğ0%‚É
 
 	srand((unsigned)time(NULL));
 
@@ -151,6 +151,7 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(pt6);
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
+	Sound::GetInstance()->SetVolume(SOUND_BGM_MAIN, 0.5f);
 	Fade::GetInstance()->StartFadeIn();
 	Game::GetInstance()->GetCamera().SetTarget(*player);
 

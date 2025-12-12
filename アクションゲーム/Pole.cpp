@@ -293,6 +293,7 @@ void Pole::SwingUpdate() {
 void Pole::SwingEnd() {
 	m_State = NORMAL;
 	atkFg = false;
+	m_swing_time = 0;
 }
 
 void Pole::AttackStart() { //UŒ‚ó‘Ô‚É‚È‚é‚¾‚¯‚ÌŠÖ”A‰ñ“]Ø‚è“™‚Åg—p

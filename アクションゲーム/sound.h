@@ -16,6 +16,8 @@ typedef enum
 	SOUND_SE_PLAYERGUARD,
 	SOUND_SE_PLAYERJUSTGUARD,
 	SOUND_SE_PLAYERSHOOTBACK,
+	SOUND_SE_SWINGVERTICAL,
+	SOUND_SE_ROTATEATTACK,
 
 	SOUND_LABEL_MAX,
 } SOUND_LABEL;
@@ -42,6 +44,8 @@ private:
 		{"assets/Sound/SE/guard.wav", false},
 		{"assets/Sound/SE/justguard.wav", false},
 		{"assets/Sound/SE/shootback.wav", false},
+		{"assets/Sound/SE/swing_vertical.wav", false},
+		{"assets/Sound/SE/rotateattack.wav", false},
 
 	};
 

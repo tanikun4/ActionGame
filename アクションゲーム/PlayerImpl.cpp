@@ -50,7 +50,7 @@ void Player::Impl::Init() {
     m_pole->SetPl(true);
     hp = 9;
     framecount = 30;
-
+    m_pole->SetAtk(3);
     // デバッグ関数の登録
     DebugUI::RedistDebugFunction([this]() {
         DebugPlayerStatus();
@@ -525,8 +525,8 @@ void Player::Impl::UpdateDodge() {
 
 //カウンター攻撃中
 void Player::Impl::UpdateCounter() {
-    if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 6 &&
-        fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 6) {
+    if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 5 &&
+        fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
 
 		//暫定的なカウンター攻撃処理
         if (m_pole->GetSwingTime() <= 0) {
@@ -544,10 +544,11 @@ void Player::Impl::UpdateCounter() {
     }
 	// カウンター攻撃終了判定
     if (m_pole->GetSwingTime() > 10) {
-        //m_Owner->m_State = ATTACK;
+        m_pole->SwingEnd();
         m_pole->SetAtk(3);
         inviFg = false;
         m_Owner->SetColor({ 1,1,1,1 });
 	    m_Owner->m_State = NORMAL;
+		Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
     }
 }

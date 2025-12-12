@@ -31,21 +31,21 @@ void EffectBase::BaseInit(int _maxlife,
 	m_poschange_frame = _pos_changeframe;
 	m_rotchange_frame = _rot_changeframe;
 	m_scalechange_frame = _scale_changeframe;
-	if (_pos_amount != Vector3{ 0, 0 ,0 }) {//座標変化率の設定
-		int division_flame = m_maxlife - m_poschange_frame;
-		if (division_flame <= 0) division_flame = 1;
-		pos_changerate = _pos_amount / (division_flame);
-	}
-	if (_rot_amount != Vector3{ 0, 0 ,0 }) {//回転変化率の設定
-		int division_flame = m_maxlife - m_rotchange_frame;
-		if (division_flame <= 0) division_flame = 1;
-		rot_changerate = _rot_amount / (division_flame);
-	}
-	if (_scale_amount != Vector3{ 0, 0 ,0 }) {//スケール変化率の設定
-		int division_flame = m_maxlife - m_scalechange_frame;
-		if (division_flame <= 0) division_flame = 1;
-		scale_changerate = _scale_amount / (division_flame);
-	}
+	//座標変化率の設定
+	int division_flame = m_maxlife - m_poschange_frame;
+	if (division_flame <= 0) division_flame = 1;
+	pos_changerate = _pos_amount / (division_flame);
+	
+	//回転変化率の設定
+	division_flame = m_maxlife - m_rotchange_frame;
+	if (division_flame <= 0) division_flame = 1;
+	rot_changerate = _rot_amount / (division_flame);
+	
+	//スケール変化率の設定
+	division_flame = m_maxlife - m_scalechange_frame;
+	if (division_flame <= 0) division_flame = 1;
+	scale_changerate = _scale_amount / (division_flame);
+	
 	endless = _endless;
 	m_live = true;
 }

@@ -180,8 +180,6 @@ void Game::ChangeScene(SceneName sName)
 		delete m_Instance->m_Scene;
 		m_Instance->m_Scene = nullptr;
 
-		//DeleteAllObject();
-
 		EffectManager::EffectsReset();// エフェクトをリセット
 
 		DebugUI::Clear();

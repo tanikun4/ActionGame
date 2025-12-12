@@ -39,7 +39,7 @@ public:
 	~Pole(); // デストラクタ
 
 	//TestCube hitbox;
-	int atk = 3;//攻撃力
+	//int atk = 3;//攻撃力
 	void Init();
 	void Update();
 	void Update(DirectX::SimpleMath::Vector3 position, float radius,DirectX::SimpleMath::Vector3 rotation, float offset);

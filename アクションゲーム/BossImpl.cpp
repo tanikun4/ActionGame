@@ -225,6 +225,10 @@ void Boss::Impl::AttackUpdate() {
 			++attack_time;
 		}
 
+		if (attack_time % 30 == 0) {
+			Sound::GetInstance()->Play(SOUND_SE_ROTATEATTACK);
+		}
+
 		if (attack_time > 300) {
 			m_weapon->AttackEnd();
 			m_State = NORMAL;
@@ -275,9 +279,9 @@ void Boss::Impl::AttackUpdate() {
 			EffectParams param;
 			param.scale = m_Owner->m_Scale * 15;
 			param.maxLife = 60;
-
 			// エフェクト再生
 			m_weapon->TipToEffect(EFFECT_TUTIKEMURI_BIG, param);
+			Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
 		}
 
 		if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
@@ -380,7 +384,7 @@ Pole* Boss::Impl::GetWeapon() {
 
 void Boss::Impl::OnHit(Pole* po) {
 	if (!po->GetPl()) return;
-	Damage(po->atk);
+	Damage(po->GetAtk());
 	return;
 }
 

@@ -46,7 +46,7 @@ private:
 
 		KIND_MAX
 	};
-	int hp = 10;
+	int hp = 50;
 	int framecount = 0;
 	int m_State = 0;//ó‘Ô@1‚Ås“®’†
 	bool inviFg = false;
