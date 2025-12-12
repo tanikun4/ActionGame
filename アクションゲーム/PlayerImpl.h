@@ -45,11 +45,13 @@ private:
     };
 
     int hp = 9;
-    int flamecount = 0;
+    int framecount = 0;
     int invicount = 0; // 無敵時間カウント
     int rollcooldown = 30; // 回避クールタイム
     int rollcount = 0; // 回避関連カウント
     int guardcount = 0; // ガード時間カウント
+
+	int moveframe = 0; // 移動フレームカウント
 
     bool inviFg = false; // 無敵
     bool GuardFg = false; // ガード

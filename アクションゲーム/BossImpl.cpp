@@ -258,23 +258,21 @@ void Boss::Impl::AttackUpdate() {
 			}
 		}
 
-		if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
-			m_State = NORMAL;
-			framecount = 0;
-			m_weapon->SwingEnd();
-			m_lookatFg = true;
-		
-			//Vector3 pos = m_Owner->m_Position + ((m_Owner->radius * m_Owner->m_Scale) * m_Owner->AngleToForward(m_Owner->m_Rotation));
-			//pos = EffectManager::ToCameraEffectPos(pos, 2);
-
+		if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() == 10) {
 			//エフェクトパラメーター構造体作成
 			EffectParams param;
 			param.scale = m_Owner->m_Scale * 15;
 			param.maxLife = 60;
 
 			// エフェクト再生
-			m_weapon->TipToEffect(EFFECT_TUTIKEMURI_BIG,param);
-			//EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI_BIG, param);
+			m_weapon->TipToEffect(EFFECT_TUTIKEMURI_BIG, param);
+		}
+
+		if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
+			m_State = NORMAL;
+			framecount = 0;
+			m_weapon->SwingEnd();
+			m_lookatFg = true;
 
 		}
 

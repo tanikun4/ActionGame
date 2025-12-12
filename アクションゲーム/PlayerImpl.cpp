@@ -49,7 +49,7 @@ void Player::Impl::Init() {
     m_pole = Game::GetInstance()->AddObject<Pole>();
     m_pole->SetPl(true);
     hp = 9;
-    flamecount = 30;
+    framecount = 30;
 
     // デバッグ関数の登録
     DebugUI::RedistDebugFunction([this]() {
@@ -104,7 +104,7 @@ void Player::Impl::Update() {
             }
         }
 
-        if (flamecount < 60) ++flamecount;
+        if (framecount < 60) ++framecount;
         if (GuardFg) ++guardcount;
     }
 
@@ -122,6 +122,7 @@ void Player::Impl::Update() {
 
     if (m_pole)
         m_pole->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation, 1.7f);
+
 }
 
 void Player::Impl::Uninit() {
@@ -296,6 +297,18 @@ void Player::Impl::Move() {
         m_Owner->m_Velocity_f = speed;		
 		m_Owner->m_Rotation.x += speed * 0.1f;//回転、zだとドリルみたいになる。そういう突進技もありかも。
 		if (m_Owner->m_Rotation.x > PI * 2) m_Owner->m_Rotation.x -= PI * 2;//回転リセット、値が大きくなりすぎないように
+
+        if (moveframe > 10 && m_Owner->is_GROUND) {
+            // 土煙エフェクト再生
+            EffectParams   param;
+            param.pos = m_Owner->m_Position;
+            param.scale = m_Owner->m_Scale * 10;
+            param.maxLife = 30;
+            EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI, param);
+			moveframe = 0;
+        }
+
+		moveframe++;
     }
     else {
         m_Owner->m_Velocity_f = 0.0f;
@@ -393,7 +406,7 @@ void Player::Impl::Damage(int atk) {
         }
         hp -= atk;
         m_Owner->m_State = DAMAGE;
-        flamecount = 0;
+        framecount = 0;
         inviFg = true;
 
         m_Owner->SetColor(Vector4(1, 1, 0, 0.5f));
@@ -483,7 +496,7 @@ void Player::Impl::UpdateAttack() {
 void Player::Impl::UpdateDamage() {
     m_Owner->m_Velocity_f = speed * -1;
     Guard();
-    if (flamecount > 10) {
+    if (framecount > 10) {
         m_Owner->m_State = NORMAL;
     }
 }
@@ -492,6 +505,14 @@ void Player::Impl::UpdateDamage() {
 void Player::Impl::UpdateDodge() {
     m_Owner->m_Velocity_f = speed * 2.0f;
     ++rollcount;
+    if (rollcount % 3 == 0) {
+        // 土煙エフェクト再生
+        EffectParams   param;
+        param.pos = m_Owner->m_Position;
+        param.scale = m_Owner->m_Scale * 20;
+        param.maxLife = 30;
+        EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI, param);
+    }
     if (rollcount > 10) {
         RollFg = false;
         m_Owner->m_State = NORMAL;
