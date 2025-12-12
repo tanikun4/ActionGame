@@ -3,6 +3,8 @@
 #include "Weapon.h"
 #include "AngleAnim.h"
 
+struct EffectParams;
+
 //-----------------------------------------------------------------------------
 // Poleクラス
 //-----------------------------------------------------------------------------
@@ -43,6 +45,8 @@ public:
 	void Update(DirectX::SimpleMath::Vector3 position, float radius,DirectX::SimpleMath::Vector3 rotation, float offset);
 	void Draw();
 	void Uninit();
+
+	void DebugPoleStatus();//デバッグ用関数(プレイヤー側でのみ呼び出す想定でpublic)
 	
 	// 位置の設定
 	void SetPosition(float x, float y, float z);
@@ -59,7 +63,7 @@ public:
 	void Swing_Vertical();
 	void SwingEnd();
 
-	void SwingStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t);
+	void SwingStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t,float accel = 0);
 	void SwingUpdate();
 
 	void Stance_Vertical();
@@ -79,11 +83,13 @@ public:
 	void StanceEnd();
 	void ChangeState(int state) {}; // 状態を変更する(現在未使用)
 
-
 	int GetState();//状態を返す
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
 	int GetSwingTime() { return m_swing_time; }
 	int GetStanceTime() { return m_stance_time; }
 	bool GetAttack() { return atkFg; }
+
+	void TipToEffect(int _id, EffectParams _param);//先端からエフェクトを再生する
+
 };

@@ -56,6 +56,7 @@ void Player::Impl::Init() {
         DebugPlayerStatus();
         DebugWeaponStatus();
         DebugEffectPlay();
+		m_pole->DebugPoleStatus();
         });
 }
 
@@ -293,7 +294,7 @@ void Player::Impl::Move() {
     if (dir >= 0.0f) {
         m_Owner->m_ForwardRotation.y = dir + m_Owner->m_Camera->GetCameraDirection().x;
         m_Owner->m_Velocity_f = speed;		
-		m_Owner->m_Rotation.x += 0.1f;//回転、zだとドリルみたいになる。そういう突進技もありかも。
+		m_Owner->m_Rotation.x += speed * 0.1f;//回転、zだとドリルみたいになる。そういう突進技もありかも。
 		if (m_Owner->m_Rotation.x > PI * 2) m_Owner->m_Rotation.x -= PI * 2;//回転リセット、値が大きくなりすぎないように
     }
     else {
@@ -394,10 +395,24 @@ void Player::Impl::Damage(int atk) {
         m_Owner->m_State = DAMAGE;
         flamecount = 0;
         inviFg = true;
-        if (m_pole) m_pole->SwingEnd();
+
         m_Owner->SetColor(Vector4(1, 1, 0, 0.5f));
-        if (GuardFg) Sound::GetInstance()->Play(SOUND_SE_PLAYERGUARD);
-        else Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
+
+        if (GuardFg) {
+			EffectParams param;
+
+            //エフェクトパラメーター構造体設定
+			Vector3 pos = m_Owner->m_Position + (m_Owner->radius * m_Owner->AngleToForward(m_Owner->m_ForwardRotation));
+            param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x);
+            param.scale = m_Owner->m_Scale * 15;
+            param.maxLife = 15;
+			EffectManager::GetInstance()->Play(EFFECT_SPARK, param);
+            Sound::GetInstance()->Play(SOUND_SE_PLAYERGUARD);
+        }
+        else {
+            m_pole->SwingEnd();
+            Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
+        }
     }
 }
 

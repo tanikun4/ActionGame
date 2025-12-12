@@ -30,7 +30,6 @@ void Game::Init()
 	// オブジェクト作成
 	m_Instance = new Game;
 
-
 	Sound::SoundInit();
 	Sound::GetInstance()->Init();//サウンド初期化
 

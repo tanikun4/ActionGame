@@ -6,7 +6,8 @@
 #include "Game.h"
 #include "Ground.h"
 #include "Collision.h"
-
+#include "EffectManager.h"
+#include "DebugUI.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -238,21 +239,17 @@ void Pole::Uninit()
 void Pole::Swing() {
 	//‚È‚ñ‚©‚µ‚½‚Æ‚«‚ÉŽ‹–ìŠp
 	//UŒ‚‚É“–‚½‚Á‚½‚çƒJƒƒ‰—h‚ç‚·
-	//U‚Á‚½Žž‚ÌŠ´G
-	//“®‚«‚É‰Á‘¬“x‚ð•t‚¯‚Ä•Ï‰»‚ðŽ‚½‚¹‚é‚Æ‚¢‚¢
 	if (m_State == NORMAL) {
 		m_Rotation.y -= PI / 2;
 	}
 	Vector3 endrot = m_Rotation;
 	endrot.y += PI;
-	SwingStart(m_Rotation, endrot, 18);
+	SwingStart(m_Rotation, endrot, 18,0.3f);
 }
 
 void Pole::Swing_Vertical() {
 	//‚È‚ñ‚©‚µ‚½‚Æ‚«‚ÉŽ‹–ìŠp
 	//UŒ‚‚É“–‚½‚Á‚½‚çƒJƒƒ‰—h‚ç‚·
-	//U‚Á‚½Žž‚ÌŠ´G
-	//“®‚«‚É‰Á‘¬“x‚ð•t‚¯‚Ä•Ï‰»‚ðŽ‚½‚¹‚é‚Æ‚¢‚¢
 
 	// x‚ðPI / 2‘«‚µ‚Ä‚©‚çAz‚ð•Ï‰»‚³‚¹‚é‚ÆcU‚è‚ª‰Â”\
 	/*if (m_State == NORMAL) {
@@ -276,12 +273,12 @@ void Pole::Swing_Vertical() {
 	m_Rotation.z = PI + 0.2f;
 	Vector3 endrot = m_Rotation;
 	endrot.z = PI * 0.5f;
-	SwingStart(m_Rotation, endrot,10);
+	SwingStart(m_Rotation, endrot,10,1.0f);
 }
 
-void Pole::SwingStart(const Vector3& s, const Vector3& e, int t)
+void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
-	m_SwingAnim.Start(s, e, t,0.3f);
+	m_SwingAnim.Start(s, e, t,accel);
 	m_stance_time = 0;
 	m_swing_time = 0;
 	m_State = SWING;
@@ -434,4 +431,56 @@ void Pole::GuardStart() {
 void Pole::GuardEnd() {
 	m_State = 0;
 	m_offset = { 0,0,0 };
+}
+
+void Pole::TipToEffect(int _id, EffectParams _param)
+{
+	Matrix S = Matrix::CreateScale(m_Scale);
+	Matrix R = Matrix::CreateFromYawPitchRoll(
+		m_Rotation.y,
+		m_Rotation.x,
+		m_Rotation.z
+	);
+	Matrix T = Matrix::CreateTranslation(m_Position);
+
+	Matrix world = S * R * T;
+
+	// •Ší‚Ìæ’[‚Í +Y
+	Vector3 tipLocal = { 0.0f, m_Scale.y * 0.5f, 0.0f };
+	Vector3 tipWorld = Vector3::Transform(tipLocal, world);
+
+	// “y‰ŒƒGƒtƒFƒNƒg‚Í’†S‚ðŠî€‚É•\Ž¦‚³‚ê‚é‚Ì‚Å•â³‚·‚é
+	Vector3 downOffset = _param.scale * 0.5f * m_Camera->GetForwardVector();
+	_param.pos = tipWorld + Vector3(downOffset.x, 0, downOffset.z);
+
+	EffectManager::GetInstance()->Play(_id, _param);
+}
+
+
+
+void Pole::DebugPoleStatus() {
+	Matrix S = Matrix::CreateScale(m_Scale);
+	Matrix R = Matrix::CreateFromYawPitchRoll(
+		m_Rotation.y,
+		m_Rotation.x,
+		m_Rotation.z
+	);
+	Matrix T = Matrix::CreateTranslation(m_Position);
+
+	Matrix world = S * R * T;
+
+	// world = S * R * T; ‚ª‚ ‚é‘O’ñ
+
+	Vector3 xAxis = Vector3::TransformNormal(Vector3(1, 0, 0), world);
+	Vector3 yAxis = Vector3::TransformNormal(Vector3(0, 1, 0), world);
+	Vector3 zAxis = Vector3::TransformNormal(Vector3(0, 0, 1), world);
+
+	ImGui::Begin("Pole Axis Debug");
+
+	ImGui::Text("X Axis (Right):   %.2f %.2f %.2f", xAxis.x, xAxis.y, xAxis.z);
+	ImGui::Text("Y Axis (Up/Tip?): %.2f %.2f %.2f", yAxis.x, yAxis.y, yAxis.z);
+	ImGui::Text("Z Axis (Forward): %.2f %.2f %.2f", zAxis.x, zAxis.y, zAxis.z);
+
+	ImGui::End();
+
 }

@@ -3,7 +3,7 @@
 #include "EffectBillBoad.h"
 
 constexpr int EFFECT_POOLSIZE_3D = 5;
-constexpr int EFFECT_POOLSIZE_2D = 5;
+constexpr int EFFECT_POOLSIZE_2D = 10;
 
 enum Effect{
 	EFFECT_TEST3D = 0,
@@ -50,10 +50,16 @@ public:
 	static void Draw(); // 描画
 	static void Uninit(); // 終了処理
 	static void EffectsReset(); //エフェクトをリセット
-
+	static DirectX::SimpleMath::Vector3 ToCameraEffectPos(DirectX::SimpleMath::Vector3 _pos, float _dist);//エフェクト再生位置調整関数、手軽に使えるようにstaticで用意
 	static EffectManager* GetInstance();
 
+
 	// エフェクト再生関数
+	void Play(
+		int _id,// エフェクトID
+		EffectParams _param); // エフェクト変化開始フレーム
+
+	// エフェクト再生関数(以前のバージョン、没)
 	void Play(
 		int _id,// エフェクトID
 		int _maxlife = 60,// エフェクト最大生存フレーム
@@ -62,9 +68,4 @@ public:
 		DirectX::SimpleMath::Vector3 _first_scale = { 1,1,1 },  // エフェクト初期スケール
 		DirectX::SimpleMath::Vector3 _ta_scale = { 0,0,0 },  // エフェクト最終スケール
 		int _change_flame = 0); // エフェクト変化開始フレーム
-
-	// エフェクト再生関数
-	void Play(
-		int _id,// エフェクトID
-		EffectParams _param); // エフェクト変化開始フレーム
 };

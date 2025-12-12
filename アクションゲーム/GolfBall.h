@@ -19,7 +19,7 @@ protected:
 	std::vector<SUBSET> m_subsets;
 	std::vector<std::unique_ptr<Texture>> m_Textures; // テクスチャ
 
-	int m_State = 0; //状態 0:物理挙動, 1:停止, 2:カップイン
+	int m_State = 0; //状態変数、クラスによって意味が異なる
 	int m_StopCount = 0; // 静止カウント
 	float radius = 4.0f;//ボールモデルの直径
 	bool is_GROUND = false;//地面に接地しているかどうかのフラグ

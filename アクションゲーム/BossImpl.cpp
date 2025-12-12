@@ -77,8 +77,11 @@ void Boss::Impl::Update() {
 	//　簡易的なスローモーション処理
 	if (m_slowFg) {
 		++slow_frame;
-		if (slow_frame % slow_rate != 0) {
+		if (slow_frame < slow_rate) {
 			return;
+		}
+		else {
+			slow_frame = 0;
 		}
 	}
 
@@ -144,7 +147,7 @@ void Boss::Impl::Damage(int atk) {
 
 	//左から右へ移動するエフェクト再生
 	Vector3 pos = m_Owner->m_Position;
-	pos = m_Owner->ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x);
+	pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x);
 	pos -= m_Camera->GetRightVector() * m_Owner->radius;
 
 	//エフェクトパラメーター構造体作成
@@ -247,8 +250,8 @@ void Boss::Impl::AttackUpdate() {
 		if (weapon_state == Pole::STATE::STANCE && m_rushFg) {
 			//近づいたら振る
 			Move();
-			if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 5 &&
-				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
+			if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 3 &&
+				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 3) {
 				m_weapon->Swing_Vertical();
 				m_rushFg = false;
 				m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
@@ -260,6 +263,19 @@ void Boss::Impl::AttackUpdate() {
 			framecount = 0;
 			m_weapon->SwingEnd();
 			m_lookatFg = true;
+		
+			//Vector3 pos = m_Owner->m_Position + ((m_Owner->radius * m_Owner->m_Scale) * m_Owner->AngleToForward(m_Owner->m_Rotation));
+			//pos = EffectManager::ToCameraEffectPos(pos, 2);
+
+			//エフェクトパラメーター構造体作成
+			EffectParams param;
+			param.scale = m_Owner->m_Scale * 15;
+			param.maxLife = 60;
+
+			// エフェクト再生
+			m_weapon->TipToEffect(EFFECT_TUTIKEMURI_BIG,param);
+			//EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI_BIG, param);
+
 		}
 
 		break;
@@ -393,6 +409,15 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 		m_Owner->m_Velocity.x = 0.0f;
 		m_Owner->m_Velocity.z = 0.0f;
 		m_Owner->m_Position = m_Owner->m_oldPos;
+
+		// 突進中なら縦振りを強制発動(はまり防止)
+		if (m_rushFg) {
+		    
+		    m_weapon->Swing_Vertical();
+		    m_rushFg = false;
+		    m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
+		    
+		}
 	}
 
 }
