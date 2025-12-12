@@ -38,7 +38,8 @@ EffectBillBoad::~EffectBillBoad()
 void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_data, int _maxlife,
 	DirectX::SimpleMath::Vector3 _pos_amount, int _pos_changeframe,
 	DirectX::SimpleMath::Vector3 _rot_amount, int _rot_changeframe,
-	DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe)
+	DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe,
+	bool _endless)
 {
 	// 頂点バッファ取得
 	m_VertexBuffer = shared_data.m_2DVertexBuffer.get();
@@ -62,7 +63,7 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	m_aminframe =  _maxlife / (int)(m_SplitX * m_SplitY); //アニメーション遷移フレーム数設定
 	if (m_aminframe <= 0) m_aminframe = 1;
 
-	BaseInit(_maxlife, _pos_amount, _pos_changeframe, _rot_amount, _rot_changeframe, _scale_amount, _scale_changeframe);
+	BaseInit(_maxlife, _pos_amount, _pos_changeframe, _rot_amount, _rot_changeframe, _scale_amount, _scale_changeframe,_endless);
 
 	// ビルボード用に座標変化量と回転変化量、スケール変化量を調整
 	// 3D移動ベクトルに変換

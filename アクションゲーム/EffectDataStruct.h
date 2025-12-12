@@ -50,4 +50,5 @@ struct EffectParams
     int change_posFrame = 0;                     // 座標変化開始フレーム
     int change_rotFrame = 0;                     // 回転変化開始フレーム
     int change_scaleFrame = 0;                   // スケール変化開始フレーム
+	bool endless = false;                                 // 無限再生フラグ
 };

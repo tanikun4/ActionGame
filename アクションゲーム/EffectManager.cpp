@@ -40,6 +40,7 @@ void EffectManager::Init()
         {"assets/texture/2DEffect/hibana.png","","","",5,4},
         {"assets/texture/2DEffect/kemuri_syou.png","","","",5,14},
 		{"assets/texture/2DEffect/kemuri_dai.png","","","",5,22},
+        {"assets/texture/2DEffect/title_ugoku.png","","","",5,14},
 
 	};
 
@@ -322,7 +323,8 @@ void EffectManager::Play(int _id,
                 e->Init(m_LoadData[_id], _param.maxLife, 
                     _param.pos_amount, _param.change_posFrame,
                     _param.rot_amount, _param.change_rotFrame,
-                    _param.scale_amount, _param.change_scaleFrame);//3Dエフェクト用Initを呼ぶ
+                    _param.scale_amount, _param.change_scaleFrame,
+                    _param.endless);//3Dエフェクト用Initを呼ぶ
                 break;//1つだけ再生したいのでループを抜ける
             }
         }
@@ -338,7 +340,8 @@ void EffectManager::Play(int _id,
                 e->Init(m_LoadData[_id], m_Shared2D_Data, _param.maxLife,
                     _param.pos_amount, _param.change_posFrame,
                     _param.rot_amount, _param.change_rotFrame,
-                    _param.scale_amount, _param.change_scaleFrame);//2Dエフェクト用Initを呼ぶ
+                    _param.scale_amount, _param.change_scaleFrame,
+                    _param.endless);//2Dエフェクト用Initを呼ぶ
                 break;//1つだけ再生したいのでループを抜ける
             }
         }

@@ -13,6 +13,7 @@ protected:
 	int m_scalechange_frame = 0;//スケール変更開始フレーム数
 
 	bool m_scalechange = false;//スケール変更するかどうかのフラグ
+	bool endless = false;//無限再生フラグ
 
 	DirectX::SimpleMath::Vector3 pos_changerate = { 0, 0, 0 };//座標変化量
 	DirectX::SimpleMath::Vector3 rot_changerate = { 0, 0, 0 };//回転変化量
@@ -33,7 +34,8 @@ public:
 	void BaseInit(int _maxlife, 
 		DirectX::SimpleMath::Vector3 _pos_amount, int _pos_changeframe,
 		DirectX::SimpleMath::Vector3 _rot_amount, int _rot_changeframe,
-		DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe);//共通初期化処理
+		DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe,
+		bool _endless);//共通初期化処理
 
 	void BaseUpdate();//共通更新処理
 

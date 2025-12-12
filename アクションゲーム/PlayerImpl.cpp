@@ -443,6 +443,7 @@ void Player::Impl::Guard() {
     }
 }
 
+//カウンター処理
 void Player::Impl::Counter() {
     auto bosses = Game::GetInstance()->GetObjects<Boss>();
     if (!bosses.empty()) {
@@ -527,10 +528,11 @@ void Player::Impl::UpdateCounter() {
     if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 6 &&
         fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 6) {
 
-        if (m_pole) m_pole->Swing();
-        m_Owner->m_State = ATTACK;
-        inviFg = false;
-        m_Owner->SetColor({ 1,1,1,1 });
+		//暫定的なカウンター攻撃処理
+        if (m_pole->GetSwingTime() <= 0) {
+            m_pole->SetAtk(6);
+            if (m_pole) m_pole->Swing_Vertical();
+        }
     }
     else {
         auto bosses = Game::GetInstance()->GetObjects<Boss>();
@@ -539,5 +541,13 @@ void Player::Impl::UpdateCounter() {
             LookAt(boss->GetPosition());
         }
         m_Owner->m_Velocity_f = speed * 3;
+    }
+	// カウンター攻撃終了判定
+    if (m_pole->GetSwingTime() > 10) {
+        //m_Owner->m_State = ATTACK;
+        m_pole->SetAtk(3);
+        inviFg = false;
+        m_Owner->SetColor({ 1,1,1,1 });
+	    m_Owner->m_State = NORMAL;
     }
 }

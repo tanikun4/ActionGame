@@ -250,11 +250,23 @@ void Boss::Impl::AttackUpdate() {
 		if (weapon_state == Pole::STATE::STANCE && m_rushFg) {
 			//近づいたら振る
 			Move();
+			framecount++;
+			if (framecount > 3) {
+				// 土煙エフェクト再生
+				EffectParams   param;
+				param.pos = m_Owner->m_Position;
+				param.scale = m_Owner->m_Scale * 20;
+				param.maxLife = 30;
+				EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI, param);
+				framecount = 0;
+			}
+
 			if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 3 &&
 				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 3) {
 				m_weapon->Swing_Vertical();
 				m_rushFg = false;
 				m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
+				framecount = 0;
 			}
 		}
 

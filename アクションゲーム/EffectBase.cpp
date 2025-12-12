@@ -23,7 +23,8 @@ EffectBase::~EffectBase()
 void EffectBase::BaseInit(int _maxlife,
 	DirectX::SimpleMath::Vector3 _pos_amount, int _pos_changeframe,
 	DirectX::SimpleMath::Vector3 _rot_amount, int _rot_changeframe,
-	DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe)
+	DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe,
+	bool _endless)
 {
 	m_lifeframe = 0;
 	m_maxlife = _maxlife;
@@ -45,6 +46,7 @@ void EffectBase::BaseInit(int _maxlife,
 		if (division_flame <= 0) division_flame = 1;
 		scale_changerate = _scale_amount / (division_flame);
 	}
+	endless = _endless;
 	m_live = true;
 }
 
@@ -65,6 +67,10 @@ void EffectBase::BaseUpdate() {
 	++m_lifeframe;
 	//生存フレーム限界に達したら、存在フラグをfalseにする
 	if (m_lifeframe >= m_maxlife) {
+		if (endless) {
+			m_lifeframe = 0;
+			return;
+		}
 		m_live = false;
 	}
 }
