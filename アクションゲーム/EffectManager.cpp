@@ -41,7 +41,7 @@ void EffectManager::Init()
         {"assets/texture/2DEffect/kemuri_syou.png","","","",5,14},
 		{"assets/texture/2DEffect/kemuri_dai.png","","","",5,22},
         {"assets/texture/2DEffect/title_ugoku.png","","","",5,14},
-
+        {"assets/texture/2DEffect/press_enterkey.png","","","",1,1},
 	};
 
 	m_Instance = make_unique<EffectManager>();

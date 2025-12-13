@@ -11,6 +11,7 @@ private:
 	void Init(); // ‰Šú‰»
 	void Uninit(); // I—¹ˆ—
 
+	int count = 0;
 	bool set = false;
 
 public:

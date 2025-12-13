@@ -26,7 +26,7 @@ void TitleScene::Init()
 	//pt->SetScale(1280.0f, 720.0f, 0.0f); // 大きさを指定
 	//m_MySceneObjects.emplace_back(pt);
 	EffectParams param;
-	param.scale = DirectX::SimpleMath::Vector3(110.0f, 64.0f, 0.0f);
+	param.scale = DirectX::SimpleMath::Vector3(114.0f, 64.0f, 0.0f);
 	param.maxLife = 150;
 	param.endless = true;
 	EffectManager::GetInstance()->Play(TITLE_UGOKU,param);
@@ -35,6 +35,21 @@ void TitleScene::Init()
 // 更新
 void TitleScene::Update()
 {
+	if (set) {
+		EffectParams param;
+		param.pos = DirectX::SimpleMath::Vector3(0.0f, -27.0f, 0.0f);
+		param.maxLife = 60;
+		param.scale = DirectX::SimpleMath::Vector3(80.0f, 16.0f, 0.0f);
+		EffectManager::GetInstance()->Play(PRESS_ENTERKEY, param);
+		set = false;
+	}
+	else {
+		count++;
+	}
+	if (count > 120) {
+		count = 0;
+		set = true;
+	}
 	// スペースキーを押してステージ1へ
 	if (Input::GetKeyTrigger(VK_RETURN))
 	{

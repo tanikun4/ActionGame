@@ -265,8 +265,8 @@ void Boss::Impl::AttackUpdate() {
 				framecount = 0;
 			}
 
-			if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 3 &&
-				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 3) {
+			if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 2 &&
+				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 2) {
 				m_weapon->Swing_Vertical();
 				m_rushFg = false;
 				m_Owner->m_Velocity_f = 0.0f;//ˆÚ“®‘¬“x‚ð0‚É‚·‚é

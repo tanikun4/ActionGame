@@ -29,7 +29,7 @@ struct AngleAnim
     void Start(const DirectX::SimpleMath::Vector3& s,
         const DirectX::SimpleMath::Vector3& e,
         int f,
-        float acc = 0.0f)     // š‰Á‘¬“x‚ğ’Ç‰Á
+        float acc = 0.0f)     // ‰Á‘¬“x‚ğ’Ç‰Á
     {
         start = s;
         end = e;

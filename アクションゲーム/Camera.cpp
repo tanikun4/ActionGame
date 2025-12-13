@@ -26,8 +26,8 @@ void Camera::DebugCameraStatus() {
 //=======================================
 void Camera::Init()
 {
-
-	m_Position = Vector3(50.0f, 20.0f, 50.0f);
+	//m_Position = Vector3(50.0f, 20.0f, 50.0f);
+	m_Position = Vector3(0.0f, 0.0f, 75.0f);
 	m_Target = Vector3(0.0f, 0.0f, 0.0f);
 
 	// デバッグ関数の登録
