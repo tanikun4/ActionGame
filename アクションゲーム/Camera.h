@@ -32,6 +32,8 @@ public:
 	void SetDirection(DirectX::SimpleMath::Vector2 dir) { m_CameraDirection = dir; } // カメラの方向を設定
 
 	void SetTarget(Object& ob) { m_TargetObject = &ob; } // 注視点を設定
+
+	void ResetTarget() { m_TargetObject = nullptr; } // 注視点をリセット
 	// View行列を取得する関数
 	DirectX::SimpleMath::Matrix GetViewMatrix();
 

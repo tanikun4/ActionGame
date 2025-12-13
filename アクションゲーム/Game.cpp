@@ -50,7 +50,6 @@ void Game::Init()
 
 	m_Instance->m_Scene = new TitleScene; //メモリを確保
 
-
 	// オブジェクト初期化
 	for (auto& o : m_Instance->m_Objects)
 	{
@@ -184,8 +183,10 @@ void Game::ChangeScene(SceneName sName)
 
 		DebugUI::Clear();
 	}
-
+	m_Camera->ResetTarget();
 	m_Camera->Init();
+
+	//EffectManager::GetInstance()->SetCamera(&GetCamera());
 
 	switch (sName)
 	{
@@ -202,6 +203,7 @@ void Game::ChangeScene(SceneName sName)
 		m_Instance->m_Scene = new GameOverScene; // メモリを確保
 		break;
 	}
+
 }
 
 // オブジェクトを削除する

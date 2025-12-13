@@ -20,7 +20,7 @@ void ResultScene::Init()
 {
 	// 背景画像オブジェクトを作成
 	Texture2D* pt = Game::GetInstance()->AddObject<Texture2D>();
-	pt->SetTexture("assets/texture/background2.png"); // 画像を指定
+	pt->SetTexture("assets/texture/result.png"); // 画像を指定
 	pt->SetScale(1280.0f, 720.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(pt);
 	Fade::GetInstance()->StartFadeIn();

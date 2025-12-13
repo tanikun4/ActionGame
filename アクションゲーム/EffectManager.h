@@ -54,6 +54,7 @@ public:
 	static DirectX::SimpleMath::Vector3 ToCameraEffectPos(DirectX::SimpleMath::Vector3 _pos, float _dist);//エフェクト再生位置調整関数、手軽に使えるようにstaticで用意
 	static EffectManager* GetInstance();
 
+	void SetCamera(Camera* cam);
 
 	// エフェクト再生関数
 	void Play(

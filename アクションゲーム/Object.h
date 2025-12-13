@@ -65,6 +65,7 @@ public:
 	void SetRotation(const DirectX::SimpleMath::Vector3& rot);
 	void SetScale(const DirectX::SimpleMath::Vector3& sca);
 	void SetLive(const bool& live);
+	void SetCamera(Camera* cam) { m_Camera = cam; };
 	DirectX::SimpleMath::Vector3 GetPosition() const;
 	DirectX::SimpleMath::Vector3 GetRotation() const;
 	DirectX::SimpleMath::Vector3 GetScale() const;

@@ -35,7 +35,7 @@ void EffectManager::Init()
 	// 読み込むデータの配列、ここにエフェクトリソースを追加していく
 	const EffectLoadData g_EffectResources[] = {
 		{"assets/texture/gorufu", "assets/model/gorufu/GolfBall_v2.fbx"},
-        {"assets/texture/2DEffect/issen_one.png","","","", 1,1},
+        {"assets/texture/2DEffect/issen_one_2.png","","","", 1,1},
         {"assets/texture/2DEffect/honoo.png","","","",5,24},
         {"assets/texture/2DEffect/hibana.png","","","",5,4},
         {"assets/texture/2DEffect/kemuri_syou.png","","","",5,14},
@@ -364,6 +364,19 @@ Vector3 EffectManager::ToCameraEffectPos(Vector3 _pos, float _dist) {
     // 対象座標からdist分前方にずらすした座標を返す
     Vector3 pos = _pos - adjustedForward * _dist;
     return pos;
+}
+
+void EffectManager::SetCamera(Camera* cam)
+{
+    m_Camera = cam;
+    for(auto& e : m_Effects3D)
+    {
+        e->SetCamera(cam);
+	}
+    for(auto& e : m_Effects2D)
+    {
+        e->SetCamera(cam);
+	}
 }
 
 // インスタンスを取得
