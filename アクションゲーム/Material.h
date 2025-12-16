@@ -135,4 +135,8 @@ public:
 	bool isTextureEnable() {
 		return m_Material.TextureEnable == TRUE;
 	}
+
+	DirectX::XMFLOAT4 GetDiffuse() {
+		return m_Material.Diffuse;
+	}
 };

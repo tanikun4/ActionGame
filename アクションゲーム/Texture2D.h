@@ -59,6 +59,6 @@ public:
 
 	// F‚ðŽw’è
 	void SetColor(const DirectX::SimpleMath::Vector4& color);
-	float GetAlpha() { return m_color.w; }
+	float GetAlpha() { return m_Materiale->GetDiffuse().w; }
 };
 
