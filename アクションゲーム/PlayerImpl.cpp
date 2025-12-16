@@ -67,6 +67,8 @@ void Player::Impl::Init() {
 void Player::Impl::Update() {
     if (hp <= 0) return; // 死亡していたら更新しない
 
+	if (demoMode) UpdateDemo(); // デモモード中はデモ更新
+
     // 状態ごとの処理
     switch (m_Owner->m_State) {
     case NORMAL:
@@ -81,15 +83,12 @@ void Player::Impl::Update() {
         // 射撃は一旦削除
         break;
     case DAMAGE:
-        m_Owner->m_Velocity_f = 0.0f;
         UpdateDamage();
         break;
     case DODGE:
-        m_Owner->m_Velocity_f = 0.0f;
         UpdateDodge();
         break;
     case COUNTER:
-        m_Owner->m_Velocity_f = 0.0f;
         UpdateCounter();
         break;
     default:
@@ -231,36 +230,23 @@ void Player::Impl::DebugWeaponStatus() {
 void Player::Impl::DebugPlayerStatus() {
     ImGui::Begin("PlayerStatus");
 
-    //ImGui::SliderFloat("radius", &m_Owner->radius, 0.0f, 10.0f);
-
-    //static Vector3 shadow_rot;
-
-    //ImGui::SliderFloat3("Shadow Rotation", &shadow_rot.x, 0, 360);
-
-    //m_Owner->m_Shadow->SetRotation(shadow_rot);
-
-    //static float shadow_scale;
-
-    //ImGui::SliderFloat("Shadow Scale", &shadow_scale, 0, 100);
-
-    //m_Owner->m_Shadow->SetBaseScale(shadow_scale);
-
     ImGui::SliderFloat3("Rotation", &m_Owner->m_Rotation.x, -PI, PI);
-
-    if (ImGui::Button("Reset radius"))
-        m_Owner->radius = 4;
 
     if (ImGui::Button("HP MAX"))
         hp = 9;
 
-    static int select = 0;
-    ImGui::RadioButton("Invisible", &select, 1);
-    ImGui::RadioButton("Not_Invisible", &select, 0);
+    if (ImGui::Button("HP ZERO"))
+        hp = 0;
 
-    if (select == 1) {
+    static bool select;
+    ImGui::Checkbox("Invisible", &select);
+
+    if (select) {
         inviFg = true;
         m_Owner->SetColor({ 0,0,1,0.5f });
     }
+
+	ImGui::Checkbox("DEMOMODE", &demoMode);
 
     ImGui::End();
 }
@@ -307,7 +293,12 @@ void Player::Impl::DebugEffectPlay() {
 
 // キー入力による移動
 void Player::Impl::Move() {
-    float dir = SetMoveDirection();
+    float dir = -1.0f;
+
+	// デモモード中はデモ用の移動方向を使用
+    if(demoMode) dir = m_demoParam.demoMoveDir;
+    else dir = SetMoveDirection();
+
     if (dir >= 0.0f) {
         m_Owner->m_ForwardRotation.y = dir + m_Owner->m_Camera->GetCameraDirection().x;
         m_Owner->m_Velocity_f = speed;		
@@ -330,12 +321,6 @@ void Player::Impl::Move() {
         m_Owner->m_Velocity_f = 0.0f;
     }
 
-    // 回避処理
-    if (Input::GetKeyTrigger(VK_J)) {
-        if (rollcount >= rollcooldown) {
-            DodgeRoll();
-        }
-    }
 }
 
 // 移動方向の設定
@@ -359,15 +344,23 @@ float Player::Impl::SetMoveDirection() {
 
 // 回避処理
 void Player::Impl::DodgeRoll() {
-    m_Owner->m_State = DODGE;
-    rollcount = 0;
-    inviFg = true;
-    RollFg = true;
-    m_Owner->SetColor({ 0,0,1,0.5f });
+	if (demoMode) return;//デモ中は入力を受け付けない
+    
+    if (Input::GetKeyTrigger(VK_J) && rollcount >= rollcooldown) {
+      m_Owner->m_State = DODGE;
+      rollcount = 0;
+      inviFg = true;
+      RollFg = true;
+      m_Owner->SetColor({ 0,0,1,0.5f });        
+    }
 }
 
 // 攻撃処理
 void Player::Impl::Attack() {
+    
+	//デモ中は入力を受け付けない
+    if (demoMode)  return;
+    
     if (Input::GetKeyTrigger(VK_K) && !GuardFg) {
         if (m_pole) m_pole->Swing();
         m_Owner->m_State = ATTACK;
@@ -377,6 +370,8 @@ void Player::Impl::Attack() {
 
 // ジャンプ処理
 void Player::Impl::Jump() {
+    if (demoMode) return;//デモ中は入力を受け付けない
+
     if (Input::GetKeyTrigger(VK_L) && !is_JUMP) {
         m_Owner->m_Velocity.y = 2.0f;
         m_Owner->is_GROUND = false;
@@ -446,6 +441,8 @@ void Player::Impl::Damage(int atk) {
 }
 
 void Player::Impl::Guard() {
+	if (demoMode) return;//デモ中は入力を受け付けない
+
     if (Input::GetKeyTrigger(VK_I)) {
         GuardFg = true;
         guardcount = 0;
@@ -493,6 +490,7 @@ void Player::Impl::UpdateNormal() {
     Attack();
     Guard();
     Jump();
+    DodgeRoll();
 }
 
 
@@ -541,6 +539,11 @@ void Player::Impl::UpdateDodge() {
 
 //カウンター攻撃中
 void Player::Impl::UpdateCounter() {
+
+	//常に3倍の速度で移動
+    //攻撃後も移動し続けるので、切り抜ける形になってかっこよくなった。
+    m_Owner->m_Velocity_f = speed * 3;
+
     if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 5 &&
         fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
 
@@ -556,7 +559,6 @@ void Player::Impl::UpdateCounter() {
             Boss* boss = bosses[0];
             LookAt(boss->GetPosition());
         }
-        m_Owner->m_Velocity_f = speed * 3;
     }
 	// カウンター攻撃終了判定
     if (m_pole->GetSwingTime() > 10) {
@@ -568,3 +570,41 @@ void Player::Impl::UpdateCounter() {
 		Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
     }
 }
+
+//デモ中の更新処理
+
+void Player::Impl::UpdateDemo()
+{
+    // 移動
+    if (--m_demoParam.demoMoveframe <= 0)
+    {
+        // 次の間隔（ランダム）
+        m_demoParam.demoMoveframe = (rand() % 90) + 30;
+
+        // 移動方向ランダム
+        static const float dirs[] = {
+             3.0f * PI / 4.0f, // 前左
+             5.0f * PI / 4.0f, // 前右
+             PI / 4.0f, // 後ろ左
+             7.0f * PI / 4.0f, // 後ろ右
+             PI, // 前
+             0.0f, // 後ろ
+             PI / 2.0f, // 左
+             3.0f * PI / 2.0f // 右
+        };
+        m_demoParam.demoMoveDir = dirs[rand() % 8];
+    }
+
+    // 攻撃
+    if (--m_demoParam.demoAttackframe <= 0)
+    {
+        m_demoParam.demoAttackframe = (rand() % 180) + 60;
+
+        if (m_pole && m_Owner->m_State == NORMAL)
+        {
+            m_pole->Swing();
+            m_Owner->m_State = ATTACK;
+        }
+    }
+}
+

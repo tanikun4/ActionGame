@@ -247,6 +247,7 @@ void Game::ChangeSceneFadeOut(SceneName sName)// ƒtƒF[ƒhƒAƒEƒgŠ®—¹Œã‚ÉƒV[ƒ“‚ğ•
 	Fade::GetInstance()->StartFadeOut();
 
 }
+
 // “n‚³‚ê‚½ƒIƒuƒWƒFƒNƒg‘S‚Ä‚ÌÕ“Ë”»’è‚ğs‚¤
 void Game::CollisionObject(std::vector<Object*>& Object)
 {
@@ -256,6 +257,7 @@ void Game::CollisionObject(std::vector<Object*>& Object)
 		if (!a->GetLive()) { continue; };
 		auto col_a = dynamic_cast<ICollider*>(a);
 		if (!col_a) { continue; }
+
 		for (size_t j = i + 1; j < Object.size(); ++j) {
 			auto b = Object[j];
 			if (!b->GetLive()) { continue; };

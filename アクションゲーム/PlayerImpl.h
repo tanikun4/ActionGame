@@ -44,6 +44,20 @@ private:
         COUNTER
     };
 
+	// デモ用パラメータ構造体
+    struct DemoParam {
+        int demoMoveframe = 0;
+        int demoAttackframe = 0;
+
+        int demoMoveMaxframe = 0;
+        int demoAttackMaxframe = 0;
+
+        float demoMoveDir = -1.0f;
+	};
+
+	bool demoMode = false; // デモモード
+	DemoParam m_demoParam; // デモ用パラメータ
+
     int hp = 9;
     int framecount = 0;
     int invicount = 0; // 無敵時間カウント
@@ -78,11 +92,14 @@ private:
     void Jump();
     void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 
+
     void UpdateNormal();
     void UpdateAttack();
     void UpdateDamage();
     void UpdateDodge();
     void UpdateCounter();
+
+	void UpdateDemo();
 
     void DebugWeaponStatus();
     void DebugPlayerStatus();
