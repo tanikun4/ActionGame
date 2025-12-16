@@ -65,6 +65,7 @@ void Boss::Impl::Init() {
 	m_weapon = Game::GetInstance()->AddObject<Pole>();
 	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	hp = 50;
+	def = 0;
 	m_Owner->m_Scale.x = 2;
 	m_Owner->m_Scale.y = 2;
 	m_Owner->m_Scale.z = 2;
@@ -141,9 +142,14 @@ bool Boss::Impl::GetLive() {
 	return false;
 }
 
-void Boss::Impl::Damage(int atk) {
+void Boss::Impl::Damage(int _atk) {
 	if (inviFg)  return;
-	hp -= atk;
+	//防御力分ダメージ軽減
+	_atk -= def;
+	//ダメージがマイナスにならないように補正
+	if (_atk < 0) _atk = 0;
+
+	hp -= _atk;
 	invicount = 0.0f;
 	inviFg = true;
 	m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする

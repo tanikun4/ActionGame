@@ -46,11 +46,8 @@ private:
 
 	// デモ用パラメータ構造体
     struct DemoParam {
-        int demoMoveframe = 0;
-        int demoAttackframe = 0;
-
-        int demoMoveMaxframe = 0;
-        int demoAttackMaxframe = 0;
+        int demoMoveframe = 120;
+        int demoAttackframe = 300;
 
         float demoMoveDir = -1.0f;
 	};

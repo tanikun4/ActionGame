@@ -19,11 +19,14 @@ public:
 	void Init();
 	void Update();
 	void Draw();
-	void Damage(int atk);
+	void Damage(int _atk);
+
+	void SetDEF(int _def) { def = _def; }
 
 	void ShotBullet();
 	bool GetLive();
 	int GetHP();
+
 	Pole* GetWeapon();
 
 	void OnHit(Pole* pole);
@@ -47,6 +50,7 @@ private:
 		KIND_MAX
 	};
 	int hp = 50;
+	int def = 0; //防御力、値分ダメージを減らす
 	int framecount = 0;
 	int m_State = 0;//状態　1で行動中
 	bool inviFg = false;
@@ -58,6 +62,7 @@ private:
 	bool notUpdate = false;//更新を止めるかどうか
 	bool m_lookatFg = true;//プレイヤーへの追従をするかどうか
 	bool m_rushFg = false;//突進しているかどうか
+
 
 	bool m_slowFg = false;//動きが遅い状態か
 	int slow_frame = 0;//遅くなっているフレーム数

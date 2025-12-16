@@ -415,6 +415,9 @@ void Player::Impl::Damage(int atk) {
         if (GuardFg) {
             if (atk > 1) atk = atk / 2;
         }
+
+		if (demoMode) atk = 0;//デモ中はダメージを受けない
+
         hp -= atk;
         m_Owner->m_State = DAMAGE;
         framecount = 0;

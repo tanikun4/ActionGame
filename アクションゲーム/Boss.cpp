@@ -22,10 +22,11 @@ void Boss::Draw() { impl->Draw(); }
 
 bool Boss::GetLive() { return impl->GetLive(); }
 
-void Boss::Damage(int atk) { impl->Damage(atk); }
+void Boss::Damage(int _atk) { impl->Damage(_atk); }
 
 void Boss::ShotBullet() { impl->ShotBullet(); }
 
+void Boss::SetDEF(int _def) { impl->SetDEF(_def); }
 
 int Boss::GetHP() { return impl->GetHP(); }
 

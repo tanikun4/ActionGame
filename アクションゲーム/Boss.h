@@ -20,8 +20,9 @@ public:
 	void Init();
 	void Update();
 	void Draw();
-	void Damage(int atk);
+	void Damage(int _atk);
 
+	void SetDEF(int _def);
 	void ShotBullet();
 	bool GetLive();
 	int GetHP();
