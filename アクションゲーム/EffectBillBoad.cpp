@@ -176,7 +176,7 @@ void EffectBillBoad::SetUV(const float& nu, const float& nv, const float& sx, co
 	m_SplitY = sy;
 }
 
-// 色を指定(現状は機能していない)
+// 色を指定
 void EffectBillBoad::SetColor(const DirectX::SimpleMath::Vector4& color)
 {
 	m_Materiale.get()->SetDiffuse(color);
