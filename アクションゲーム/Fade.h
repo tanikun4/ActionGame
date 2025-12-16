@@ -30,5 +30,7 @@ public:
 	bool FinishedFadeOut() { return !fadeout; };//フェードアウトが終了したか
 	bool FinishedFadeIn() { return !fadein; };// フェードインが終了したか
 	static Fade* GetInstance();
+
+	void DebugFade();
 };
 

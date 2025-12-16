@@ -34,7 +34,7 @@ void ShadowCircle::Draw()
 {
 
     // 深度：テストON / 書き込みOFF
-	if (m_color.w <= 0.0f) { return; } //透明なら描画しない
+	//if (m_color.w <= 0.0f) { return; } //透明なら描画しない
 
 	Renderer::SetDepthEnable(false); // 深度書き込みを無効にする
 	Renderer::SetBlendState(BS_ALPHABLEND);
@@ -89,7 +89,7 @@ void ShadowCircle::UpdateShadow(
 {
     // 位置
     Vector3 pos = ownerPos;
-    pos.y = groundY + 1.0f;
+    pos.y = groundY + 0.02f;
     SetPosition(pos);
 
     // 高さ
@@ -102,5 +102,6 @@ void ShadowCircle::UpdateShadow(
 
     // α（高いほど薄く）
     Vector4 col = Vector4(0, 0, 0, std::lerp(0.6f, 0.2f, t));
+	
     SetColor(col);
 }

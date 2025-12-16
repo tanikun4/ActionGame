@@ -1,6 +1,7 @@
 #include "Fade.h"
 #include "Texture2D.h"
 #include "Camera.h"
+#include "DebugUI.h"
 
 std::unique_ptr<Fade> Fade::m_Instance = nullptr;
 
@@ -17,6 +18,10 @@ void Fade::Init(Camera* cam)
 	fadein = false;
 	fadeout = false;
 	flamecount = 0;
+
+	DebugUI::RedistDebugFunction([this]() {
+		DebugFade();
+		});
 }
 
 void Fade::Update() 
@@ -62,4 +67,15 @@ bool Fade::FadeIn()
 	else {
 		return true;
 	}
+}
+
+void Fade::DebugFade() 
+{
+	ImGui::Begin("Fade Status");
+
+	static DirectX::SimpleMath::Vector4 color{};
+	ImGui::SliderFloat4("Color", &color.x, 0.0f, 1.0f);
+	fadetex->SetColor(color);
+
+	ImGui::End();
 }
