@@ -1,10 +1,11 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "sound.h"
-#include "ICollider.h"
 #include "Object.h"
 #include "Fade.h"
 #include "DebugUI.h"
+
+#include "CollisionHelper.h"
 
 #include "EffectManager.h"
 
@@ -244,5 +245,29 @@ void Game::ChangeSceneFadeOut(SceneName sName)// ƒtƒF[ƒhƒAƒEƒgŠ®—¹Œã‚ÉƒV[ƒ“‚ğ•
 	m_NextScene = sName;
 	change_request = true;
 	Fade::GetInstance()->StartFadeOut();
+
+}
+// “n‚³‚ê‚½ƒIƒuƒWƒFƒNƒg‘S‚Ä‚ÌÕ“Ë”»’è‚ğs‚¤
+void Game::CollisionObject(std::vector<Object*>& Object)
+{
+
+	for (size_t i = 0; i < Object.size(); ++i) {
+		auto a = Object[i];
+		if (!a->GetLive()) { continue; };
+		auto col_a = dynamic_cast<ICollider*>(a);
+		if (!col_a) { continue; }
+		for (size_t j = i + 1; j < Object.size(); ++j) {
+			auto b = Object[j];
+			if (!b->GetLive()) { continue; };
+			auto col_b = dynamic_cast<ICollider*>(b);
+			if (!col_b) { continue; }
+
+			if (Collision::CheckHit(*col_a, *col_b)) {
+				a->HitObject(b);
+				b->HitObject(a);
+			}
+
+		}
+	}
 
 }

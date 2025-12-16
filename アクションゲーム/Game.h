@@ -50,6 +50,8 @@ public:
 	Camera& GetCamera(); // カメラ取得
 	void DeleteObject(Object* pt); // オブジェクトを削除する
 	void DeleteAllObject(); // オブジェクトをすべて削除する
+
+	void CollisionObject(std::vector<Object*>& Object);// 渡されたオブジェクト全ての衝突判定を行う
 	
 
 	// オブジェクトを追加する(※テンプレート関数なのでここに直接記述)

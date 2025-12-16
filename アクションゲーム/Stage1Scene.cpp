@@ -1,20 +1,19 @@
 #include "Stage1Scene.h"
 #include "Game.h"
-//#include "sound.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Boss.h"
 #include "Ground.h"
 #include "Texture2D.h"
-#include "Arrow.h"
+//#include "Arrow.h"
 #include "Bullet.h"
 #include "Pole.h"
 #include "EnemyManager.h"
 #include "GroundManager.h"
 #include "ICollider.h"
-#include "Skydome.h"
+//#include "Skydome.h"
 #include "Fade.h"
-#include "CollisionHelper.h"
+
 #include "DebugUI.h"
 
 using namespace std;
@@ -200,7 +199,7 @@ void Stage1Scene::Update()
 	//}
 	//count[1]->SetUV(EnemyManager::GetInstance().EnemyCount() + 1, 1, 10, 1); // “G‚Ì”‚ÌUV‚ğw’è
 
-	Collision();
+	Game::GetInstance()->CollisionObject(m_MySceneObjects);
 
 	if(boss->GetHP() <= 0){
 		Game::GetInstance()->ChangeSceneFadeOut(RESULT);
@@ -323,25 +322,4 @@ void Stage1Scene::DebugWallStatus() {//•Ç‚Ì‘å‚«‚³‚âˆÊ’u‚ğ‘€ì‚·‚é
 	}
 
 	ImGui::End();
-}
-
-void Stage1Scene::Collision() {
-	for (size_t i = 0; i < m_MySceneObjects.size(); ++i) {
-		for (size_t j = i + 1; j < m_MySceneObjects.size(); ++j) {
-			auto a = m_MySceneObjects[i];
-			auto b = m_MySceneObjects[j];
-
-			if (!(a->GetLive() && b->GetLive())) { continue; };
-
-			auto col_a = dynamic_cast<ICollider*>(a);
-			auto col_b = dynamic_cast<ICollider*>(b);
-			if (!(col_a && col_b)) { continue; }
-
-			if (Collision::CheckHit(*col_a, *col_b)) {
-				a->HitObject(b);
-				b->HitObject(a);
-			}
-			
-		}
-	}
 }
