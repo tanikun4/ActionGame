@@ -69,6 +69,10 @@ void Boss::Impl::Init() {
 	m_Owner->m_Scale.y = 2;
 	m_Owner->m_Scale.z = 2;
 	m_Owner->radius *= 2;
+
+	//ŠÛ‰e‚Ì‘å‚«‚³‚ðƒZƒbƒg
+	m_Owner->m_Shadow->SetBaseScale(18 * m_Owner->m_Scale.x);
+	
 	DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
 

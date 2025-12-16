@@ -200,3 +200,10 @@ void Texture2D::SetColor(const DirectX::SimpleMath::Vector4& color)
 		v.color = m_color;
 	m_VertexBuffer.Modify(m_Vertices);
 }
+
+//色を変える(フェードが透明にならないバグがあるので、現在はコメントアウト)
+//void Texture2D::SetColor(const DirectX::SimpleMath::Vector4& color) 
+//{
+//	m_Materiale.get()->SetDiffuse(color);
+//	m_Materiale.get()->Update();
+//}

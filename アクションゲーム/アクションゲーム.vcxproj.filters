@@ -100,6 +100,9 @@
     <Filter Include="ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29">
       <UniqueIdentifier>{92bd4fd9-284a-4f67-b84c-c1cc6f029d79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Shadow">
+      <UniqueIdentifier>{d860cb45-4b49-4b58-ab90-1e4f67824f2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -266,6 +269,9 @@
     </ClCompile>
     <ClCompile Include="EffectBillBoad.cpp">
       <Filter>ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowCircle.cpp">
+      <Filter>ソース ファイル\Shadow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -472,6 +478,9 @@
     </ClInclude>
     <ClInclude Include="AngleAnim.h">
       <Filter>ソース ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowCircle.h">
+      <Filter>ソース ファイル\Shadow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

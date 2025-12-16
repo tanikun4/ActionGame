@@ -86,6 +86,10 @@ void GolfBall::GBInit(std::u8string modelfilename)
 
 	//最初に速度を与える
 	//m_Velocity.x = 0.50f;
+
+	//丸影を生成
+	m_Shadow = Game::GetInstance()->AddObject<ShadowCircle>();
+	m_Shadow->Init();
 }
 
 void GolfBall::GBUpdate()
@@ -121,6 +125,9 @@ void GolfBall::GBUpdate()
 
 	//速度を座標に加算
 	m_Position += m_Velocity;
+
+	//丸影の更新
+	m_Shadow->UpdateShadow(m_Position, -0.1f);//地面座標が一旦決め打ち、そのうち地面のシステムから変えたい。
 
 }
 
@@ -159,6 +166,8 @@ void GolfBall::GBDraw()
 			m_subsets[i].IndexBase,		// 最初のインデックスバッファの位置	
 			m_subsets[i].VertexBase);	// 頂点バッファの最初から使用
 	}
+
+	m_Shadow->Draw();
 }
 
 void GolfBall::Draw() {
@@ -238,6 +247,7 @@ bool GolfBall::CheckGround() {
 Collision::ColliderVariant GolfBall::GetCollision(){
 	return Collision::Sphere{ m_Position, radius };
 }
+
 void GolfBall::SetColor(const DirectX::SimpleMath::Vector4& color) {//色を変える
 	for (auto& m : m_Materiales) {
 		m.get()->SetDiffuse(color);

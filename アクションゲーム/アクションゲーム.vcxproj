@@ -333,6 +333,7 @@
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossImpl.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ShadowCircle.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionHelper.h" />
     <ClCompile Include="DebugUI.cpp" />
@@ -391,6 +392,7 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossImpl.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ShadowCircle.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionResult.h" />
     <ClInclude Include="DebugUI.h" />

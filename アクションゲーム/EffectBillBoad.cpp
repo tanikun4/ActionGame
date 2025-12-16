@@ -179,5 +179,6 @@ void EffectBillBoad::SetUV(const float& nu, const float& nv, const float& sx, co
 // 色を指定(現状は機能していない)
 void EffectBillBoad::SetColor(const DirectX::SimpleMath::Vector4& color)
 {
-	m_Materiale->SetDiffuse(color);
+	m_Materiale.get()->SetDiffuse(color);
+	m_Materiale.get()->Update();
 }

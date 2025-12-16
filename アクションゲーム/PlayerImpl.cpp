@@ -51,6 +51,10 @@ void Player::Impl::Init() {
     hp = 9;
     framecount = 30;
     m_pole->SetAtk(3);
+
+    //ŠÛ‰e‚Ì‘å‚«‚³’²®
+    m_Owner->m_Shadow->SetBaseScale(15 * m_Owner->m_Scale.x);
+
     // ƒfƒoƒbƒOŠÖ”‚Ì“o˜^
     DebugUI::RedistDebugFunction([this]() {
         DebugPlayerStatus();
@@ -228,6 +232,18 @@ void Player::Impl::DebugPlayerStatus() {
     ImGui::Begin("PlayerStatus");
 
     //ImGui::SliderFloat("radius", &m_Owner->radius, 0.0f, 10.0f);
+
+    //static Vector3 shadow_rot;
+
+    //ImGui::SliderFloat3("Shadow Rotation", &shadow_rot.x, 0, 360);
+
+    //m_Owner->m_Shadow->SetRotation(shadow_rot);
+
+    //static float shadow_scale;
+
+    //ImGui::SliderFloat("Shadow Scale", &shadow_scale, 0, 100);
+
+    //m_Owner->m_Shadow->SetBaseScale(shadow_scale);
 
     ImGui::SliderFloat3("Rotation", &m_Owner->m_Rotation.x, -PI, PI);
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "EffectObject.h"
 #include "EffectBillBoad.h"
+#include "Manager.h"
 
 constexpr int EFFECT_POOLSIZE_3D = 5;
 constexpr int EFFECT_POOLSIZE_2D = 10;
