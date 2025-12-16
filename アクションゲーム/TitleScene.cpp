@@ -46,12 +46,18 @@ void TitleScene::Update()
 
 	if (count > 120) {
 		count = 0;
-		press_enterkey->SetLive(true);
+		//press_enterkey->SetLive(true);
 	}
 	else {
 		++count;
 		if (count == 60) {
-			press_enterkey->SetLive(false);
+			//press_enterkey->SetLive(false);
+			EffectParams param;
+			param.scale = DirectX::SimpleMath::Vector3(114.0f, 64.0f, 0.0f);
+			param.maxLife = 60;
+			param.pos = DirectX::SimpleMath::Vector3(0.0f, -27.0f, 0.0f);
+			param.scale = DirectX::SimpleMath::Vector3(80.0f, 40.0f, 0.0f);
+			EffectManager::GetInstance()->Play(PRESS_ENTERKEY, param);
 		}
 	}
 	// スペースキーを押してステージ1へ
