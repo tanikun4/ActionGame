@@ -333,6 +333,8 @@
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossImpl.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ParticleEmitter2D.cpp" />
+    <ClCompile Include="ParticleRenderer2D.cpp" />
     <ClCompile Include="ShadowCircle.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionHelper.h" />
@@ -393,6 +395,10 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossImpl.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="MathCommon.h" />
+    <ClInclude Include="ParticleEmitter2D.h" />
+    <ClInclude Include="ParticleParamStruct.h" />
+    <ClInclude Include="ParticleRenderer2D.h" />
     <ClInclude Include="ShadowCircle.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionResult.h" />
