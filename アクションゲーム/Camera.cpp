@@ -17,7 +17,7 @@ void Camera::DebugCameraStatus() {
 
 	ImGui::SliderFloat2("Direction",&m_CameraDirection.x,-PI,PI);
 
-	ImGui::SliderFloat3("Position", &m_Position.x, -100, 100);
+	ImGui::SliderFloat3("Position", &m_Position.x, 0, 300);
 
 	ImGui::LabelText("Forward", "(%.2f, %.2f, %.2f)", forward.x, forward.y, forward.z);
 

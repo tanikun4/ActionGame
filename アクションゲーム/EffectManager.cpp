@@ -40,7 +40,6 @@ void EffectManager::Init()
         {"assets/texture/2DEffect/hibana.png","","","",5,4},
         {"assets/texture/2DEffect/kemuri_syou.png","","","",5,14},
 		{"assets/texture/2DEffect/kemuri_dai.png","","","",5,22},
-        {"assets/texture/2DEffect/title_ugoku.png","","","shader/EffectTexturePS.hlsl",5,14},
         {"assets/texture/2DEffect/press_enterkey.png","","","shader/EffectTexturePS.hlsl",1,1},
 	};
 
