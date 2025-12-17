@@ -273,6 +273,9 @@
     <ClCompile Include="ShadowCircle.cpp">
       <Filter>ソース ファイル\Shadow</Filter>
     </ClCompile>
+    <ClCompile Include="WallManager.cpp">
+      <Filter>ソース ファイル\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
@@ -481,6 +484,9 @@
     </ClInclude>
     <ClInclude Include="ShadowCircle.h">
       <Filter>ソース ファイル\Shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="WallManager.h">
+      <Filter>ソース ファイル\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

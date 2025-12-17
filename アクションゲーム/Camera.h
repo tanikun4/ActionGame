@@ -19,7 +19,14 @@ private:
 	DirectX::SimpleMath::Vector2 m_CameraDirection = DirectX::SimpleMath::Vector2(0, 0); //カメラの方向
 	const float pi = DirectX::XM_PI;
 	Object* m_TargetObject; //注視点オブジェクト
+	
+	bool cameraInputFg = false; //カメラ操作入力有効フラグ
+
+	bool CameraInput(); //カメラ操作入力処理、 trueで操作あり
+	
 	void DebugCameraStatus();
+
+
 public:
 
 	void Init();
@@ -32,6 +39,8 @@ public:
 	void SetDirection(DirectX::SimpleMath::Vector2 dir) { m_CameraDirection = dir; } // カメラの方向を設定
 
 	void SetTarget(Object& ob) { m_TargetObject = &ob; } // 注視点を設定
+
+	void SetInputFg(bool _inputFg) { cameraInputFg = _inputFg; } //カメラ操作入力有効フラグ設定
 
 	void ResetTarget() { m_TargetObject = nullptr; } // 注視点をリセット
 	// View行列を取得する関数

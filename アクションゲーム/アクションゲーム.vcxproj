@@ -381,6 +381,7 @@
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="utility.cpp" />
+    <ClCompile Include="WallManager.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WeaponManager.cpp" />
   </ItemGroup>
@@ -431,6 +432,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="PlayerImpl.h" />
     <ClInclude Include="Skydome.h" />
+    <ClInclude Include="WallManager.h" />
     <ClInclude Include="WireRenderer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />

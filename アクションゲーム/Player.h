@@ -19,6 +19,8 @@ public:
     void Update() override;
     void Uninit() override;
 
+    void SetDemoMode(bool _demoMode);
+
     int GetHP();
     Pole* GetWeapon();
 

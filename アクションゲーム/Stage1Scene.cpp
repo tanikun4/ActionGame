@@ -93,6 +93,7 @@ void Stage1Scene::Init()
 	player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
 	player->SetState(0);
+	player->SetDemoMode(false);
 
 	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //’e
@@ -163,7 +164,8 @@ void Stage1Scene::Init()
 	CameraDirection.x = 0;//PI - atan2(initialOffset.x, initialOffset.z); // yaw
 	CameraDirection.y = -2.14f;//PI + asin(initialOffset.y);                   // pitch
 
-	Game::GetInstance()->GetCamera().SetDirection(CameraDirection);
+	Game::GetInstance()->GetCamera().SetDirection(CameraDirection);//ƒJƒƒ‰•ûŒüİ’è
+	Game::GetInstance()->GetCamera().SetInputFg(true);//ƒJƒƒ‰‘€ì—LŒø‰»
 
 	DebugUI::RedistDebugFunction([this]() {
 		DebugWallStatus();

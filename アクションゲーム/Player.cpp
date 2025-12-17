@@ -13,6 +13,8 @@ void Player::Init() { impl->Init(); }
 void Player::Update() { impl->Update(); }
 void Player::Uninit() { impl->Uninit(); }
 
+void Player::SetDemoMode(bool _demomode) { impl->SetDemoMode(_demomode); }
+
 int Player::GetHP() { return impl->GetHP(); }
 Pole* Player::GetWeapon() { return impl->GetWeapon(); }
 

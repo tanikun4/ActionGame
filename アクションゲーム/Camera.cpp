@@ -15,7 +15,10 @@ void Camera::DebugCameraStatus() {
 
 	Vector3 forward = GetForwardVector();
 
-	ImGui::LabelText("Direction", "(%.2f, %.2f)", m_CameraDirection.x, m_CameraDirection.y);
+	ImGui::SliderFloat2("Direction",&m_CameraDirection.x,-PI,PI);
+
+	ImGui::SliderFloat3("Position", &m_Position.x, -100, 100);
+
 	ImGui::LabelText("Forward", "(%.2f, %.2f, %.2f)", forward.x, forward.y, forward.z);
 
 	ImGui::End();
@@ -42,19 +45,7 @@ void Camera::Init()
 //=======================================
 void Camera::Update()
 {
-	//上下左右キーでカメラ回転
-	if (Input::GetKeyPress(VK_LEFT)) {
-		m_CameraDirection.x += 0.02;
-	}
-	if (Input::GetKeyPress(VK_RIGHT)) {
-		m_CameraDirection.x -= 0.02;
-	}
-	if (Input::GetKeyPress(VK_UP)) {
-		m_CameraDirection.y -= 0.02;
-	}
-	if (Input::GetKeyPress(VK_DOWN)) {
-		m_CameraDirection.y += 0.02;
-	}
+	CameraInput();
 
 	//ターゲットの位置を取得し、距離をとる
 	if (m_TargetObject) {
@@ -180,4 +171,32 @@ Vector3 Camera::GetUpVector() {
 	Vector3 up = right.Cross(forward);
 	up.Normalize();
 	return up;
+}
+
+bool Camera::CameraInput() {
+
+	if (!cameraInputFg) return false;
+
+	//入力フラグ
+	bool inputFg = false;
+
+	//上下左右キーでカメラ回転
+	if (Input::GetKeyPress(VK_LEFT)) {
+		m_CameraDirection.x += 0.02;
+		inputFg = true;
+	}
+	if (Input::GetKeyPress(VK_RIGHT)) {
+		m_CameraDirection.x -= 0.02;
+		inputFg = true;
+	}
+	if (Input::GetKeyPress(VK_UP)) {
+		m_CameraDirection.y -= 0.02;
+		inputFg = true;
+	}
+	if (Input::GetKeyPress(VK_DOWN)) {
+		m_CameraDirection.y += 0.02;
+		inputFg = true;
+	}
+
+	return inputFg;
 }

@@ -22,6 +22,8 @@ public:
     void Update();
     void Uninit();
 
+    void SetDemoMode(bool _demomode) { demoMode = _demomode; }
+
     int GetHP();
     Pole* GetWeapon();
 
