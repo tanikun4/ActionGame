@@ -34,6 +34,7 @@ Player::Impl::Impl(Camera* cam, Player* owner)
     , m_Camera(cam)
 {
     m_arrow = nullptr;
+    m_pole = Game::GetInstance()->AddObject<Pole>();
 }
 
 Player::Impl::~Impl()
@@ -46,7 +47,6 @@ Player::Impl::~Impl()
 void Player::Impl::Init() {
     m_Owner->GBInit(u8"assets/model/gorufu/GolfBall_v2.fbx");
     m_Owner->m_Position = Vector3(0.0f, 50.0f, 0.0f);
-    m_pole = Game::GetInstance()->AddObject<Pole>();
     m_pole->SetPl(true);
     hp = 9;
     framecount = 30;

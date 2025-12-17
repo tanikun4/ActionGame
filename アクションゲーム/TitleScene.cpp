@@ -47,18 +47,18 @@ void TitleScene::Update()
 
 	if (count > 120) {
 		count = 0;
-		//press_enterkey->SetLive(true);
+		press_enterkey->SetLive(true);
 	}
 	else {
 		++count;
 		if (count == 60) {
-			//press_enterkey->SetLive(false);
-			EffectParams param;
-			param.scale = DirectX::SimpleMath::Vector3(114.0f, 64.0f, 0.0f);
-			param.maxLife = 60;
-			param.pos = DirectX::SimpleMath::Vector3(0.0f, -27.0f, 0.0f);
-			param.scale = DirectX::SimpleMath::Vector3(80.0f, 40.0f, 0.0f);
-			EffectManager::GetInstance()->Play(PRESS_ENTERKEY, param);
+			press_enterkey->SetLive(false);
+			//EffectParams param;
+			//param.scale = DirectX::SimpleMath::Vector3(114.0f, 64.0f, 0.0f);
+			//param.maxLife = 60;
+			//param.pos = DirectX::SimpleMath::Vector3(0.0f, -27.0f, 0.0f);
+			//param.scale = DirectX::SimpleMath::Vector3(80.0f, 40.0f, 0.0f);
+			//EffectManager::GetInstance()->Play(PRESS_ENTERKEY, param);
 		}
 	}
 
@@ -118,11 +118,13 @@ void TitleScene::Init()
 
 	Boss* boss = Game::GetInstance()->AddObject<Boss>();
 	m_MySceneObjects.emplace_back(boss);
+	boss->SetDEF(99);//–³“Gó‘Ô‚É‚·‚é
 
 	Player* player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
 	player->SetState(0);
 	player->SetDemoMode(true);
+	
 
 	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //’e
@@ -151,6 +153,7 @@ void TitleScene::Init()
 
 	Game::GetInstance()->GetCamera().SetDirection(CameraDirection);//ƒJƒƒ‰•ûŒüÝ’è
 	Game::GetInstance()->GetCamera().SetInputFg(false);//ƒJƒƒ‰‘€ì—LŒø‰»
+	Game::GetInstance()->GetCamera().SetPosition(Vector3(0,250,100));
 
 	DebugUI::RedistDebugFunction([this]() {
 		WallManager::DebugWallStatus();

@@ -55,6 +55,7 @@ void Stage1Scene::Init()
 
 	boss = Game::GetInstance()->AddObject<Boss>();
 	m_MySceneObjects.emplace_back(boss);
+	boss->SetDEF(0);//–³“Gó‘Ô‰ğœ
 
 	//’Êí“G‚Ì”z’u
 	//for (int i = 0; i < 9; i++) {

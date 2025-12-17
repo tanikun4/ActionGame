@@ -17,7 +17,7 @@ Boss::Impl::Impl(Camera* cam, Boss* owner)
 	: m_Owner(owner)
 	, m_Camera(cam)
 {
-
+	m_weapon = Game::GetInstance()->AddObject<Pole>();
 }
 
 
@@ -62,7 +62,6 @@ void Boss::Impl::DebugBossStatus() {//ƒ{ƒX‚Ìó‘Ô‚ð‘€ì‚·‚é
 void Boss::Impl::Init() {
 	m_Owner->GBInit(u8"assets/model/gorufu/GolfBall_v2_red.fbx");
 	m_Owner->m_Position = Vector3(0.0f, 50.0f, -50.0f);
-	m_weapon = Game::GetInstance()->AddObject<Pole>();
 	m_Owner->m_Velocity_f = 0.0f;//‚Í‚¶‚ß‚ÉˆÚ“®‘¬“x‚ð0‚É‚·‚é
 	hp = 50;
 	def = 0;

@@ -35,12 +35,10 @@ public:
 	void Uninit();
 
 	void SetCamera(int mode); // カメラを設定
-
 	void SetDirection(DirectX::SimpleMath::Vector2 dir) { m_CameraDirection = dir; } // カメラの方向を設定
-
 	void SetTarget(Object& ob) { m_TargetObject = &ob; } // 注視点を設定
-
 	void SetInputFg(bool _inputFg) { cameraInputFg = _inputFg; } //カメラ操作入力有効フラグ設定
+	void SetPosition(DirectX::SimpleMath::Vector3 _pos) { m_Position = _pos; } // カメラ位置を設定
 
 	void ResetTarget() { m_TargetObject = nullptr; } // 注視点をリセット
 	// View行列を取得する関数
