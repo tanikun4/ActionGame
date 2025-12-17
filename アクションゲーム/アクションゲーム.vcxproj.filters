@@ -97,11 +97,23 @@
     <Filter Include="ソース ファイル\Effect\EffectManager">
       <UniqueIdentifier>{7586cab4-08d0-4cd0-80a8-27e5e2be824b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29">
-      <UniqueIdentifier>{92bd4fd9-284a-4f67-b84c-c1cc6f029d79}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Shadow">
       <UniqueIdentifier>{d860cb45-4b49-4b58-ab90-1e4f67824f2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\EffectBillBoad%282D%29">
+      <UniqueIdentifier>{92bd4fd9-284a-4f67-b84c-c1cc6f029d79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\EffectBase">
+      <UniqueIdentifier>{0bea1dbd-d2a3-42a8-a904-55283bb1228e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\Particle">
+      <UniqueIdentifier>{1222d4eb-8c5b-48c0-ba3e-6cdf4539152f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\Particle\ParticleEmitter">
+      <UniqueIdentifier>{04d4ea30-82c3-4087-9bd4-2ceb07a0d10d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\Particle\ParticleRenderer">
+      <UniqueIdentifier>{7d7b8bfd-24d7-49da-b322-4fffeeaae187}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -261,20 +273,26 @@
     <ClCompile Include="EffectObject.cpp">
       <Filter>ソース ファイル\Effect\EfectObject%283D%29</Filter>
     </ClCompile>
-    <ClCompile Include="EffectBase.cpp">
-      <Filter>ソース ファイル\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="EffectManager.cpp">
       <Filter>ソース ファイル\Effect\EffectManager</Filter>
     </ClCompile>
     <ClCompile Include="EffectBillBoad.cpp">
-      <Filter>ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29</Filter>
+      <Filter>ソース ファイル\Effect\EffectBillBoad%282D%29</Filter>
     </ClCompile>
     <ClCompile Include="ShadowCircle.cpp">
       <Filter>ソース ファイル\Shadow</Filter>
     </ClCompile>
     <ClCompile Include="WallManager.cpp">
       <Filter>ソース ファイル\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectBase.cpp">
+      <Filter>ソース ファイル\Effect\EffectBase</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter2D.cpp">
+      <Filter>ソース ファイル\Effect\Particle\ParticleEmitter</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleRenderer2D.cpp">
+      <Filter>ソース ファイル\Effect\Particle\ParticleRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -467,9 +485,6 @@
     <ClInclude Include="EffectObject.h">
       <Filter>ソース ファイル\Effect\EfectObject%283D%29</Filter>
     </ClInclude>
-    <ClInclude Include="EffectBase.h">
-      <Filter>ソース ファイル\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="EffectManager.h">
       <Filter>ソース ファイル\Effect\EffectManager</Filter>
     </ClInclude>
@@ -477,7 +492,7 @@
       <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
     <ClInclude Include="EffectBillBoad.h">
-      <Filter>ソース ファイル\Effect\EfectObject%283D%29\EffectBillBoad%282D%29</Filter>
+      <Filter>ソース ファイル\Effect\EffectBillBoad%282D%29</Filter>
     </ClInclude>
     <ClInclude Include="AngleAnim.h">
       <Filter>ソース ファイル\Object</Filter>
@@ -487,6 +502,21 @@
     </ClInclude>
     <ClInclude Include="WallManager.h">
       <Filter>ソース ファイル\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectBase.h">
+      <Filter>ソース ファイル\Effect\EffectBase</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleParamStruct.h">
+      <Filter>ソース ファイル\Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="MathCommon.h">
+      <Filter>ソース ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter2D.h">
+      <Filter>ソース ファイル\Effect\Particle\ParticleEmitter</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleRenderer2D.h">
+      <Filter>ソース ファイル\Effect\Particle\ParticleRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

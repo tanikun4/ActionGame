@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include <SimpleMath.h>
+#include "MathCommon.h"
 #include "VertexBuffer.h"
 
 //エフェクトで使うデータ構造体定義
@@ -13,11 +13,6 @@ class Material;
 class Shader;
 class IndexBuffer;
 
-
-struct Int2 {
-	int x;
-	int y;
-};
 
 //ロード済みのエフェクトデータを格納する構造体
 struct LoadedEffectData {
