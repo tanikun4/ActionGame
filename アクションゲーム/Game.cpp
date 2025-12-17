@@ -49,13 +49,15 @@ void Game::Init()
 	//エフェクトマネージャ初期化
 	EffectManager::Init();
 
-	m_Instance->m_Scene = new TitleScene; //メモリを確保
 
 	// オブジェクト初期化
 	for (auto& o : m_Instance->m_Objects)
 	{
 		o->Init();
 	}
+
+	m_Instance->m_Scene = new TitleScene; //メモリを確保
+	
 	Fade::GetInstance()->Init(m_Instance->m_Camera.get());
 }
 

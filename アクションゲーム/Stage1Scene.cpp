@@ -34,7 +34,7 @@ Stage1Scene::~Stage1Scene()
 // ‰Šú‰»
 void Stage1Scene::Init()
 {
-	//Sound::GetInstance()->SetMasterVolume(0.0f); // ‘S‘Ì‰¹—Ê‚ð0%‚É
+	Sound::GetInstance()->SetMasterVolume(1.0f); // ‘S‘Ì‰¹—Ê‚ð100%‚É
 
 	srand((unsigned)time(NULL));
 
