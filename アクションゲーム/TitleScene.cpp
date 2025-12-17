@@ -111,6 +111,7 @@ void TitleScene::Init()
 	press_enterkey->SetPosition(0.0f, -300.0f, 0.0f); // 位置を指定
 	press_enterkey->SetScale(640.0f, 128.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(press_enterkey);
+	press_enterkey->SetLive(false);
 }
 
 // 更新
@@ -125,6 +126,9 @@ void TitleScene::Update()
 		++count;
 		if (count == 60) {
 			press_enterkey->SetLive(false);
+
+			//エフェクト版press enter key
+
 			//EffectParams param;
 			//param.scale = DirectX::SimpleMath::Vector3(114.0f, 64.0f, 0.0f);
 			//param.maxLife = 60;
