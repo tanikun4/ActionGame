@@ -251,6 +251,7 @@ void Boss::Impl::AttackUpdate() {
 	case SWING_VERTICAL://cU‚è
 		if (weapon_state == Pole::STATE::NORMAL) {
 			m_weapon->Stance_Vertical();
+			rotate_speed = 0.1f;
 		}
 		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 120 && !m_rushFg) {
 			m_lookatFg = false;
@@ -298,6 +299,7 @@ void Boss::Impl::AttackUpdate() {
 			framecount = 0;
 			m_weapon->SwingEnd();
 			m_lookatFg = true;
+			rotate_speed = 0.01f;
 
 		}
 

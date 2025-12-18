@@ -56,7 +56,7 @@ private:
 	bool inviFg = false;
 	int invicount = 0;
 	float m_speed = 0.25f;
-	const float rotate_speed = 0.01;
+	float rotate_speed = 0.01;
 	int attack_kind = 0;//UŒ‚‚Ìí—Ş
 	int attack_time = 0;//UŒ‚ŠÔ
 	bool notUpdate = false;//XV‚ğ~‚ß‚é‚©‚Ç‚¤‚©

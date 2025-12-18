@@ -335,6 +335,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ParticleEmitter2D.cpp" />
     <ClCompile Include="ParticleRenderer2D.cpp" />
+    <ClCompile Include="ParticleSystem2D.cpp" />
     <ClCompile Include="ShadowCircle.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionHelper.h" />
@@ -399,6 +400,8 @@
     <ClInclude Include="ParticleEmitter2D.h" />
     <ClInclude Include="ParticleParamStruct.h" />
     <ClInclude Include="ParticleRenderer2D.h" />
+    <ClInclude Include="ParticleSystem2D.h" />
+    <ClInclude Include="RandomCommon.h" />
     <ClInclude Include="ShadowCircle.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionResult.h" />

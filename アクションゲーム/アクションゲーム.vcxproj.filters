@@ -115,6 +115,9 @@
     <Filter Include="ソース ファイル\Effect\Particle\ParticleRenderer">
       <UniqueIdentifier>{7d7b8bfd-24d7-49da-b322-4fffeeaae187}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Effect\Particle\ParticleSystem2D">
+      <UniqueIdentifier>{f7a36d5c-56a4-4053-b3b3-6897f283b884}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -293,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="ParticleRenderer2D.cpp">
       <Filter>ソース ファイル\Effect\Particle\ParticleRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem2D.cpp">
+      <Filter>ソース ファイル\Effect\Particle\ParticleSystem2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -517,6 +523,12 @@
     </ClInclude>
     <ClInclude Include="ParticleRenderer2D.h">
       <Filter>ソース ファイル\Effect\Particle\ParticleRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem2D.h">
+      <Filter>ソース ファイル\Effect\Particle\ParticleSystem2D</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomCommon.h">
+      <Filter>ソース ファイル\system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

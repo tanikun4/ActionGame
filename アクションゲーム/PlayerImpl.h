@@ -60,6 +60,7 @@ private:
     int hp = 9;
     int framecount = 0;
     int invicount = 0; // 無敵時間カウント
+	int maxinvicount = 60; // 無敵時間最大値
     int rollcooldown = 30; // 回避クールタイム
     int rollcount = 0; // 回避関連カウント
     int guardcount = 0; // ガード時間カウント

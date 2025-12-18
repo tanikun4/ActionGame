@@ -99,7 +99,7 @@ void Player::Impl::Update() {
         if (rollcount < rollcooldown) ++rollcount;
 
         if (inviFg) {
-            if (invicount < 60) ++invicount;
+            if (invicount < maxinvicount) ++invicount;
             else {
                 inviFg = false;
                 m_Owner->SetColor({ 1,1,1,1 });
@@ -153,7 +153,7 @@ void Player::Impl::OnHit(Boss* bo) {
 void Player::Impl::OnHit(Pole* po) {
     const int damage = 2;
     if (po->GetPl()) return;
-    if (RollFg && rollcount < 5 && po->GetSwingTime() < 5) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
+    if (RollFg && rollcount < 5 && po->GetSwingTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
     if (GuardFg && guardcount < justguardframe && po->GetSwingTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
     Damage(damage);
 }
@@ -573,8 +573,8 @@ void Player::Impl::UpdateCounter() {
     if (m_pole->GetSwingTime() > 10) {
         m_pole->SwingEnd();
         m_pole->SetAtk(3);
-        inviFg = false;
-        m_Owner->SetColor({ 1,1,1,1 });
+        invicount = 0;
+        //m_Owner->SetColor({ 1,1,1,1 });
 	    m_Owner->m_State = NORMAL;
 		Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
     }
