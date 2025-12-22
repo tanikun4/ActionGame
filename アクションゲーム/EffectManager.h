@@ -2,6 +2,8 @@
 #include "EffectObject.h"
 #include "EffectBillBoad.h"
 #include "Manager.h"
+#include "ParticleEmitter2D.h"
+#include "ParticleRenderer2D.h"
 
 constexpr int EFFECT_POOLSIZE_3D = 5;
 constexpr int EFFECT_POOLSIZE_2D = 10;
@@ -29,6 +31,9 @@ private:
 	static std::unique_ptr<EffectManager> m_Instance; // ゲームインスタンス
 	std::vector<EffectObject*> m_Effects3D; // 3Dエフェクトオブジェクト配列
 	std::vector<EffectBillBoad*> m_Effects2D; // 2Dエフェクトオブジェクト配列
+	std::vector<ParticleEmitter2D> m_Emitter2D; // 2Dパーティクルエミッタ配列
+	std::unique_ptr<ParticleRenderer2D> m_Renderer2D; //2Dパーティクルレンダラ
+
 
 	SharedEffect2DData m_Shared2D_Data;//2Dエフェクト共通データ
 

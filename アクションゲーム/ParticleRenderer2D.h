@@ -18,6 +18,7 @@ public:
         Camera* camera,
         SharedEffect2DData& data);
 
+
     void Draw(const std::vector<ParticleParam2D>& particles);
     void Draw(const std::vector<ParticleParam2D>& particles, int textureID);
 

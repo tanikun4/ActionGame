@@ -71,6 +71,10 @@ void EffectManager::Init()
 
 	m_Instance->m_Shared2D_Data = m_Instance->Init2D();
 
+
+    m_Instance->m_Renderer2D = make_unique<ParticleRenderer2D>();
+
+    m_Instance->m_Renderer2D->Init(&Game::GetInstance()->GetCamera(), m_Instance->m_Shared2D_Data);
 }
 
 SharedEffect2DData EffectManager::Init2D()
@@ -203,15 +207,23 @@ LoadedEffectData EffectManager::LoadEffect(
 void EffectManager::Update()
 {
     //3D
-    for (auto& obj : m_Instance->m_Effects3D) {
+    for (auto& obj : m_Instance->m_Effects3D) 
+    {
 		if(obj->GetLive())
             obj->Update();
     }
 
     //2D
-    for (auto& obj : m_Instance->m_Effects2D) {
+    for (auto& obj : m_Instance->m_Effects2D) 
+    {
         if (obj->GetLive())
             obj->Update();
+    }
+    
+    for (auto& emitter : m_Instance->m_Emitter2D)
+    {
+        if (emitter.GetLive())
+            emitter.Update();
     }
 }
 
@@ -229,6 +241,8 @@ void EffectManager::Draw()
         if (obj->GetLive())
             obj->Draw();
     }
+
+    //2Dパーティクルの描画
 }
 
 // 終了処理

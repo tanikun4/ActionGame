@@ -8,7 +8,7 @@ void ParticleEmitter2D::Init(const ParticleEmitterParam2D& param)
 {
     m_param = param;
     m_timer = 0.0f;
-    m_active = false;
+    m_live = false;
 }
 
 void ParticleEmitter2D::Emit(std::vector<ParticleParam2D>& particles) 
@@ -67,32 +67,31 @@ void ParticleEmitter2D::Emit()
     }
 }
 
-void ParticleEmitter2D::Update(float dt)
+void ParticleEmitter2D::Update()
 {
-    if (m_active)
+
+    if (m_param.loop)
     {
-        if (m_param.loop)
+        ++m_timer;
+        if (m_timer >= m_param.emitInterval)
         {
-            m_timer += dt;
-            if (m_timer >= m_param.emitInterval)
-            {
-                Emit();
-                m_timer = 0.0f;
-            }
-        }
-        else
-        {
-            // OneShot
             Emit();
-            m_active = false;
+            m_timer = 0.0f;
         }
     }
+    else
+    {
+        // OneShot
+        Emit();
+        m_live = false;
+    }
+   
 
     // パーティクル更新
     for (auto& p : m_particles)
     {
-        p.life -= dt;
-        p.pos += p.velocity * dt;
+        --p.life;
+        p.pos += p.velocity;
     }
 
     // 死亡削除
@@ -109,11 +108,11 @@ void ParticleEmitter2D::Update(float dt)
 
 void ParticleEmitter2D::Play()
 {
-    m_active = true;
+    m_live = true;
     m_timer = m_param.emitInterval; // 即発生させたい場合
 }
 
 void ParticleEmitter2D::Stop()
 {
-    m_active = false;
+    m_live = false;
 }
