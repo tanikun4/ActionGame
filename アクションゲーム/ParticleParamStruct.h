@@ -16,15 +16,15 @@ struct ParticleParam2D
 struct ParticleEmitterParam2D
 {
     // 発生
-    Vector2 emitPos;
-    Vector2 emitRange;        // ±範囲（ランダム幅）
+    DirectX::SimpleMath::Vector3 emitPos;
+    DirectX::SimpleMath::Vector3 emitRange;        // ±範囲（ランダム幅）
     int     emitCount;        // 1回の発生数
     float   emitInterval;     // 発生間隔（frame or 秒）
     bool    loop;             // 永続発生
 
     // 初期速度
-    Vector2 velocityMin;
-    Vector2 velocityMax;
+    DirectX::SimpleMath::Vector3 velocityMin;
+    DirectX::SimpleMath::Vector3 velocityMax;
 
     // 寿命
     float   lifeMin;
