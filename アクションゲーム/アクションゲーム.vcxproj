@@ -398,7 +398,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="MathCommon.h" />
     <ClInclude Include="ParticleEmitter2D.h" />
-    <ClInclude Include="ParticleParamStruct.h" />
+    <ClInclude Include="ParticleStruct.h" />
     <ClInclude Include="ParticleRenderer2D.h" />
     <ClInclude Include="ParticleSystem2D.h" />
     <ClInclude Include="RandomCommon.h" />

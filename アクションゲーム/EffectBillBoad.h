@@ -26,7 +26,7 @@ protected:
 	float m_SplitX = 1;
 	float m_SplitY = 1;
 
-	int m_aminframe = 4; //アニメーション遷移フレーム
+	int m_animframe = 4; //アニメーション遷移フレーム
 
 public:
 

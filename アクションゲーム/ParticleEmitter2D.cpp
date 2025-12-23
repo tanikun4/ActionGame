@@ -1,14 +1,42 @@
 #include "ParticleEmitter2D.h"
 #include "RandomCommon.h"
+#include "EffectDataStruct.h"
 
+using namespace std;
 using namespace DirectX::SimpleMath;
 
 
-void ParticleEmitter2D::Init(const ParticleEmitterParam2D& param)
+ParticleEmitter2D::ParticleEmitter2D() 
+{
+    m_Materiale = std::make_unique<Material>();
+    MATERIAL mtrl;
+    mtrl.Diffuse = { 1,1,1,1 };
+    mtrl.Shiness = 1;
+    mtrl.TextureEnable = true; // テクスチャを使うか否かのフラグ
+    m_Materiale->Create(mtrl);
+    m_live = false;
+}
+ParticleEmitter2D::~ParticleEmitter2D() 
+{
+
+}
+
+void ParticleEmitter2D::Init(const ParticleEmitterParam2D& param, const LoadedEffectData& data)
 {
     m_param = param;
     m_timer = 0.0f;
     m_live = false;
+
+    // シェーダオブジェクト取得
+    m_Shader = data.shader.get();
+
+    // テクスチャ情報取得(単体)
+	m_Texture = data.textures.back().get();
+
+    // UV分割数取得
+    m_SplitX = data.texture_uv.x;
+    m_SplitY = data.texture_uv.y;
+
 }
 
 void ParticleEmitter2D::Emit(std::vector<ParticleParam2D>& particles) 
@@ -35,6 +63,7 @@ void ParticleEmitter2D::Emit(std::vector<ParticleParam2D>& particles)
 
 void ParticleEmitter2D::Emit()
 {
+	m_live = true;
     for (int i = 0; i < m_param.emitCount; ++i)
     {
         ParticleParam2D p;
@@ -58,12 +87,16 @@ void ParticleEmitter2D::Emit()
         p.life = p.maxLife =
             RandomRange(m_param.lifeMin, m_param.lifeMax);
 
+		p.maxuv = Int2(m_SplitX, m_SplitY);
+        const int animFrameCount = m_SplitX * m_SplitY;
+        p.maxanimframe = p.maxLife / animFrameCount; //アニメーション遷移フレーム数設定
+
         // 見た目（必要なら追加）
         p.scale.x = RandomRange(m_param.scaleMin, m_param.scaleMax);
         p.scale.y = p.scale.x;
         p.color = m_param.color;
 
-        m_particles.push_back(p);
+        m_particles.emplace_back(p);
     }
 }
 
@@ -92,6 +125,22 @@ void ParticleEmitter2D::Update()
     {
         --p.life;
         p.pos += p.velocity;
+		// アニメーションフレーム更新
+		++p.animframe;
+        if(p.animframe >= p.maxanimframe)
+        {
+            p.animframe = 0;
+            ++p.uv.x;
+            if(p.uv.x > p.maxuv.x)
+            {
+                p.uv.x = 1;
+                ++p.uv.y;
+                if (p.uv.y > p.maxuv.y)
+                {
+                    p.uv.y = 1;
+                }
+			}
+		}
     }
 
     // 死亡削除
@@ -115,4 +164,15 @@ void ParticleEmitter2D::Play()
 void ParticleEmitter2D::Stop()
 {
     m_live = false;
+}
+
+ParticleDrawData2D ParticleEmitter2D::GetDrawData()
+{
+    ParticleDrawData2D drawdata;
+    drawdata.particles = &m_particles;
+    drawdata.shader = m_Shader;
+    drawdata.texture = m_Texture;
+    drawdata.material = m_Materiale.get();
+    drawdata.isUI = m_param.UI;
+    return drawdata;
 }

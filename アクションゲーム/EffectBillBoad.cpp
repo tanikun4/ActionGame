@@ -60,8 +60,8 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	m_SplitX = data.texture_uv.x;
 	m_SplitY = data.texture_uv.y;
 
-	m_aminframe =  _maxlife / (int)(m_SplitX * m_SplitY); //アニメーション遷移フレーム数設定
-	if (m_aminframe <= 0) m_aminframe = 1;
+	m_animframe =  _maxlife / (int)(m_SplitX * m_SplitY); //アニメーション遷移フレーム数設定
+	if (m_animframe <= 0) m_animframe = 1;
 
 	BaseInit(_maxlife, _pos_amount, _pos_changeframe, _rot_amount, _rot_changeframe, _scale_amount, _scale_changeframe,_endless);
 
@@ -85,7 +85,7 @@ void EffectBillBoad::Update()
 {
 	BaseUpdate();
 
-	if(m_lifeframe % m_aminframe == 0) {//アニメーション用フレームカウントが最大値に達したら
+	if(m_lifeframe % m_animframe == 0) {//アニメーション用フレームカウントが最大値に達したら
 		++m_NumU;
 		if (m_NumU > m_SplitX) {//U座標が最大値を超えたら
 			m_NumU = 1;

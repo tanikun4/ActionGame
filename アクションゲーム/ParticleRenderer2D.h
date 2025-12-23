@@ -3,10 +3,11 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Camera.h"
-#include "Shader.h"
 
 class SharedEffect2DData;
 class ParticleParam2D;
+class ParticleDrawData2D;
+
 class ParticleRenderer2D
 {
 public:
@@ -22,6 +23,9 @@ public:
     void Draw(const std::vector<ParticleParam2D>& particles);
     void Draw(const std::vector<ParticleParam2D>& particles, int textureID);
 
+
+    void Draw(const ParticleDrawData2D& data);
+
     ParticleRenderer2D() = default;
 
 private:
@@ -33,5 +37,4 @@ private:
     ID3D11PixelShader* m_ps = nullptr;
 
     Camera* m_Camera;
-    Shader m_Shader;
 };

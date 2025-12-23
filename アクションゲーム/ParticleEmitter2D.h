@@ -1,14 +1,21 @@
 #pragma once
 #include <vector>
 #include "MathCommon.h"
-#include "ParticleparamStruct.h"
+#include "ParticleStruct.h"
+#include "Texture.h"
+#include "Material.h"
+#include "Shader.h"
 
+class LoadedEffectData;
 class ParticleEmitter2D
 {
 public:
+    ParticleEmitter2D();
+    ~ParticleEmitter2D();
+
     void Emit(std::vector<ParticleParam2D>& particles);
     
-    void Init(const ParticleEmitterParam2D& param);
+    void Init(const ParticleEmitterParam2D& param, const LoadedEffectData& data);
     void Update();
 
     void Emit();
@@ -19,11 +26,21 @@ public:
 
     std::vector<ParticleParam2D>& GetParticles() { return m_particles; };
 
+    ParticleDrawData2D GetDrawData();
+
 private:
     ParticleEmitterParam2D m_param;
 
     std::vector<ParticleParam2D> m_particles;
 
+	Shader* m_Shader; // シェーダオブジェクト
+    Texture* m_Texture; // テクスチャ
+    std::unique_ptr<Material> m_Materiale; //マテリアル
+
+    float m_SplitX = 1;
+    float m_SplitY = 1;
+
     float m_timer = 0.0f;
     bool  m_live = false;
+	bool  m_UI = false; // UI用かどうか
 };

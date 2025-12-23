@@ -9,8 +9,11 @@ struct ParticleParam2D
     float   life;
     float   maxLife;
     Int2    uv;
+    Int2    maxuv;
 	unsigned int color;
-	int textureID;
+
+    int animframe = 0;
+    int maxanimframe = 10;
 };
 
 struct ParticleEmitterParam2D
@@ -37,4 +40,17 @@ struct ParticleEmitterParam2D
 
     // テクスチャ
     int textureID; // Renderer 側で引く
+
+	bool UI = false; // UI用かどうか
+};
+
+struct ParticleDrawData2D
+{
+    std::vector<ParticleParam2D>* particles;
+
+    Shader* shader;
+    Texture* texture;
+    Material* material;
+
+    bool isUI;
 };

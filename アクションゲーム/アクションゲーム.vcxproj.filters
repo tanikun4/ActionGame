@@ -512,7 +512,7 @@
     <ClInclude Include="EffectBase.h">
       <Filter>ソース ファイル\Effect\EffectBase</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleParamStruct.h">
+    <ClInclude Include="ParticleStruct.h">
       <Filter>ソース ファイル\Effect\Particle</Filter>
     </ClInclude>
     <ClInclude Include="MathCommon.h">
