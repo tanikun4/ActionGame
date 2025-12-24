@@ -2,6 +2,8 @@
 #include "RandomCommon.h"
 #include "EffectDataStruct.h"
 
+#pragma message("ParticleEmitter2D.cpp is compiled")
+
 using namespace std;
 using namespace DirectX::SimpleMath;
 
@@ -21,11 +23,12 @@ ParticleEmitter2D::~ParticleEmitter2D()
 
 }
 
-void ParticleEmitter2D::Init(const ParticleEmitterParam2D& param, const LoadedEffectData& data)
+void ParticleEmitter2D::Init(const ParticleEmitterParam2D& param, 
+                             const LoadedEffectData& data)
 {
     m_param = param;
     m_timer = 0.0f;
-    m_live = false;
+    m_live = true;
 
     // シェーダオブジェクト取得
     m_Shader = data.shader.get();
@@ -39,41 +42,19 @@ void ParticleEmitter2D::Init(const ParticleEmitterParam2D& param, const LoadedEf
 
 }
 
-void ParticleEmitter2D::Emit(std::vector<ParticleParam2D>& particles) 
-{
-    /*for (int i = 0; i < m_EmitCount; ++i)
-    {
-        ParticleParam2D p{};
-        p.pos = m_Position;
-
-        p.velocity = {
-			RandomRange(1,3),
-			RandomRange(1,3),
-        };
-
-        p.rot = 0.0f;
-        p.scale = Vector2(10.0f,10.0f);
-        p.maxLife = 60.0f;
-        p.life = p.maxLife;
-        p.color = 0xffffffff;
-
-        particles.emplace_back(p);
-    }*/
-}
-
 void ParticleEmitter2D::Emit()
 {
 	m_live = true;
-    for (int i = 0; i < m_param.emitCount; ++i)
+    for (int i = 0; i < m_param.count; ++i)
     {
         ParticleParam2D p;
 
         // 発生位置（±ランダム幅）
-        p.pos = m_param.emitPos + (
+        p.pos = m_param.pos + (
             Vector3{ 
-                RandomRange(-m_param.emitRange.x, m_param.emitRange.x),
-            RandomRange(-m_param.emitRange.y, m_param.emitRange.y),
-            RandomRange(-m_param.emitRange.z, m_param.emitRange.z)
+                RandomRange(-m_param.pos_range.x, m_param.pos_range.x),
+            RandomRange(-m_param.pos_range.y, m_param.pos_range.y),
+            RandomRange(-m_param.pos_range.z, m_param.pos_range.z)
             });
 
         // 初期速度
@@ -91,10 +72,13 @@ void ParticleEmitter2D::Emit()
         const int animFrameCount = m_SplitX * m_SplitY;
         p.maxanimframe = p.maxLife / animFrameCount; //アニメーション遷移フレーム数設定
 
+        p.rot = RandomRange(m_param.rotMin, m_param.rotMax);
+
         // 見た目（必要なら追加）
         p.scale.x = RandomRange(m_param.scaleMin, m_param.scaleMax);
         p.scale.y = p.scale.x;
-        p.color = m_param.color;
+		p.uv = Int2(1, 1);
+        //p.color = m_param.color;
 
         m_particles.emplace_back(p);
     }
@@ -106,7 +90,7 @@ void ParticleEmitter2D::Update()
     if (m_param.loop)
     {
         ++m_timer;
-        if (m_timer >= m_param.emitInterval)
+        if (m_timer >= m_param.interval)
         {
             Emit();
             m_timer = 0.0f;
@@ -155,10 +139,15 @@ void ParticleEmitter2D::Update()
         m_particles.end());
 }
 
+void ParticleEmitter2D::Uninit()
+{
+    m_particles.clear();
+}
+
 void ParticleEmitter2D::Play()
 {
     m_live = true;
-    m_timer = m_param.emitInterval; // 即発生させたい場合
+    m_timer = m_param.interval; // 即発生させたい場合
 }
 
 void ParticleEmitter2D::Stop()

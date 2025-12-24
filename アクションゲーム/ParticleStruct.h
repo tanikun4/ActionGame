@@ -1,5 +1,8 @@
 #pragma once
 #include "MathCommon.h"
+#include "Texture.h"
+#include "Material.h"
+#include "Shader.h"
 struct ParticleParam2D
 {
     DirectX::SimpleMath::Vector3 pos;
@@ -8,8 +11,8 @@ struct ParticleParam2D
     float   rot;
     float   life;
     float   maxLife;
-    Int2    uv;
-    Int2    maxuv;
+    Int2    uv = Int2(1,1);
+    Int2    maxuv = Int2(1, 1);
 	unsigned int color;
 
     int animframe = 0;
@@ -19,27 +22,28 @@ struct ParticleParam2D
 struct ParticleEmitterParam2D
 {
     // 発生
-    DirectX::SimpleMath::Vector3 emitPos;
-    DirectX::SimpleMath::Vector3 emitRange;        // ±範囲（ランダム幅）
-    int     emitCount;        // 1回の発生数
-    float   emitInterval;     // 発生間隔（frame or 秒）
-    bool    loop;             // 永続発生
+    DirectX::SimpleMath::Vector3 pos = DirectX::SimpleMath::Vector3(0,0,0);
+    DirectX::SimpleMath::Vector3 pos_range = DirectX::SimpleMath::Vector3(0, 0, 0);        // ±範囲（ランダム幅）
+    
+    float rotMin = 0;
+    float rotMax = 0;
+    
+    int     count = 10;        // 1回の発生数
+    float   interval = 60;     // 発生間隔（frame）
+    bool    loop = false;             // 永続発生
 
     // 初期速度
-    DirectX::SimpleMath::Vector3 velocityMin;
-    DirectX::SimpleMath::Vector3 velocityMax;
+    DirectX::SimpleMath::Vector3 velocityMin = DirectX::SimpleMath::Vector3(0, 0, 0);
+    DirectX::SimpleMath::Vector3 velocityMax = DirectX::SimpleMath::Vector3(0, 0, 0);
 
     // 寿命
-    float   lifeMin;
-    float   lifeMax;
+    float   lifeMin = 1;
+    float   lifeMax = 1;
 
     // 見た目
-    float   scaleMin;
-    float   scaleMax;
-    uint32_t color;
-
-    // テクスチャ
-    int textureID; // Renderer 側で引く
+    float   scaleMin = 1;
+    float   scaleMax = 1;
+    uint32_t color = 0;
 
 	bool UI = false; // UI用かどうか
 };

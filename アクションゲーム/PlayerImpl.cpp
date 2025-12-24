@@ -60,6 +60,7 @@ void Player::Impl::Init() {
         DebugPlayerStatus();
         DebugWeaponStatus();
         DebugEffectPlay();
+        DebugParticlePlay();
 		m_pole->DebugPoleStatus();
         });
 }
@@ -296,6 +297,75 @@ void Player::Impl::DebugEffectPlay() {
     ImGui::End();
 }
 
+void Player::Impl::DebugParticlePlay() {
+    ImGui::Begin("ParticlePlay");
+
+    static int debug_effect_type = 1;
+    ImGui::SliderInt("ID", &debug_effect_type, 0, EFFECT_MAX - 1);
+
+    static Int2 debug_effect_life = Int2(1,1);
+    ImGui::SliderInt2("LifeMinMax", &debug_effect_life.x, 1, 300);
+
+	static int debug_count = 10;
+	ImGui::SliderInt("Count", &debug_count, 1, 100);
+
+	static int debug_interval = 60;
+    ImGui::SliderInt("Interval", &debug_interval, 1, 300);
+
+    static Vector3 offset_pos{5,0,0};
+    ImGui::SliderFloat3("OffsetPosition", &offset_pos.x, -50.0f, 50.0f);
+
+    static Vector3 range{5,0,0};
+    ImGui::SliderFloat3("positionRange", &range.x, -50.0f, 50.0f);
+
+    static Vector2 offset_rotation{};
+    ImGui::SliderFloat2("OffsetRotationMinMax", &offset_rotation.x, -PI, PI);
+
+    static Vector2 offset_scale = { 10,10};
+    ImGui::SliderFloat2("OffsetScaleMinMax", &offset_scale.x, 0.0f, 100.0f);
+
+    static Vector3 velocity_min = {0,0.5,0};
+    ImGui::SliderFloat3("VelocityMin", &velocity_min.x, -50.0f, 50.0f);
+
+    static Vector3 velocity_max = { 0,2,0 };
+    ImGui::SliderFloat3("VelocityMax", &velocity_max.x, -50.0f, 50.0f);
+
+    if (ImGui::Button("Reset Offsets")) {
+        offset_pos = Vector3(0, 0, 0);
+        offset_rotation = Vector2(0,0);
+        offset_scale = Vector2(1, 1);
+    }
+
+    //エフェクトパラメーター構造体作成
+    static ParticleEmitterParam2D debug_param;
+    debug_param.pos = m_Owner->m_Position + offset_pos;
+	debug_param.pos_range = range;
+
+    debug_param.rotMin = offset_rotation.x;
+    debug_param.rotMax = offset_rotation.y;
+
+    debug_param.scaleMin = offset_scale.x;
+    debug_param.scaleMax = offset_scale.y;
+
+    debug_param.lifeMin = debug_effect_life.x;
+    debug_param.lifeMax = debug_effect_life.y;
+
+	debug_param.velocityMin = velocity_min;
+	debug_param.velocityMax = velocity_max;
+
+	debug_param.count = debug_count;
+	debug_param.interval = debug_interval;
+
+    ImGui::Checkbox("Loop", &debug_param.loop);
+    ImGui::Checkbox("UI", &debug_param.UI);
+
+    // エフェクト再生
+    if (ImGui::Button("Play Particle")) {
+        EffectManager::GetInstance()->Play(debug_effect_type, debug_param);
+    }
+
+    ImGui::End();
+}
 
 // キー入力による移動
 void Player::Impl::Move() {

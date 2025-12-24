@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include "MathCommon.h"
 #include "ParticleStruct.h"
@@ -6,16 +7,16 @@
 #include "Material.h"
 #include "Shader.h"
 
-class LoadedEffectData;
+
+struct LoadedEffectData;
 class ParticleEmitter2D
 {
 public:
     ParticleEmitter2D();
     ~ParticleEmitter2D();
-
-    void Emit(std::vector<ParticleParam2D>& particles);
     
-    void Init(const ParticleEmitterParam2D& param, const LoadedEffectData& data);
+    void Init(const ParticleEmitterParam2D& param, 
+              const LoadedEffectData& data);
     void Update();
 	void Uninit();
 

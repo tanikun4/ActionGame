@@ -21,6 +21,9 @@ EffectManager::~EffectManager()
 // 初期化
 void EffectManager::Init()
 {
+    if (m_Instance) return; // 二重初期化防止
+	m_Instance = make_unique<EffectManager>();
+
 	//初回読込にしか使わないのでここに記述
 	// エフェクト読込用の構造体
 	struct EffectLoadData {
@@ -43,8 +46,6 @@ void EffectManager::Init()
         {"assets/texture/2DEffect/press_enterkey.png","","","shader/EffectTexturePS.hlsl",1,1},
 	};
 
-	m_Instance = make_unique<EffectManager>();
-
     for(auto& g : g_EffectResources)
     {
         m_Instance->m_LoadData.emplace_back(m_Instance->LoadEffect(
@@ -65,12 +66,17 @@ void EffectManager::Init()
 
     //2Dエフェクトのプールを確保
     for (int i = 0; i < EFFECT_POOLSIZE_2D; ++i) {
-        //2Dのクラスが完成したら書く
+        
         m_Instance->m_Effects2D.emplace_back(new EffectBillBoad(m_Instance->m_Camera));
     }
 
 	m_Instance->m_Shared2D_Data = m_Instance->Init2D();
 
+    //2Dパーティクルのプールを確保
+    for (int i = 0; i < EMITTER_POOLSIZE_2D; ++i) {
+       
+        m_Instance->m_Emitter2D.emplace_back(new ParticleEmitter2D());
+    }
 
     m_Instance->m_Renderer2D = make_unique<ParticleRenderer2D>();
 
@@ -213,6 +219,7 @@ void EffectManager::Update()
             obj->Update();
     }
 
+
     //2D
     for (auto& obj : m_Instance->m_Effects2D) 
     {
@@ -335,7 +342,7 @@ void EffectManager::Play(int _id,
 
 //エフェクト再生関数、EffectParams版
 void EffectManager::Play(int _id,
-    EffectParams _param)
+    EffectParams& _param)
 {
 
     if (m_LoadData[_id].mesh != nullptr) {// 3D初期化
@@ -376,14 +383,13 @@ void EffectManager::Play(int _id,
 }
 
 void EffectManager::Play(int _id,
-    ParticleEmitterParam2D _param)
+    ParticleEmitterParam2D& _param)
 {
     for (auto& e : m_Emitter2D) {
         //非生存エミッタを発見
         if (!e->GetLive()) {
             //ロード済みデータと引数を使い、エミッタ初期化
 			e->Init(_param, m_LoadData[_id]);
-            e->Emit();
             break;//1つだけ再生したいのでループを抜ける
         }
     }

@@ -7,6 +7,7 @@
 
 constexpr int EFFECT_POOLSIZE_3D = 5;
 constexpr int EFFECT_POOLSIZE_2D = 10;
+constexpr int EMITTER_POOLSIZE_2D = 5;
 
 enum Effect{
 	EFFECT_TEST3D = 0,
@@ -65,12 +66,12 @@ public:
 	// エフェクト再生関数
 	void Play(
 		int _id,// エフェクトID
-		EffectParams _param); // エフェクトパラメータ構造体
+		EffectParams& _param); // エフェクトパラメータ構造体
 
 	// 2Dパーティクルエミッタ用エフェクト再生関数
 	void Play(
 		int id,// エフェクトID
-		ParticleEmitterParam2D _param);// 2Dパーティクルパラメータ構造体
+		ParticleEmitterParam2D& _param);// 2Dパーティクルパラメータ構造体
 
 	// エフェクト再生関数(以前のバージョン、没)
 	void Play(

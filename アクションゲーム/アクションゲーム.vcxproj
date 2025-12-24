@@ -333,7 +333,9 @@
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossImpl.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="ParticleEmitter2D.cpp" />
+    <ClCompile Include="ParticleEmitter2D.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ParticleRenderer2D.cpp" />
     <ClCompile Include="ParticleSystem2D.cpp" />
     <ClCompile Include="ShadowCircle.cpp" />
@@ -397,7 +399,9 @@
     <ClInclude Include="BossImpl.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="MathCommon.h" />
-    <ClInclude Include="ParticleEmitter2D.h" />
+    <ClInclude Include="ParticleEmitter2D.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="ParticleStruct.h" />
     <ClInclude Include="ParticleRenderer2D.h" />
     <ClInclude Include="ParticleSystem2D.h" />

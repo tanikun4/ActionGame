@@ -104,4 +104,5 @@ private:
     void DebugWeaponStatus();
     void DebugPlayerStatus();
     void DebugEffectPlay();
+    void DebugParticlePlay();
 };
