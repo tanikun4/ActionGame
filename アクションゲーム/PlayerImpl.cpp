@@ -328,7 +328,7 @@ void Player::Impl::DebugParticlePlay() {
     ImGui::SliderFloat3("VelocityMin", &velocity_min.x, -50.0f, 50.0f);
 
     static Vector3 velocity_max = { 0,2,0 };
-    ImGui::SliderFloat3("VelocityMax", &velocity_max.x, -50.0f, 50.0f);
+    ImGui::SliderFloat3("VelocityMax", &velocity_max.x, velocity_min.x, 50.0f);
 
     if (ImGui::Button("Reset Offsets")) {
         offset_pos = Vector3(0, 0, 0);
