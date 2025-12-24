@@ -31,7 +31,7 @@ private:
 	static std::unique_ptr<EffectManager> m_Instance; // ゲームインスタンス
 	std::vector<EffectObject*> m_Effects3D; // 3Dエフェクトオブジェクト配列
 	std::vector<EffectBillBoad*> m_Effects2D; // 2Dエフェクトオブジェクト配列
-	std::vector<ParticleEmitter2D> m_Emitter2D; // 2Dパーティクルエミッタ配列
+	std::vector<ParticleEmitter2D*> m_Emitter2D; // 2Dパーティクルエミッタ配列
 	std::unique_ptr<ParticleRenderer2D> m_Renderer2D; //2Dパーティクルレンダラ
 
 
@@ -65,7 +65,12 @@ public:
 	// エフェクト再生関数
 	void Play(
 		int _id,// エフェクトID
-		EffectParams _param); // エフェクト変化開始フレーム
+		EffectParams _param); // エフェクトパラメータ構造体
+
+	// 2Dパーティクルエミッタ用エフェクト再生関数
+	void Play(
+		int id,// エフェクトID
+		ParticleEmitterParam2D _param);// 2Dパーティクルパラメータ構造体
 
 	// エフェクト再生関数(以前のバージョン、没)
 	void Play(

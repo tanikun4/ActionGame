@@ -174,5 +174,6 @@ ParticleDrawData2D ParticleEmitter2D::GetDrawData()
     drawdata.texture = m_Texture;
     drawdata.material = m_Materiale.get();
     drawdata.isUI = m_param.UI;
+	drawdata.maxuv = Int2(m_SplitX, m_SplitY);
     return drawdata;
 }

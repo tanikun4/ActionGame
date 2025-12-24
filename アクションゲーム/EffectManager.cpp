@@ -222,8 +222,8 @@ void EffectManager::Update()
     
     for (auto& emitter : m_Instance->m_Emitter2D)
     {
-        if (emitter.GetLive())
-            emitter.Update();
+        if (emitter->GetLive())
+            emitter->Update();
     }
 }
 
@@ -243,6 +243,11 @@ void EffectManager::Draw()
     }
 
     //2Dパーティクルの描画
+    for (auto& emitter : m_Instance->m_Emitter2D)
+    {
+        if (emitter->GetLive())
+            m_Instance->m_Renderer2D->Draw(emitter->GetDrawData());
+    }
 }
 
 // 終了処理
@@ -264,6 +269,15 @@ void EffectManager::Uninit()
 
     // m_LoadData は unique_ptr が含まれているので自動解放される
     m_Instance->m_LoadData.clear();
+
+    //2Dパーティクルの描画
+    for (auto& emitter : m_Instance->m_Emitter2D)
+    {
+		emitter->Uninit();
+        delete emitter;
+    }
+    m_Instance->m_Emitter2D.clear();
+    m_Instance->m_Renderer2D.reset();
 
 }
 
@@ -357,6 +371,20 @@ void EffectManager::Play(int _id,
                     _param.endless);//2Dエフェクト用Initを呼ぶ
                 break;//1つだけ再生したいのでループを抜ける
             }
+        }
+    }
+}
+
+void EffectManager::Play(int _id,
+    ParticleEmitterParam2D _param)
+{
+    for (auto& e : m_Emitter2D) {
+        //非生存エミッタを発見
+        if (!e->GetLive()) {
+            //ロード済みデータと引数を使い、エミッタ初期化
+			e->Init(_param, m_LoadData[_id]);
+            e->Emit();
+            break;//1つだけ再生したいのでループを抜ける
         }
     }
 }

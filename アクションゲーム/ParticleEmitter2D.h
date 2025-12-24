@@ -17,6 +17,7 @@ public:
     
     void Init(const ParticleEmitterParam2D& param, const LoadedEffectData& data);
     void Update();
+	void Uninit();
 
     void Emit();
     void Play();   // î≠ê∂äJén

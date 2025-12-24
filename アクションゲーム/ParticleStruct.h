@@ -52,5 +52,6 @@ struct ParticleDrawData2D
     Texture* texture;
     Material* material;
 
+    Int2 maxuv;
     bool isUI;
 };
