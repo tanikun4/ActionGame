@@ -343,6 +343,16 @@ void Pole::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t
 	m_baseRotation = m_Rotation;
 }
 
+//Œ»İŠp“x‚©‚çU‚é
+void Pole::ToSwing(const DirectX::SimpleMath::Vector3& e, int t, float accel)
+{
+	m_SwingAnim.Start(m_Rotation, e, t, accel);
+	m_stance_time = 0;
+	m_swing_time = 0;
+	m_State = SWING;
+	atkFg = true;
+}
+
 //\‚¦’†‚Ìˆ—
 void Pole::StanceUpdate() {
 	/*if (m_stance_time < 20) {

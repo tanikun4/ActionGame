@@ -118,6 +118,9 @@
     <Filter Include="ソース ファイル\Effect\Particle\ParticleSystem2D">
       <UniqueIdentifier>{f7a36d5c-56a4-4053-b3b3-6897f283b884}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Input\ActionInput">
+      <UniqueIdentifier>{6ce73002-c2a4-45ca-9f77-22c066e32cec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -299,6 +302,9 @@
     </ClCompile>
     <ClCompile Include="ParticleSystem2D.cpp">
       <Filter>ソース ファイル\Effect\Particle\ParticleSystem2D</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionInput.cpp">
+      <Filter>ソース ファイル\Input\ActionInput</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -529,6 +535,24 @@
     </ClInclude>
     <ClInclude Include="RandomCommon.h">
       <Filter>ソース ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionInput.h">
+      <Filter>ソース ファイル\Input\ActionInput</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>ソース ファイル\Input\ActionInput</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionBinding.h">
+      <Filter>ソース ファイル\Input\ActionInput</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionState.h">
+      <Filter>ソース ファイル\Input\ActionInput</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyboardState.h">
+      <Filter>ソース ファイル\Input\ActionInput</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePadState.h">
+      <Filter>ソース ファイル\Input\ActionInput</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

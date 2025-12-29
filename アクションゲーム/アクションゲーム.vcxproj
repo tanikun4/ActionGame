@@ -327,6 +327,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActionInput.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="AssimpPerse.cpp" />
@@ -391,6 +392,10 @@
     <ClCompile Include="WeaponManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="ActionBinding.h" />
+    <ClInclude Include="ActionInput.h" />
+    <ClInclude Include="ActionState.h" />
     <ClInclude Include="AngleAnim.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Arrow.h" />
@@ -398,6 +403,8 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossImpl.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="GamePadState.h" />
+    <ClInclude Include="KeyboardState.h" />
     <ClInclude Include="MathCommon.h" />
     <ClInclude Include="ParticleEmitter2D.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

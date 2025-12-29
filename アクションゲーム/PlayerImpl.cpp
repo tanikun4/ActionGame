@@ -15,7 +15,7 @@
 #include "DebugUI.h"
 
 #include "EffectManager.h"
-
+#include "ActionInput.h"
 
 #include <imgui.h>
 #include <cmath>
@@ -372,8 +372,8 @@ void Player::Impl::Move() {
     float dir = -1.0f;
 
 	// デモモード中はデモ用の移動方向を使用
-    if(demoMode) dir = m_demoParam.demoMoveDir;
-    else dir = SetMoveDirection();
+    if (demoMode) dir = m_demoParam.demoMoveDir;
+    else dir = ActionInput::GetInstance().GetMoveDirectionRad();//SetMoveDirection();
 
     if (dir >= 0.0f) {
         m_Owner->m_ForwardRotation.y = dir + m_Owner->m_Camera->GetCameraDirection().x;

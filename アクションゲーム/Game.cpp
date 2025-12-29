@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "Fade.h"
 #include "DebugUI.h"
+#include "ActionInput.h"
 
 #include "CollisionHelper.h"
 
@@ -49,6 +50,9 @@ void Game::Init()
 	//エフェクトマネージャ初期化
 	EffectManager::Init();
 
+	//入力初期化
+	ActionInput::GetInstance().Init();
+
 
 	// オブジェクト初期化
 	for (auto& o : m_Instance->m_Objects)
@@ -72,6 +76,7 @@ void Game::Update()
 
 	// 入力処理更新
 	m_Instance->m_Input->Update();
+	ActionInput::GetInstance().Update();
 
 	// フェード更新
 	Fade::GetInstance()->Update();

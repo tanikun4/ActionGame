@@ -72,6 +72,10 @@ public:
 	void StanceToSwing(const DirectX::SimpleMath::Vector3& s_stance, const DirectX::SimpleMath::Vector3& e_stance, int t_stance,
 						const DirectX::SimpleMath::Vector3& s_swing, const DirectX::SimpleMath::Vector3& e_swing, int t_swing,int swingframe = -1);
 
+	//åªç›äpìxÇ©ÇÁêUÇÈ
+	void ToSwing(const DirectX::SimpleMath::Vector3& e, int t, float accel = 0);
+
+
 	void GuardStart();
 	void GuardEnd();
 
