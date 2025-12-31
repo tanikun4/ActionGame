@@ -2,6 +2,7 @@
 #include <DirectXMath.h>
 #include <SimpleMath.h>
 #include "Player.h"
+#include "AngleAnim.h"
 
 class Camera;
 class Player;
@@ -43,8 +44,16 @@ private:
         SHOT,
         DAMAGE,
         DODGE,
-        COUNTER
+        COUNTER,
+
     };
+
+    enum ATTACK_KIND {
+        NONE = -1,
+        SWING = 0,
+        SPINSLASH,
+        KIND_MAX,
+	};  
 
 	// デモ用パラメータ構造体
     struct DemoParam {
@@ -66,11 +75,15 @@ private:
     int guardcount = 0; // ガード時間カウント
 
 	int moveframe = 0; // 移動フレームカウント
+	int attackframe = 0; // 攻撃フレームカウント
+	int maxattackframe = 30; // 攻撃最大フレーム
 
     bool inviFg = false; // 無敵
     bool GuardFg = false; // ガード
     bool RollFg = false; // 回避
     bool is_JUMP = false; // ジャンプフラグ
+	bool is_InputMove = true; // 移動入力可能フラグ
+	int m_attackkind = NONE; // 攻撃種類
 
     float speed = 1.0f; // 移動速度
 
@@ -79,7 +92,7 @@ private:
     DirectX::SimpleMath::Vector3 m_ta_pos; // 目標点
     Bullet* m_arrow = nullptr;
     Pole* m_pole = nullptr;
-
+	AngleAnim m_Anim; // アニメーション用構造体
     void Move();
     float SetMoveDirection();
     void Attack();
@@ -91,6 +104,8 @@ private:
     void Counter();
     void Jump();
     void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
+	// 回転斬り攻撃開始 
+	void SpinAttack(int t = 24, int attack_t = 18, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度
 
 
     void UpdateNormal();

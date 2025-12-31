@@ -15,9 +15,15 @@ private:
 	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
 
 	int m_State = 0; // 0:通常状態・1:攻撃中 2:ガード中 
-	int m_swing_time = 0; //スイング時間カウント
-	int m_stance_time = 0;//構え時間カウント
+	int m_swingtime = 0; //スイング時間カウント
+	int m_stancetime = 0;//構え時間カウント
 	int m_stance_swingframe = -1;//構えから振りに移行する場合の振り開始フレーム
+
+	static const int Defalt_SwingTime = 18;//振り攻撃の最大フレーム数、デフォルト値
+	int max_swingtime = Defalt_SwingTime;//振り攻撃の最大フレーム数
+	static const int Defalt_StanceTime = 18;//構えの最大フレーム数、デフォルト値
+	int max_stancetime = 60;//構えの最大フレーム数
+
 	bool atkFg = false;//攻撃判定があるかどうか
 
 	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
@@ -68,13 +74,17 @@ public:
 
 	void Stance_Vertical();
 
+	//構えて開始
 	void StanceStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t);
+	//構えて開始、時間のみ指定
+	void StanceStart(int t);
 	void StanceToSwing(const DirectX::SimpleMath::Vector3& s_stance, const DirectX::SimpleMath::Vector3& e_stance, int t_stance,
 						const DirectX::SimpleMath::Vector3& s_swing, const DirectX::SimpleMath::Vector3& e_swing, int t_swing,int swingframe = -1);
 
 	//現在角度から振る
 	void ToSwing(const DirectX::SimpleMath::Vector3& e, int t, float accel = 0);
-
+	//現在の角度から振る、振り終わりの角度はbaseRotationを使用
+	void ToSwing();
 
 	void GuardStart();
 	void GuardEnd();
@@ -90,9 +100,11 @@ public:
 	int GetState();//状態を返す
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
-	int GetSwingTime() { return m_swing_time; }
-	int GetStanceTime() { return m_stance_time; }
+	int GetSwingTime() { return m_swingtime; }
+	int GetStanceTime() { return m_stancetime; }
 	bool GetAttack() { return atkFg; }
+	bool GetMaxStance();
+	bool GetMaxSwing();
 
 	void TipToEffect(int _id, EffectParams _param);//先端からエフェクトを再生する
 

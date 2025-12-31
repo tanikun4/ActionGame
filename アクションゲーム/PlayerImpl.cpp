@@ -73,11 +73,9 @@ void Player::Impl::Update() {
     // 状態ごとの処理
     switch (m_Owner->m_State) {
     case NORMAL:
-        m_Owner->m_Velocity_f = 0.0f; // 移動速度をリセット
         UpdateNormal();
         break;
     case ATTACK:
-        if (m_Owner->is_GROUND) m_Owner->m_Velocity_f = 0.0f;
         UpdateAttack();
         break;
     case SHOT:
@@ -121,7 +119,10 @@ void Player::Impl::Update() {
 
     if (m_Owner->is_GROUND) is_JUMP = false;
 
-    m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
+	// プレイヤーの向きを前方ベクトルに合わせる、回転切り中は除く
+    if(m_attackkind != SPINSLASH)
+     m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
+    
     m_Owner->GBUpdate();
 
     if (m_pole)
@@ -436,12 +437,42 @@ void Player::Impl::Attack() {
     
 	//デモ中は入力を受け付けない
     if (demoMode)  return;
-    
-    if (Input::GetKeyTrigger(VK_K) && !GuardFg) {
-        if (m_pole) m_pole->Swing();
-        m_Owner->m_State = ATTACK;
-        Sound::GetInstance()->Play(SOUND_SE_SWING);
+	if (!m_pole) return;
+    if (ActionInput::GetInstance().IsTrigger(Action::Attack) && !GuardFg) {
+      //m_pole->StanceStart();
+      m_pole->StanceStart(30);
+	  speed = 0.5f;  
     }
+    if (ActionInput::GetInstance().IsRelease(Action::Attack)) {
+		m_pole->StanceEnd();
+        speed = 1.0f;
+
+		// 構え切っていたら回転切り、そうでなければ通常攻撃
+        if (m_pole->GetMaxStance()) {
+            SpinAttack(18,10,0.5f);
+            Sound::GetInstance()->Play(SOUND_SE_SWING);
+        }
+        else {
+			m_pole->StanceEnd();
+            m_pole->Swing();
+            m_attackkind = SWING;
+            Sound::GetInstance()->Play(SOUND_SE_SWING);
+        }
+        m_Owner->m_State = ATTACK;
+    }
+}
+
+// 回転斬り攻撃開始
+void Player::Impl::SpinAttack(int t,int attack_t ,float accel) {
+    m_pole->AttackStart();
+    m_pole->SetAtk(6);
+	m_attackkind = SPINSLASH;
+    speed = 2.0f;
+	Vector3 endrot = m_Owner->m_Rotation;
+	endrot.y += PI * 2;
+	m_Anim.Start(m_Owner->m_Rotation,endrot,t, accel);
+    m_Owner->SetColor({ 0,0,1,0.5f });
+	inviFg = true;
 }
 
 // ジャンプ処理
@@ -565,6 +596,7 @@ void Player::Impl::LookAt(Vector3 ta_pos) {
 
 //通常時
 void Player::Impl::UpdateNormal() {
+    m_Owner->m_Velocity_f = 0.0f; // 移動速度をリセット
     Move();
     Attack();
     Guard();
@@ -575,15 +607,35 @@ void Player::Impl::UpdateNormal() {
 
 //攻撃中
 void Player::Impl::UpdateAttack() {
-    if (m_pole) {
-        if (m_pole->GetSwingTime() > 18) {
+	if (m_Owner->is_GROUND) m_Owner->m_Velocity_f = 0.0f; //攻撃中は移動不可
+	if (!m_pole) { return; }
+    switch (m_attackkind) {
+    case NONE:
+        m_Owner->m_State = NORMAL;
+        break;
+
+    case SWING:
+        if (!m_pole->GetMaxSwing()) {
             m_Owner->m_State = NORMAL;
             m_pole->SwingEnd();
         }
+        break;
+
+    case SPINSLASH:
+        m_Owner->m_Rotation = m_Anim.Update();
+        ++attackframe;
+		m_Owner->m_Velocity_f = speed;//回転切り中は現在方向に移動し続ける
+        if (attackframe >= maxattackframe) {
+            m_Owner->m_State = NORMAL;
+            m_pole->AttackEnd();
+			speed = 1.0f;
+			attackframe = 0;
+			inviFg = false;
+			m_Owner->SetColor({ 1,1,1,1 });
+        }
+	    break;
     }
-    else {
-        m_Owner->m_State = NORMAL;
-    }
+    
 }
 
 //ダメージ中
@@ -651,7 +703,6 @@ void Player::Impl::UpdateCounter() {
 }
 
 //デモ中の更新処理
-
 void Player::Impl::UpdateDemo()
 {
     // 移動
