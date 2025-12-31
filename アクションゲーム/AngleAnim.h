@@ -1,3 +1,4 @@
+#pragma once
 #include <SimpleMath.h>
 
 // イージング関数、加速度と現在フレームから求める
@@ -16,6 +17,8 @@ inline float EaseInOut(float t, float accel)
 // 角度アニメーション管理構造体
 struct AngleAnim
 {
+
+private:
     DirectX::SimpleMath::Vector3 start;
     DirectX::SimpleMath::Vector3 end;
     DirectX::SimpleMath::Vector3 current;
@@ -23,8 +26,6 @@ struct AngleAnim
     int maxFrame = 1;
     bool playing = false;
     float accel = 0.0f; // 加速度(0:等速,1:最大限かかる)
-
-
     // アニメーション開始
     void Start(const DirectX::SimpleMath::Vector3& s,
         const DirectX::SimpleMath::Vector3& e,
@@ -59,7 +60,62 @@ struct AngleAnim
         ++frame;
         return current;
     }
+public:
+	// 絶対角度の開始関数
+    void StartAbsolute(const DirectX::SimpleMath::Vector3& s,
+        const DirectX::SimpleMath::Vector3& e,
+        int f,
+        float acc = 0.0f)
+    {
+        Start(s, e, f, acc);
+	}
+
+	// 相対角度の開始関数、開始点ありで指定する
+    void StartRelative(
+		const DirectX::SimpleMath::Vector3& s,
+        const DirectX::SimpleMath::Vector3& e,
+        int f,
+        float acc = 0.0f)
+    {
+        Start(s, e, f, acc);
+    }
+
+
+	// 相対角度の開始関数、こちらは開始点無しで指定する
+    void StartRelative(
+        const DirectX::SimpleMath::Vector3& e,
+        int f,
+        float acc = 0.0f)
+    {
+        Start({ 0,0,0 }, e, f, acc);
+	}
+
+	// 現在角度からの相対角度開始関数
+    void StartRelativeCurrent(
+        const DirectX::SimpleMath::Vector3& e,
+        int f,
+        float acc = 0.0f)
+    {
+        Start(current, e, f, acc);
+    }
+
+    // 絶対角度用
+    DirectX::SimpleMath::Vector3 UpdateAbsolute()
+    {
+        return Update();
+    }
+
+    // 相対角度用、指定角度と足し合わせた値を返す
+    DirectX::SimpleMath::Vector3 UpdateRelative(const DirectX::SimpleMath::Vector3& rotation)
+    {
+        return rotation + Update();
+    }
+
+    // 相対角度用、処理自体は絶対角度と同じ
+    DirectX::SimpleMath::Vector3 UpdateRelative()
+    {
+        return Update();
+    }
 
     bool IsPlaying() const { return playing; }
 };
-#pragma once

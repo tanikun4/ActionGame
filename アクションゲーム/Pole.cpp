@@ -121,8 +121,6 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		m_baseRotation = m_Rotation;
 		break;
 	case SWING: //振り攻撃中
-		/*m_Rotation.y += PI / 20;
-		++m_swing_time;*/
 		SwingUpdate();
 		break;
 	case GUARD: //ガード中
@@ -131,12 +129,13 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		m_offset = { cos(m_Rotation.y) * radius * 2 , offset_debug.y, sin(m_Rotation.y) * radius * -2 };
 		break;
 	case STANCE: //構え中
-		//構え中の暫定処理
+		//構え中の補正処理
 		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
+		//m_Rotation.y = rotation.y + PI / 2;
 		StanceUpdate();
 		break;
 	case ATTACK: //攻撃中(回転攻撃など)
-		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
+		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
 		break;
 	case SWING_VERTICAL: //縦振り攻撃中
 		m_Rotation.z -= PI / 20;
@@ -234,118 +233,101 @@ void Pole::Uninit()
 
 }
 
+// 振り攻撃開始、デフォルト版
 void Pole::Swing() {
 	//なんかしたときに視野角
 	//攻撃に当たったらカメラ揺らす
 	if (m_State == NORMAL) {
 		m_Rotation.y -= PI / 2;
 	}
-	Vector3 endrot = m_Rotation;
-	endrot.y += PI;
-	SwingStart(m_Rotation, endrot, 18,0.3f);
+	SwingStart({0, 0, 0}, {0,PI,0}, 18, 0.3f);
 }
 
+// 縦振り攻撃開始、デフォルト版
 void Pole::Swing_Vertical() {
 	//なんかしたときに視野角
 	//攻撃に当たったらカメラ揺らす
-
-	// xをPI / 2足してから、zを変化させると縦振りが可能
-	/*if (m_State == NORMAL) {
-		m_Rotation.x += PI / 2;
-		m_Rotation.z += 1.8f;
-		m_State = SWING_VERTICAL;
-		m_swing_time = 0;
-		atkFg = true;
-	}
-	else if (m_State == STANCE) {
-		m_State = SWING_VERTICAL;
-		m_swing_time = 0;
-		m_stance_time = 0;
-		atkFg = true;
-	}*/
-
-	//m_Rotation.x += PI / 2;
-	//m_Rotation.z += 1.8f;
-
 	m_Rotation.x = PI;
 	m_Rotation.z = PI + 0.2f;
-	Vector3 endrot = m_Rotation;
-	endrot.z = PI * 0.5f;
-	SwingStart(m_Rotation, endrot,10,1.0f);
+	SwingStart({0,0,0}, {0,0,-PI * 0.5f}, 10, 1.0f);
 }
 
+// 振り攻撃開始、パラメータ版
 void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
-	m_SwingAnim.Start(s, e, t,accel);
+	m_SwingAnim.StartRelative(s, e, t,accel);
+	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	m_swingtime = 0;
 	m_State = SWING;
 	atkFg = true;
 }
 
+// 振り攻撃中の処理
 void Pole::SwingUpdate() {
-	Vector3 nextrot = m_SwingAnim.Update();
 	++m_swingtime;
-	m_Rotation = nextrot;
+	m_Rotation = m_SwingAnim.UpdateRelative(m_baseRotation);
 }
 
+// 振り攻撃終了
 void Pole::SwingEnd() {
+	if (m_State != SWING) { return; }
 	m_State = NORMAL;
 	atkFg = false;
 	m_swingtime = 0;
 }
 
-void Pole::AttackStart() { //攻撃状態になるだけの関数、回転切り等で使用
+//攻撃状態になるだけの関数、回転切り等で使用
+void Pole::AttackStart() { 
 	m_State = ATTACK;
 	m_swingtime = 0;
 	m_Rotation = m_baseRotation;
 	atkFg = true;
 }
 
-void Pole::AttackEnd() { //攻撃状態終了
+//攻撃状態終了
+void Pole::AttackEnd() {
 	m_State = NORMAL;
 	atkFg = false;
 }
 
-void Pole::Stance_Vertical() {
-	Vector3 endrot = m_Rotation;
-	endrot.x = PI;
-	endrot.z = PI + 0.2f;
-	StanceStart(m_Rotation, endrot, 60);
-}
-
-void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {
-	m_SwingAnim.Start(s, e, t);
-	m_stancetime = 0;
-	m_State = STANCE;
-	max_stancetime = t;
-}
-
-//構え開始
+//構え開始、デフォルト版
 void Pole::StanceStart() {
 	m_State = STANCE;
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 
-	Vector3 endrot = m_Rotation;
-	endrot.y -= PI / 2;
-	StanceStart(m_Rotation, endrot, 18);
+	StanceStart({ 0,0,0 }, {0,-PI * 0.5f,0}, 18);
 }
 
+//構え開始、デフォルト版を時間指定可能にしたもの
 void Pole::StanceStart(int t) {
 	m_State = STANCE;
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
-	Vector3 endrot = m_Rotation;
-	endrot.y -= PI / 2;
-	StanceStart(m_Rotation, endrot, t);
+	StanceStart({ 0,0,0 }, { 0,-PI * 0.5f,0 }, t);
 }
 
-//構えてから振る
+// 縦構え開始、デフォルト版
+void Pole::Stance_Vertical() {
+	StanceStart({0,0,0}, { PI * 0.5,0,(PI * 0.5) + 0.2f}, 60);
+}
+
+//構え開始、パラメータ版
+void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {
+	m_SwingAnim.StartRelative(s, e, t);
+	m_baseRotation = m_Rotation;
+	m_stancetime = 0;
+	m_State = STANCE;
+	max_stancetime = t;
+}
+
+
+//構えてから振る(没関数)
 void Pole::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t_stance,
 	const Vector3& s_swing, const Vector3& e_swing, int t_swing, int swingframe) 
 {
-	m_SwingAnim.Start(s_stance, e_stance, t_stance);
+	m_SwingAnim.StartRelative(s_stance, e_stance, t_stance);
 	m_stancetime = 0;
 	m_stance_swingframe = swingframe;
 	m_State = STANCE;
@@ -355,7 +337,7 @@ void Pole::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t
 //現在角度から振る
 void Pole::ToSwing(const DirectX::SimpleMath::Vector3& e, int t, float accel)
 {
-	m_SwingAnim.Start(m_Rotation, e, t, accel);
+	m_SwingAnim.StartRelative(e, t, accel);
 	max_swingtime = t;
 	m_stancetime = 0;
 	m_swingtime = 0;
@@ -372,15 +354,8 @@ void Pole::ToSwing()
 
 //構え中の処理
 void Pole::StanceUpdate() {
-	/*if (m_stance_time < 20) {
-		m_Rotation.y -= (PI / 2) * 0.05f;
-	}*/
-	/*if( m_Rotation.y < m_baseRotation.y - (PI / 2)) {
-		m_Rotation.y = m_baseRotation.y - (PI / 2);
-	}*/
 
-	// 角度更新、m_baseRotationを引いて差分を取り、それを基準にして計算する
-	m_Rotation += m_SwingAnim.Update() - m_baseRotation;
+	m_Rotation += m_SwingAnim.UpdateRelative();
 
 	++m_stancetime;
 }

@@ -439,15 +439,20 @@ void Player::Impl::Attack() {
     if (demoMode)  return;
 	if (!m_pole) return;
     if (ActionInput::GetInstance().IsTrigger(Action::Attack) && !GuardFg) {
-      //m_pole->StanceStart();
+        // ダメージモーション中なら処理をしない
+        if (m_Owner->m_State == DAMAGE) return;
+        
+
       m_pole->StanceStart(30);
 	  speed = 0.5f;  
     }
-    if (ActionInput::GetInstance().IsRelease(Action::Attack)) {
+    if (ActionInput::GetInstance().IsRelease(Action::Attack) && !GuardFg) {
 		m_pole->StanceEnd();
         speed = 1.0f;
+		// ダメージモーション中なら攻撃しない
+        if (m_Owner->m_State == DAMAGE) return;
 
-		// 構え切っていたら回転切り、そうでなければ通常攻撃
+		// 構えきっていたら回転切り、そうでなければ通常攻撃
         if (m_pole->GetMaxStance()) {
             SpinAttack(18,10,0.5f);
             Sound::GetInstance()->Play(SOUND_SE_SWING);
@@ -470,9 +475,10 @@ void Player::Impl::SpinAttack(int t,int attack_t ,float accel) {
     speed = 2.0f;
 	Vector3 endrot = m_Owner->m_Rotation;
 	endrot.y += PI * 2;
-	m_Anim.Start(m_Owner->m_Rotation,endrot,t, accel);
+	m_Anim.StartAbsolute(m_Owner->m_Rotation, endrot,t, accel);// 回転切り、絶対値参照で行う
     m_Owner->SetColor({ 0,0,1,0.5f });
 	inviFg = true;
+	invicount = 0;
 }
 
 // ジャンプ処理
@@ -622,7 +628,7 @@ void Player::Impl::UpdateAttack() {
         break;
 
     case SPINSLASH:
-        m_Owner->m_Rotation = m_Anim.Update();
+		m_Owner->m_Rotation = m_Anim.UpdateAbsolute();// 回転切りアニメーション更新、こちらも絶対値参照
         ++attackframe;
 		m_Owner->m_Velocity_f = speed;//回転切り中は現在方向に移動し続ける
         if (attackframe >= maxattackframe) {
@@ -643,6 +649,7 @@ void Player::Impl::UpdateAttack() {
 void Player::Impl::UpdateDamage() {
     m_Owner->m_Velocity_f = speed * -1;
     Guard();
+    Attack();
     if (framecount > 10) {
         m_Owner->m_State = NORMAL;
     }
@@ -735,6 +742,7 @@ void Player::Impl::UpdateDemo()
         {
             m_pole->Swing();
             m_Owner->m_State = ATTACK;
+			m_attackkind = SWING;
         }
     }
 }
