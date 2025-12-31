@@ -65,8 +65,10 @@ public:
 	void OnHit(Object* ob) override {};
 
 
-	void Swing();
-	void Swing_Vertical();
+	// U‚èUŒ‚Œ`‚ÌŠÖ”ŒQ
+	void Swing();//U‚èUŒ‚ŠJnAƒfƒtƒHƒ‹ƒg
+	void Swing_Return();//‹t‚©‚ç‚ÌU‚èUŒ‚
+	void Swing_Vertical();// cU‚èUŒ‚ŠJn
 	void SwingEnd();
 
 	void SwingStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t,float accel = 0);

@@ -53,7 +53,16 @@ private:
         SWING = 0,
         SPINSLASH,
         KIND_MAX,
-	};  
+	}; 
+
+    enum COMBO_KIND {
+        COMBO_NONE = -1,
+        COMBO_1 = 0,
+        COMBO_2,
+        COMBO_3,
+
+		COMBO_MAX,
+	};
 
 	// デモ用パラメータ構造体
     struct DemoParam {
@@ -67,6 +76,7 @@ private:
 	DemoParam m_demoParam; // デモ用パラメータ
 
     int hp = 9;
+	int atk = 3; // 攻撃力
     int framecount = 0;
     int invicount = 0; // 無敵時間カウント
 	int maxinvicount = 60; // 無敵時間最大値
@@ -77,6 +87,9 @@ private:
 	int moveframe = 0; // 移動フレームカウント
 	int attackframe = 0; // 攻撃フレームカウント
 	int maxattackframe = 30; // 攻撃最大フレーム
+	
+    int attackcombo = 0; // 攻撃コンボ数
+	int attackcombomax = COMBO_MAX - 1; // 攻撃コンボ最大数
 
     bool inviFg = false; // 無敵
     bool GuardFg = false; // ガード
@@ -106,8 +119,12 @@ private:
     void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	// 回転斬り攻撃開始 
 	void SpinAttack(int t = 24, int attack_t = 18, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度
+    //通常攻撃開始
+	void SwingAttack();
+	// 共通Update処理関数
+    void UpdateCommon();
 
-
+	// 状態別Update関数
     void UpdateNormal();
     void UpdateAttack();
     void UpdateDamage();

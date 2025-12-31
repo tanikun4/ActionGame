@@ -13,10 +13,10 @@ void ActionInput::Init()
     bindings[(int)Action::MoveDown] = { 'S', XINPUT_GAMEPAD_DPAD_DOWN };
     bindings[(int)Action::MoveLeft] = { 'A', XINPUT_GAMEPAD_DPAD_LEFT };
     bindings[(int)Action::MoveRight] = { 'D', XINPUT_GAMEPAD_DPAD_RIGHT };
-    bindings[(int)Action::Jump] = { 'J', XINPUT_GAMEPAD_A};
+    bindings[(int)Action::Jump] = { 'L', XINPUT_GAMEPAD_A};
     bindings[(int)Action::Attack] = { 'K', XINPUT_GAMEPAD_X };
     bindings[(int)Action::Guard] = { 'I', XINPUT_GAMEPAD_Y};
-    bindings[(int)Action::Dodge] = { 'L', XINPUT_GAMEPAD_B };
+    bindings[(int)Action::Dodge] = { 'J', XINPUT_GAMEPAD_B };
     bindings[(int)Action::Debug] = { 'O', XINPUT_GAMEPAD_BACK };
 }
 

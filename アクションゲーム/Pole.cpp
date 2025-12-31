@@ -233,7 +233,7 @@ void Pole::Uninit()
 
 }
 
-// 振り攻撃開始、デフォルト版
+// 振り攻撃開始、プリセット版
 void Pole::Swing() {
 	//なんかしたときに視野角
 	//攻撃に当たったらカメラ揺らす
@@ -241,6 +241,17 @@ void Pole::Swing() {
 		m_Rotation.y -= PI / 2;
 	}
 	SwingStart({0, 0, 0}, {0,PI,0}, 18, 0.3f);
+}
+
+// 逆振り攻撃開始
+void Pole::Swing_Return() {
+	//なんかしたときに視野角
+	//攻撃に当たったらカメラ揺らす
+	if (m_State == NORMAL) {
+		m_Rotation.y += PI / 2;
+		m_Rotation.x -= PI;
+	}
+	SwingStart({ 0, 0, 0 }, { 0,-PI,0 }, 18, 0.3f);
 }
 
 // 縦振り攻撃開始、デフォルト版
@@ -256,6 +267,7 @@ void Pole::Swing_Vertical() {
 void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
 	m_SwingAnim.StartRelative(s, e, t,accel);
+	max_swingtime = t;
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	m_swingtime = 0;

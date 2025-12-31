@@ -50,7 +50,7 @@ void Player::Impl::Init() {
     m_pole->SetPl(true);
     hp = 9;
     framecount = 30;
-    m_pole->SetAtk(3);
+    m_pole->SetAtk(atk);
 
     //丸影の大きさ調整
     m_Owner->m_Shadow->SetBaseScale(15 * m_Owner->m_Scale.x);
@@ -92,42 +92,9 @@ void Player::Impl::Update() {
         break;
     default:
         break;
+
     }
-
-    if (m_Owner->m_State != DODGE) {
-        if (rollcount < rollcooldown) ++rollcount;
-
-        if (inviFg) {
-            if (invicount < maxinvicount) ++invicount;
-            else {
-                inviFg = false;
-                m_Owner->SetColor({ 1,1,1,1 });
-                invicount = 0;
-            }
-        }
-
-        if (framecount < 60) ++framecount;
-        if (GuardFg) ++guardcount;
-    }
-
-    // 下に落ちた時はダメージを受けてリスポーン
-    if (m_Owner->m_Position.y < -100) {
-        hp -= 1;
-        m_Owner->m_Position = Vector3(0.0f, 50.0f, 0.0f);
-        m_Owner->m_Velocity = Vector3(0.0f, 0.0f, 0.0f);
-    }
-
-    if (m_Owner->is_GROUND) is_JUMP = false;
-
-	// プレイヤーの向きを前方ベクトルに合わせる、回転切り中は除く
-    if(m_attackkind != SPINSLASH)
-     m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
-    
-    m_Owner->GBUpdate();
-
-    if (m_pole)
-        m_pole->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation, 1.7f);
-
+	UpdateCommon();
 }
 
 void Player::Impl::Uninit() {
@@ -400,7 +367,7 @@ void Player::Impl::Move() {
 
 }
 
-// 移動方向の設定
+// 移動方向の設定、ActionInput側で指定するようになったので没
 float Player::Impl::SetMoveDirection() {
     bool w = Input::GetKeyPress(VK_W);
     bool s = Input::GetKeyPress(VK_S);
@@ -423,7 +390,7 @@ float Player::Impl::SetMoveDirection() {
 void Player::Impl::DodgeRoll() {
 	if (demoMode) return;//デモ中は入力を受け付けない
     
-    if (Input::GetKeyTrigger(VK_J) && rollcount >= rollcooldown) {
+    if (ActionInput::GetInstance().IsTrigger(Action::Dodge) && rollcount >= rollcooldown) {
       m_Owner->m_State = DODGE;
       rollcount = 0;
       inviFg = true;
@@ -454,38 +421,62 @@ void Player::Impl::Attack() {
 
 		// 構えきっていたら回転切り、そうでなければ通常攻撃
         if (m_pole->GetMaxStance()) {
-            SpinAttack(18,10,0.5f);
-            Sound::GetInstance()->Play(SOUND_SE_SWING);
+            SpinAttack(24,18,0.5f);
         }
         else {
-			m_pole->StanceEnd();
-            m_pole->Swing();
-            m_attackkind = SWING;
-            Sound::GetInstance()->Play(SOUND_SE_SWING);
+            SwingAttack();
         }
         m_Owner->m_State = ATTACK;
     }
 }
 
+// 通常攻撃開始
+void Player::Impl::SwingAttack() {
+    attackframe = 0;
+    maxattackframe = 48;
+    switch (attackcombo) {
+    case COMBO_1:
+        m_pole->Swing();
+        m_pole->SetAtk(atk);
+        break;
+	case COMBO_2:
+        m_pole->Swing_Return();
+        m_pole->SetAtk(atk);
+		break;
+    case COMBO_3:
+        m_pole->Swing_Vertical();
+        m_pole->SetAtk(atk + 1);
+        break;
+    }
+	++attackcombo;
+    if (attackcombo > attackcombomax) attackcombo = 0;
+    m_attackkind = SWING;
+    Sound::GetInstance()->Play(SOUND_SE_SWING);
+}
+
 // 回転斬り攻撃開始
 void Player::Impl::SpinAttack(int t,int attack_t ,float accel) {
     m_pole->AttackStart();
-    m_pole->SetAtk(6);
+    m_pole->SetAtk(atk * 2);
 	m_attackkind = SPINSLASH;
     speed = 2.0f;
+	maxattackframe = t;
 	Vector3 endrot = m_Owner->m_Rotation;
 	endrot.y += PI * 2;
-	m_Anim.StartAbsolute(m_Owner->m_Rotation, endrot,t, accel);// 回転切り、絶対値参照で行う
+	m_Anim.StartAbsolute(m_Owner->m_Rotation, endrot,attack_t, accel);// 回転切り、絶対値参照で行う
     m_Owner->SetColor({ 0,0,1,0.5f });
 	inviFg = true;
 	invicount = 0;
+    attackframe = 0;
+
+    Sound::GetInstance()->Play(SOUND_SE_SWING);
 }
 
 // ジャンプ処理
 void Player::Impl::Jump() {
     if (demoMode) return;//デモ中は入力を受け付けない
 
-    if (Input::GetKeyTrigger(VK_L) && !is_JUMP) {
+    if (ActionInput::GetInstance().IsTrigger(Action::Jump) && !is_JUMP) {
         m_Owner->m_Velocity.y = 2.0f;
         m_Owner->is_GROUND = false;
         is_JUMP = true;
@@ -559,13 +550,13 @@ void Player::Impl::Damage(int atk) {
 void Player::Impl::Guard() {
 	if (demoMode) return;//デモ中は入力を受け付けない
 
-    if (Input::GetKeyTrigger(VK_I)) {
+    if (ActionInput::GetInstance().IsTrigger(Action::Guard)) {
         GuardFg = true;
         guardcount = 0;
         speed = 0.1f;
         if (m_pole) m_pole->GuardStart();
     }
-    if (Input::GetKeyRelease(VK_I)) {
+    if (ActionInput::GetInstance().IsRelease(Action::Guard)) {
         GuardFg = false;
         speed = 1;
         if (m_pole) m_pole->GuardEnd();
@@ -619,7 +610,6 @@ void Player::Impl::UpdateAttack() {
     case NONE:
         m_Owner->m_State = NORMAL;
         break;
-
     case SWING:
         if (m_pole->GetMaxSwing()) {
             m_Owner->m_State = NORMAL;
@@ -628,14 +618,13 @@ void Player::Impl::UpdateAttack() {
         break;
 
     case SPINSLASH:
-		m_Owner->m_Rotation = m_Anim.UpdateAbsolute();// 回転切りアニメーション更新、こちらも絶対値参照
+		m_Owner->m_Rotation = m_Anim.UpdateAbsolute();// 回転切りアニメーション更新、絶対値参照
         ++attackframe;
 		m_Owner->m_Velocity_f = speed;//回転切り中は現在方向に移動し続ける
         if (attackframe >= maxattackframe) {
             m_Owner->m_State = NORMAL;
             m_pole->AttackEnd();
 			speed = 1.0f;
-			attackframe = 0;
 			inviFg = false;
 			m_Owner->SetColor({ 1,1,1,1 });
 			m_attackkind = NONE;
@@ -686,10 +675,10 @@ void Player::Impl::UpdateCounter() {
     if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 5 &&
         fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
 
-		//暫定的なカウンター攻撃処理
+		//カウンター攻撃処理
         if (m_pole->GetSwingTime() <= 0) {
-            m_pole->SetAtk(6);
-            if (m_pole) m_pole->Swing_Vertical();
+            m_pole->SetAtk(atk * 2);
+            m_pole->Swing_Vertical();
         }
     }
     else {
@@ -700,14 +689,59 @@ void Player::Impl::UpdateCounter() {
         }
     }
 	// カウンター攻撃終了判定
-    if (m_pole->GetSwingTime() > 10) {
+    if (m_pole->GetMaxSwing()) {
         m_pole->SwingEnd();
-        m_pole->SetAtk(3);
         invicount = 0;
-        //m_Owner->SetColor({ 1,1,1,1 });
 	    m_Owner->m_State = NORMAL;
 		Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
     }
+}
+
+// 共通Update処理
+void Player::Impl::UpdateCommon() {
+    // コンボリセットの処理
+    if(attackcombo > 0) {
+        ++attackframe;
+        if (attackframe >= maxattackframe)
+        {
+            attackcombo = 0;
+            attackframe = 0;
+        }
+	}
+    if (m_Owner->m_State != DODGE) {
+        if (rollcount < rollcooldown) ++rollcount;
+
+        if (inviFg) {
+            if (invicount < maxinvicount) ++invicount;
+            else {
+                inviFg = false;
+                m_Owner->SetColor({ 1,1,1,1 });
+                invicount = 0;
+            }
+        }
+
+        if (framecount < 60) ++framecount;
+        if (GuardFg) ++guardcount;
+    }
+
+    // 下に落ちた時はダメージを受けてリスポーン
+    if (m_Owner->m_Position.y < -100) {
+        hp -= 1;
+        m_Owner->m_Position = Vector3(0.0f, 50.0f, 0.0f);
+        m_Owner->m_Velocity = Vector3(0.0f, 0.0f, 0.0f);
+    }
+
+    if (m_Owner->is_GROUND) is_JUMP = false;
+
+    // プレイヤーの向きを前方ベクトルに合わせる、回転切り中は除く
+    if (m_attackkind != SPINSLASH)
+        m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
+
+    m_Owner->GBUpdate();
+
+    if (m_pole)
+        m_pole->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation, 1.7f);
+
 }
 
 //デモ中の更新処理
