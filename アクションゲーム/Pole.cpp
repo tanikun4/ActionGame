@@ -131,11 +131,9 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		m_offset = { cos(m_Rotation.y) * radius * 2 , offset_debug.y, sin(m_Rotation.y) * radius * -2 };
 		break;
 	case STANCE: //\‚¦’†
+		//\‚¦’†‚Ìb’èˆ—
+		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
 		StanceUpdate();
-		//c\‚¦’†‚Ìb’èˆ—
-		if (m_Rotation.x != PI / 2) {
-			m_Rotation.y = rotation.y + PI / 2;
-		}
 		break;
 	case ATTACK: //UŒ‚’†(‰ñ“]UŒ‚‚È‚Ç)
 		m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
@@ -381,7 +379,9 @@ void Pole::StanceUpdate() {
 		m_Rotation.y = m_baseRotation.y - (PI / 2);
 	}*/
 
-	m_Rotation = m_SwingAnim.Update();
+	// Šp“xXVAm_baseRotation‚ğˆø‚¢‚Ä·•ª‚ğæ‚èA‚»‚ê‚ğŠî€‚É‚µ‚ÄŒvZ‚·‚é
+	m_Rotation += m_SwingAnim.Update() - m_baseRotation;
+
 	++m_stancetime;
 }
 

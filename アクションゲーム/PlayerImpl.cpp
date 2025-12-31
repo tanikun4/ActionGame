@@ -615,7 +615,7 @@ void Player::Impl::UpdateAttack() {
         break;
 
     case SWING:
-        if (!m_pole->GetMaxSwing()) {
+        if (m_pole->GetMaxSwing()) {
             m_Owner->m_State = NORMAL;
             m_pole->SwingEnd();
         }
@@ -632,6 +632,7 @@ void Player::Impl::UpdateAttack() {
 			attackframe = 0;
 			inviFg = false;
 			m_Owner->SetColor({ 1,1,1,1 });
+			m_attackkind = NONE;
         }
 	    break;
     }
