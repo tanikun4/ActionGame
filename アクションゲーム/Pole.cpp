@@ -37,10 +37,10 @@ void Pole::Init()
 	StaticMesh staticmesh;
 
 	// 3Dモデルデータ
-	std::u8string modelFile = u8"assets/model/golf_pole/golf_pole_NO_HOLE.obj";
+	std::u8string modelFile = u8"assets/model/Weapon/Sword/sword.obj";
 
 	// テクスチャディレクトリ
-	std::string texDirectory = "assets/model/golf_pole";
+	std::string texDirectory = "assets/model/Weapon/Sword";
 
 	// Meshを読み込む
 	std::string tmpStr1(reinterpret_cast<const char*>(modelFile.c_str()), modelFile.size());
@@ -75,7 +75,7 @@ void Pole::Init()
 
 	// モデルによってスケールを調整
 	m_Scale.x = 3;
-	m_Scale.y = 6;
+	m_Scale.y = 3;
 	m_Scale.z = 3;
 
 }
@@ -172,7 +172,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	// OBB の中心位置を「武器の中心」に補正
 	// ポールモデルの pivot は "持ち手先端"
-	Vector3 obbLocalCenter = { 0.0f, m_Scale.y * 0.2f, 0.0f };
+	Vector3 obbLocalCenter = { 0.0f, m_Scale.y * 0.8f, 0.0f };
 
 	// ワールド座標へ変換
 	Vector3 obbWorldCenter = Vector3::Transform(obbLocalCenter, world);
@@ -181,7 +181,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	obb = {
 		obbWorldCenter,           
 		m_Rotation,
-		{ m_Scale.x, m_Scale.y * 1.5f, m_Scale.z }
+		{ m_Scale.x, m_Scale.y * 2.5f, m_Scale.z }
 	};
 }
 

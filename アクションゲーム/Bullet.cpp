@@ -264,7 +264,7 @@ void Bullet::OnHit(Pole* po) {
 	if (m_State != 2) return;
 	if (po->GetPl() && !pl) { //’e‚Ì‘Å‚¿•Ô‚µ
 		atk = 5;
-		m_ForwardRotation.y = po->GetBaseRotation().y - PI / 2;
+		m_ForwardRotation.y = po->GetBaseRotation().y;
 		flamecount = 0;
 		m_Velocity_f *= 2;
 		pl = true;

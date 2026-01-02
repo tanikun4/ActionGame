@@ -52,6 +52,8 @@ private:
         NONE = -1,
         SWING = 0,
         SPINSLASH,
+        SPINSLAS_VT,
+
         KIND_MAX,
 	}; 
 
@@ -119,6 +121,8 @@ private:
     void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	// 回転斬り攻撃開始 
 	void SpinAttack(int t = 24, int attack_t = 18, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度
+	// 縦回転斬り攻撃開始
+	void SpinAttack_Vertical(int t = 30, int attack_t = 20, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度
     //通常攻撃開始
 	void SwingAttack();
 	// 共通Update処理関数

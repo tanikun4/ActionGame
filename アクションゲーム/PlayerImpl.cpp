@@ -45,7 +45,7 @@ Player::Impl::~Impl()
 // public関数
 // -------------------------
 void Player::Impl::Init() {
-    m_Owner->GBInit(u8"assets/model/gorufu/GolfBall_v2.fbx");
+    m_Owner->GBInit(u8"assets/model/Character/player.fbx");
     m_Owner->m_Position = Vector3(0.0f, 50.0f, 0.0f);
     m_pole->SetPl(true);
     hp = 9;
@@ -346,7 +346,7 @@ void Player::Impl::Move() {
     if (dir >= 0.0f) {
         m_Owner->m_ForwardRotation.y = dir + m_Owner->m_Camera->GetCameraDirection().x;
         m_Owner->m_Velocity_f = speed;		
-		m_Owner->m_Rotation.x += speed * 0.1f;//回転、zだとドリルみたいになる。そういう突進技もありかも。
+		//m_Owner->m_Rotation.x += speed * 0.1f;//回転、zだとドリルみたいになる。そういう突進技もありかも。
 		if (m_Owner->m_Rotation.x > PI * 2) m_Owner->m_Rotation.x -= PI * 2;//回転リセット、値が大きくなりすぎないように
 
         if (moveframe > 10 && m_Owner->is_GROUND) {

@@ -45,7 +45,7 @@ void GolfBall::GBInit(std::u8string modelfilename)
 	std::u8string modelFile = modelfilename;
 
 	//テクスチャディレクトリ
-	std::string texDirectory = "assets/texture/gorufu";
+	std::string texDirectory = "assets/model/Character";
 
 	//Meshを読み込む
 	std::string tmpStr1(reinterpret_cast<const char*>(modelFile.c_str()), modelFile.size());
@@ -54,7 +54,7 @@ void GolfBall::GBInit(std::u8string modelfilename)
 	m_MeshRenderer.Init(staticmesh);
 
 	// シェーダオブジェクト生成
-	m_Shader.Create("shader/litTextureVS.hlsl", "shader/litTexturePS.hlsl");
+	m_Shader.Create("shader/litTextureVS_notlight.hlsl", "shader/litTexturePS.hlsl");
 
 	// サブセット情報取得
 	m_subsets = staticmesh.GetSubsets();
@@ -70,7 +70,9 @@ void GolfBall::GBInit(std::u8string modelfilename)
 	{
 		// マテリアルオブジェクト生成
 		std::unique_ptr<Material> m = std::make_unique<Material>();
-		
+
+		materials[i].Diffuse = { 1,1,1,1 };
+
 		// マテリアル情報をセット
 		m->Create(materials[i]);
 
@@ -133,6 +135,7 @@ void GolfBall::GBUpdate()
 
 void GolfBall::GBDraw()
 {
+
 	// SRT情報作成
 	Matrix r = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
 	Matrix t = Matrix::CreateTranslation(m_Position.x, m_Position.y, m_Position.z);
@@ -162,9 +165,9 @@ void GolfBall::GBDraw()
 		}
 
 		m_MeshRenderer.DrawSubset(
-			m_subsets[i].IndexNum,		// 描画するインデックス数
-			m_subsets[i].IndexBase,		// 最初のインデックスバッファの位置	
-			m_subsets[i].VertexBase);	// 頂点バッファの最初から使用
+			m_subsets[i].IndexNum, // 描画するインデックス数
+			m_subsets[i].IndexBase, // 最初のインデックスバッファの位置	
+			m_subsets[i].VertexBase); // 頂点バッファの最初から使用
 	}
 
 	m_Shadow->Draw();

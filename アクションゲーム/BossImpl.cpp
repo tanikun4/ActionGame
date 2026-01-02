@@ -60,7 +60,7 @@ void Boss::Impl::DebugBossStatus() {//ƒ{ƒX‚Ìó‘Ô‚ð‘€ì‚·‚é
 }
 
 void Boss::Impl::Init() {
-	m_Owner->GBInit(u8"assets/model/gorufu/GolfBall_v2_red.fbx");
+	m_Owner->GBInit(u8"assets/model/Character/boss.fbx");
 	m_Owner->m_Position = Vector3(0.0f, 50.0f, -50.0f);
 	m_Owner->m_Velocity_f = 0.0f;//‚Í‚¶‚ß‚ÉˆÚ“®‘¬“x‚ð0‚É‚·‚é
 	hp = 50;
@@ -331,11 +331,11 @@ void Boss::Impl::ShotBullet() {
 void Boss::Impl::Move(){
 	if (m_rushFg) {
 		m_Owner->m_Velocity_f = m_speed * 8;
-		m_Owner->m_Rotation.x += 0.2f;
+		//m_Owner->m_Rotation.x += 0.2f;
 	}
 	else {
 		m_Owner->m_Velocity_f = m_speed;
-		m_Owner->m_Rotation.x += 0.025f;
+		//m_Owner->m_Rotation.x += 0.025f;
 	}
 
 	if (m_Owner->m_Rotation.x > PI * 2) m_Owner->m_Rotation.x -= PI * 2;
