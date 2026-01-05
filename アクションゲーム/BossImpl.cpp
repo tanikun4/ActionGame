@@ -152,7 +152,7 @@ void Boss::Impl::Damage(int _atk) {
 	invicount = 0.0f;
 	inviFg = true;
 	m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
-	m_Owner->SetColor(Vector4(0, 1, 1, 0.5));
+	m_Owner->SetColor(Vector4(1, 1, 1, 0.5));
 
 	//左から右へ移動するエフェクト再生
 	Vector3 pos = m_Owner->m_Position;
