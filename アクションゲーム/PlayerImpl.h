@@ -102,12 +102,14 @@ private:
 
     float speed = 1.0f; // 移動速度
 
-    int justguardframe = 30; // ジャストガード有効フレーム
+    int justguardframe = 10; // ジャストガード有効フレーム
 
     DirectX::SimpleMath::Vector3 m_ta_pos; // 目標点
     Bullet* m_arrow = nullptr;
     Pole* m_pole = nullptr;
 	AngleAnim m_Anim; // アニメーション用構造体
+
+    // 各種行動関数
     void Move();
     float SetMoveDirection();
     void Attack();
@@ -119,6 +121,7 @@ private:
     void Counter();
     void Jump();
     void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
+
 	// 回転斬り攻撃開始 
 	void SpinAttack(int t = 24, int attack_t = 18, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度
 	// 縦回転斬り攻撃開始

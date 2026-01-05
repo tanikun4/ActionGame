@@ -78,7 +78,7 @@ void WallManager::DebugWallStatus() {//•Ç‚Ì‘å‚«‚³‚âˆÊ’u‚ğ‘€ì‚·‚é
 	ImGui::SliderFloat3("WallPosition", &wall_pos.x, -100.0f, 100.0f);
 
 	static Vector4 wall_color{ 1,1,1,0.5f };
-	ImGui::SliderFloat4("WallColor", &wall_color.x, -1.0f, 1.0f);
+	ImGui::SliderFloat4("WallColor", &wall_color.x, 0.0f, 1.0f);
 
 	if (ImGui::Button("Reset Status")) {
 		wall_size = Vector3(0, 0, 0);
