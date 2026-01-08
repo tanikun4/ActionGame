@@ -28,5 +28,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/tanik/Desktop/就職作品/制作環境/アクションゲーム/assets/model/Weapon/Sword/vf1oairg_4K_Albedo.jpg
-map_Ns C:/Users/tanik/Desktop/就職作品/制作環境/アクションゲーム/assets/model/Weapon/Sword/vf1oairg_4K_Albedo.jpg
+map_Kd vf1oairg_4K_Albedo.jpg
+map_Ns vf1oairg_4K_Albedo.jpg

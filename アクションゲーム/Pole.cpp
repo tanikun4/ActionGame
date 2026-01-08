@@ -80,37 +80,15 @@ void Pole::Init()
 
 }
 
-//=======================================
-// 更新処理
-//=======================================
+
 void Pole::Update()
 {
 
-		//vector<GolfBall*> ball = Game::GetInstance()->GetObjects<GolfBall>();
-		//DirectX::SimpleMath::Vector3 position = ball[0]->GetPosition();
-		//float radius = ball[0]->GetRadius();
-		//DirectX::SimpleMath::Vector3 rotation = ball[0]->GetRotation();
-		//if (m_State == 1) {
-		//	m_Rotation.y += PI / 20;
-		//	swing_time++;
-		//	if (swing_time > 18) {
-		//		m_State = 0;
-		//		swing_time = 0;
-		//	}
-		//}
-
-		//if(m_State == 0){
-		//	m_Rotation = { PI / 2, rotation.y + PI / 2,PI / 2 };
-		//}
-		////DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//角度をラジアンに変換
-		//m_Position = { position.x + sin(rotation.y) * radius, position.y,  position.z + cos(rotation.y) * radius};
-		//hitbox.SetRotation(m_Rotation);
-		//hitbox.SetPos({ m_Position.x + sin(m_Rotation.y - PI / 2) * radius * 1.7f, m_Position.y, m_Position.z + cos(m_Rotation.y - PI / 2) * radius * 1.7f });
-		//hitbox.SetScale({ m_Scale.x * 0.1f ,m_Scale.y * 0.15f ,m_Scale.z * 0.1f });
+	
 }
 
 //=======================================
-// 更新処理2
+// 更新処理
 //=======================================
 void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset)//offsetはobbの距離調整用
 {
@@ -136,6 +114,9 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		break;
 	case ATTACK: //攻撃中(回転攻撃など)
 		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
+		if (followFg) m_Rotation.z += rotation.x;
+		if (verticalFg) m_Rotation.x = 0;
+		NormalizeRad(m_Rotation.z);
 		break;
 	case SWING_VERTICAL: //縦振り攻撃中
 		m_Rotation.z -= PI / 20;
@@ -145,19 +126,26 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//角度をラジアンに変換
 
-	m_Position = { 
-		position.x + sin(rotation.y + angle_debug.y) * radius, 
-		position.y ,  
-		position.z + cos(rotation.y + angle_debug.y) * radius };
+	//m_Position = { 
+	//	position.x + sin(rotation.y + angle_debug.y) * radius, 
+	//	position.y ,  
+	//	position.z + cos(rotation.y + angle_debug.y) * radius };
+
+	
+
+	float yaw = rotation.y + angle_debug.y; // 横回転（Y軸）
+	float pitch = rotation.x + angle_debug.x; // 縦回転（X軸）
+
+	Vector3 forward;
+	forward.x = cosf(pitch) * sinf(yaw);
+	forward.y = -1 * sinf(pitch); // +が上向きのため、-にする
+	forward.z = cosf(pitch) * cosf(yaw);
+
+	m_Position.x = position.x + forward.x * radius;
+	m_Position.y = position.y + forward.y * radius;
+	m_Position.z = position.z + forward.z * radius;
+
 	m_Position += m_offset;
-	//obb = { 
-	//    {
-	//	m_Position.x + sin(m_Rotation.y - PI / 2) * radius * offset, 
-	//	m_Position.y,
-	//	m_Position.z + cos(m_Rotation.y - PI / 2) * radius * offset
-	//	},
-	//	m_Rotation,
-	//	{ m_Scale.x,m_Scale.y * 1.5f ,m_Scale.z} };
 
 	// 回転行列とワールド行列
 	Matrix S = Matrix::CreateScale(m_Scale);
@@ -183,6 +171,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		m_Rotation,
 		{ m_Scale.x, m_Scale.y * 2.5f, m_Scale.z }
 	};
+ 
 }
 
 //=======================================
@@ -290,17 +279,21 @@ void Pole::SwingEnd() {
 }
 
 //攻撃状態になるだけの関数、回転切り等で使用
-void Pole::AttackStart() { 
+void Pole::AttackStart(bool _follow,bool _vt) {
 	m_State = ATTACK;
 	m_swingtime = 0;
 	m_Rotation = m_baseRotation;
 	atkFg = true;
+	followFg = _follow;
+	verticalFg = _vt;
 }
 
 //攻撃状態終了
 void Pole::AttackEnd() {
 	m_State = NORMAL;
 	atkFg = false;
+	followFg = false;
+	verticalFg = false;
 }
 
 //構え開始、デフォルト版

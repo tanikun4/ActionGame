@@ -25,6 +25,8 @@ private:
 	int max_stancetime = 60;//構えの最大フレーム数
 
 	bool atkFg = false;//攻撃判定があるかどうか
+	bool followFg = false;//持ち主と同じ角度になるかどうか
+	bool verticalFg = false;//縦かどうか
 
 	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
 
@@ -91,7 +93,8 @@ public:
 	void GuardStart();
 	void GuardEnd();
 
-	void AttackStart();
+	// 攻撃開始・終了
+	void AttackStart(bool _follow = false, bool _vt = false);//follow=trueなら持ち主と同じ角度になる vt = trueなら縦になる
 	void AttackEnd();
 
 	void StanceStart();

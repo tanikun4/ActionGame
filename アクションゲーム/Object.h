@@ -1,8 +1,7 @@
 #pragma once
-#include <SimpleMath.h>
+#include "MathCommon.h"
 #include "Shader.h"
 #include "Camera.h"
-#define PI  (DirectX::XM_PI)
 
 class Object  {
 protected:

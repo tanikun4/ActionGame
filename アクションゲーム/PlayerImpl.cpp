@@ -205,7 +205,12 @@ void Player::Impl::DebugWeaponStatus() {
 void Player::Impl::DebugPlayerStatus() {
     ImGui::Begin("PlayerStatus");
 
-    ImGui::SliderFloat3("Rotation", &m_Owner->m_Rotation.x, -PI, PI);
+    ImGui::SliderFloat3("Rotation", &m_Owner->m_Rotation.x, -2 * PI, 2 * PI);
+    if (ImGui::Button("Reset Rotation"))
+    {
+        m_Owner->m_Rotation.x = 0;
+        m_Owner->m_Rotation.z = 0;
+    }
 
     if (ImGui::Button("HP MAX"))
         hp = 9;
@@ -404,12 +409,18 @@ void Player::Impl::Attack() {
     
 	//デモ中は入力を受け付けない
     if (demoMode)  return;
-	if (!m_pole) return;
+    if (!m_pole) return;
     if (ActionInput::GetInstance().IsTrigger(Action::Attack) && !GuardFg) {
         // ダメージモーション中なら処理をしない
         if (m_Owner->m_State == DAMAGE) return;
-        
 
+		// ジャンプ中なら縦回転切り
+        if (!m_Owner->is_GROUND) {
+            SpinAttack_Vertical(12, 10, 0.3f);
+            m_Owner->m_State = ATTACK;
+            return;
+        }
+		// 構え開始
       m_pole->StanceStart(30);
 	  speed = 0.5f;  
     }
@@ -424,7 +435,9 @@ void Player::Impl::Attack() {
             SpinAttack(24,18,0.5f);
         }
         else {
-            SwingAttack();
+			// 地上にいる場合のみ通常攻撃
+            if (m_Owner->is_GROUND)
+             SwingAttack();
         }
         m_Owner->m_State = ATTACK;
     }
@@ -471,6 +484,22 @@ void Player::Impl::SpinAttack(int t,int attack_t ,float accel) {
 
     Sound::GetInstance()->Play(SOUND_SE_SWING);
 }
+
+
+// 回転斬り攻撃開始
+void Player::Impl::SpinAttack_Vertical(int t, int attack_t, float accel) {
+    m_pole->AttackStart(true,true);
+    m_pole->SetAtk(atk + 1);
+    m_attackkind = SPINSLASH_VT;
+    maxattackframe = t;
+    Vector3 endrot = m_Owner->m_Rotation;
+    endrot.x += PI * 2;
+    m_Anim.StartAbsolute(m_Owner->m_Rotation, endrot, attack_t, accel);// 縦回転切り、絶対値参照で行う
+    attackframe = 0;
+
+    Sound::GetInstance()->Play(SOUND_SE_SWING);
+}
+
 
 // ジャンプ処理
 void Player::Impl::Jump() {
@@ -523,6 +552,15 @@ void Player::Impl::Damage(int atk) {
 		if (demoMode) atk = 0;//デモ中はダメージを受けない
 
         hp -= atk;
+
+		// 攻撃中なら攻撃終了
+        if (m_Owner->m_State == ATTACK) {
+            m_Owner->m_State = NORMAL;
+            m_pole->AttackEnd();
+            m_attackkind = NONE;
+            m_Owner->m_Rotation.x = 0;
+        }
+
         m_Owner->m_State = DAMAGE;
         framecount = 0;
         inviFg = true;
@@ -630,6 +668,20 @@ void Player::Impl::UpdateAttack() {
 			m_attackkind = NONE;
         }
 	    break;
+
+    case SPINSLASH_VT:
+        // 縦回転切中は移動可能
+		Move();
+        m_Owner->m_Rotation = m_Anim.UpdateAbsolute();// 回転切りアニメーション更新、絶対値参照
+        ++attackframe;
+		//　攻撃時間終了、もしくは地面に着地したら攻撃終了
+        if (attackframe >= maxattackframe || m_Owner->is_GROUND) {
+            m_Owner->m_State = NORMAL;
+            m_pole->AttackEnd();
+            m_attackkind = NONE;
+            m_Owner->m_Rotation.x = 0;
+        }
+        break;
     }
     
 }

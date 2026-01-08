@@ -6,3 +6,14 @@ struct Int2 {
 	int x;
 	int y;
 };
+
+// ƒ‰ƒWƒAƒ“‚ð -PI ` PI ‚Ì”ÍˆÍ‚É³‹K‰»‚·‚é
+inline float NormalizeRad(float rad)
+{
+    const float TWO_PI = PI * 2.0f;
+
+    while (rad > PI)  rad -= TWO_PI;
+    while (rad < -PI) rad += TWO_PI;
+
+    return rad;
+}

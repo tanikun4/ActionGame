@@ -52,7 +52,7 @@ private:
         NONE = -1,
         SWING = 0,
         SPINSLASH,
-        SPINSLAS_VT,
+        SPINSLASH_VT,
 
         KIND_MAX,
 	}; 
