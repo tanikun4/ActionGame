@@ -14,6 +14,103 @@ inline float EaseInOut(float t, float accel)
     return t2 / (t2 + inv);
 }
 
+// 座標アニメーション構造体
+struct PositionAnim
+{
+private:
+    DirectX::SimpleMath::Vector3 start;
+    DirectX::SimpleMath::Vector3 end;
+    DirectX::SimpleMath::Vector3 current;
+    int frame = 0;
+    int maxFrame = 1;
+    bool playing = false;
+    float accel = 0.0f;
+
+    void Start(
+        const DirectX::SimpleMath::Vector3& s,
+        const DirectX::SimpleMath::Vector3& e,
+        int f,
+        float acc = 0.0f)
+    {
+        start = s;
+        end = e;
+        maxFrame = (f <= 0) ? 1 : f;
+        frame = 0;
+        playing = true;
+        current = start;
+        accel = std::clamp(acc, 0.0f, 1.0f);
+    }
+
+    DirectX::SimpleMath::Vector3 Update()
+    {
+        if (!playing) return current;
+
+        float t = (float)frame / (float)maxFrame;
+        float eased_t = EaseInOut(t, accel);
+
+        current = start + (end - start) * eased_t;
+
+        if (frame >= maxFrame) {
+            playing = false;
+            current = end;
+        }
+
+        ++frame;
+        return current;
+    }
+
+public:
+    // 絶対座標
+    void StartAbsolute(
+        const DirectX::SimpleMath::Vector3& s,
+        const DirectX::SimpleMath::Vector3& e,
+        int f,
+        float acc = 0.0f)
+    {
+        Start(s, e, f, acc);
+    }
+
+    // 現在座標から相対移動、開始点ありで指定する
+    void StartRelative(
+        const DirectX::SimpleMath::Vector3& s,
+        const DirectX::SimpleMath::Vector3& e,
+        int f,
+        float acc = 0.0f)
+    {
+        Start(s, e, f, acc);
+    }
+
+
+    // 相対座標の開始関数、こちらは開始点無しで指定する
+    void StartRelative(
+        const DirectX::SimpleMath::Vector3& e,
+        int f,
+        float acc = 0.0f)
+    {
+        Start({ 0,0,0 }, e, f, acc);
+    }
+
+	// 絶対座標用
+    DirectX::SimpleMath::Vector3 UpdateAbsolute()
+    {
+        return Update();
+    }
+
+    // 相対座標用、指定座標と足し合わせた値を返す
+    DirectX::SimpleMath::Vector3 UpdateRelative(const DirectX::SimpleMath::Vector3& rotation)
+    {
+        return rotation + Update();
+    }
+
+    // 相対座標用、処理自体は絶対座標と同じ
+    DirectX::SimpleMath::Vector3 UpdateRelative()
+    {
+        return Update();
+    }
+
+    bool IsPlaying() const { return playing; }
+};
+
 // 角度アニメーション管理構造体
 struct AngleAnim
 {
@@ -38,7 +135,7 @@ private:
         frame = 0;
         playing = true;
         current = start;
-        accel = (acc < 0.0f) ? 0.0f : (acc > 1.0f ? 1.0f : acc);
+        accel = std::clamp(acc, 0.0f, 1.0f);
     }
 
     // 1フレーム更新して、現在の角度差を返す

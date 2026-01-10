@@ -119,25 +119,20 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		break;
 	case SWING_VERTICAL: //cU‚èUŒ‚’†
 		m_Rotation.z -= PI / 20;
-		++m_swingtime;
+		++m_attacktime;
+		break;
+	case THRUST: //“Ë‚«UŒ‚’†
+		ThrustUpdate();
 		break;
 	}
 
-	//DirectX::SimpleMath::Vector3 radian = { rotation.x * (PI / 180) , rotation.y * (PI / 180) , rotation.z * (PI / 180) };//Šp“x‚ğƒ‰ƒWƒAƒ“‚É•ÏŠ·
-
-	//m_Position = { 
-	//	position.x + sin(rotation.y + angle_debug.y) * radius, 
-	//	position.y ,  
-	//	position.z + cos(rotation.y + angle_debug.y) * radius };
-
-	
-
+	//ˆÊ’uŒvZ
 	float yaw = rotation.y + angle_debug.y; // ‰¡‰ñ“]iY²j
 	float pitch = rotation.x + angle_debug.x; // c‰ñ“]iX²j
 
 	Vector3 forward;
 	forward.x = cosf(pitch) * sinf(yaw);
-	forward.y = -1 * sinf(pitch); // +‚ªãŒü‚«‚Ì‚½‚ßA-‚É‚·‚é
+	forward.y = -1 * sinf(pitch); // +‚ªãŒü‚«‚Ì‚½‚ßA‹t‚É‚·‚é
 	forward.z = cosf(pitch) * cosf(yaw);
 
 	m_Position.x = position.x + forward.x * radius;
@@ -282,19 +277,20 @@ void Pole::Swing_Vertical() {
 // U‚èUŒ‚ŠJnAƒpƒ‰ƒ[ƒ^”Å
 void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
-	m_SwingAnim.StartRelative(s, e, t,accel);
-	max_swingtime = t;
+	m_offset = { 0,0,0 };//U‚èUŒ‚’†‚ÍƒIƒtƒZƒbƒg–³‚µ
+	m_AngleAnim.StartRelative(s, e, t,accel);
+	max_attacktime = t;
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
-	m_swingtime = 0;
+	m_attacktime = 0;
 	m_State = SWING;
 	atkFg = true;
 }
 
 // U‚èUŒ‚’†‚Ìˆ—
 void Pole::SwingUpdate() {
-	++m_swingtime;
-	m_Rotation = m_SwingAnim.UpdateRelative(m_baseRotation);
+	++m_attacktime;
+	m_Rotation = m_AngleAnim.UpdateRelative(m_baseRotation);
 }
 
 // U‚èUŒ‚I—¹
@@ -302,13 +298,48 @@ void Pole::SwingEnd() {
 	if (m_State != SWING) { return; }
 	m_State = NORMAL;
 	atkFg = false;
-	m_swingtime = 0;
+	m_attacktime = 0;
 }
+
+void Pole::Thrust() {
+	SwingStart({ 0, 0, 0 }, { 0,5,0 }, 8, 0.3f);
+}
+
+void Pole::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
+{
+	m_PosAnim.StartRelative(s, e, t, accel);
+	max_attacktime = t;
+	m_stancetime = 0;
+	m_attacktime = 0;
+	m_State = THRUST;
+	atkFg = true;
+}
+
+// U‚èUŒ‚’†‚Ìˆ—
+void Pole::ThrustUpdate() {
+	++m_attacktime;
+	m_offset = m_PosAnim.UpdateRelative();
+	//@“Ë‚«o‚µI‚í‚Á‚Ä‚¢‚½‚çAˆø‚«–ß‚·“®‚«‚ğŠJn
+	if (!m_PosAnim.IsPlaying() && !atkFg) {
+		atkFg = false;
+		m_PosAnim.StartRelative(m_offset, { 0, 0, 0 }, m_attacktime, 0);
+		m_attacktime = 0;
+	}
+}
+
+void Pole::ThrustEnd() {
+	if (m_State != THRUST) { return; }
+	m_State = NORMAL;
+	atkFg = false;
+	m_attacktime = 0;
+	m_offset = { 0,0,0 };
+}
+
 
 //UŒ‚ó‘Ô‚É‚È‚é‚¾‚¯‚ÌŠÖ”A‰ñ“]Ø‚è“™‚Åg—p
 void Pole::AttackStart(bool _follow,bool _vt) {
 	m_State = ATTACK;
-	m_swingtime = 0;
+	m_attacktime = 0;
 	m_Rotation = m_baseRotation;
 	atkFg = true;
 	followFg = _follow;
@@ -347,7 +378,7 @@ void Pole::Stance_Vertical() {
 
 //\‚¦ŠJnAƒpƒ‰ƒ[ƒ^”Å
 void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {
-	m_SwingAnim.StartRelative(s, e, t);
+	m_AngleAnim.StartRelative(s, e, t);
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	m_State = STANCE;
@@ -359,9 +390,9 @@ void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {
 void Pole::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t_stance,
 	const Vector3& s_swing, const Vector3& e_swing, int t_swing, int swingframe) 
 {
-	m_SwingAnim.StartRelative(s_stance, e_stance, t_stance);
+	m_AngleAnim.StartRelative(s_stance, e_stance, t_stance);
 	m_stancetime = 0;
-	m_stance_swingframe = swingframe;
+	m_stance_attackframe = swingframe;
 	m_State = STANCE;
 	m_baseRotation = m_Rotation;
 }
@@ -369,10 +400,10 @@ void Pole::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t
 //Œ»İŠp“x‚©‚çU‚é
 void Pole::ToSwing(const DirectX::SimpleMath::Vector3& e, int t, float accel)
 {
-	m_SwingAnim.StartRelative(e, t, accel);
-	max_swingtime = t;
+	m_AngleAnim.StartRelative(e, t, accel);
+	max_attacktime = t;
 	m_stancetime = 0;
-	m_swingtime = 0;
+	m_attacktime = 0;
 	m_State = SWING;
 	atkFg = true;
 }
@@ -381,13 +412,13 @@ void Pole::ToSwing()
 {
 	Vector3 endrot = m_baseRotation;
 	endrot.y += PI;
-	ToSwing(endrot, max_swingtime,0.3f);
+	ToSwing(endrot, max_attacktime,0.3f);
 }
 
 //\‚¦’†‚Ìˆ—
 void Pole::StanceUpdate() {
 
-	m_Rotation += m_SwingAnim.UpdateRelative();
+	m_Rotation += m_AngleAnim.UpdateRelative();
 
 	++m_stancetime;
 }
@@ -524,7 +555,7 @@ void Pole::DebugPoleStatus() {
 }
 
 bool Pole::GetMaxSwing() {
-	if (m_swingtime >= max_swingtime) {
+	if (m_attacktime >= max_attacktime) {
 		return true;
 	}
 	return false;

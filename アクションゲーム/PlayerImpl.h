@@ -2,7 +2,7 @@
 #include <DirectXMath.h>
 #include <SimpleMath.h>
 #include "Player.h"
-#include "AngleAnim.h"
+#include "AnimStruct.h"
 
 class Camera;
 class Player;

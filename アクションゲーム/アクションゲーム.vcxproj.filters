@@ -506,7 +506,7 @@
     <ClInclude Include="EffectBillBoad.h">
       <Filter>ソース ファイル\Effect\EffectBillBoad%282D%29</Filter>
     </ClInclude>
-    <ClInclude Include="AngleAnim.h">
+    <ClInclude Include="AnimStruct.h">
       <Filter>ソース ファイル\Object</Filter>
     </ClInclude>
     <ClInclude Include="ShadowCircle.h">

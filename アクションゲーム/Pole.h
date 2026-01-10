@@ -1,7 +1,7 @@
 #pragma once
 #include "TestCube.h"
 #include "Weapon.h"
-#include "AngleAnim.h"
+#include "AnimStruct.h"
 
 struct EffectParams;
 
@@ -15,12 +15,12 @@ private:
 	Collision::OBB obb {m_Position,m_Rotation,m_Scale };
 
 	int m_State = 0; // 0:通常状態・1:攻撃中 2:ガード中 
-	int m_swingtime = 0; //スイング時間カウント
+	int m_attacktime = 0; //スイング時間カウント
 	int m_stancetime = 0;//構え時間カウント
-	int m_stance_swingframe = -1;//構えから振りに移行する場合の振り開始フレーム
+	int m_stance_attackframe = -1;//構えから振りに移行する場合の振り開始フレーム
 
-	static const int Defalt_SwingTime = 18;//振り攻撃の最大フレーム数、デフォルト値
-	int max_swingtime = Defalt_SwingTime;//振り攻撃の最大フレーム数
+	static const int Defalt_AttackTime = 18;//振り攻撃の最大フレーム数、デフォルト値
+	int max_attacktime = Defalt_AttackTime;//振り攻撃の最大フレーム数
 	static const int Defalt_StanceTime = 18;//構えの最大フレーム数、デフォルト値
 	int max_stancetime = 60;//構えの最大フレーム数
 
@@ -30,7 +30,8 @@ private:
 
 	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
 
-	AngleAnim m_SwingAnim;
+	AngleAnim m_AngleAnim;//角度アニメーションで使う構造体
+	PositionAnim m_PosAnim;// 座標アニメーションで使う構造体
 public:
 
 	enum STATE {
@@ -39,7 +40,8 @@ public:
 		GUARD,
 		STANCE,
 		ATTACK,
-		SWING_VERTICAL
+		SWING_VERTICAL,
+		THRUST,
 	};
 
 	Pole(Camera* cam); // コンストラクタ
@@ -76,8 +78,14 @@ public:
 	void Swing_Vertical();// 縦振り攻撃開始
 	void SwingEnd();
 
-	void SwingStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t,float accel = 0);
+	void SwingStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t, float accel = 0);// 振り攻撃開始、パラメータ版
 	void SwingUpdate();
+
+	//突き攻撃
+	void Thrust();//突き攻撃開始、デフォルト
+	void ThrustStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t, float accel = 0);//突き攻撃開始、パラメータ版
+	void ThrustUpdate();
+	void ThrustEnd();
 
 	void Stance_Vertical();
 
@@ -108,7 +116,7 @@ public:
 	int GetState();//状態を返す
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
-	int GetSwingTime() { return m_swingtime; }
+	int GetSwingTime() { return m_attacktime; }
 	int GetStanceTime() { return m_stancetime; }
 	bool GetAttack() { return atkFg; }
 	bool GetMaxStance();

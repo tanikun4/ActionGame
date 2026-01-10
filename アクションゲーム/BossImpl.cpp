@@ -206,7 +206,10 @@ void Boss::Impl::LookAt(Vector3 ta_pos) {
 void Boss::Impl::AttackUpdate() {
 	int weapon_state = m_weapon->GetState();
 	switch (attack_kind) {
-	case SWING:
+	case NONE:
+		m_State = NORMAL;
+		break;
+	case SWING:// ‰¡U‚è
 		if (weapon_state == Pole::STATE::NORMAL) {
 			m_weapon->StanceStart();
 		}
@@ -303,6 +306,13 @@ void Boss::Impl::AttackUpdate() {
 
 		}
 
+		break;
+	case MANY_THRUST://˜A‘±“Ë‚«
+
+		break;
+
+	case KIND_MAX:
+		m_State = NORMAL;
 		break;
 	}
 }

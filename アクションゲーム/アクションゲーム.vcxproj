@@ -396,7 +396,7 @@
     <ClInclude Include="ActionBinding.h" />
     <ClInclude Include="ActionInput.h" />
     <ClInclude Include="ActionState.h" />
-    <ClInclude Include="AngleAnim.h" />
+    <ClInclude Include="AnimStruct.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="AssimpPerse.h" />
