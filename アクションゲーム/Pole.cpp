@@ -144,27 +144,36 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	m_Position.y = position.y + forward.y * radius;
 	m_Position.z = position.z + forward.z * radius;
 
+	UpdateOffset(yaw);
+	UpdateOBB();
+ 
+}
+
+void Pole::UpdateOffset(float _yaw) {
+	//オフセット部分の更新
 	Vector3 rotOffset;
 
 	// Yaw + Pitch 回転
-	rotOffset.x = m_offset.x * cosf(yaw) + m_offset.z * sinf(yaw);
+	rotOffset.x = m_offset.x * cosf(_yaw) + m_offset.z * sinf(_yaw);
 
 	rotOffset.y = m_offset.y;
 
-	rotOffset.z = -m_offset.x * sinf(yaw) + m_offset.z * cosf(yaw);
+	rotOffset.z = -m_offset.x * sinf(_yaw) + m_offset.z * cosf(_yaw);
 
 	m_Position += m_offset;
 
 	Vector3 rotOffset_debug;
 
-	rotOffset_debug.x = offset_debug.x * cosf(yaw) + offset_debug.z * sinf(yaw);
+	rotOffset_debug.x = offset_debug.x * cosf(_yaw) + offset_debug.z * sinf(_yaw);
 
 	rotOffset_debug.y = offset_debug.y;
 
-	rotOffset_debug.z = -offset_debug.x * sinf(yaw) + offset_debug.z * cosf(yaw);
+	rotOffset_debug.z = -offset_debug.x * sinf(_yaw) + offset_debug.z * cosf(_yaw);
 
 	m_Position += rotOffset_debug;
+}
 
+void Pole::UpdateOBB() {
 	// 回転行列とワールド行列
 	Matrix S = Matrix::CreateScale(m_Scale);
 	Matrix R = Matrix::CreateFromYawPitchRoll(
@@ -176,6 +185,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	Matrix world = S * R * T;
 
+	//OBBの更新
 	// OBB の中心位置を「武器の中心」に補正
 	// ポールモデルの pivot は "持ち手先端"
 	Vector3 obbLocalCenter = { 0.0f, m_Scale.y * 0.8f, 0.0f };
@@ -185,11 +195,10 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	// OBBの更新
 	obb = {
-		obbWorldCenter,           
+		obbWorldCenter,
 		m_Rotation,
 		{ m_Scale.x, m_Scale.y * 2.5f, m_Scale.z }
 	};
- 
 }
 
 //=======================================

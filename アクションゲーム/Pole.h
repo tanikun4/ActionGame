@@ -54,6 +54,9 @@ public:
 	void Draw();
 	void Uninit();
 
+	void UpdateOffset(float _yaw);//オフセット部分のUpdate
+	void UpdateOBB();//OBBの更新
+
 	void DebugPoleStatus();//デバッグ用関数(プレイヤー側でのみ呼び出す想定でpublic)
 	
 	// 位置の設定
