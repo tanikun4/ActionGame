@@ -109,7 +109,6 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	case STANCE: //構え中
 		//構え中の補正処理
 		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
-		//m_Rotation.y = rotation.y + PI / 2;
 		StanceUpdate();
 		break;
 	case ATTACK: //攻撃中(回転攻撃など)
@@ -145,7 +144,26 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	m_Position.y = position.y + forward.y * radius;
 	m_Position.z = position.z + forward.z * radius;
 
+	Vector3 rotOffset;
+
+	// Yaw + Pitch 回転
+	rotOffset.x = m_offset.x * cosf(yaw) + m_offset.z * sinf(yaw);
+
+	rotOffset.y = m_offset.y;
+
+	rotOffset.z = -m_offset.x * sinf(yaw) + m_offset.z * cosf(yaw);
+
 	m_Position += m_offset;
+
+	Vector3 rotOffset_debug;
+
+	rotOffset_debug.x = offset_debug.x * cosf(yaw) + offset_debug.z * sinf(yaw);
+
+	rotOffset_debug.y = offset_debug.y;
+
+	rotOffset_debug.z = -offset_debug.x * sinf(yaw) + offset_debug.z * cosf(yaw);
+
+	m_Position += rotOffset_debug;
 
 	// 回転行列とワールド行列
 	Matrix S = Matrix::CreateScale(m_Scale);
@@ -443,6 +461,7 @@ void Pole::GuardEnd() {
 	m_offset = { 0,0,0 };
 }
 
+// 武器の先端位置にエフェクトを表示する
 void Pole::TipToEffect(int _id, EffectParams _param)
 {
 	Matrix S = Matrix::CreateScale(m_Scale);
