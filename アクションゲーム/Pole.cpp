@@ -170,6 +170,7 @@ void Pole::UpdateOffset(float _yaw) {
 	m_Position += rotOffset_debug;
 }
 
+// OBBの更新処理
 void Pole::UpdateOBB() {
 	// 回転行列とワールド行列
 	Matrix S = Matrix::CreateScale(m_Scale);
@@ -198,9 +199,7 @@ void Pole::UpdateOBB() {
 	};
 }
 
-//=======================================
 // 描画処理
-//=======================================
 void Pole::Draw()
 {
 	// SRT情報作成
@@ -238,42 +237,72 @@ void Pole::Draw()
 	}
 }
 
-//=======================================
 // 終了処理
-//=======================================
 void Pole::Uninit()
 {
 
 }
 
 // 振り攻撃開始、プリセット版
-void Pole::Swing() {
+void Pole::Swing() 
+{
 	//なんかしたときに視野角
 	//攻撃に当たったらカメラ揺らす
 	if (m_State == NORMAL) {
 		m_Rotation.y -= PI / 2;
 	}
-	SwingStart({0, 0, 0}, {0,PI,0}, 18, 0.3f);
+	SwingStart({0, 0, 0}, {0,PI,0}, 18, 0.7f);
 }
 
 // 逆振り攻撃開始
-void Pole::Swing_Return() {
+void Pole::Swing_Return() 
+{
 	//なんかしたときに視野角
 	//攻撃に当たったらカメラ揺らす
 	if (m_State == NORMAL) {
 		m_Rotation.y += PI / 2;
 		m_Rotation.x -= PI;
 	}
-	SwingStart({ 0, 0, 0 }, { 0,-PI,0 }, 18, 0.3f);
+	SwingStart({ 0, 0, 0 }, { 0,-PI,0 }, 18, 0.7f);
 }
 
 // 縦振り攻撃開始、デフォルト版
-void Pole::Swing_Vertical() {
+void Pole::Swing_Vertical() 
+{
 	//なんかしたときに視野角
 	//攻撃に当たったらカメラ揺らす
 	m_Rotation.x = PI;
 	m_Rotation.z = PI + 0.2f;
 	SwingStart({0,0,0}, {0,0,-PI * 0.5f}, 10, 1.0f);
+}
+
+// 振り攻撃、時間とモード指定版
+void Pole::Swing(int t,int mode) 
+{
+	m_State = STANCE;
+	m_baseRotation = m_Rotation;
+	m_stancetime = 0;
+	switch (mode)
+	{
+	case (int)SwingMode::NORMAL:
+		if (m_State == NORMAL) {
+			m_Rotation.y -= PI / 2;
+		}
+		SwingStart({ 0, 0, 0 }, { 0,PI,0 }, t, 0.7f);
+		break;
+
+	case (int)SwingMode::RETURN:
+		if (m_State == NORMAL) {
+			m_Rotation.y += PI / 2;
+			m_Rotation.x -= PI;
+		}
+		SwingStart({ 0, 0, 0 }, { 0,-PI,0 }, t, 0.7f);
+		break;
+
+	case (int)SwingMode::VERTICAL:
+		SwingStart({ 0,0,0 }, { 0,0,-PI * 0.5f }, t);
+		break;
+	}
 }
 
 // 振り攻撃開始、パラメータ版
@@ -380,18 +409,40 @@ void Pole::Stance() {
 	StanceStart({ 0,0,0 }, {0,-PI * 0.5f,0}, 18);
 }
 
-//構え開始、デフォルト版を時間指定可能にしたもの
-void Pole::StanceStart(int t) {
+void Pole::Stance_Return() {
 	m_State = STANCE;
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
-	StanceStart({ 0,0,0 }, { 0,-PI * 0.5f,0 }, t);
+
+	StanceStart({ 0,0,0 }, { 0,PI * 0.5f,0 }, 18);
+}
+
+//構え開始、デフォルト版を時間、構えタイプの指定を可能にしたもの
+void Pole::Stance(int t,int mode) {
+	m_State = STANCE;
+	m_baseRotation = m_Rotation;
+	m_stancetime = 0;
+	switch (mode)
+	{
+	case (int)SwingMode::NORMAL:
+		StanceStart({ 0,0,0 }, { 0,-PI * 0.5f,0 }, t);
+		break;
+
+	case (int)SwingMode::RETURN:
+		StanceStart({ 0,0,0 }, { 0,PI * 0.5f,0 }, t);
+		break;
+
+	case (int)SwingMode::VERTICAL:
+		StanceStart({ 0,0,0 }, { PI * 0.5,0,(PI * 0.5) + 0.2f }, t);
+		break;
+	}
 }
 
 // 縦構え開始、デフォルト版
 void Pole::Stance_Vertical() {
 	StanceStart({0,0,0}, { PI * 0.5,0,(PI * 0.5) + 0.2f}, 60);
 }
+
 
 //構え開始、パラメータ版
 void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {

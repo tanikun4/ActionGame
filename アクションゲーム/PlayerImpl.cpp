@@ -421,7 +421,7 @@ void Player::Impl::Attack() {
             return;
         }
 		// \‚¦ŠJŽn
-      m_pole->StanceStart(30);
+      m_pole->Stance(30, (int)StanceMode::NORMAL);
 	  speed = 0.5f;  
     }
     if (ActionInput::GetInstance().IsRelease(Action::Attack) && !GuardFg) {

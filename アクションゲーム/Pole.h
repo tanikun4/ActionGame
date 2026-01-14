@@ -4,6 +4,23 @@
 #include "AnimStruct.h"
 
 struct EffectParams;
+enum class StanceMode {
+	NORMAL = 0,
+	RETURN,
+	VERTICAL,
+
+	MODE_MAX
+};
+
+enum class SwingMode {
+	NORMAL = 0,
+	RETURN,
+	VERTICAL,
+
+	MODE_MAX
+};
+
+
 
 //-----------------------------------------------------------------------------
 // Poleクラス
@@ -76,6 +93,7 @@ public:
 	void Swing();//振り攻撃開始、デフォルト
 	void Swing_Return();//逆からの振り攻撃
 	void Swing_Vertical();// 縦振り攻撃開始
+	void Swing(int t ,int mode);//振り時間、モード指定版
 	void SwingEnd();
 
 	void SwingStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t, float accel = 0);// 振り攻撃開始、パラメータ版
@@ -89,12 +107,16 @@ public:
 	void ThrustUpdate();
 	void ThrustEnd();
 
+	// 構え関数群
+	void Stance();
+	void Stance_Return();
 	void Stance_Vertical();
+	void Stance(int t,int mode);//時間、構えタイプ指定版
+	void StanceUpdate();
+	void StanceEnd();
 
 	//構えて開始
 	void StanceStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t);
-	//構えて開始、時間のみ指定
-	void StanceStart(int t);
 	void StanceToSwing(const DirectX::SimpleMath::Vector3& s_stance, const DirectX::SimpleMath::Vector3& e_stance, int t_stance,
 						const DirectX::SimpleMath::Vector3& s_swing, const DirectX::SimpleMath::Vector3& e_swing, int t_swing,int swingframe = -1);
 
@@ -110,9 +132,6 @@ public:
 	void AttackStart(bool _follow = false, bool _vt = false);//follow=trueなら持ち主と同じ角度になる vt = trueなら縦になる
 	void AttackEnd();
 
-	void Stance();
-	void StanceUpdate();
-	void StanceEnd();
 	void ChangeState(int state) {}; // 状態を変更する(現在未使用)
 
 	int GetState();//状態を返す

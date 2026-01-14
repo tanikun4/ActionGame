@@ -96,7 +96,7 @@ void Boss::Impl::Update() {
 			m_State = ATTACK;
 			framecount = 0;
 			m_Owner->m_Velocity_f = 0;
-			attack_kind = (rand() % 2) + 1;
+			attack_kind = (rand() % KIND_MAX - 1) + 1;
 		}
 		if (framecount % 90 == 0 && framecount != 0) {
 			ShotBullet();
@@ -267,7 +267,7 @@ void Boss::Impl::AttackUpdate() {
 		if (weapon_state == Pole::STATE::STANCE && m_rushFg) {
 			//近づいたら振る
 			Move();
-			framecount++;
+			++framecount;
 			if (framecount > 3) {
 				// 土煙エフェクト再生
 				EffectParams   param;
@@ -330,7 +330,7 @@ void Boss::Impl::AttackUpdate() {
 			Sound::GetInstance()->Play(SOUND_SE_SWING);
 		}
 
-		if (attack_count > 90) {
+		if (attack_count > 60) {
 			m_weapon->ThrustEnd();
 			m_State = NORMAL;
 			attack_count = 0;
@@ -346,39 +346,49 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
-			m_weapon->Swing();
+			if (attack_count == 0) {
+				m_weapon->Swing();
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+			}
+			else if (attack_count == 1) {
+				m_weapon->Swing_Return();
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+			}
+			else if (attack_count == 2) {
+				m_weapon->Swing(18, (int)SwingMode::VERTICAL);
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+			}
 			m_lookatFg = false;
+			++attack_count;
+
+			if (attack_count > 3) {
+				m_weapon->SwingEnd();
+				m_lookatFg = true;
+				m_rushFg = false;
+				rotate_speed = 0.05f;
+				m_State = NORMAL;
+				attack_count = 0;
+			}
 		}
 
 		if (weapon_state == Pole::STATE::SWING) {
-			if (m_weapon->GetAttackTime() > 60) {
+			if (m_weapon->GetAttackTime() > 18) {
 				m_weapon->SwingEnd();
 				if (attack_count == 0) {
-					m_weapon->Swing_Return();
-					m_lookatFg = false;
+					m_weapon->Stance();
 				}
 				else if (attack_count == 1) {
-					m_weapon->Swing_Vertical();
-					m_lookatFg = false;
+					m_weapon->Stance_Return();
 				}
-				++attack_count;
+				else if (attack_count == 2) {
+					m_weapon->Stance(10, (int)StanceMode::VERTICAL);
+				}
+				m_lookatFg = true;
+				m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 			}
 			else if(m_weapon->GetAttackTime() <= 18){
 				Move();
 			}
-			else {
-				m_lookatFg = true;
-				m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
-			}
-		}
-
-		if (attack_count > 2) {
-			m_weapon->SwingEnd();
-			m_lookatFg = true;
-			m_rushFg = false;
-			rotate_speed = 0.05f;
-			m_State = NORMAL;
-			attack_count = 0;
 		}
 		break;
 
