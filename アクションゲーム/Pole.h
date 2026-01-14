@@ -83,6 +83,8 @@ public:
 
 	//突き攻撃
 	void Thrust();//突き攻撃開始、デフォルト
+	void Thrust_Right();//突き攻撃開始右から、デフォルト
+	void Thrust_Left();//突き攻撃開始左から、デフォルト
 	void ThrustStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t, float accel = 0);//突き攻撃開始、パラメータ版
 	void ThrustUpdate();
 	void ThrustEnd();
@@ -116,7 +118,7 @@ public:
 	int GetState();//状態を返す
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
-	int GetSwingTime() { return m_attacktime; }
+	int GetAttackTime() { return m_attacktime; }
 	int GetStanceTime() { return m_stancetime; }
 	bool GetAttack() { return atkFg; }
 	bool GetMaxStance();

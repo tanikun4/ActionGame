@@ -122,8 +122,8 @@ void Player::Impl::OnHit(Boss* bo) {
 void Player::Impl::OnHit(Pole* po) {
     const int damage = 2;
     if (po->GetPl()) return;
-    if (RollFg && rollcount < 5 && po->GetSwingTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
-    if (GuardFg && guardcount < justguardframe && po->GetSwingTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
+    if (RollFg && rollcount < 5 && po->GetAttackTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
+    if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
     Damage(damage);
 }
 
@@ -728,7 +728,7 @@ void Player::Impl::UpdateCounter() {
         fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
 
 		//カウンター攻撃処理
-        if (m_pole->GetSwingTime() <= 0) {
+        if (m_pole->GetAttackTime() <= 0) {
             m_pole->SetAtk(atk * 2);
             m_pole->Swing_Vertical();
         }

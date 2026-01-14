@@ -122,6 +122,8 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		++m_attacktime;
 		break;
 	case THRUST: //突き攻撃中
+		m_Rotation = { PI / 2 + angle_debug.x, rotation.y + PI / 2 + angle_debug.y, PI / 2 + angle_debug.z };
+		m_baseRotation = m_Rotation;
 		ThrustUpdate();
 		break;
 	}
@@ -155,7 +157,7 @@ void Pole::UpdateOffset(float _yaw) {
 
 	rotOffset.z = -m_offset.x * sinf(_yaw) + m_offset.z * cosf(_yaw);
 
-	m_Position += m_offset;
+	m_Position += rotOffset;
 
 	Vector3 rotOffset_debug;
 
@@ -301,10 +303,24 @@ void Pole::SwingEnd() {
 	m_attacktime = 0;
 }
 
+// 突き攻撃開始、デフォルト版
 void Pole::Thrust() {
-	SwingStart({ 0, 0, 0 }, { 0,5,0 }, 8, 0.3f);
+	ThrustStart({ 0, 0, 0 }, { 0, 0, 10 }, 2, 0.3f);
 }
 
+// 突き攻撃開始、デフォルト版
+void Pole::Thrust_Right() {
+	ThrustStart({ 6, 0, 0 }, { 6, 0, 10 }, 2, 0.3f);
+}
+
+
+// 突き攻撃開始、デフォルト版
+void Pole::Thrust_Left() {
+	ThrustStart({ -6, 0, 0 }, { -6, 0, 10 }, 2, 0.3f);
+}
+
+
+// 突き攻撃開始、パラメータ版
 void Pole::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
 	m_PosAnim.StartRelative(s, e, t, accel);
@@ -320,13 +336,14 @@ void Pole::ThrustUpdate() {
 	++m_attacktime;
 	m_offset = m_PosAnim.UpdateRelative();
 	//　突き出し終わっていたら、引き戻す動きを開始
-	if (!m_PosAnim.IsPlaying() && !atkFg) {
+	if (!m_PosAnim.IsPlaying() && atkFg) {
 		atkFg = false;
-		m_PosAnim.StartRelative(m_offset, { 0, 0, 0 }, m_attacktime, 0);
+		m_PosAnim.StartRelative(m_offset, { 0, 0, 0 }, m_attacktime - 1, 0);
 		m_attacktime = 0;
 	}
 }
 
+// 突き攻撃終了
 void Pole::ThrustEnd() {
 	if (m_State != THRUST) { return; }
 	m_State = NORMAL;

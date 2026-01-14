@@ -216,7 +216,7 @@ void Boss::Impl::AttackUpdate() {
 		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
 			m_weapon->Swing();
 		}
-		else if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
+		else if (weapon_state == Pole::STATE::SWING && m_weapon->GetAttackTime() > 18) {
 			m_State = NORMAL;
 			framecount = 0;
 			m_weapon->SwingEnd();
@@ -287,7 +287,7 @@ void Boss::Impl::AttackUpdate() {
 			}
 		}
 
-		if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() == 10) {
+		if (weapon_state == Pole::STATE::SWING && m_weapon->GetAttackTime() == 10) {
 			//エフェクトパラメーター構造体作成
 			EffectParams param;
 			param.scale = m_Owner->m_Scale * 15;
@@ -297,7 +297,7 @@ void Boss::Impl::AttackUpdate() {
 			Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
 		}
 
-		if (weapon_state == Pole::STATE::SWING && m_weapon->GetSwingTime() > 18) {
+		if (weapon_state == Pole::STATE::SWING && m_weapon->GetAttackTime() > 18) {
 			m_State = NORMAL;
 			framecount = 0;
 			m_weapon->SwingEnd();
@@ -308,7 +308,35 @@ void Boss::Impl::AttackUpdate() {
 
 		break;
 	case MANY_THRUST://連続突き
+		Move();
+		if (weapon_state == Pole::STATE::NORMAL) {
+			m_weapon->Thrust();
+			attack_count++;
+			rotate_speed = 0.05f;
+			Sound::GetInstance()->Play(SOUND_SE_SWING);
+		}
 
+		if (weapon_state == Pole::STATE::THRUST && m_weapon->GetAttackTime() > 4) {
+			attack_count++;
+			int attack_count_remaind = attack_count % 3;
+			if (attack_count_remaind == 0) {
+				m_weapon->Thrust();
+			}
+			else if (attack_count_remaind == 1) {
+				m_weapon->Thrust_Left();
+			}
+			else {
+				m_weapon->Thrust_Right();
+			}
+			Sound::GetInstance()->Play(SOUND_SE_SWING);
+		}
+
+		if (attack_count > 90) {
+			m_weapon->ThrustEnd();
+			m_State = NORMAL;
+			rotate_speed = 0.1f;
+			attack_count = 0;
+		}
 		break;
 
 	case KIND_MAX:
@@ -340,11 +368,11 @@ void Boss::Impl::ShotBullet() {
 
 void Boss::Impl::Move(){
 	if (m_rushFg) {
-		m_Owner->m_Velocity_f = m_speed * 8;
+		m_Owner->m_Velocity_f = move_speed * 8;
 		//m_Owner->m_Rotation.x += 0.2f;
 	}
 	else {
-		m_Owner->m_Velocity_f = m_speed;
+		m_Owner->m_Velocity_f = move_speed;
 		//m_Owner->m_Rotation.x += 0.025f;
 	}
 

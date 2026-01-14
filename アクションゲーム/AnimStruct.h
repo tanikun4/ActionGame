@@ -97,9 +97,9 @@ public:
     }
 
     // 相対座標用、指定座標と足し合わせた値を返す
-    DirectX::SimpleMath::Vector3 UpdateRelative(const DirectX::SimpleMath::Vector3& rotation)
+    DirectX::SimpleMath::Vector3 UpdateRelative(const DirectX::SimpleMath::Vector3& position)
     {
-        return rotation + Update();
+        return position + Update();
     }
 
     // 相対座標用、処理自体は絶対座標と同じ
