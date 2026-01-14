@@ -110,7 +110,7 @@ public:
 	void AttackStart(bool _follow = false, bool _vt = false);//follow=trueなら持ち主と同じ角度になる vt = trueなら縦になる
 	void AttackEnd();
 
-	void StanceStart();
+	void Stance();
 	void StanceUpdate();
 	void StanceEnd();
 	void ChangeState(int state) {}; // 状態を変更する(現在未使用)

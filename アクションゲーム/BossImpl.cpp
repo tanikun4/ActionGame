@@ -211,7 +211,7 @@ void Boss::Impl::AttackUpdate() {
 		break;
 	case SWING:// ‰¡U‚è
 		if (weapon_state == Pole::STATE::NORMAL) {
-			m_weapon->StanceStart();
+			m_weapon->Stance();
 		}
 		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
 			m_weapon->Swing();
@@ -225,7 +225,7 @@ void Boss::Impl::AttackUpdate() {
 
 	case ROTATESWING://‰ñ“]Ø‚è
 		if (weapon_state == Pole::STATE::NORMAL) {
-			m_weapon->StanceStart();
+			m_weapon->Stance();
 		}
 		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 90) {
 			m_weapon->AttackStart();
@@ -312,7 +312,6 @@ void Boss::Impl::AttackUpdate() {
 		if (weapon_state == Pole::STATE::NORMAL) {
 			m_weapon->Thrust();
 			attack_count++;
-			rotate_speed = 0.05f;
 			Sound::GetInstance()->Play(SOUND_SE_SWING);
 		}
 
@@ -334,7 +333,51 @@ void Boss::Impl::AttackUpdate() {
 		if (attack_count > 90) {
 			m_weapon->ThrustEnd();
 			m_State = NORMAL;
+			attack_count = 0;
+		}
+		break;
+
+	case THREE_SWING://ŽO˜AŽa‚è
+		if (weapon_state == Pole::STATE::NORMAL) {
+			m_weapon->Stance();
 			rotate_speed = 0.1f;
+			m_lookatFg = true;
+			m_rushFg = true;
+		}
+
+		if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
+			m_weapon->Swing();
+			m_lookatFg = false;
+		}
+
+		if (weapon_state == Pole::STATE::SWING) {
+			if (m_weapon->GetAttackTime() > 60) {
+				m_weapon->SwingEnd();
+				if (attack_count == 0) {
+					m_weapon->Swing_Return();
+					m_lookatFg = false;
+				}
+				else if (attack_count == 1) {
+					m_weapon->Swing_Vertical();
+					m_lookatFg = false;
+				}
+				++attack_count;
+			}
+			else if(m_weapon->GetAttackTime() <= 18){
+				Move();
+			}
+			else {
+				m_lookatFg = true;
+				m_Owner->m_Velocity_f = 0.0f;//ˆÚ“®‘¬“x‚ð0‚É‚·‚é
+			}
+		}
+
+		if (attack_count > 2) {
+			m_weapon->SwingEnd();
+			m_lookatFg = true;
+			m_rushFg = false;
+			rotate_speed = 0.05f;
+			m_State = NORMAL;
 			attack_count = 0;
 		}
 		break;

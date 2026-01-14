@@ -47,6 +47,8 @@ private:
 		ROTATESWING,
 		SWING_VERTICAL,
 		MANY_THRUST,
+		THREE_SWING,
+
 		KIND_MAX
 	};
 	int hp = 50;

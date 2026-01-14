@@ -331,7 +331,7 @@ void Pole::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
 	atkFg = true;
 }
 
-// 振り攻撃中の処理
+// 突き攻撃中の処理
 void Pole::ThrustUpdate() {
 	++m_attacktime;
 	m_offset = m_PosAnim.UpdateRelative();
@@ -372,7 +372,7 @@ void Pole::AttackEnd() {
 }
 
 //構え開始、デフォルト版
-void Pole::StanceStart() {
+void Pole::Stance() {
 	m_State = STANCE;
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
