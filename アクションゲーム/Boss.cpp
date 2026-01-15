@@ -24,6 +24,8 @@ bool Boss::GetLive() { return impl->GetLive(); }
 
 void Boss::Damage(int _atk) { impl->Damage(_atk); }
 
+void Boss::Stun(optional<Vector3> knockbackDir) { impl->Stun(knockbackDir); }
+
 void Boss::ShotBullet() { impl->ShotBullet(); }
 
 void Boss::SetDEF(int _def) { impl->SetDEF(_def); }

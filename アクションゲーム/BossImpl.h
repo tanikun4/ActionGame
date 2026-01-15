@@ -20,7 +20,7 @@ public:
 	void Update();
 	void Draw();
 	void Damage(int _atk);
-
+	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // 行動不能状態にする
 	void SetDEF(int _def) { def = _def; }
 
 	void ShotBullet();
@@ -87,7 +87,6 @@ private:
 	void AttackUpdate();
 	void StunUpdate();
 	void SetArrow();
-	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt ); // 行動不能状態にする
 
 	void DebugBossStatus();
 

@@ -122,8 +122,9 @@ void Player::Impl::OnHit(Boss* bo) {
 void Player::Impl::OnHit(Pole* po) {
     const int damage = 2;
     if (po->GetPl()) return;
-    if (RollFg && rollcount < 5 && po->GetAttackTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
-    if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
+    //if(RollFg && rollcount < 5 && po->GetAttackTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
+    //if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
+    if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Parry(); return; } // ガードの初めに攻撃を受けたら相手を行動不能にする
     Damage(damage);
 }
 
@@ -616,6 +617,18 @@ void Player::Impl::Counter() {
     inviFg = true;
     if (m_pole) m_pole->GuardEnd();
     m_Owner->SetColor({ 0,0,1,0.5f });
+    Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
+}
+
+// パリィ処理
+void Player::Impl::Parry() {
+    auto bosses = Game::GetInstance()->GetObjects<Boss>();
+    if (!bosses.empty()) {
+        Boss* boss = bosses[0];
+        boss->Stun(m_Owner->m_ForwardRotation);
+    }
+    GuardFg = false;
+    if (m_pole) m_pole->GuardEnd();
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 }
 

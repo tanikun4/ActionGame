@@ -121,6 +121,7 @@ private:
     void Counter();
     void Jump();
     void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
+	void Parry();//ジャストガード処理
 
 	// 回転斬り攻撃開始 
 	void SpinAttack(int t = 24, int attack_t = 18, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度

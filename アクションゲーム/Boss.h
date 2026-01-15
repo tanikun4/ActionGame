@@ -24,6 +24,7 @@ public:
 
 	void SetDEF(int _def);
 	void ShotBullet();
+	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // s“®•s”\ó‘Ô‚É‚·‚é
 	bool GetLive();
 	int GetHP();
 	Pole* GetWeapon();

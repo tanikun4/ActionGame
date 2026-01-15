@@ -98,16 +98,16 @@ void Boss::Impl::Update() {
 		Move();
 		// 弾撃ちは一旦無しにする、後で調整して実装する
 
-		//if (m_stateframe > 360) {
-		//	m_State = ATTACK;
-		//	m_stateframe = 0;
-		//	m_Owner->m_Velocity_f = 0;
-		//	attack_kind = (rand() % KIND_MAX - 1) + 1;
-		//}
+		if (m_stateframe > 240) {
+			m_state = ATTACK;
+			m_stateframe = 0;
+			m_Owner->m_Velocity_f = 0;
+			attack_kind = (rand() % (KIND_MAX - 1)) + 1;
+		}
 		//if (m_stateframe % 90 == 0 && m_stateframe != 0) {
 		//	ShotBullet();
 		//}
-		//++m_stateframe;
+		++m_stateframe;
 		break;
 	case ATTACK:
 		AttackUpdate();
@@ -347,7 +347,7 @@ void Boss::Impl::AttackUpdate() {
 		break;
 
 	case THREE_SWING://三連斬り
-		if (weapon_state == Pole::STATE::NORMAL) {
+		if (weapon_state == Pole::STATE::NORMAL && attack_count == 0) {
 			m_weapon->Stance();
 			rotate_speed = 0.1f;
 			m_lookatFg = true;
@@ -364,20 +364,12 @@ void Boss::Impl::AttackUpdate() {
 				Sound::GetInstance()->Play(SOUND_SE_SWING);
 			}
 			else if (attack_count == 2) {
-				m_weapon->Swing(18, (int)SwingMode::VERTICAL);
+				m_weapon->Swing(10, (int)SwingMode::VERTICAL);
 				Sound::GetInstance()->Play(SOUND_SE_SWING);
 			}
 			m_lookatFg = false;
 			++attack_count;
 
-			if (attack_count > 3) {
-				m_weapon->SwingEnd();
-				m_lookatFg = true;
-				m_rushFg = false;
-				rotate_speed = 0.05f;
-				m_state = NORMAL;
-				attack_count = 0;
-			}
 		}
 
 		if (weapon_state == Pole::STATE::SWING) {
@@ -399,6 +391,16 @@ void Boss::Impl::AttackUpdate() {
 				Move();
 			}
 		}
+
+		if (attack_count > 2) {
+			m_weapon->SwingEnd();
+			m_lookatFg = true;
+			m_rushFg = false;
+			rotate_speed = 0.05f;
+			m_state = NORMAL;
+			attack_count = 0;
+		}
+
 		break;
 
 	case KIND_MAX:
@@ -407,6 +409,7 @@ void Boss::Impl::AttackUpdate() {
 	}
 }
 
+// 行動不能状態更新
 void Boss::Impl::StunUpdate() 
 {
 	if (m_stateframe > 10) {
@@ -432,6 +435,7 @@ void Boss::Impl::StunUpdate()
 	}
 }
 
+// 行動不能状態にする
 void Boss::Impl::Stun(optional<Vector3> knockbackDir) 
 {
 	m_state = STUN;
@@ -442,7 +446,7 @@ void Boss::Impl::Stun(optional<Vector3> knockbackDir)
 	m_weapon->AttackEnd();
 	m_weapon->Stance(10,(int)StanceMode::VERTICAL);// 縦に構える
 	if (knockbackDir) {
-		m_Owner->m_ForwardRotation.y = -1 * knockbackDir.value().y;
+		m_Owner->m_ForwardRotation.y = knockbackDir.value().y;
 		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
 	}

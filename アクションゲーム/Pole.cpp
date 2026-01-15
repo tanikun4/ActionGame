@@ -104,8 +104,8 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	case GUARD: //ガード中
 		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
 		m_baseRotation = m_Rotation;
-		m_offset = { cos(m_Rotation.y) * radius * 2 , offset_debug.y, sin(m_Rotation.y) * radius * -2 };
-		break;
+		m_offset = { offset_debug.x + radius * 2 , offset_debug.y, offset_debug.z + radius * 0.5f};
+		break; 
 	case STANCE: //構え中
 		//構え中の補正処理
 		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
