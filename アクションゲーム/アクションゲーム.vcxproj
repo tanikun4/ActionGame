@@ -387,6 +387,7 @@
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="utility.cpp" />
+    <ClCompile Include="Vibration.h" />
     <ClCompile Include="WallManager.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WeaponManager.cpp" />

@@ -7,6 +7,7 @@
 #include "Collision.h"
 #include "ICollider.h"
 #include "ShadowCircle.h"
+#include "Vibration.h"
 
 class GolfBall :public Object , public ICollider
 {

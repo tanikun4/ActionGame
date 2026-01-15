@@ -95,7 +95,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	switch (m_State) {
 	case NORMAL: //通常状態
-		m_Rotation = { PI / 2 + angle_debug.x, rotation.y + PI / 2 + angle_debug.y, PI / 2 + angle_debug.z};
+		m_Rotation = { PI / 2 + angle_debug.x,  PI / 2 + rotation.y + angle_debug.y, PI / 2 + angle_debug.z};
 		m_baseRotation = m_Rotation;
 		break;
 	case SWING: //振り攻撃中
@@ -398,6 +398,8 @@ void Pole::AttackEnd() {
 	atkFg = false;
 	followFg = false;
 	verticalFg = false;
+	m_attacktime = 0;
+	m_offset = { 0,0,0 };
 }
 
 //構え開始、デフォルト版

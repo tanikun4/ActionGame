@@ -306,6 +306,9 @@
     <ClCompile Include="ActionInput.cpp">
       <Filter>ソース ファイル\Input\ActionInput</Filter>
     </ClCompile>
+    <ClCompile Include="Vibration.h">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">

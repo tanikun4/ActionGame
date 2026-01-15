@@ -37,8 +37,9 @@ private:
 	Boss* m_Owner = nullptr;
 	Camera* m_Camera = nullptr;
 	enum STATE {
-		NORMAL = 0,
-		ATTACK
+		NORMAL = 0, //通常状態
+		ATTACK,		// 攻撃中
+		STUN,		// 行動不能、ジャストガードされると移行する。
 	};
 
 	enum ATTACK_KIND {
@@ -53,8 +54,8 @@ private:
 	};
 	int hp = 50;
 	int def = 0; //防御力、値分ダメージを減らす
-	int framecount = 0;
-	int m_State = 0;//状態　1で行動中
+	int m_stateframe = 0;//状態継続フレーム数
+	int m_state = 0;//状態　1で行動中
 	bool inviFg = false;
 	int invicount = 0;
 	float move_speed = 0.25f;
@@ -77,13 +78,16 @@ private:
 	std::vector<Bullet*> m_bullet;
 	Pole* m_weapon;
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
+	Vibration m_vib; // 振動用のクラス
 
 	const float gravity = -0.007f;
 
 	void LookAt(DirectX::SimpleMath::Vector3);
 	void Move();
 	void AttackUpdate();
+	void StunUpdate();
 	void SetArrow();
+	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt ); // 行動不能状態にする
 
 	void DebugBossStatus();
 
