@@ -498,6 +498,74 @@ void Boss::Impl::AttackUpdate() {
 
 		break;
 
+	case JUMP_SPINSLASH_RUSH://ジャンプ回転切り突進
+		// ジャンプしていなければジャンプする
+		if (m_attackPhase == AttackPhase::ENTER) {
+			Jump();
+			m_attackPhase = AttackPhase::PREPARE;
+		}
+
+		// 準備フェーズ
+		if (m_attackPhase == AttackPhase::PREPARE) {
+			if (attack_frame > 30) {
+				m_attackPhase = AttackPhase::ATTACK;
+				attack_frame = 0;
+			}
+			++attack_frame;
+
+		}
+
+		if (m_attackPhase == AttackPhase::ATTACK) {
+			m_Owner->m_Velocity.y = m_Owner->gravity;//空中で停止する
+			// 攻撃開始
+			if (m_weapon->GetState() == Pole::STATE::NORMAL) {
+				m_weapon->AttackStart(true, true);
+				Vector3 endrot = m_Owner->m_Rotation;
+				endrot.x += PI * 24;
+				m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 90, 0.0f);// 縦回転切り、絶対値参照で行う
+				m_rushFg = true;
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+				m_lookatFg = false;
+			}
+
+			m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
+
+			//回転終了後、硬直フェーズへ。ここから着地まで何もしない
+			if (!m_AngleAnim.IsPlaying()) {
+				m_Owner->m_Rotation.x = 0;
+				m_weapon->AttackEnd();
+				m_attackPhase = AttackPhase::RECOVER;
+				m_rushFg = false;
+			}
+
+		}
+
+		// 突進フラグが有効なら移動する
+		if (m_rushFg) {
+			Move();
+		}
+
+		// 攻撃終了
+		if (m_Owner->is_GROUND) {
+			m_attackPhase = AttackPhase::END;
+		}
+
+		// 攻撃終了処理
+		if (m_attackPhase == AttackPhase::END) {
+			m_weapon->AttackEnd();
+			m_state = NORMAL;
+			m_stateframe = 0;
+			attack_frame = 0;
+			attack_count = 0;
+			m_rushFg = false;
+			m_lookatFg = true;
+			m_Owner->m_Rotation.x = 0;
+			m_attackPhase = AttackPhase::ENTER;
+		}
+
+		break;
+
+
 	case KIND_MAX:
 		m_state = NORMAL;
 		break;
