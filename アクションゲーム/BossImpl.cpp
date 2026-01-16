@@ -754,12 +754,21 @@ void Boss::Impl::OnHit(TestCube* cube) {//” ‚É“–‚½‚Á‚½Žž‚Ìˆ—
 		m_Owner->m_Position.x = m_Owner->m_oldPos.x;
 		m_Owner->m_Position.z = m_Owner->m_oldPos.z;
 
-		// “Ëi’†‚È‚çcU‚è‚ð‹­§”­“®(‚Í‚Ü‚è–hŽ~)
-		if (m_rushFg && attack_kind == SWING_VERTICAL) {
-		    
-		    m_weapon->Swing_Vertical();
+		// “Ëi’†‚Ìˆ—
+		if (m_rushFg) {
 		    m_rushFg = false;
 		    m_Owner->m_Velocity_f = 0.0f;//ˆÚ“®‘¬“x‚ð0‚É‚·‚é
+
+			// •Ç‚É“–‚½‚Á‚½‚ç‚»‚ÌŽž“_‚ÅUŒ‚‚·‚é
+			if (attack_kind == SWING_VERTICAL) {
+				m_weapon->Swing_Vertical();
+			}
+
+			// UŒ‚I—¹ˆ—‚ÖˆÚs
+			if(attack_kind == JUMP_SPINSLASH_RUSH) {
+				m_attackPhase = AttackPhase::RECOVER;
+				m_Owner->m_Rotation.x = 0;
+			}
 		    
 		}
 	}
