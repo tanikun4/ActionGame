@@ -732,7 +732,7 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 
 	// 法線方向の速度を打ち消す（めり込み防止）
 	m_Owner->m_Velocity -= col.normal * vn;
-
+	
 	// 床・壁・天井の区別
 	if (col.normal.y > 0.6f)
 	{
@@ -751,7 +751,8 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 		// 壁（ほぼ垂直）
 		m_Owner->m_Velocity.x = 0.0f;
 		m_Owner->m_Velocity.z = 0.0f;
-		m_Owner->m_Position = m_Owner->m_oldPos;
+		m_Owner->m_Position.x = m_Owner->m_oldPos.x;
+		m_Owner->m_Position.z = m_Owner->m_oldPos.z;
 
 		// 突進中なら縦振りを強制発動(はまり防止)
 		if (m_rushFg && attack_kind == SWING_VERTICAL) {
@@ -762,5 +763,6 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 		    
 		}
 	}
+	
 
 }

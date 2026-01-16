@@ -108,6 +108,10 @@ void GolfBall::GBUpdate()
 
 	m_Velocity.y = keepY;
 
+
+	//速度を座標に加算
+	m_Position += m_Velocity;
+
 	if (CheckGround())//もし当たっていれば
 	{
 		is_GROUND = true;
@@ -124,9 +128,6 @@ void GolfBall::GBUpdate()
 	else {
 		m_Velocity.y -= gravity;
 	}
-
-	//速度を座標に加算
-	m_Position += m_Velocity;
 
 	//丸影の更新
 	m_Shadow->UpdateShadow(m_Position, -0.1f);//地面座標が一旦決め打ち、そのうち地面のシステムから変えたい。

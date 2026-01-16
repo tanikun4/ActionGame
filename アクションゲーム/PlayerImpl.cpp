@@ -158,7 +158,8 @@ void Player::Impl::OnHit(TestCube* cube) {
             // •Ç
             m_Owner->m_Velocity.x = 0.0f;
             m_Owner->m_Velocity.z = 0.0f;
-            m_Owner->m_Position = m_Owner->m_oldPos;
+            m_Owner->m_Position.x = m_Owner->m_oldPos.x;
+            m_Owner->m_Position.z = m_Owner->m_oldPos.z;
 
             if(demoMode) {
                 // ƒfƒ‚’†‚Í•Ç‚É‚Ô‚Â‚©‚Á‚½‚ç•ûŒü“]Š·
