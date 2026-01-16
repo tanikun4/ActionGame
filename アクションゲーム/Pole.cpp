@@ -386,6 +386,7 @@ void Pole::ThrustEnd() {
 void Pole::AttackStart(bool _follow,bool _vt) {
 	m_State = ATTACK;
 	m_attacktime = 0;
+	m_stancetime = 0;
 	m_Rotation = m_baseRotation;
 	atkFg = true;
 	followFg = _follow;
