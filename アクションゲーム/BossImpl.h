@@ -79,8 +79,8 @@ private:
 	float move_speed = 0.25f;
 	float rotate_speed = 0.01;
 	int attack_kind = 0;//攻撃の種類
-	int attack_frame = 0;//攻撃時間
-	int attack_count = 0;//攻撃回数のカウント
+	int m_attackframe = 0;//攻撃時間
+	int m_attackcount = 0;//攻撃回数のカウント
 	bool notUpdate = false;//更新を止めるかどうか
 	bool m_lookatFg = true;//プレイヤーへの追従をするかどうか
 	bool m_rushFg = false;//突進しているかどうか
@@ -107,6 +107,7 @@ private:
 	void StunUpdate();
 	void SetArrow();
 	void Jump();
+	void StateReset();//状態リセット
 
 	void DebugBossStatus();
 

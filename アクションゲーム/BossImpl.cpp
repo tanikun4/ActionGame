@@ -240,23 +240,23 @@ void Boss::Impl::AttackUpdate() {
 		}
 		else if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 90) {
 			m_weapon->AttackStart();
-			attack_frame = 0;
+			m_attackframe = 0;
 		}
 		else if (weapon_state == Pole::STATE::ATTACK) {
 			m_Owner->m_Rotation.y += PI / 20;
 			Move();
-			++attack_frame;
+			++m_attackframe;
 		}
 
-		if (attack_frame % 30 == 0) {
+		if (m_attackframe % 30 == 0) {
 			Sound::GetInstance()->Play(SOUND_SE_ROTATEATTACK);
 		}
 
-		if (attack_frame > 300) {
+		if (m_attackframe > 300) {
 			m_weapon->AttackEnd();
 			m_state = NORMAL;
 			m_stateframe = 0;
-			attack_frame = 0;
+			m_attackframe = 0;
 			attack_kind = NONE;//攻撃終了
 		}
 
@@ -322,13 +322,13 @@ void Boss::Impl::AttackUpdate() {
 		Move();
 		if (weapon_state == Pole::STATE::NORMAL) {
 			m_weapon->Thrust();
-			attack_count++;
+			m_attackcount++;
 			Sound::GetInstance()->Play(SOUND_SE_SWING);
 		}
 
 		if (weapon_state == Pole::STATE::THRUST && m_weapon->GetAttackTime() > 4) {
-			attack_count++;
-			int attack_count_remaind = attack_count % 3;
+			m_attackcount++;
+			int attack_count_remaind = m_attackcount % 3;
 			if (attack_count_remaind == 0) {
 				m_weapon->Thrust();
 			}
@@ -341,10 +341,10 @@ void Boss::Impl::AttackUpdate() {
 			Sound::GetInstance()->Play(SOUND_SE_SWING);
 		}
 
-		if (attack_count > 60) {
+		if (m_attackcount > 60) {
 			m_weapon->ThrustEnd();
 			m_state = NORMAL;
-			attack_count = 0;
+			m_attackcount = 0;
 		}
 		break;
 
@@ -365,20 +365,20 @@ void Boss::Impl::AttackUpdate() {
 			if (m_weapon->GetStanceTime() > 60) {
 				m_attackPhase = AttackPhase::ATTACK;
 
-				if (attack_count == 0) {
+				if (m_attackcount == 0) {
 					m_weapon->Swing();
 					Sound::GetInstance()->Play(SOUND_SE_SWING);
 				}
-				else if (attack_count == 1) {
+				else if (m_attackcount == 1) {
 					m_weapon->Swing_Return();
 					Sound::GetInstance()->Play(SOUND_SE_SWING);
 				}
-				else if (attack_count == 2) {
+				else if (m_attackcount == 2) {
 					m_weapon->Swing(10, (int)SwingMode::VERTICAL);
 					Sound::GetInstance()->Play(SOUND_SE_SWING);
 				}
 				m_lookatFg = false;
-				++attack_count;
+				++m_attackcount;
 			}
 		}
 
@@ -387,10 +387,10 @@ void Boss::Impl::AttackUpdate() {
 			if (m_weapon->GetAttackTime() > 18) {
 				m_weapon->SwingEnd();
 
-				if (attack_count == 1) {
+				if (m_attackcount == 1) {
 					m_weapon->Stance_Return();
 				}
-				else if (attack_count == 2) {
+				else if (m_attackcount == 2) {
 					m_weapon->Stance(10, (int)StanceMode::VERTICAL);
 				}
 				m_lookatFg = true;
@@ -406,17 +406,22 @@ void Boss::Impl::AttackUpdate() {
 		// 攻撃後処理、三回攻撃したら終了、そうでなければ準備フェーズに戻る
 		if(m_attackPhase == AttackPhase::FOLLOW) {
 			// 三回攻撃したら終了
-			if (attack_count >= 3) {
+			if (m_attackcount >= 3) {
 				m_lookatFg = false;
-				// 3回目の攻撃後、しばらくそのままで待機してから終了
-				if (attack_frame > 90) {
-					m_attackPhase = AttackPhase::END;
-				}
-				++attack_frame;
+				m_attackPhase = AttackPhase::RECOVER;
 			}
 			else {
 				m_attackPhase = AttackPhase::PREPARE;
 			}
+		}
+
+		// 硬直フェーズ、終了フェーズに以降するまで硬直する
+		if(m_attackPhase == AttackPhase::RECOVER) {
+			// 3回目の攻撃後、しばらくそのままで待機してから終了
+			if (m_attackframe > 90) {
+				m_attackPhase = AttackPhase::END;
+			}
+			++m_attackframe;
 		}
 
 		// 終了フェーズ、終了処理を行う
@@ -424,8 +429,8 @@ void Boss::Impl::AttackUpdate() {
 			m_weapon->StanceEnd();
 			m_state = NORMAL;
 			m_stateframe = 0;
-			attack_frame = 0;
-			attack_count = 0;
+			m_attackframe = 0;
+			m_attackcount = 0;
 			rotate_speed = 0.01f;
 			m_rushFg = false;
 			m_lookatFg = true;
@@ -438,22 +443,25 @@ void Boss::Impl::AttackUpdate() {
 		// ジャンプしていなければジャンプする
 		if (m_attackPhase == AttackPhase::ENTER) {
 			Jump();
+			m_rushFg = true;
+			move_speed = 0.1f;// 移動速度を下げる
 			m_attackPhase = AttackPhase::PREPARE;
 		}
 		
 		// 準備フェーズ
 		if(m_attackPhase == AttackPhase::PREPARE) {
-			if(attack_frame > 30) {
+			if(m_attackframe > 30) {
 				m_attackPhase = AttackPhase::ATTACK;
-				attack_frame = 0;
+				m_attackframe = 0;
 				m_Owner->m_Velocity_f = 0;//移動速度を0にする
+				m_rushFg = false;
 			}
-			++attack_frame;
+			++m_attackframe;
 
 		}
 
 		if (m_attackPhase == AttackPhase::ATTACK) {
-			m_Owner->m_Velocity.y = m_Owner->gravity;//空中で停止する
+			m_Owner->m_Velocity.y = 0;//空中で停止する
 			// 攻撃開始
 			if (m_weapon->GetState() == Pole::STATE::NORMAL) {
 				m_weapon->AttackStart(true, true);
@@ -461,7 +469,7 @@ void Boss::Impl::AttackUpdate() {
 				endrot.x += PI * 4;
 				m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 30, 0.0f);// 縦回転切り、絶対値参照で行う
 				Sound::GetInstance()->Play(SOUND_SE_SWING);
-				++attack_count;
+				++m_attackcount;
 			}
 
 			m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
@@ -486,15 +494,16 @@ void Boss::Impl::AttackUpdate() {
 				m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 10, 0.0f);// 縦回転切り、絶対値参照で行う
 				Sound::GetInstance()->Play(SOUND_SE_SWING);
 				m_Owner->m_Velocity.y = -0.5f;//落下開始
+				move_speed = 0.25f;// 移動速度を元に戻す
 				m_rushFg = true;
-				++attack_count;
+				++m_attackcount;
 			}
 
-			if (attack_count > 1) {
+			if (m_attackcount > 1) {
 				m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
 			}
 			else {
-				m_Owner->m_Velocity.y = m_Owner->gravity;//空中で停止する
+				m_Owner->m_Velocity.y = 0;//空中で停止する
 			}
 
 		}
@@ -514,8 +523,8 @@ void Boss::Impl::AttackUpdate() {
 			m_weapon->AttackEnd();
 			m_state = NORMAL;
 			m_stateframe = 0;
-			attack_frame = 0;
-			attack_count = 0;
+			m_attackframe = 0;
+			m_attackcount = 0;
 			m_rushFg = false;
 			m_lookatFg = true;
 			m_Owner->m_Rotation.x = 0;
@@ -533,16 +542,16 @@ void Boss::Impl::AttackUpdate() {
 
 		// 準備フェーズ
 		if (m_attackPhase == AttackPhase::PREPARE) {
-			if (attack_frame > 30) {
+			if (m_attackframe > 30) {
 				m_attackPhase = AttackPhase::ATTACK;
-				attack_frame = 0;
+				m_attackframe = 0;
 			}
-			++attack_frame;
+			++m_attackframe;
 
 		}
 
 		if (m_attackPhase == AttackPhase::ATTACK) {
-			m_Owner->m_Velocity.y = m_Owner->gravity;//空中で停止する
+			m_Owner->m_Velocity.y = 0;//空中で停止する
 			// 攻撃開始
 			if (m_weapon->GetState() == Pole::STATE::NORMAL) {
 				m_weapon->AttackStart(true, true);
@@ -581,8 +590,8 @@ void Boss::Impl::AttackUpdate() {
 			m_weapon->AttackEnd();
 			m_state = NORMAL;
 			m_stateframe = 0;
-			attack_frame = 0;
-			attack_count = 0;
+			m_attackframe = 0;
+			m_attackcount = 0;
 			m_rushFg = false;
 			m_lookatFg = true;
 			m_Owner->m_Rotation.x = 0;
@@ -628,20 +637,31 @@ void Boss::Impl::StunUpdate()
 // 行動不能状態にする
 void Boss::Impl::Stun(optional<Vector3> knockbackDir) 
 {
-	m_state = STUN;
-	attack_kind = NONE;//攻撃終了
-	m_stateframe = 0;
+	StateReset();
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
 	m_vib.Start(0.5f, 3);//振動開始
 	m_weapon->AttackEnd();
 	m_weapon->Stance(10,(int)StanceMode::VERTICAL);// 縦に構える
-	m_lookatFg = false;//lookat解除
+	m_state = STUN;
 	/*if (knockbackDir) {
 		m_Owner->m_ForwardRotation.y = knockbackDir.value().y;
 		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
 	}*/
 	m_Owner->m_Rotation.x -= PI / 8;//少し上に仰け反る
+}
+
+// スタン時等の際のリセット処理
+void Boss::Impl::StateReset() {
+	attack_kind = NONE;//攻撃終了
+	m_Owner->m_Rotation.x = 0;
+	m_attackcount = 0;
+	m_stateframe = 0;
+	m_attackframe = 0;
+	m_lookatFg = false;//lookat解除
+	m_rushFg = false;
+	move_speed = 0.25f;// 移動速度を戻す
+	m_attackPhase = AttackPhase::ENTER;// 攻撃フェーズ初期化
 }
 
 void Boss::Impl::ShotBullet() {
