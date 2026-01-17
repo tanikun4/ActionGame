@@ -20,7 +20,7 @@ public:
     void End();
 
 	void Update();
-    void Update(const DirectX::SimpleMath::Vector3& base, const DirectX::SimpleMath::Vector3& tip);
+    void AddPoint(const DirectX::SimpleMath::Vector3& base, const DirectX::SimpleMath::Vector3& tip);
     void Draw();
     void Uninit();
 
@@ -50,7 +50,8 @@ private:
     std::unique_ptr<Material> m_Materiale;
 
     int   m_MaxPoint = 20;
-    int m_LifeTime = 5;
+    int m_LifeTime = 15;
     bool  m_Active = false;
+	bool m_Change = false;//ì_Ç™ïœçXÇ≥ÇÍÇΩÇ©Ç«Ç§Ç©
 };
 

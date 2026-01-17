@@ -202,6 +202,11 @@ void Pole::UpdateOBB() {
 		{ m_Scale.x, m_Scale.y * 2.5f, m_Scale.z }
 	};
 
+	m_EffectTrail->Update();
+
+
+	if (!atkFg) return;
+
 	// OBB更新時に作成した値を基にして、軌跡エフェクト更新
 	Vector3 dir = Vector3::TransformNormal(Vector3::UnitY, R);
 	float halfLen = m_Scale.y * trailSize;
@@ -209,7 +214,7 @@ void Pole::UpdateOBB() {
 	Vector3 base = obbWorldCenter - dir * halfLen;
 	Vector3 tip = obbWorldCenter + dir * 8.0f;
 
-	m_EffectTrail->Update(base, tip);
+	m_EffectTrail->AddPoint(base, tip);
 }
 
 // 描画処理

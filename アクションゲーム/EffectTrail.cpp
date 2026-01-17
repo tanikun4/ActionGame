@@ -35,17 +35,34 @@ void EffectTrail::End()
     m_Active = false;
 }
 
-// オーバーライド用ダミー定義
+// 更新処理
 void EffectTrail::Update()
 {
-    
-}
+	bool del = false; // 削除フラグ
 
-void EffectTrail::Update(const Vector3& base, const Vector3& tip)
-{
-    // 古いポイント削除
+    // 寿命更新
     for (auto& pt : m_Points)
         pt.life--;
+
+    // 先頭から寿命切れを削除
+    while (!m_Points.empty() && m_Points.front().life <= 0) {
+        m_Points.erase(m_Points.begin());
+        del = true;
+    }
+
+    if(del)
+		m_Change = true;
+
+    // メッシュ更新（ポイントがある時のみ）
+    if (m_Change) {
+        BuildMesh();
+		m_Change = false;
+    }
+}
+
+void EffectTrail::AddPoint(const Vector3& base, const Vector3& tip)
+{
+
     if (!m_Active) return;
 
     // 新しいポイント追加
@@ -55,21 +72,16 @@ void EffectTrail::Update(const Vector3& base, const Vector3& tip)
     p.life = m_LifeTime;
 
     m_Points.push_back(p);
+	m_Change = true;
 
-
-    while (!m_Points.empty() && m_Points.front().life <= 0)
-        m_Points.erase(m_Points.begin());
-
-    BuildMesh();
 }
 
 void EffectTrail::BuildMesh()
 {
-    if (m_Points.size() < 2)
-        return;
-
     m_Vertices.clear();
     m_Indices.clear();
+
+    if (m_Points.size() < 2)  return;
 
     int index = 0;
 
