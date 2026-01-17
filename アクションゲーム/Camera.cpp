@@ -62,6 +62,11 @@ void Camera::Update()
 		m_Target = pPos;
 	}
 
+	// カメラの振動更新
+	if(m_vib.IsActive()) {
+		m_Position += m_vib.Update();
+	}
+
 	//カメラの角度制限
 	if (m_CameraDirection.x >= pi * 2 || m_CameraDirection.x <= -pi * 2) m_CameraDirection.x = 0.0f;
 	if (m_CameraDirection.y >= -pi * 0.55f) m_CameraDirection.y = -pi * 0.55f;

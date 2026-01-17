@@ -546,45 +546,51 @@ void Player::Impl::Shot() {
 }
 
 void Player::Impl::Damage(int atk) {
-    if (inviFg == false) {
-        if (GuardFg) {
-            if (atk > 1) atk = atk / 2;
-        }
+    // 無敵状態なら処理を行わない
+    if (inviFg) { return; }
 
-		if (demoMode) atk = 0;//デモ中はダメージを受けない
 
-        hp -= atk;
-
-		// 攻撃中なら攻撃終了
-        if (m_Owner->m_State == ATTACK) {
-            m_Owner->m_State = NORMAL;
-            m_pole->AttackEnd();
-            m_attackkind = NONE;
-            m_Owner->m_Rotation.x = 0;
-        }
-
-        m_Owner->m_State = DAMAGE;
-        framecount = 0;
-        inviFg = true;
-
-        m_Owner->SetColor(Vector4(1, 1, 0, 0.5f));
-
-        if (GuardFg) {
-			EffectParams param;
-
-            //エフェクトパラメーター構造体設定
-			Vector3 pos = m_Owner->m_Position + (m_Owner->radius * m_Owner->AngleToForward(m_Owner->m_ForwardRotation));
-            param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x);
-            param.scale = m_Owner->m_Scale * 15;
-            param.maxLife = 15;
-			EffectManager::GetInstance()->Play(EFFECT_SPARK, param);
-            Sound::GetInstance()->Play(SOUND_SE_PLAYERGUARD);
-        }
-        else {
-            m_pole->SwingEnd();
-            Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
-        }
+	// 攻撃中なら攻撃終了
+    if (m_Owner->m_State == ATTACK) {
+        m_Owner->m_State = NORMAL;
+        m_pole->AttackEnd();
+        m_attackkind = NONE;
+        m_Owner->m_Rotation.x = 0;
     }
+
+    m_Owner->m_State = DAMAGE;
+    framecount = 0;
+    inviFg = true;
+
+    m_Owner->SetColor(Vector4(1, 1, 0, 0.5f));
+
+	if (demoMode) { m_pole->SwingEnd(); return; }//デモ中はダメージを受けず、演出処理を終了
+
+    // ガード中ならダメージを半減
+    if (GuardFg) {
+        if (atk > 1) atk = atk / 2;
+        m_Camera->StartVibration(4.0f, PI * 0.5f, 4);
+
+		// ガードエフェクト再生
+		EffectParams param;
+
+        //エフェクトパラメーター構造体設定
+		Vector3 pos = m_Owner->m_Position + (m_Owner->radius * m_Owner->AngleToForward(m_Owner->m_ForwardRotation));
+        param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x);
+        param.scale = m_Owner->m_Scale * 15;
+        param.maxLife = 15;
+		EffectManager::GetInstance()->Play(EFFECT_SPARK, param);
+        Sound::GetInstance()->Play(SOUND_SE_PLAYERGUARD);
+    }
+    else {
+        m_Camera->StartVibration(8.0f, PI * 0.5f, 6);
+
+        m_pole->SwingEnd();
+        Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
+    }
+
+    hp -= atk;
+    
 }
 
 void Player::Impl::Guard() {

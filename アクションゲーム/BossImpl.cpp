@@ -769,7 +769,6 @@ void Boss::Impl::OnHit(TestCube* cube) {//” ‚É“–‚½‚Á‚½Žž‚Ìˆ—
 				m_attackPhase = AttackPhase::RECOVER;
 				m_Owner->m_Rotation.x = 0;
 			}
-		    
 		}
 	}
 	

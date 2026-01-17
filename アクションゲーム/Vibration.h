@@ -13,13 +13,13 @@ public:
     inline void Start(
         float amplitude,
         float frequency,
-        float duration = -1.0f
+        int duration = -1
     )
     {
         m_Amplitude = amplitude;
         m_Frequency = frequency;
         m_Duration = duration;
-        m_Frame = 0.0f;
+        m_Frame = 0;
         m_Active = true;
     }
 
@@ -104,7 +104,7 @@ public:
 private:
     DirectX::SimpleMath::Vector3 m_BasePos;
 
-    float m_Frame = 0.0f;
+    int m_Frame = 0;
     float m_Amplitude = 0.0f;
     float m_Frequency = 0.0f;
     float m_Duration = -1.0f;

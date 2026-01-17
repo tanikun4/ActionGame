@@ -2,6 +2,7 @@
 
 #include	<SimpleMath.h>
 #include	"input.h"
+#include	"Vibration.h"
 
 class Object;//前方宣言
 //-----------------------------------------------------------------------------
@@ -26,6 +27,8 @@ private:
 	
 	void DebugCameraStatus();
 
+	Vibration m_vib; //カメラ振動用クラス
+
 
 public:
 
@@ -41,6 +44,11 @@ public:
 	void SetPosition(DirectX::SimpleMath::Vector3 _pos) { m_Position = _pos; } // カメラ位置を設定
 
 	void ResetTarget() { m_TargetObject = nullptr; } // 注視点をリセット
+
+	void StartVibration(float amplitude, float frequency, float duration = -1.0f) {
+		m_vib.Start(amplitude, frequency, duration);
+	} // カメラ振動開始
+
 	// View行列を取得する関数
 	DirectX::SimpleMath::Matrix GetViewMatrix();
 
