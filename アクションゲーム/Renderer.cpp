@@ -27,6 +27,8 @@ ID3D11DepthStencilState* Renderer::m_DepthStateDisable{};
 ID3D11BlendState* Renderer::m_BlendState[MAX_BLENDSTATE]; // ブレンドステート配列
 ID3D11BlendState* Renderer::m_BlendStateATC{}; // 特定のアルファテストとカバレッジ（ATC）用のブレンドステート
 
+ID3D11RasterizerState* Renderer::m_RSCullBack = nullptr;
+ID3D11RasterizerState* Renderer::m_RSCullNone = nullptr;
 
 //=======================================
 //初期化処理
@@ -108,11 +110,22 @@ void Renderer::Init()
 	rasterizerDesc.DepthClipEnable = TRUE;
 	rasterizerDesc.MultisampleEnable = FALSE;
 
-	ID3D11RasterizerState* rs;
-	hr = m_Device->CreateRasterizerState(&rasterizerDesc, &rs);
+	//ID3D11RasterizerState* rs;
+	//hr = m_Device->CreateRasterizerState(&rasterizerDesc, &rs);
+	
+	//m_DeviceContext->RSSetState(rs);
+
+	// 通常用（裏面カリング）
+	hr = m_Device->CreateRasterizerState(&rasterizerDesc, &m_RSCullBack);
 	if (FAILED(hr)) return;
 
-	m_DeviceContext->RSSetState(rs);
+	// 両面描画用
+	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	hr = m_Device->CreateRasterizerState(&rasterizerDesc, &m_RSCullNone);
+	if (FAILED(hr)) return;
+
+	// デフォルトは通常
+	m_DeviceContext->RSSetState(m_RSCullBack);
 
 	// ブレンド ステート生成
 	D3D11_BLEND_DESC BlendDesc;
@@ -253,6 +266,16 @@ void Renderer::Uninit()
 	m_SwapChain->Release();
 	m_DeviceContext->Release();
 	m_Device->Release();
+
+	if (m_RSCullBack) {
+		m_RSCullBack->Release();
+		m_RSCullBack = nullptr;
+	}
+
+	if (m_RSCullNone) {
+		m_RSCullNone->Release();
+		m_RSCullNone = nullptr;
+	}
 
 }
 

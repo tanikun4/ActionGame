@@ -182,6 +182,9 @@ void Player::Impl::DebugWeaponStatus() {
     static Vector3 weapon_offset{};
     ImGui::SliderFloat3("WeaponOffset", &weapon_offset.x, -10.0f, 10.0f);
 
+	static float trailsize = 1.0f;
+    ImGui::SliderFloat("TrailSize", &trailsize, 0.0f, 10.0f);
+
     if (ImGui::Button("Reset OffSet"))
         weapon_offset = Vector3(0, 0, 0);
 
@@ -197,6 +200,7 @@ void Player::Impl::DebugWeaponStatus() {
     if (m_pole) {
         m_pole->SetOffsetDebug(weapon_offset);
         m_pole->SetAngleDebug(weapon_angle);
+        m_pole->SetTrailSize(trailsize);
     }
 
     ImGui::End();

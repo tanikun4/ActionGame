@@ -334,6 +334,7 @@
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossImpl.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="EffectTrail.cpp" />
     <ClCompile Include="ParticleEmitter2D.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -404,6 +405,7 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossImpl.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="EffectTrail.h" />
     <ClInclude Include="GamePadState.h" />
     <ClInclude Include="KeyboardState.h" />
     <ClInclude Include="MathCommon.h" />

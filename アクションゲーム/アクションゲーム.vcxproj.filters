@@ -309,6 +309,9 @@
     <ClCompile Include="Vibration.h">
       <Filter>ソース ファイル\system</Filter>
     </ClCompile>
+    <ClCompile Include="EffectTrail.cpp">
+      <Filter>ソース ファイル\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
@@ -556,6 +559,9 @@
     </ClInclude>
     <ClInclude Include="GamePadState.h">
       <Filter>ソース ファイル\Input\ActionInput</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectTrail.h">
+      <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

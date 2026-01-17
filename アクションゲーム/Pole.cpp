@@ -8,6 +8,7 @@
 #include "Collision.h"
 #include "EffectManager.h"
 #include "DebugUI.h"
+#include "EffectTrail.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -15,7 +16,7 @@ using namespace DirectX::SimpleMath;
 // コンストラクタ
 Pole::Pole(Camera* cam) :Weapon(cam)
 {
-
+	m_EffectTrail = Game::GetInstance()->AddObject<EffectTrail>();
 }
 
 Pole::Pole() {
@@ -78,12 +79,14 @@ void Pole::Init()
 	m_Scale.y = 3;
 	m_Scale.z = 3;
 
+	//軌跡エフェクト初期化
+	m_EffectTrail->Init();
+	m_EffectTrail->SetTexture("assets/texture/blue.png");
 }
 
 
 void Pole::Update()
 {
-
 	
 }
 
@@ -109,6 +112,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	case STANCE: //構え中
 		//構え中の補正処理
 		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
+		m_baseRotation = m_Rotation;
 		StanceUpdate();
 		break;
 	case ATTACK: //攻撃中(回転攻撃など)
@@ -143,7 +147,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	UpdateOffset(yaw);
 	UpdateOBB();
- 
+
 }
 
 void Pole::UpdateOffset(float _yaw) {
@@ -197,11 +201,21 @@ void Pole::UpdateOBB() {
 		m_Rotation,
 		{ m_Scale.x, m_Scale.y * 2.5f, m_Scale.z }
 	};
+
+	// OBB更新時に作成した値を基にして、軌跡エフェクト更新
+	Vector3 dir = Vector3::TransformNormal(Vector3::UnitY, R);
+	float halfLen = m_Scale.y * trailSize;
+
+	Vector3 base = obbWorldCenter - dir * halfLen;
+	Vector3 tip = obbWorldCenter + dir * 8.0f;
+
+	m_EffectTrail->Update(base, tip);
 }
 
 // 描画処理
 void Pole::Draw()
 {
+
 	// SRT情報作成
 	Matrix r = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
 	Matrix t = Matrix::CreateTranslation(m_Position.x, m_Position.y, m_Position.z);
@@ -235,6 +249,7 @@ void Pole::Draw()
 			m_subsets[i].IndexBase, // 最初のインデックスバッファの位置	
 			m_subsets[i].VertexBase); // 頂点バッファの最初から使用
 	}
+
 }
 
 // 終了処理
@@ -308,6 +323,7 @@ void Pole::Swing(int t,int mode)
 // 振り攻撃開始、パラメータ版
 void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
+	m_EffectTrail->Start();//軌跡エフェクト開始
 	m_offset = { 0,0,0 };//振り攻撃中はオフセット無し
 	m_AngleAnim.StartRelative(s, e, t,accel);
 	max_attacktime = t;
@@ -330,6 +346,7 @@ void Pole::SwingEnd() {
 	m_State = NORMAL;
 	atkFg = false;
 	m_attacktime = 0;
+	m_EffectTrail->End();
 }
 
 // 突き攻撃開始、デフォルト版
@@ -352,6 +369,7 @@ void Pole::Thrust_Left() {
 // 突き攻撃開始、パラメータ版
 void Pole::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
+	m_EffectTrail->Start();
 	m_PosAnim.StartRelative(s, e, t, accel);
 	max_attacktime = t;
 	m_stancetime = 0;
@@ -379,11 +397,13 @@ void Pole::ThrustEnd() {
 	atkFg = false;
 	m_attacktime = 0;
 	m_offset = { 0,0,0 };
+	m_EffectTrail->End();
 }
 
 
 //攻撃状態になるだけの関数、回転切り等で使用
 void Pole::AttackStart(bool _follow,bool _vt) {
+	m_EffectTrail->Start();
 	m_State = ATTACK;
 	m_attacktime = 0;
 	m_stancetime = 0;
@@ -395,6 +415,7 @@ void Pole::AttackStart(bool _follow,bool _vt) {
 
 //攻撃状態終了
 void Pole::AttackEnd() {
+	m_EffectTrail->End();
 	m_State = NORMAL;
 	atkFg = false;
 	followFg = false;
@@ -496,6 +517,7 @@ void Pole::StanceUpdate() {
 
 void Pole::StanceEnd() {
 	m_State = NORMAL;
+	m_Rotation = m_baseRotation;
 	m_offset = { 0,0,0 };
 }
 

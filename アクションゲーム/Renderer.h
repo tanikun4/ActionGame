@@ -90,6 +90,10 @@ private:
 	static ID3D11BlendState*		m_BlendState[MAX_BLENDSTATE]; // ブレンド ステート;
 	static ID3D11BlendState*		m_BlendStateATC;
 
+	// ラスタライザーステート、カリングモード設定用
+	static ID3D11RasterizerState* m_RSCullBack;
+	static ID3D11RasterizerState* m_RSCullNone;
+
 public:
 
 	static void Init();
@@ -125,5 +129,16 @@ public:
 			float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 			m_DeviceContext->OMSetBlendState(m_BlendState[nBlendState], blendFactor, 0xffffffff);
 		}
+	}
+
+	//=============================================================================
+	// カリングモード設定
+	//=============================================================================
+	static void SetCullMode(bool enable)
+	{
+		if (enable)
+			m_DeviceContext->RSSetState(m_RSCullBack);
+		else
+			m_DeviceContext->RSSetState(m_RSCullNone);
 	}
 };

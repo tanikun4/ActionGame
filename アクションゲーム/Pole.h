@@ -20,7 +20,7 @@ enum class SwingMode {
 	MODE_MAX
 };
 
-
+class EffectTrail;
 
 //-----------------------------------------------------------------------------
 // Poleクラス
@@ -41,6 +41,8 @@ private:
 	static const int Defalt_StanceTime = 18;//構えの最大フレーム数、デフォルト値
 	int max_stancetime = 60;//構えの最大フレーム数
 
+	float trailSize = 1.0f;//軌跡エフェクトのサイズ
+
 	bool atkFg = false;//攻撃判定があるかどうか
 	bool followFg = false;//持ち主と同じ角度になるかどうか
 	bool verticalFg = false;//縦かどうか
@@ -49,6 +51,7 @@ private:
 
 	AngleAnim m_AngleAnim;//角度アニメーションで使う構造体
 	PositionAnim m_PosAnim;// 座標アニメーションで使う構造体
+	EffectTrail* m_EffectTrail; // 軌跡のエフェクト
 public:
 
 	enum STATE {
@@ -77,10 +80,6 @@ public:
 	void UpdateOBB();//OBBの更新
 
 	void DebugPoleStatus();//デバッグ用関数(プレイヤー側でのみ呼び出す想定でpublic)
-	
-	// 位置の設定
-	void SetPosition(float x, float y, float z);
-	void SetPosition(DirectX::SimpleMath::Vector3 pos);
 
 	void HitObject(Object* ob) override { //当たり判定を増やす場合、Objectに基底関数を追加すること。
 		if (!atkFg) { return; };//攻撃判定フラグが無ければ判定を行わない
@@ -134,6 +133,12 @@ public:
 
 	void ChangeState(int state) {}; // 状態を変更する(現在未使用)
 
+	// 位置の設定
+	void SetPosition(float x, float y, float z);
+	void SetPosition(DirectX::SimpleMath::Vector3 pos);
+
+	void SetTrailSize(float _size) { trailSize = _size; };//軌跡エフェクトのサイズ設定
+
 	int GetState();//状態を返す
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
@@ -142,6 +147,7 @@ public:
 	bool GetAttack() { return atkFg; }
 	bool GetMaxStance();
 	bool GetMaxSwing();
+
 
 	void TipToEffect(int _id, EffectParams _param);//先端からエフェクトを再生する
 
