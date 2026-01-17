@@ -109,6 +109,12 @@ public:
     }
 
     bool IsPlaying() const { return playing; }
+
+    // リセット関数
+    void Reset() {
+        playing = false;
+        current = { 0,0,0 };
+    }
 };
 
 // 角度アニメーション管理構造体
@@ -215,4 +221,10 @@ public:
     }
 
     bool IsPlaying() const { return playing; }
+
+	// リセット関数
+    void Reset() {
+        playing = false;
+		current = { 0,0,0 };
+    }
 };

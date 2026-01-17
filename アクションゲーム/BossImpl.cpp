@@ -319,33 +319,70 @@ void Boss::Impl::AttackUpdate() {
 
 		break;
 	case MANY_THRUST://連続突き
-		Move();
-		if (weapon_state == Pole::STATE::NORMAL) {
-			m_weapon->Thrust();
-			m_attackcount++;
-			Sound::GetInstance()->Play(SOUND_SE_SWING);
-		}
 
-		if (weapon_state == Pole::STATE::THRUST && m_weapon->GetAttackTime() > 4) {
-			m_attackcount++;
-			int attack_count_remaind = m_attackcount % 3;
-			if (attack_count_remaind == 0) {
-				m_weapon->Thrust();
-			}
-			else if (attack_count_remaind == 1) {
-				m_weapon->Thrust_Left();
-			}
-			else {
-				m_weapon->Thrust_Right();
-			}
-			Sound::GetInstance()->Play(SOUND_SE_SWING);
-		}
-
-		if (m_attackcount > 60) {
-			m_weapon->ThrustEnd();
-			m_state = NORMAL;
+		// 開始フェーズ
+		if (m_attackPhase == AttackPhase::ENTER) {
+			m_weapon->Stance_Thrust();
+			m_attackPhase = AttackPhase::PREPARE;
 			m_attackcount = 0;
 		}
+
+		// 準備フェーズ
+		if (m_attackPhase == AttackPhase::PREPARE) {
+			// 一定フレーム構えた後、攻撃開始
+			if (m_weapon->GetStanceTime() > 90) {
+				m_attackPhase = AttackPhase::ATTACK;
+				m_weapon->StanceEnd();
+				m_weapon->Thrust();
+				m_attackcount++;
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+			}
+		}
+
+
+		if (m_attackPhase == AttackPhase::ATTACK) {
+			Move();
+			if (weapon_state == Pole::STATE::THRUST && m_weapon->GetAttackTime() > 4) {
+				m_attackcount++;
+				int attack_count_remaind = m_attackcount % 3;
+				if (attack_count_remaind == 0) {
+					m_weapon->Thrust();
+				}
+				else if (attack_count_remaind == 1) {
+					m_weapon->Thrust_Left();
+				}
+				else {
+					m_weapon->Thrust_Right();
+				}
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+			}
+
+			// 攻撃終了
+			if (m_attackcount > 40) {
+				m_attackPhase = AttackPhase::RECOVER;
+				m_weapon->ThrustEnd();
+				m_lookatFg = false;
+				m_Owner->m_Velocity_f = 0.0f;//移動停止
+			}
+
+		}
+
+		if (m_attackPhase == AttackPhase::RECOVER) {
+			if (m_attackframe > 60) {
+				m_attackPhase = AttackPhase::END;
+			}
+			++m_attackframe;
+		}
+
+		if (m_attackPhase == AttackPhase::END) {
+			m_lookatFg = true;
+			m_attackframe = 0;
+			m_state = NORMAL;
+			m_attackcount = 0;
+			m_stateframe = 0;
+			m_attackPhase = AttackPhase::ENTER;
+		}
+
 		break;
 
 	case THREE_SWING://三連斬り

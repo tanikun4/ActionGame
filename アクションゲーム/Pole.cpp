@@ -453,18 +453,30 @@ void Pole::Stance(int t,int mode) {
 	m_stancetime = 0;
 	switch (mode)
 	{
-	case (int)SwingMode::NORMAL:
+	case (int)StanceMode::NORMAL:
 		StanceStart({ 0,0,0 }, { 0,-PI * 0.5f,0 }, t);
 		break;
 
-	case (int)SwingMode::RETURN:
+	case (int)StanceMode::RETURN:
 		StanceStart({ 0,0,0 }, { 0,PI * 0.5f,0 }, t);
 		break;
 
-	case (int)SwingMode::VERTICAL:
+	case (int)StanceMode::VERTICAL:
 		StanceStart({ 0,0,0 }, { PI * 0.5,0,(PI * 0.5) + 0.2f }, t);
 		break;
+	case (int)StanceMode::THRUST:
+		Stance_Thrust();
+		break;
 	}
+}
+
+void Pole::Stance_Thrust() {
+	m_PosAnim.StartRelative({ 0,0,0 }, { 8, 0, -8 }, 20);
+	m_baseRotation = m_Rotation;
+	m_stancetime = 0;
+	m_State = STANCE;
+	max_stancetime = 30;
+	m_AngleAnim.Reset();
 }
 
 // 縦構え開始、デフォルト版
@@ -476,6 +488,7 @@ void Pole::Stance_Vertical() {
 //構え開始、パラメータ版
 void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {
 	m_AngleAnim.StartRelative(s, e, t);
+	m_PosAnim.Reset();
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	m_State = STANCE;
@@ -513,14 +526,17 @@ void Pole::ToSwing()
 }
 
 //構え中の処理
-void Pole::StanceUpdate() {
-
+void Pole::StanceUpdate() 
+{
 	m_Rotation += m_AngleAnim.UpdateRelative();
-
+	
+	m_offset = m_PosAnim.UpdateRelative();
+	
 	++m_stancetime;
 }
 
-void Pole::StanceEnd() {
+void Pole::StanceEnd() 
+{
 	m_State = NORMAL;
 	m_Rotation = m_baseRotation;
 	m_offset = { 0,0,0 };

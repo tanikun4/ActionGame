@@ -8,6 +8,7 @@ enum class StanceMode {
 	NORMAL = 0,
 	RETURN,
 	VERTICAL,
+	THRUST,
 
 	MODE_MAX
 };
@@ -110,6 +111,7 @@ public:
 	void Stance();
 	void Stance_Return();
 	void Stance_Vertical();
+	void Stance_Thrust(); // 突き状態の構え
 	void Stance(int t,int mode);//時間、構えタイプ指定版
 	void StanceUpdate();
 	void StanceEnd();
