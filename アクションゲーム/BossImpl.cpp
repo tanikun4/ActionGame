@@ -349,50 +349,45 @@ void Boss::Impl::AttackUpdate() {
 		break;
 
 	case THREE_SWING://三連斬り
-		// 構え開始、終了処理もこの部分で行う
-		if (weapon_state == Pole::STATE::NORMAL) {
-			if (attack_count > 2) {
-				m_weapon->SwingEnd();
-				m_lookatFg = true;
-				m_rushFg = false;
-				rotate_speed = 0.05f;
-				m_state = NORMAL;
-				attack_count = 0;
-				break;
-			}
+
+		// 攻撃開始処理、構えに入る
+		if (m_attackPhase == AttackPhase::ENTER) {
 			m_weapon->Stance();
 			rotate_speed = 0.1f;
 			m_lookatFg = true;
 			m_rushFg = true;
+			m_attackPhase = AttackPhase::PREPARE;
 		}
+		
+		// 準備フェーズ、構えが完了したら攻撃開始、三回攻撃を繰り返す
+		if(m_attackPhase == AttackPhase::PREPARE) {
+			// しばらく構えた後、攻撃に以降
+			if (m_weapon->GetStanceTime() > 60) {
+				m_attackPhase = AttackPhase::ATTACK;
 
-		// 攻撃処理、三回攻撃を繰り返す
-		if (weapon_state == Pole::STATE::STANCE && m_weapon->GetStanceTime() > 60) {
-			if (attack_count == 0) {
-				m_weapon->Swing();
-				Sound::GetInstance()->Play(SOUND_SE_SWING);
-			}
-			else if (attack_count == 1) {
-				m_weapon->Swing_Return();
-				Sound::GetInstance()->Play(SOUND_SE_SWING);
-			}
-			else if (attack_count == 2) {
-				m_weapon->Swing(10, (int)SwingMode::VERTICAL);
-				Sound::GetInstance()->Play(SOUND_SE_SWING);
-			}
-			m_lookatFg = false;
-			++attack_count;
-
-		}
-
-		// 攻撃終了処理、各攻撃後に構えに戻る
-		if (weapon_state == Pole::STATE::SWING) {
-			if (m_weapon->GetAttackTime() > 18) {
-				m_weapon->SwingEnd();
 				if (attack_count == 0) {
-					m_weapon->Stance();
+					m_weapon->Swing();
+					Sound::GetInstance()->Play(SOUND_SE_SWING);
 				}
 				else if (attack_count == 1) {
+					m_weapon->Swing_Return();
+					Sound::GetInstance()->Play(SOUND_SE_SWING);
+				}
+				else if (attack_count == 2) {
+					m_weapon->Swing(10, (int)SwingMode::VERTICAL);
+					Sound::GetInstance()->Play(SOUND_SE_SWING);
+				}
+				m_lookatFg = false;
+				++attack_count;
+			}
+		}
+
+		// 攻撃フェーズ、攻撃後準備フェーズに戻る、三回攻撃を繰り返す
+		if (m_attackPhase == AttackPhase::ATTACK) {
+			if (m_weapon->GetAttackTime() > 18) {
+				m_weapon->SwingEnd();
+
+				if (attack_count == 1) {
 					m_weapon->Stance_Return();
 				}
 				else if (attack_count == 2) {
@@ -400,10 +395,41 @@ void Boss::Impl::AttackUpdate() {
 				}
 				m_lookatFg = true;
 				m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
+				m_attackPhase = AttackPhase::FOLLOW;
 			}
 			else if (m_weapon->GetAttackTime() <= 18) { // 攻撃中は移動
 				Move();
 			}
+
+		}
+
+		// 攻撃後処理、三回攻撃したら終了、そうでなければ準備フェーズに戻る
+		if(m_attackPhase == AttackPhase::FOLLOW) {
+			// 三回攻撃したら終了
+			if (attack_count >= 3) {
+				m_lookatFg = false;
+				// 3回目の攻撃後、しばらくそのままで待機してから終了
+				if (attack_frame > 90) {
+					m_attackPhase = AttackPhase::END;
+				}
+				++attack_frame;
+			}
+			else {
+				m_attackPhase = AttackPhase::PREPARE;
+			}
+		}
+
+		// 終了フェーズ、終了処理を行う
+		if(m_attackPhase == AttackPhase::END) {
+			m_weapon->StanceEnd();
+			m_state = NORMAL;
+			m_stateframe = 0;
+			attack_frame = 0;
+			attack_count = 0;
+			rotate_speed = 0.01f;
+			m_rushFg = false;
+			m_lookatFg = true;
+			m_attackPhase = AttackPhase::ENTER;
 		}
 
 		break;
@@ -650,49 +676,6 @@ void Boss::Impl::Move(){
 	}
 
 	if (m_Owner->m_Rotation.x > PI * 2) m_Owner->m_Rotation.x -= PI * 2;
-
-	if (m_state == 0) {
-
-	}
-	//else if (m_State == 1) {
-	//	flamecount++;
-	//	if (flamecount > 60) {
-	//		m_State = 0;
-	//		flamecount = 0;
-	//		m_Velocity_f = 0.0f;//移動速度を0にする
-	//	}
-	//	if (m_Position.x > stagesize.x - radius * 3 || m_Position.x < -stagesize.x//落下防止
-	//		|| m_Position.z > stagesize.y || m_Position.z < -stagesize.y + radius * 2)
-	//	{
-	//		if (m_Position.x > stagesize.x - radius * 3) {
-	//			m_Position.x = stagesize.x - radius * 3;
-	//		}
-	//		if (m_Position.x < -stagesize.x) {
-	//			m_Position.x = -stagesize.x;
-	//		}
-	//		if (m_Position.z > stagesize.y) {
-	//			m_Position.z = stagesize.y;
-	//		}
-	//		if (m_Position.z < -stagesize.y + radius) {
-	//			m_Position.z = -stagesize.y + radius;
-	//		}
-	//		m_State = 0;
-	//		flamecount = 0;
-	//		if (m_Position.y > -10) {
-	//			m_Position.y = radius;
-	//		}
-	//		m_Velocity = Vector3(0.0f, 0.0f, 0.0f);
-	//		m_Velocity_f = 0.0f;
-	//	}
-	//}
-	//else if (m_State == 2) {
-	//	m_Position -= hitbackrotation * 1.0f;
-	//	//m_Position.y = 0.0f;
-	//	flamecount++;
-	//	if (flamecount > 30) {
-	//		m_State = 0;
-	//	}
-	//}
 
 }
 
