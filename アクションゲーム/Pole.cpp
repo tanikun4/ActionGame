@@ -296,6 +296,19 @@ void Pole::Swing_Vertical()
 	SwingStart({0,0,0}, {0,0,-PI * 0.5f}, 10, 1.0f);
 }
 
+void Pole::Swing_Parry() 
+{
+	m_EffectTrail->Start();//軌跡エフェクト開始
+	m_offset = { 0,0,0 };//振り攻撃中はオフセット無し
+	m_AngleAnim.StartRelative({ 0, 0, 0 }, { 0,PI,0 }, 10, 1.0f);
+	m_baseRotation = m_Rotation;
+	m_stancetime = 0;
+	m_attacktime = 0;
+	m_State = SWING;
+	max_attacktime = 10;
+	atkFg = false;
+}
+
 // 振り攻撃、時間とモード指定版
 void Pole::Swing(int t,int mode) 
 {

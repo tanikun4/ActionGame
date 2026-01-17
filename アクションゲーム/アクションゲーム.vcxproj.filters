@@ -121,6 +121,9 @@
     <Filter Include="ソース ファイル\Input\ActionInput">
       <UniqueIdentifier>{6ce73002-c2a4-45ca-9f77-22c066e32cec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Effect\EffectTrail">
+      <UniqueIdentifier>{f322f5c2-f65b-4fcb-a6bb-0dc297cd2de7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -310,7 +313,7 @@
       <Filter>ソース ファイル\system</Filter>
     </ClCompile>
     <ClCompile Include="EffectTrail.cpp">
-      <Filter>ソース ファイル\Effect</Filter>
+      <Filter>ソース ファイル\Effect\EffectTrail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -561,7 +564,7 @@
       <Filter>ソース ファイル\Input\ActionInput</Filter>
     </ClInclude>
     <ClInclude Include="EffectTrail.h">
-      <Filter>ソース ファイル\Effect</Filter>
+      <Filter>ソース ファイル\Effect\EffectTrail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

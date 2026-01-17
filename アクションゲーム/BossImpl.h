@@ -73,7 +73,6 @@ private:
 	int hp = 50;
 	int def = 0; //防御力、値分ダメージを減らす
 	int m_stateframe = 0;//状態継続フレーム数
-	int m_state = 0;//状態　1で行動中
 	bool inviFg = false;
 	int invicount = 0;
 	float move_speed = 0.25f;

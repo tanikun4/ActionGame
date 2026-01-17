@@ -49,7 +49,7 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	static int debug_attack_kind = -1;
 	ImGui::SliderInt("AttackKind", &debug_attack_kind, -1, KIND_MAX - 1);
 	if (ImGui::Button("BOSSATTACK")) {
-		m_state = ATTACK;
+		m_Owner->m_State = ATTACK;
 		m_stateframe = 0;
 		m_Owner->m_Velocity_f = 0;
 		attack_kind = debug_attack_kind;
@@ -95,13 +95,13 @@ void Boss::Impl::Update() {
 		}
 	}
 
-	switch (m_state) {
+	switch (m_Owner->m_State) {
 	case NORMAL:
 		Move();
 		// 弾撃ちは一旦無しにする、後で調整して実装する
 
 		if (m_stateframe > 240) {
-			m_state = ATTACK;
+			m_Owner->m_State = ATTACK;
 			m_stateframe = 0;
 			m_Owner->m_Velocity_f = 0;
 			attack_kind = (rand() % (KIND_MAX - 1)) + 1;
@@ -218,7 +218,7 @@ void Boss::Impl::AttackUpdate() {
 	int weapon_state = m_weapon->GetState();
 	switch (attack_kind) {
 	case NONE:
-		m_state = NORMAL;
+		m_Owner->m_State = NORMAL;
 		break;
 	case SWING:// 横振り
 		if (weapon_state == Pole::STATE::NORMAL) {
@@ -228,7 +228,7 @@ void Boss::Impl::AttackUpdate() {
 			m_weapon->Swing();
 		}
 		else if (weapon_state == Pole::STATE::SWING && m_weapon->GetAttackTime() > 18) {
-			m_state = NORMAL;
+			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
 			m_weapon->SwingEnd();
 		}
@@ -254,7 +254,7 @@ void Boss::Impl::AttackUpdate() {
 
 		if (m_attackframe > 300) {
 			m_weapon->AttackEnd();
-			m_state = NORMAL;
+			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
 			m_attackframe = 0;
 			attack_kind = NONE;//攻撃終了
@@ -309,7 +309,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		if (weapon_state == Pole::STATE::SWING && m_weapon->GetAttackTime() > 18) {
-			m_state = NORMAL;
+			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
 			m_weapon->SwingEnd();
 			m_lookatFg = true;
@@ -377,7 +377,7 @@ void Boss::Impl::AttackUpdate() {
 		if (m_attackPhase == AttackPhase::END) {
 			m_lookatFg = true;
 			m_attackframe = 0;
-			m_state = NORMAL;
+			m_Owner->m_State = NORMAL;
 			m_attackcount = 0;
 			m_stateframe = 0;
 			m_attackPhase = AttackPhase::ENTER;
@@ -464,7 +464,7 @@ void Boss::Impl::AttackUpdate() {
 		// 終了フェーズ、終了処理を行う
 		if(m_attackPhase == AttackPhase::END) {
 			m_weapon->StanceEnd();
-			m_state = NORMAL;
+			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
 			m_attackframe = 0;
 			m_attackcount = 0;
@@ -558,7 +558,7 @@ void Boss::Impl::AttackUpdate() {
 		// 攻撃終了処理
 		if(m_attackPhase == AttackPhase::END) {
 			m_weapon->AttackEnd();
-			m_state = NORMAL;
+			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
 			m_attackframe = 0;
 			m_attackcount = 0;
@@ -625,7 +625,7 @@ void Boss::Impl::AttackUpdate() {
 		// 攻撃終了処理
 		if (m_attackPhase == AttackPhase::END) {
 			m_weapon->AttackEnd();
-			m_state = NORMAL;
+			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
 			m_attackframe = 0;
 			m_attackcount = 0;
@@ -639,7 +639,7 @@ void Boss::Impl::AttackUpdate() {
 
 
 	case KIND_MAX:
-		m_state = NORMAL;
+		m_Owner->m_State = NORMAL;
 		break;
 	}
 }
@@ -663,7 +663,7 @@ void Boss::Impl::StunUpdate()
 
 	// 終了処理
 	if (m_stateframe > 180) {
-		m_state = NORMAL;
+		m_Owner->m_State = NORMAL;
 		m_stateframe = 0;
 		m_Owner->m_Rotation.x = 0;
 		m_weapon->StanceEnd();
@@ -679,7 +679,7 @@ void Boss::Impl::Stun(optional<Vector3> knockbackDir)
 	m_vib.Start(0.5f, 3);//振動開始
 	m_weapon->AttackEnd();
 	m_weapon->Stance(10,(int)StanceMode::VERTICAL);// 縦に構える
-	m_state = STUN;
+	m_Owner->m_State = STUN;
 	/*if (knockbackDir) {
 		m_Owner->m_ForwardRotation.y = knockbackDir.value().y;
 		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;

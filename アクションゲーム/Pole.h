@@ -91,6 +91,7 @@ public:
 
 	// 振り攻撃形の関数群
 	void Swing();//振り攻撃開始、デフォルト
+	void Swing_Parry();//振り攻撃開始、デフォルト
 	void Swing_Return();//逆からの振り攻撃
 	void Swing_Vertical();// 縦振り攻撃開始
 	void Swing(int t ,int mode);//振り時間、モード指定版

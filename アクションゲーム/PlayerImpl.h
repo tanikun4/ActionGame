@@ -45,6 +45,7 @@ private:
         DAMAGE,
         DODGE,
         COUNTER,
+		PARRY,
 
     };
 
@@ -138,6 +139,7 @@ private:
     void UpdateDamage();
     void UpdateDodge();
     void UpdateCounter();
+	void UpdateParry();
 
 	void UpdateDemo();
 

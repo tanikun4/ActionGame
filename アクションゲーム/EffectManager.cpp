@@ -38,12 +38,13 @@ void EffectManager::Init()
 	// 読み込むデータの配列、ここにエフェクトリソースを追加していく
 	const EffectLoadData g_EffectResources[] = {
 		{"assets/texture/gorufu", "assets/model/gorufu/GolfBall_v2.fbx"},
-        {"assets/texture/2DEffect/issen_one_2.png","","","shader/EffectTexturePS.hlsl", 1,1},
+        {"assets/texture/2DEffect/issen_one_2.png","","","", 1,1},
         {"assets/texture/2DEffect/honoo.png","","","",5,24},
         {"assets/texture/2DEffect/hibana.png","","","",5,4},
         {"assets/texture/2DEffect/kemuri_syou.png","","","",5,14},
 		{"assets/texture/2DEffect/kemuri_dai.png","","","",5,22},
-        {"assets/texture/2DEffect/press_enterkey.png","","","shader/EffectTexturePS.hlsl",1,1},
+        {"assets/texture/2DEffect/press_enterkey.png","","","",1,1},
+        {"assets/texture/2DEffect/syougekiha.png","","","",5,3},
 	};
 
     for(auto& g : g_EffectResources)
@@ -195,7 +196,7 @@ LoadedEffectData EffectManager::LoadEffect(
 
         if (PSshaderName.empty())
         { //PS
-            PSshaderName = "shader/unlitTexturePS.hlsl"; //2Dデフォルトシェーダー名 PS
+            PSshaderName = "shader/EffectTexturePS.hlsl"; //2Dデフォルトシェーダー名 PS
         }
     }
 

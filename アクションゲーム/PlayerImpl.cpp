@@ -90,6 +90,9 @@ void Player::Impl::Update() {
     case COUNTER:
         UpdateCounter();
         break;
+    case PARRY:
+        UpdateParry();
+        break;
     default:
         break;
 
@@ -640,6 +643,20 @@ void Player::Impl::Parry() {
     }
     GuardFg = false;
     if (m_pole) m_pole->GuardEnd();
+
+    m_Owner->m_State = PARRY;
+	m_pole->Swing_Parry();
+
+    // パリィエフェクト再生
+    EffectParams param;
+
+    //エフェクトパラメーター構造体設定
+    Vector3 pos = m_Owner->m_Position + (m_Owner->radius * m_Owner->AngleToForward(m_Owner->m_ForwardRotation));
+    param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x * 3);
+    param.scale = m_Owner->m_Scale * 30;
+    param.maxLife = 30;
+    EffectManager::GetInstance()->Play(EFFECT_SHOCKWAVE, param);
+
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 }
 
@@ -772,6 +789,18 @@ void Player::Impl::UpdateCounter() {
 		Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
     }
 }
+
+// パリィ中
+void Player::Impl::UpdateParry() 
+{
+    // パリィ終了
+    if (m_pole->GetMaxSwing()) {
+        m_pole->SwingEnd();
+        m_Owner->m_State = NORMAL;
+    }
+    
+}
+
 
 // 共通Update処理
 void Player::Impl::UpdateCommon() {
