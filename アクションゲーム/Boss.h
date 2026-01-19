@@ -1,7 +1,7 @@
 #pragma once
 #include "Golfball.h"
 #include <vector>
-class Arrow;
+class Projectile;
 class Pole;
 class Bullet;
 

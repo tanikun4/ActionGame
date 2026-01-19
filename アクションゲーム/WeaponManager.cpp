@@ -9,7 +9,7 @@ Weapon* WeaponManager::SetWeapon(int id) {//‘½•ªŽg‚í‚È‚¢
 		m_weapons.emplace_back(new Pole());
 		break;
 	case ARROW:
-		m_weapons.emplace_back(new Arrow());
+		m_weapons.emplace_back(new Projectile());
 		break;
 	default:
 		return nullptr;

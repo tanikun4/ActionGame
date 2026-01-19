@@ -81,7 +81,7 @@ void Pole::Init()
 
 	//軌跡エフェクト初期化
 	m_EffectTrail->Init();
-	m_EffectTrail->SetTexture("assets/texture/blue.png");
+	m_EffectTrail->SetTexture("assets/texture/white.png");
 }
 
 
@@ -614,6 +614,10 @@ void Pole::SetPosition(Vector3 pos)
 	}
 }
 
+void Pole::SetTrailColor(Vector4 color) {
+	m_EffectTrail->SetColor(color);
+}
+
 Collision::ColliderVariant Pole::GetCollision() {
 	return obb;
 }
@@ -681,7 +685,7 @@ void Pole::DebugPoleStatus() {
 
 }
 
-bool Pole::GetMaxSwing() {
+bool Pole::GetMaxAttack() {
 	if (m_attacktime >= max_attacktime) {
 		return true;
 	}

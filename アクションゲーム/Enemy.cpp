@@ -133,7 +133,7 @@ void Enemy::Damage(int atk) {
 void Enemy::SetArrow() {
 	if (!m_arrow) 
 	{
-		vector<Arrow*> arrow = Game::GetInstance()->GetObjects<Arrow>();
+		vector<Projectile*> arrow = Game::GetInstance()->GetObjects<Projectile>();
 		for (auto& ar : arrow) {
 			if (ar->GetState() == 0) {
 				m_arrow = ar;
@@ -149,7 +149,7 @@ void Enemy::SetArrow() {
 void Enemy::Attack() {
 	if (!m_arrow)
 	{
-		vector<Arrow*> arrow = Game::GetInstance()->GetObjects<Arrow>();
+		vector<Projectile*> arrow = Game::GetInstance()->GetObjects<Projectile>();
 		for (auto& ar : arrow) {
 			if (ar->GetState() == 0) {
 				m_arrow = ar;

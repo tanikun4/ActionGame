@@ -3,7 +3,7 @@
 #include <vector>
 
 class Pole;
-class Arrow;
+class Projectile;
 class Weapon;
 
 enum WeaponType

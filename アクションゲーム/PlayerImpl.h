@@ -107,7 +107,7 @@ private:
 
     DirectX::SimpleMath::Vector3 m_ta_pos; // 目標点
     Bullet* m_arrow = nullptr;
-    Pole* m_pole = nullptr;
+    Pole* m_weapon = nullptr;
 	AngleAnim m_Anim; // アニメーション用構造体
 
     // 各種行動関数

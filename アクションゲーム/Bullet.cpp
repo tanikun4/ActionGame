@@ -108,9 +108,9 @@ void Bullet::Update()
 		// Œ»Ý‚ÌÀ•W‚ðŒvŽZ
 		m_Position += m_ForwardVector * m_Velocity_f;
 
-		flamecount++;
-		if (flamecount > Bullettime) {
-			flamecount = 0;
+		framecount++;
+		if (framecount > Bullettime) {
+			framecount = 0;
 			m_State = 0;
 			power = 0;
 			m_live = false;
@@ -265,7 +265,7 @@ void Bullet::OnHit(Pole* po) {
 	if (po->GetPl() && !pl) { //’e‚Ì‘Å‚¿•Ô‚µ
 		atk = 5;
 		m_ForwardRotation.y = po->GetBaseRotation().y;
-		flamecount = 0;
+		framecount = 0;
 		m_Velocity_f *= 2;
 		pl = true;
 		Sound::GetInstance()->Play(SOUND_SE_PLAYERSHOOTBACK);

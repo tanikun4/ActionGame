@@ -159,7 +159,7 @@
     <ClCompile Include="TestPlane.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Arrow.cpp">
+    <ClCompile Include="Projectile.cpp">
       <Filter>ソース ファイル\Object\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="Pole.cpp">
@@ -341,7 +341,7 @@
     <ClInclude Include="Pole.h">
       <Filter>ソース ファイル\Object\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="Arrow.h">
+    <ClInclude Include="Projectile.h">
       <Filter>ソース ファイル\Object\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">

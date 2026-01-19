@@ -329,7 +329,7 @@
   <ItemGroup>
     <ClCompile Include="ActionInput.cpp" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="AssimpPerse.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossImpl.cpp" />
@@ -400,7 +400,7 @@
     <ClInclude Include="ActionState.h" />
     <ClInclude Include="AnimStruct.h" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Arrow.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="AssimpPerse.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossImpl.h" />

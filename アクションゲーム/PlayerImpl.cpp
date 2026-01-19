@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "Ground.h"
 #include "Pole.h"
-#include "Arrow.h"
+#include "Projectile.h"
 #include "Bullet.h"
 #include "Enemy.h"
 #include "sound.h"
@@ -34,7 +34,7 @@ Player::Impl::Impl(Camera* cam, Player* owner)
     , m_Camera(cam)
 {
     m_arrow = nullptr;
-    m_pole = Game::GetInstance()->AddObject<Pole>();
+    m_weapon = Game::GetInstance()->AddObject<Pole>();
 }
 
 Player::Impl::~Impl()
@@ -47,11 +47,13 @@ Player::Impl::~Impl()
 void Player::Impl::Init() {
     m_Owner->GBInit(u8"assets/model/Character/player.fbx");
     m_Owner->m_Position = Vector3(0.0f, 50.0f, 0.0f);
-    m_pole->SetPl(true);
+    m_weapon->SetPl(true);
     hp = 9;
     framecount = 30;
-    m_pole->SetAtk(atk);
+    m_weapon->SetAtk(atk);
 
+    // 武器の軌跡色をセット
+    m_weapon->SetTrailColor({ 0,0,1,1 });
     //丸影の大きさ調整
     m_Owner->m_Shadow->SetBaseScale(15 * m_Owner->m_Scale.x);
 
@@ -61,7 +63,7 @@ void Player::Impl::Init() {
         DebugWeaponStatus();
         DebugEffectPlay();
         DebugParticlePlay();
-		m_pole->DebugPoleStatus();
+		m_weapon->DebugPoleStatus();
         });
 }
 
@@ -101,7 +103,7 @@ void Player::Impl::Update() {
 }
 
 void Player::Impl::Uninit() {
-    m_pole = nullptr;
+    m_weapon = nullptr;
 }
 
 int Player::Impl::GetHP() {
@@ -109,7 +111,7 @@ int Player::Impl::GetHP() {
 }
 
 Pole* Player::Impl::GetWeapon() {
-    return m_pole;
+    return m_weapon;
 }
 
 // -------------------------
@@ -200,17 +202,17 @@ void Player::Impl::DebugWeaponStatus() {
     if (ImGui::Button("Reset Angle"))
         weapon_angle = Vector3(0, 0, 0);
 
-    if (m_pole) {
-        m_pole->SetOffsetDebug(weapon_offset);
-        m_pole->SetAngleDebug(weapon_angle);
-        m_pole->SetTrailSize(trailsize);
+    if (m_weapon) {
+        m_weapon->SetOffsetDebug(weapon_offset);
+        m_weapon->SetAngleDebug(weapon_angle);
+        m_weapon->SetTrailSize(trailsize);
     }
 
     ImGui::End();
 }
 
 
-// プレイヤーj状態の操作
+// プレイヤー状態の操作
 void Player::Impl::DebugPlayerStatus() {
     ImGui::Begin("PlayerStatus");
 
@@ -418,7 +420,7 @@ void Player::Impl::Attack() {
     
 	//デモ中は入力を受け付けない
     if (demoMode)  return;
-    if (!m_pole) return;
+    if (!m_weapon) return;
     if (ActionInput::GetInstance().IsTrigger(Action::Attack) && !GuardFg) {
         // ダメージモーション中なら処理をしない
         if (m_Owner->m_State == DAMAGE) return;
@@ -430,17 +432,17 @@ void Player::Impl::Attack() {
             return;
         }
 		// 構え開始
-      m_pole->Stance(30, (int)StanceMode::NORMAL);
+      m_weapon->Stance(30, (int)StanceMode::NORMAL);
 	  speed = 0.5f;  
     }
     if (ActionInput::GetInstance().IsRelease(Action::Attack) && !GuardFg) {
-		m_pole->StanceEnd();
+		m_weapon->StanceEnd();
         speed = 1.0f;
 		// ダメージモーション中なら攻撃しない
         if (m_Owner->m_State == DAMAGE) return;
 
 		// 構えきっていたら回転切り、そうでなければ通常攻撃
-        if (m_pole->GetMaxStance()) {
+        if (m_weapon->GetMaxStance()) {
             SpinAttack(24,18,0.5f);
         }
         else {
@@ -458,16 +460,16 @@ void Player::Impl::SwingAttack() {
     maxattackframe = 48;
     switch (attackcombo) {
     case COMBO_1:
-        m_pole->Swing();
-        m_pole->SetAtk(atk);
+        m_weapon->Swing();
+        m_weapon->SetAtk(atk);
         break;
 	case COMBO_2:
-        m_pole->Swing_Return();
-        m_pole->SetAtk(atk);
+        m_weapon->Swing_Return();
+        m_weapon->SetAtk(atk);
 		break;
     case COMBO_3:
-        m_pole->Swing_Vertical();
-        m_pole->SetAtk(atk + 1);
+        m_weapon->Swing_Vertical();
+        m_weapon->SetAtk(atk + 1);
         break;
     }
 	++attackcombo;
@@ -478,8 +480,8 @@ void Player::Impl::SwingAttack() {
 
 // 回転斬り攻撃開始
 void Player::Impl::SpinAttack(int t,int attack_t ,float accel) {
-    m_pole->AttackStart();
-    m_pole->SetAtk(atk * 2);
+    m_weapon->AttackStart();
+    m_weapon->SetAtk(atk * 2);
 	m_attackkind = SPINSLASH;
     speed = 2.0f;
 	maxattackframe = t;
@@ -497,8 +499,8 @@ void Player::Impl::SpinAttack(int t,int attack_t ,float accel) {
 
 // 回転斬り攻撃開始
 void Player::Impl::SpinAttack_Vertical(int t, int attack_t, float accel) {
-    m_pole->AttackStart(true,true);
-    m_pole->SetAtk(atk + 1);
+    m_weapon->AttackStart(true,true);
+    m_weapon->SetAtk(atk + 1);
     m_attackkind = SPINSLASH_VT;
     maxattackframe = t;
     Vector3 endrot = m_Owner->m_Rotation;
@@ -515,7 +517,7 @@ void Player::Impl::Jump() {
     if (demoMode) return;//デモ中は入力を受け付けない
 
     if (ActionInput::GetInstance().IsTrigger(Action::Jump) && !is_JUMP) {
-        m_Owner->m_Velocity.y = 2.0f;
+        m_Owner->m_Velocity.y = 1.3f;
         m_Owner->is_GROUND = false;
         is_JUMP = true;
         m_Owner->m_Position.y += 0.1f;
@@ -560,7 +562,7 @@ void Player::Impl::Damage(int atk) {
 	// 攻撃中なら攻撃終了
     if (m_Owner->m_State == ATTACK) {
         m_Owner->m_State = NORMAL;
-        m_pole->AttackEnd();
+        m_weapon->AttackEnd();
         m_attackkind = NONE;
         m_Owner->m_Rotation.x = 0;
     }
@@ -571,7 +573,7 @@ void Player::Impl::Damage(int atk) {
 
     m_Owner->SetColor(Vector4(1, 1, 0, 0.5f));
 
-	if (demoMode) { m_pole->SwingEnd(); return; }//デモ中はダメージを受けず、演出処理を終了
+	if (demoMode) { m_weapon->SwingEnd(); return; }//デモ中はダメージを受けず、演出処理を終了
 
     // ガード中ならダメージを半減
     if (GuardFg) {
@@ -592,7 +594,7 @@ void Player::Impl::Damage(int atk) {
     else {
         m_Camera->StartVibration(8.0f, PI * 0.5f, 6);
 
-        m_pole->SwingEnd();
+        m_weapon->SwingEnd();
         Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
     }
 
@@ -607,12 +609,12 @@ void Player::Impl::Guard() {
         GuardFg = true;
         guardcount = 0;
         speed = 0.1f;
-        if (m_pole) m_pole->GuardStart();
+        if (m_weapon) m_weapon->GuardStart();
     }
     if (ActionInput::GetInstance().IsRelease(Action::Guard)) {
         GuardFg = false;
         speed = 1;
-        if (m_pole) m_pole->GuardEnd();
+        if (m_weapon) m_weapon->GuardEnd();
     }
 }
 
@@ -629,7 +631,7 @@ void Player::Impl::Counter() {
     RollFg = false;
     GuardFg = false;
     inviFg = true;
-    if (m_pole) m_pole->GuardEnd();
+    if (m_weapon) m_weapon->GuardEnd();
     m_Owner->SetColor({ 0,0,1,0.5f });
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 }
@@ -642,10 +644,10 @@ void Player::Impl::Parry() {
         boss->Stun(m_Owner->m_ForwardRotation);
     }
     GuardFg = false;
-    if (m_pole) m_pole->GuardEnd();
+    if (m_weapon) m_weapon->GuardEnd();
 
     m_Owner->m_State = PARRY;
-	m_pole->Swing_Parry();
+	m_weapon->Swing_Parry();
 
     // パリィエフェクト再生
     EffectParams param;
@@ -684,15 +686,15 @@ void Player::Impl::UpdateNormal() {
 //攻撃中
 void Player::Impl::UpdateAttack() {
 	if (m_Owner->is_GROUND) m_Owner->m_Velocity_f = 0.0f; //攻撃中は移動不可
-	if (!m_pole) { return; }
+	if (!m_weapon) { return; }
     switch (m_attackkind) {
     case NONE:
         m_Owner->m_State = NORMAL;
         break;
     case SWING:
-        if (m_pole->GetMaxSwing()) {
+        if (m_weapon->GetMaxAttack()) {
             m_Owner->m_State = NORMAL;
-            m_pole->SwingEnd();
+            m_weapon->SwingEnd();
         }
         break;
 
@@ -702,7 +704,7 @@ void Player::Impl::UpdateAttack() {
 		m_Owner->m_Velocity_f = speed;//回転切り中は現在方向に移動し続ける
         if (attackframe >= maxattackframe) {
             m_Owner->m_State = NORMAL;
-            m_pole->AttackEnd();
+            m_weapon->AttackEnd();
 			speed = 1.0f;
 			inviFg = false;
 			m_Owner->SetColor({ 1,1,1,1 });
@@ -718,7 +720,7 @@ void Player::Impl::UpdateAttack() {
 		//　攻撃時間終了、もしくは地面に着地したら攻撃終了
         if (attackframe >= maxattackframe || m_Owner->is_GROUND) {
             m_Owner->m_State = NORMAL;
-            m_pole->AttackEnd();
+            m_weapon->AttackEnd();
             m_attackkind = NONE;
             m_Owner->m_Rotation.x = 0;
         }
@@ -769,9 +771,9 @@ void Player::Impl::UpdateCounter() {
         fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
 
 		//カウンター攻撃処理
-        if (m_pole->GetAttackTime() <= 0) {
-            m_pole->SetAtk(atk * 2);
-            m_pole->Swing_Vertical();
+        if (m_weapon->GetAttackTime() <= 0) {
+            m_weapon->SetAtk(atk * 2);
+            m_weapon->Swing_Vertical();
         }
     }
     else {
@@ -782,8 +784,8 @@ void Player::Impl::UpdateCounter() {
         }
     }
 	// カウンター攻撃終了判定
-    if (m_pole->GetMaxSwing()) {
-        m_pole->SwingEnd();
+    if (m_weapon->GetMaxAttack()) {
+        m_weapon->SwingEnd();
         invicount = 0;
 	    m_Owner->m_State = NORMAL;
 		Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
@@ -794,8 +796,8 @@ void Player::Impl::UpdateCounter() {
 void Player::Impl::UpdateParry() 
 {
     // パリィ終了
-    if (m_pole->GetMaxSwing()) {
-        m_pole->SwingEnd();
+    if (m_weapon->GetMaxAttack()) {
+        m_weapon->SwingEnd();
         m_Owner->m_State = NORMAL;
     }
     
@@ -844,8 +846,8 @@ void Player::Impl::UpdateCommon() {
 
     m_Owner->GBUpdate();
 
-    if (m_pole)
-        m_pole->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation, 1.7f);
+    if (m_weapon)
+        m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation, 1.7f);
 
 }
 
@@ -877,9 +879,9 @@ void Player::Impl::UpdateDemo()
     {
         m_demoParam.demoAttackframe = (rand() % 180) + 60;
 
-        if (m_pole && m_Owner->m_State == NORMAL)
+        if (m_weapon && m_Owner->m_State == NORMAL)
         {
-            m_pole->Swing();
+            m_weapon->Swing();
             m_Owner->m_State = ATTACK;
 			m_attackkind = SWING;
         }

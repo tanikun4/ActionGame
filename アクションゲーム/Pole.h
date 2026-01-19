@@ -141,7 +141,7 @@ public:
 	void SetPosition(DirectX::SimpleMath::Vector3 pos);
 
 	void SetTrailSize(float _size) { trailSize = _size; };//軌跡エフェクトのサイズ設定
-
+	void SetTrailColor(DirectX::SimpleMath::Vector4 color);//軌跡エフェクトの色設定
 	int GetState();//状態を返す
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
@@ -149,7 +149,7 @@ public:
 	int GetStanceTime() { return m_stancetime; }
 	bool GetAttack() { return atkFg; }
 	bool GetMaxStance();
-	bool GetMaxSwing();
+	bool GetMaxAttack();
 
 
 	void TipToEffect(int _id, EffectParams _param);//先端からエフェクトを再生する

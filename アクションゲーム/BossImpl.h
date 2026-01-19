@@ -93,6 +93,7 @@ private:
 	DirectX::XMFLOAT2 stagesize;
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
 	std::vector<Bullet*> m_bullet;
+	std::vector<Projectile*> m_shot;
 	Pole* m_weapon;
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 	Vibration m_vib; // 振動用のクラス
@@ -104,9 +105,13 @@ private:
 	void Move();
 	void AttackUpdate();
 	void StunUpdate();
-	void SetArrow();
 	void Jump();
 	void StateReset();//状態リセット
+
+	void SetProjectile();
+	
+	void ProjectileCharge();
+	void ProjectileShot();
 
 	void DebugBossStatus();
 

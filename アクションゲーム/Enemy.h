@@ -1,6 +1,6 @@
 #pragma once
 #include "GolfBall.h"
-class Arrow;
+class Projectile;
 
 class Enemy :
     public GolfBall
@@ -11,7 +11,7 @@ private:
 	int m_State = 0;//状態　1で行動中
 	DirectX::XMFLOAT2 stagesize;
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
-	Arrow* m_arrow;
+	Projectile* m_arrow;
 
 	void Attack();
 	void SetArrow();

@@ -39,7 +39,7 @@ protected:
     DirectX::SimpleMath::Vector3 angle_debug{};//角度の補正値(デバッグ用)
 
     int atk = 1;//攻撃力
-    int flamecount = 0;//タイマー変数
+    int framecount = 0;//タイマー変数
 	bool pl = false;//プレイヤーの武器かどうか
 public:
     Weapon(Camera* cam);//コンストラクタ
