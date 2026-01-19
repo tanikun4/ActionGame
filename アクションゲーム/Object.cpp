@@ -75,6 +75,14 @@ Vector3 Object::GetScale() const
 	return m_Scale;
 }
 
+//=======================================
+//前進方向をゲット
+//=======================================
+Vector3 Object::GetForwardRotation() const
+{
+	return m_ForwardRotation;
+}
+
 //行列更新関数(見た目版)
 bool Object::UpdateDirectionVectors() 
 {

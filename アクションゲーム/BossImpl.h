@@ -52,6 +52,7 @@ private:
 		THREE_SWING,
 		JUMP_SPINSLASH,
 		JUMP_SPINSLASH_RUSH,
+		SONICBOOM_SHOT,
 
 		KIND_MAX
 	};
@@ -93,7 +94,7 @@ private:
 	DirectX::XMFLOAT2 stagesize;
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
 	std::vector<Bullet*> m_bullet;
-	std::vector<Projectile*> m_shot;
+	std::vector<Projectile*> m_projectile;
 	Pole* m_weapon;
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 	Vibration m_vib; // 振動用のクラス
@@ -111,6 +112,7 @@ private:
 	void SetProjectile();
 	
 	void ProjectileCharge();
+	void ProjectileChargeMax();
 	void ProjectileShot();
 
 	void DebugBossStatus();

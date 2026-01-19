@@ -40,7 +40,7 @@ protected:
 
     int atk = 1;//攻撃力
     int framecount = 0;//タイマー変数
-	bool pl = false;//プレイヤーの武器かどうか
+	bool pl = false;//プレイヤーの武器かどうか(trueで味方、falseで敵)
 public:
     Weapon(Camera* cam);//コンストラクタ
     Weapon();

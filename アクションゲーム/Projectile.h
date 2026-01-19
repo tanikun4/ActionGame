@@ -19,14 +19,20 @@ private:
 	//Collision::Sphere sphere { m_Position,m_Scale.x };
 
 	int m_state = 0;
-	int power = 0;//溜めた量
-	int charge_power = 1;//溜める速度
-	int maxpower = 180;//パワーの最大値
+	float power = 0;//溜めた量
+	float charge_power = 1;//溜める速度
+	float max_power = 180;//パワーの最大値
 	int shottime = 120;//飛んでいる時間
-	bool atkFg = false;//攻撃判定があるかどうか
+	int shottime_max = 120;//飛んでいる時間の最大値
+	int followOffset = 4;//持ち主からの距離
+	bool atkFg = false;//攻撃判定があるか
+	bool followFg = false;//持ち主に追従するか
+	Object* m_Owner = nullptr;//持ち主
 
 	Collision::OBB obb{ m_Position,m_Rotation,m_Scale };
 
+	void Move();//移動処理
+	void UpdateShot();//発射中の更新処理
 public:
 	Projectile(Camera* cam); // コンストラクタ
 	Projectile();
@@ -35,17 +41,17 @@ public:
 	void Update();
 	void Draw();
 	void Uninit();
-	void Move();//移動処理
 
-	void ChargeStart(DirectX::SimpleMath::Vector3 _pos,DirectX::SimpleMath::Vector3 _rot, int _power);//溜め開始
-	void MaxCharge(DirectX::SimpleMath::Vector3 _pos, DirectX::SimpleMath::Vector3 _rot, int _power);//最大まで溜める
-	void Shot(float _speed = 3,int _atk = 2,int _time = 120);//発射
+	void ChargeStart(DirectX::SimpleMath::Vector3 _pos,DirectX::SimpleMath::Vector3 _rot, float _power,bool _follow = false);//溜め開始
+	void MaxCharge(DirectX::SimpleMath::Vector3 _pos, DirectX::SimpleMath::Vector3 _rot, float _maxpower = 180, bool _follow = false);//最大まで溜める
+	void Shot(float _speed = 3,int _atk = 2,int _time = 120,bool _follow = false);//発射
 	void Stance(DirectX::SimpleMath::Vector3 _pos,DirectX::SimpleMath::Vector3 _rot, DirectX::SimpleMath::Vector3 _scale);//構え状態
-	
-	void UpdateShot();//発射中の更新処理
+	void Reflect(bool _pl);//反射関数
 	
 	// 状態の設定
 	void SetState(int s);
+	void SetOwner(Object* owner) { m_Owner = owner; }
+	void SetFollowFg(bool f) { followFg = f; }
 
 	// 矢印のベクトルを取得
 	DirectX::SimpleMath::Vector3 GetVector();

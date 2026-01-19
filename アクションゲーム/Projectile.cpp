@@ -89,8 +89,8 @@ void Projectile::Update()
 	case CHARGE:
 		power += charge_power;
 		// 最大値チェック
-		if(power > maxpower) {
-			power = maxpower;
+		if(power > max_power) {
+			power = max_power;
 			m_state = STANCE;
 		}
 		m_Scale.x = power * 0.01f;
@@ -100,6 +100,12 @@ void Projectile::Update()
 	case SHOT:
 		UpdateShot();
 		break;
+	}
+
+	if(followFg && m_Owner) {
+		// 持ち主に追従
+		Vector3 ownerForward = m_Owner->GetForwardRotation();
+		m_Position = m_Owner->GetPosition() + ownerForward * followOffset;
 	}
 
 	// OBB の更新
@@ -116,7 +122,7 @@ void Projectile::Update()
 //=======================================
 void Projectile::Draw()
 {
-	if (m_state == 0)return; // 非表示ならreturn
+	if (m_state == NOT_ACTIVE)return; // 非表示ならreturn
 
 	// SRT情報作成
 	Matrix r = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
@@ -200,34 +206,42 @@ Vector3 Projectile::GetVector()
 }
 
 // 溜め状態
-void Projectile::ChargeStart(Vector3 _pos, Vector3 _rot, int _power) {
+void Projectile::ChargeStart(Vector3 _pos, Vector3 _rot, float _power,bool _follow) {
+	m_Velocity_f = 0;
 	atkFg = false;
 	m_state = CHARGE;
 	m_Rotation = _rot;
 	m_Position = _pos;
 	charge_power = _power;
+	followFg = _follow;
 }
 
-void Projectile::MaxCharge(Vector3 _pos, Vector3 _rot, int _power) {
+void Projectile::MaxCharge(Vector3 _pos, Vector3 _rot, float _maxpower, bool _follow) {
+	m_Velocity_f = 0;
 	atkFg = false;
 	m_state = CHARGE;
 	m_Rotation = _rot;
 	m_Position = _pos;
-	power = _power;
+	max_power = _maxpower;
+	power = max_power;
+	followFg = _follow;
 }
 
 // 発射
-void Projectile::Shot(float _speed,int _atk ,int _time) {
+void Projectile::Shot(float _speed,int _atk ,int _time, bool _follow) {
 	m_state = SHOT;
 	m_Velocity_f = _speed;
 	atk = _atk;
 	shottime = _time; 
+	shottime_max = _time;
 	atkFg = true;
+	followFg = _follow;
 }
 
 
 // 構え状態
 void Projectile::Stance(Vector3 _pos,Vector3 _rot, Vector3 _scale) {
+	m_Velocity_f = 0;
 	m_state = STANCE;
 	m_Rotation = _rot;
 	m_Position = _pos;
@@ -248,9 +262,16 @@ int Projectile::GetState() {
 	return m_state;
 }
 
-
 Vector3 Projectile::GetForwardVector() { return m_ForwardVector; }
 
 Collision::ColliderVariant Projectile::GetCollision() {
 	return obb;
+}
+
+// 角度を反対方向にする
+void Projectile::Reflect(bool _pl) {
+	m_Rotation *= -1;
+	pl = _pl;
+	shottime = shottime_max;
+	return;
 }

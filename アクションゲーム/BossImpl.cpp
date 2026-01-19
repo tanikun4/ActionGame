@@ -5,7 +5,7 @@
 #include "Game.h"
 #include "Pole.h"
 #include "Collision.h"
-#include "Arrow.h"
+#include "Projectile.h"
 #include "Bullet.h"
 #include "DebugUI.h"
 #include "EffectManager.h"
@@ -81,6 +81,8 @@ void Boss::Impl::Init() {
 
 	// 武器の軌跡色をセット
 	m_weapon->SetTrailColor({ 1,0,1,1 });
+
+	SetProjectile();
 	
 	DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
@@ -239,14 +241,14 @@ void Boss::Impl::AttackUpdate() {
 			}
 		}
 		// 攻撃フェーズ、攻撃終了後、硬直へ
-		if (m_attackPhase == AttackPhase::ATTACK){
+		if (m_attackPhase == AttackPhase::ATTACK) {
 			if (m_weapon->GetMaxAttack()) {
 				m_attackPhase = AttackPhase::RECOVER;
 			}
 		}
 
 		// 硬直フェーズ、攻撃終了後しばらく硬直
-		if(m_attackPhase == AttackPhase::RECOVER) {
+		if (m_attackPhase == AttackPhase::RECOVER) {
 			if (m_attackframe > 15) {
 				m_attackPhase = AttackPhase::END;
 			}
@@ -254,7 +256,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		// 終了フェーズ、終了処理を行う
-		if(m_attackPhase == AttackPhase::END) {
+		if (m_attackPhase == AttackPhase::END) {
 			m_Owner->m_State = NORMAL;
 			m_attackframe = 0;
 			attack_kind = NONE;//攻撃終了
@@ -272,7 +274,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 		// 構えフェーズ、一定フレーム経過後、攻撃開始
 		if (m_attackPhase == AttackPhase::PREPARE) {
-			if(m_weapon->GetStanceTime() > 90) {
+			if (m_weapon->GetStanceTime() > 90) {
 				m_weapon->AttackStart();
 				m_attackframe = 0;
 				m_attackPhase = AttackPhase::ATTACK;
@@ -305,7 +307,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		// 終了フェーズ、終了処理を行う
-		if(m_attackPhase == AttackPhase::END) {
+		if (m_attackPhase == AttackPhase::END) {
 			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
 			m_attackframe = 0;
@@ -314,7 +316,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		break;
-	
+
 	case SWING_VERTICAL://縦振り
 
 		// 開始フェーズ
@@ -323,9 +325,9 @@ void Boss::Impl::AttackUpdate() {
 			rotate_speed = 0.1f;
 			m_attackPhase = AttackPhase::PREPARE;
 		}
-		
+
 		// 準備フェーズ、一定フレーム経過後、突進開始
-		if (m_attackPhase == AttackPhase::PREPARE){
+		if (m_attackPhase == AttackPhase::PREPARE) {
 			if (m_weapon->GetStanceTime() > 120) {
 				m_lookatFg = false;
 				m_ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
@@ -467,9 +469,9 @@ void Boss::Impl::AttackUpdate() {
 			m_rushFg = true;
 			m_attackPhase = AttackPhase::PREPARE;
 		}
-		
+
 		// 準備フェーズ、構えが完了したら攻撃開始、三回攻撃を繰り返す
-		if(m_attackPhase == AttackPhase::PREPARE) {
+		if (m_attackPhase == AttackPhase::PREPARE) {
 			// しばらく構えた後、攻撃に以降
 			if (m_weapon->GetStanceTime() > 60) {
 				m_attackPhase = AttackPhase::ATTACK;
@@ -513,7 +515,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		// 攻撃後処理、三回攻撃したら終了、そうでなければ準備フェーズに戻る
-		if(m_attackPhase == AttackPhase::FOLLOW) {
+		if (m_attackPhase == AttackPhase::FOLLOW) {
 			// 三回攻撃したら終了
 			if (m_attackcount >= 3) {
 				m_lookatFg = false;
@@ -525,7 +527,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		// 硬直フェーズ、終了フェーズに以降するまで硬直する
-		if(m_attackPhase == AttackPhase::RECOVER) {
+		if (m_attackPhase == AttackPhase::RECOVER) {
 			// 3回目の攻撃後、しばらくそのままで待機してから終了
 			if (m_attackframe > 90) {
 				m_attackPhase = AttackPhase::END;
@@ -534,7 +536,7 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		// 終了フェーズ、終了処理を行う
-		if(m_attackPhase == AttackPhase::END) {
+		if (m_attackPhase == AttackPhase::END) {
 			m_weapon->StanceEnd();
 			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
@@ -556,10 +558,10 @@ void Boss::Impl::AttackUpdate() {
 			move_speed = 0.1f;// 移動速度を下げる
 			m_attackPhase = AttackPhase::PREPARE;
 		}
-		
+
 		// 準備フェーズ
-		if(m_attackPhase == AttackPhase::PREPARE) {
-			if(m_attackframe > 30) {
+		if (m_attackPhase == AttackPhase::PREPARE) {
+			if (m_attackframe > 30) {
 				m_attackPhase = AttackPhase::ATTACK;
 				m_attackframe = 0;
 				m_Owner->m_Velocity_f = 0;//移動速度を0にする
@@ -583,17 +585,17 @@ void Boss::Impl::AttackUpdate() {
 
 			m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
 
-			if(!m_AngleAnim.IsPlaying()) {
+			if (!m_AngleAnim.IsPlaying()) {
 				m_Owner->m_Rotation.x = 0;
 				m_weapon->AttackEnd();
 				m_weapon->Stance(15, (int)StanceMode::VERTICAL);
 				m_attackPhase = AttackPhase::FOLLOW;
 			}
-			
+
 		}
 
 		// 追撃フェーズ
-		if(m_attackPhase == AttackPhase::FOLLOW) {
+		if (m_attackPhase == AttackPhase::FOLLOW) {
 			if (m_weapon->GetStanceTime() > 90) {
 				m_weapon->StanceEnd();
 				// 攻撃開始
@@ -623,12 +625,12 @@ void Boss::Impl::AttackUpdate() {
 		}
 
 		// 攻撃終了
-		if(m_Owner->is_GROUND && m_rushFg) {
+		if (m_Owner->is_GROUND && m_rushFg) {
 			m_attackPhase = AttackPhase::END;
 		}
 
 		// 攻撃終了処理
-		if(m_attackPhase == AttackPhase::END) {
+		if (m_attackPhase == AttackPhase::END) {
 			m_weapon->AttackEnd();
 			m_Owner->m_State = NORMAL;
 			m_stateframe = 0;
@@ -709,6 +711,61 @@ void Boss::Impl::AttackUpdate() {
 
 		break;
 
+	case SONICBOOM_SHOT: //衝撃波発射
+		if (m_attackPhase == AttackPhase::ENTER) {
+			// 衝撃波の構え
+			ProjectileCharge();
+			m_weapon->Stance();
+			m_attackcount = 0;
+			m_attackframe = 0;
+			rotate_speed = 0.3f;
+			m_attackPhase = AttackPhase::PREPARE;
+		}
+
+		if (m_attackPhase == AttackPhase::PREPARE) {
+			++m_attackframe;
+			if (m_attackframe > 150) {
+				m_attackPhase = AttackPhase::ATTACK;
+			}
+		}
+
+		if (m_attackPhase == AttackPhase::ATTACK) {
+			// 衝撃波発射
+			ProjectileShot();
+			m_weapon->Swing();
+			m_attackcount++;
+			m_attackframe = 0;
+			m_attackPhase = AttackPhase::FOLLOW;
+			Sound::GetInstance()->Play(SOUND_SE_SWING);
+		}
+
+		if (m_attackPhase == AttackPhase::FOLLOW)
+		{
+			++m_attackframe;
+			if (m_attackframe > 60) {
+				m_weapon->SwingEnd();
+				if (m_attackcount >= 5) {
+					m_attackPhase = AttackPhase::END;
+				}
+				else {
+					m_weapon->Stance();
+					ProjectileChargeMax();
+					m_attackPhase = AttackPhase::ATTACK;
+				}
+			}
+		}
+
+		if (m_attackPhase == AttackPhase::END)
+		{
+			m_weapon->StanceEnd();
+			m_attackframe = 0;
+			m_attackcount = 0;
+			rotate_speed = 0.01f;
+			attack_kind = NONE;//攻撃終了
+		}
+	
+
+		break;
 
 	case KIND_MAX:
 		m_Owner->m_State = NORMAL;
@@ -811,9 +868,42 @@ void Boss::Impl::Move(){
 // 弾のセットアップ
 void Boss::Impl::SetProjectile(){
 	for (int i = 0; i < 5; ++i) {
-		m_shot.emplace_back(Game::GetInstance()->AddObject<Projectile>());
+		m_projectile.emplace_back(Game::GetInstance()->AddObject<Projectile>());
+		m_projectile.back()->SetPl(false);
+		m_projectile.back()->SetOwner(m_Owner);
 	}
-		
+}
+
+// 飛び道具のチャージ開始
+void Boss::Impl::ProjectileCharge() {
+	for (auto& pr : m_projectile)
+	{
+		if (pr->GetState() == 0) {
+			pr->ChargeStart(m_Owner->m_Position, m_Owner->m_Rotation,1.0f,true);
+			break;
+		}
+	}
+}
+
+void Boss::Impl::ProjectileChargeMax() {
+	for (auto& pr : m_projectile)
+	{
+		if (pr->GetState() == 0) {
+			pr->MaxCharge(m_Owner->m_Position, m_Owner->m_Rotation);
+			break;
+		}
+	}
+}
+
+// 飛び道具の発射開始
+void Boss::Impl::ProjectileShot() {
+	for (auto& pr : m_projectile)
+	{
+		if (pr->GetState() == 2) {
+			pr->Shot();
+			break;
+		}
+	}
 }
 
 // ジャンプ処理

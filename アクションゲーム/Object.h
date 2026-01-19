@@ -54,6 +54,7 @@ public:
 	virtual void OnHit(class Boss* boss) {}    
 	virtual void OnHit(class Pole* pole) {}    
 	virtual void OnHit(class Bullet* bullet) {} 
+	virtual void OnHit(class Projectile* projectile) {}
 	virtual void OnHit(class GolfBall* ball) {} 
 	virtual void OnHit(class TestCube* cube) {};
 
@@ -68,5 +69,6 @@ public:
 	DirectX::SimpleMath::Vector3 GetPosition() const;
 	DirectX::SimpleMath::Vector3 GetRotation() const;
 	DirectX::SimpleMath::Vector3 GetScale() const;
+	DirectX::SimpleMath::Vector3 GetForwardRotation() const;
 
 };
