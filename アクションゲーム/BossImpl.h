@@ -33,6 +33,7 @@ public:
 	void OnHit(Pole* pole);
 	void OnHit(Bullet* bu);
 	void OnHit(TestCube* cube);
+	void OnHit(Projectile* pr);
 private:
 	// 所有者とカメラ参照
 	Boss* m_Owner = nullptr;
@@ -81,6 +82,7 @@ private:
 	int attack_kind = 0;//攻撃の種類
 	int m_attackframe = 0;//攻撃時間
 	int m_attackcount = 0;//攻撃回数のカウント
+	int m_rand = 0;// 現在の乱数値
 	bool notUpdate = false;//更新を止めるかどうか
 	bool m_lookatFg = true;//プレイヤーへの追従をするかどうか
 	bool m_rushFg = false;//突進しているかどうか
@@ -100,19 +102,22 @@ private:
 	Vibration m_vib; // 振動用のクラス
 	AngleAnim m_AngleAnim;
 
-	//const float gravity = -0.007f;
-
-	void LookAt(DirectX::SimpleMath::Vector3);
+	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	void Move();
 	void AttackUpdate();
 	void StunUpdate();
 	void Jump();
 	void StateReset();//状態リセット
 
-	void SetProjectile();
 	
+	// 飛び道具関連
+	void SetProjectile();
+	// 飛び道具構え
 	void ProjectileCharge();
+	void ProjectileCharge_VT();
 	void ProjectileChargeMax();
+	void ProjectileChargeMax_VT();
+	// 飛び道具発射
 	void ProjectileShot();
 
 	void DebugBossStatus();

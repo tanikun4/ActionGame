@@ -45,14 +45,15 @@ public:
 	void MaxCharge(DirectX::SimpleMath::Vector3 _pos, DirectX::SimpleMath::Vector3 _rot, float _maxpower = 100, bool _follow = false);//最大まで溜める
 	void Shot(float _speed = 3,int _atk = 2,int _time = 120,bool _follow = false);//発射
 	void Stance(DirectX::SimpleMath::Vector3 _pos,DirectX::SimpleMath::Vector3 _rot, DirectX::SimpleMath::Vector3 _scale);//構え状態
-	void Reflect(bool _pl);//反射関数
-	
+	void Reflect(bool _pl,int _atk = 5);//反射関数
 	// 状態の設定
 	void SetState(int s);
 	void SetOwner(Object* owner) { m_Owner = owner; }
 	void SetFollowFg(bool f) { followFg = f; }
 	void SetOBBScale(DirectX::SimpleMath::Vector3 _scale) { obb = {m_Position,m_Rotation,_scale}; }
 	void SetOffset(DirectX::SimpleMath::Vector3 off) { m_offset = off; }
+
+	void Reset();//状態をリセットする
 
 	// 矢印のベクトルを取得
 	DirectX::SimpleMath::Vector3 GetVector();

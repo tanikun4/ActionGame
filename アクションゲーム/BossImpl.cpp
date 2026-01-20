@@ -62,7 +62,7 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 
 	for (auto& p : m_projectile) {
 		p->SetOffset(projectile_offset);
-		//p->SetOBBScale(projectile_OBB_scale);
+		p->SetOBBScale(projectile_OBB_scale);
 	}
 
 	if (update) {
@@ -723,9 +723,16 @@ void Boss::Impl::AttackUpdate() {
 
 	case SONICBOOM_SHOT: //衝撃波発射
 		if (m_attackPhase == AttackPhase::ENTER) {
-			// 衝撃波の構え
-			ProjectileCharge();
-			m_weapon->Stance();
+			m_rand = rand() % 2;
+			// 衝撃波の構え、ランダムでモーション分岐
+			if (m_rand == 1) {
+				ProjectileCharge();
+				m_weapon->Stance();
+			}
+			else {
+				ProjectileCharge_VT();
+				m_weapon->Stance(18,(int)StanceMode::VERTICAL);
+			}
 			m_attackcount = 0;
 			m_attackframe = 0;
 			rotate_speed = 0.3f;
@@ -741,37 +748,65 @@ void Boss::Impl::AttackUpdate() {
 
 		if (m_attackPhase == AttackPhase::ATTACK) {
 			// 衝撃波発射
+			m_lookatFg = false;
 			ProjectileShot();
-			m_weapon->Swing();
+			// モーション分岐、構え時から乱数を変えていないので構えに応じた振り方になる
+			if (m_rand == 1) {
+				m_weapon->Swing();
+			}
+			else {
+				m_weapon->Swing_Vertical();
+			}
 			m_attackcount++;
 			m_attackframe = 0;
-			m_attackPhase = AttackPhase::FOLLOW;
+			// 5回発射したら硬直へ
+			if (m_attackcount >= 5) {
+				m_attackPhase = AttackPhase::RECOVER;
+			}
+			else {
+				m_attackPhase = AttackPhase::FOLLOW;
+			}
 			Sound::GetInstance()->Play(SOUND_SE_SWING);
 		}
 
 		if (m_attackPhase == AttackPhase::FOLLOW)
 		{
 			++m_attackframe;
-			if (m_attackframe > 60) {
+			if (m_weapon->GetMaxAttack()) {
+				m_lookatFg = true;
 				m_weapon->SwingEnd();
-				if (m_attackcount >= 5) {
-					m_attackPhase = AttackPhase::END;
+				m_rand = rand() % 2;
+				// 次の衝撃波の構え、ランダムでモーション分岐
+				if (m_rand == 1) {
+					m_weapon->Stance();
+					ProjectileChargeMax();
 				}
 				else {
-					//m_weapon->Stance();
-					ProjectileChargeMax();
-					m_attackPhase = AttackPhase::ATTACK;
+					m_weapon->Stance(18,(int)StanceMode::VERTICAL);
+					ProjectileChargeMax_VT();
 				}
+			}
+			if (m_attackframe > 60) {
+				m_attackPhase = AttackPhase::ATTACK;
+			}
+		}
+
+		if(m_attackPhase == AttackPhase::RECOVER)
+		{
+			++m_attackframe;
+			if (m_attackframe > 90) {
+				m_attackPhase = AttackPhase::END;
 			}
 		}
 
 		if (m_attackPhase == AttackPhase::END)
 		{
-			m_weapon->StanceEnd();
+			m_weapon->SwingEnd();
 			m_attackframe = 0;
 			m_attackcount = 0;
 			rotate_speed = 0.01f;
 			attack_kind = NONE;//攻撃終了
+			m_lookatFg = true;
 			m_attackPhase = AttackPhase::ENTER;
 		}
 	
@@ -890,6 +925,7 @@ void Boss::Impl::ProjectileCharge() {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == 0) {
+			pr->SetPl(false);
 			pr->ChargeStart(m_Owner->m_Position, m_Owner->m_Rotation,1.0f,true);
 			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2});
 			break;
@@ -897,10 +933,27 @@ void Boss::Impl::ProjectileCharge() {
 	}
 }
 
+// 飛び道具のチャージ開始、縦
+void Boss::Impl::ProjectileCharge_VT() {
+	for (auto& pr : m_projectile)
+	{
+		if (pr->GetState() == 0) {
+			Vector3 rot = m_Owner->m_Rotation;
+			rot.z += PI * 0.5f;
+			pr->SetPl(false);
+			pr->ChargeStart(m_Owner->m_Position, rot, 1.0f, true);
+			pr->SetOffset({ 0 ,0,m_Owner->radius * 2 });
+			break;
+		}
+	}
+}
+
+// 飛び道具の最大チャージ
 void Boss::Impl::ProjectileChargeMax() {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == 0) {
+			pr->SetPl(false);
 			pr->MaxCharge(m_Owner->m_Position, m_Owner->m_Rotation,100,true);
 			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2 });
 			break;
@@ -908,7 +961,22 @@ void Boss::Impl::ProjectileChargeMax() {
 	}
 }
 
-// 飛び道具の発射開始
+// 飛び道具の最大チャージ、縦
+void Boss::Impl::ProjectileChargeMax_VT() {
+	for (auto& pr : m_projectile)
+	{
+		if (pr->GetState() == 0) {
+			Vector3 rot = m_Owner->m_Rotation;
+			rot.z += PI * 0.5f;
+			pr->SetPl(false);
+			pr->MaxCharge(m_Owner->m_Position, rot, 100, true);
+			pr->SetOffset({ 0 ,0,m_Owner->radius * 2 });
+			break;
+		}
+	}
+}
+
+// 飛び道具の発射
 void Boss::Impl::ProjectileShot() {
 	for (auto& pr : m_projectile)
 	{
@@ -943,6 +1011,12 @@ void Boss::Impl::OnHit(Pole* po) {
 void Boss::Impl::OnHit(Bullet* bu) {
 	if (!bu->GetPl()) return;
 	Damage(bu->GetAtk());
+	return;
+}
+
+void Boss::Impl::OnHit(Projectile* pr) {
+	if (!pr->GetPl()) return;
+	Damage(pr->GetAtk());
 	return;
 }
 

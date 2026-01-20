@@ -143,7 +143,7 @@ void Player::Impl::OnHit(Bullet* bu) {
 //飛び道具と当たった場合
 void Player::Impl::OnHit(Projectile* pr) {
     if (pr->GetPl()) return;
-    if (pr->GetAtkFg())return;
+    if (!pr->GetAtkFg()) return;
 	// ジャストガードに成功したら反射する
     if (GuardFg && guardcount < justguardframe) { pr->Reflect(true); return; }
     Damage(pr->GetAtk());

@@ -34,5 +34,6 @@ public:
 	void OnHit(Pole* pole);
 	void OnHit(Bullet* bu);
 	void OnHit(TestCube* cube);
+	void OnHit(Projectile* pr);
 };
 

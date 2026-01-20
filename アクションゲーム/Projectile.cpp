@@ -77,9 +77,9 @@ void Projectile::Init()
 	m_live = false;
 
 	obb = {
-	m_Position,
-	m_Rotation,
-	m_Scale
+		{0,0,0},
+		{0,0,0},
+		{0,0,0}
 	};
 }
 
@@ -90,10 +90,12 @@ void Projectile::Update()
 {
 	switch (m_state)
 	{
-	case NOT_ACTIVE:
+	case NOT_ACTIVE: // 非表示
 		return;
 		break;
-	case CHARGE:
+	case STANCE: // 構え、チャージ完了で移行する
+		break;
+	case CHARGE:// チャージ中
 		power += charge_power;
 		// 最大値チェック
 		if(power >= max_power) {
@@ -102,9 +104,7 @@ void Projectile::Update()
 		}
 		m_Scale.x = power * 0.01f;
 		break;
-	case STANCE:
-		break;
-	case SHOT:
+	case SHOT: // 発射
 		UpdateShot();
 		break;
 	}
@@ -113,7 +113,7 @@ void Projectile::Update()
 		// 持ち主に追従
 		Vector3 ownerForward = m_Owner->GetForwardRotation();
 		m_Position = m_Owner->GetPosition() + ownerForward * m_offset;
-		m_Rotation = ownerForward;
+		m_Rotation.y = ownerForward.y;
 
 		//位置計算
 		float yaw = ownerForward.y; // 横回転（Y軸）
@@ -230,7 +230,7 @@ Vector3 Projectile::GetVector()
 	return res;
 }
 
-// 溜め状態
+// 溜め開始
 void Projectile::ChargeStart(Vector3 _pos, Vector3 _rot, float _power,bool _follow) {
 	m_live = true;
 	m_Velocity_f = 0;
@@ -242,6 +242,7 @@ void Projectile::ChargeStart(Vector3 _pos, Vector3 _rot, float _power,bool _foll
 	followFg = _follow;
 }
 
+// 最大溜め
 void Projectile::MaxCharge(Vector3 _pos, Vector3 _rot, float _maxpower, bool _follow) {
 	m_live = true;
 	m_Velocity_f = 0;
@@ -298,10 +299,25 @@ Collision::ColliderVariant Projectile::GetCollision() {
 }
 
 // 角度を反対方向にする
-void Projectile::Reflect(bool _pl) {
-	m_ForwardRotation *= -1;
+void Projectile::Reflect(bool _pl,int _atk) {
+	m_ForwardRotation += {PI, PI, PI};
 	m_Rotation = m_ForwardRotation;
 	pl = _pl;
+	atk = _atk;
 	shottime = shottime_max;
 	return;
+}
+
+void Projectile::Reset() {
+	m_state = NOT_ACTIVE;
+	m_live = false;
+	power = 0;
+	atkFg = false;
+	followFg = false;
+	m_Velocity_f = 0;
+	obb = {
+		{0,0,0},
+		{0,0,0},
+		{0,0,0}
+	};
 }

@@ -38,4 +38,6 @@ void Boss::OnHit(Pole* po) { impl->OnHit(po); }
 
 void Boss::OnHit(Bullet* bu) { impl->OnHit(bu); }
 
+void Boss::OnHit(Projectile* pr) { impl->OnHit(pr); }
+
 void Boss::OnHit(TestCube* cube) { impl->OnHit(cube); }
