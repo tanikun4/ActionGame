@@ -767,12 +767,14 @@ void Player::Impl::UpdateDodge() {
     m_Owner->m_Velocity_f = speed * 2.0f;
     ++rollcount;
     if (rollcount % 3 == 0) {
-        // 土煙エフェクト再生
+        // 残像エフェクト再生
         EffectParams   param;
         param.pos = m_Owner->m_Position;
-        param.scale = m_Owner->m_Scale * 20;
-        param.maxLife = 30;
-        EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI, param);
+		param.rot = m_Owner->m_Rotation;
+        param.scale = m_Owner->m_Scale;
+        param.maxLife = 10;
+		param.color = { 0,0,1,0.3f };
+        EffectManager::GetInstance()->Play(EFFECT_PLAYER, param);
     }
     if (rollcount > 10) {
         RollFg = false;

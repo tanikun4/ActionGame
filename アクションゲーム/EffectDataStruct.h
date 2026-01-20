@@ -41,6 +41,9 @@ struct EffectParams
 
     DirectX::SimpleMath::Vector3 scale = { 1,1,1 };                                 // 開始スケール
 	DirectX::SimpleMath::Vector3 scale_amount = { 0,0,0 };                          // スケール変化量(2Dで使う場合はxyのみを使用)
+
+	DirectX::SimpleMath::Vector4 color = { 1,1,1,1 }; // 色情報 
+
     int maxLife = 10;                             // 寿命
     int change_posFrame = 0;                     // 座標変化開始フレーム
     int change_rotFrame = 0;                     // 回転変化開始フレーム

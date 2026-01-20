@@ -308,6 +308,7 @@ void Projectile::Reflect(bool _pl,int _atk) {
 	return;
 }
 
+// ƒŠƒZƒbƒgˆ—
 void Projectile::Reset() {
 	m_state = NOT_ACTIVE;
 	m_live = false;

@@ -38,7 +38,7 @@ public:
 		DirectX::SimpleMath::Vector3 _pos_amount, int _pos_changeframe,
 		DirectX::SimpleMath::Vector3 _rot_amount, int _rot_changeframe,
 		DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe,
-		bool _endless);//本来の初期化処理
+		DirectX::SimpleMath::Vector4 _color, bool _endless);//本来の初期化処理
 	void Init() {};//オーバーライド用ダミー定義
 	void Update();
 	void Draw();

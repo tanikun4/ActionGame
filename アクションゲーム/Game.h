@@ -29,7 +29,9 @@ private:
 	std::unique_ptr<Input> m_Input;  // 入力処理
 	std::unique_ptr<Camera> m_Camera; // カメラ
 	std::unique_ptr<WireRenderer> m_WireRenderer; // ワイヤーレンダラー
-
+	int stopframe = 3;//ヒットストップのフレーム
+	int framecount = 0;
+	bool stop = false;// trueの間はオブジェクトのUpdateを止める
 	bool change_request = false; // シーン変更要求
 	SceneName m_NextScene;
 
@@ -45,6 +47,7 @@ public:
 	
 	static Game* GetInstance();
 
+	void HitStop();
 	void ChangeScene(SceneName sName); // シーンを変更
 	void ChangeSceneFadeOut(SceneName sName); // フェードアウトしてシーンを変更
 	Camera& GetCamera(); // カメラ取得

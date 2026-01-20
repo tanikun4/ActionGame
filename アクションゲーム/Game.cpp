@@ -84,12 +84,22 @@ void Game::Update()
 	//エフェクトマネージャ更新
 	EffectManager::Update();
 
-	// オブジェクト更新
-	for (auto& o : m_Instance->m_Objects)
-	{
-		o->Update();
-	}
 
+	if (!m_Instance->stop) {
+		// オブジェクト更新
+		for (auto& o : m_Instance->m_Objects)
+		{
+			o->Update();
+		}
+
+	}
+	else {
+		++m_Instance->framecount;
+		if (m_Instance->framecount > m_Instance->stopframe) {
+			m_Instance->stop = false;
+
+		}
+	}
 
 	if (Input::GetKeyTrigger(VK_O)) { // デバッグモード切り替え
 		m_Instance->debugmode = !m_Instance->debugmode;
@@ -244,6 +254,13 @@ void Game::DeleteAllObject()
 
 	m_Instance->m_Objects.clear(); //全て削除
 	m_Instance->m_Objects.shrink_to_fit();
+}
+
+void Game::HitStop()
+{
+	stop = true;
+	framecount = 0;
+	m_Camera->StartVibration(4.0f, PI * 0.5f, 3);//	カメラを揺らす
 }
 
 void Game::ChangeSceneFadeOut(SceneName sName)// フェードアウト完了後にシーンを変更するための準備をする

@@ -197,6 +197,8 @@ void Boss::Impl::Damage(int _atk) {
 
 	// SEÄ¶
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
+	// ƒqƒbƒgƒXƒgƒbƒvˆ—
+	Game::GetInstance()->HitStop();
 }
 
 void Boss::Impl::LookAt(Vector3 ta_pos) {
@@ -759,7 +761,7 @@ void Boss::Impl::AttackUpdate() {
 			}
 			m_attackcount++;
 			m_attackframe = 0;
-			// 5‰ñ”­ŽË‚µ‚½‚çd’¼‚Ö
+			// 5‰ñ”­ŽË‚µ‚½‚çd’¼‚ÖA‚»‚¤‚Å‚È‚¯‚ê‚ÎŽŸ‚ÌUŒ‚‚Ì\‚¦‚ÉˆÚ‚é
 			if (m_attackcount >= 5) {
 				m_attackPhase = AttackPhase::RECOVER;
 			}

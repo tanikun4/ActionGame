@@ -60,6 +60,7 @@ void EffectTrail::Update()
     }
 }
 
+// ƒ|ƒCƒ“ƒg’Ç‰Á
 void EffectTrail::AddPoint(const Vector3& base, const Vector3& tip)
 {
 
@@ -71,7 +72,7 @@ void EffectTrail::AddPoint(const Vector3& base, const Vector3& tip)
     p.tip = tip;
     p.life = m_LifeTime;
 
-    m_Points.push_back(p);
+    m_Points.emplace_back(p);
 	m_Change = true;
 
 }
@@ -100,18 +101,18 @@ void EffectTrail::BuildMesh()
         v0.uv = Vector2(0, (float)i / m_Points.size());
         v1.uv = Vector2(1, (float)i / m_Points.size());
 
-        m_Vertices.push_back(v0);
-        m_Vertices.push_back(v1);
+        m_Vertices.emplace_back(v0);
+        m_Vertices.emplace_back(v1);
 
         if (i > 0)
         {
-            m_Indices.push_back(index - 2);
-            m_Indices.push_back(index - 1);
-            m_Indices.push_back(index);
-
-            m_Indices.push_back(index);
-            m_Indices.push_back(index - 1);
-            m_Indices.push_back(index + 1);
+            m_Indices.emplace_back(index - 2);
+            m_Indices.emplace_back(index - 1);
+            m_Indices.emplace_back(index);
+                      
+            m_Indices.emplace_back(index);
+            m_Indices.emplace_back(index - 1);
+            m_Indices.emplace_back(index + 1);
         }
 
         index += 2;

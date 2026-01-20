@@ -39,7 +39,7 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	DirectX::SimpleMath::Vector3 _pos_amount, int _pos_changeframe,
 	DirectX::SimpleMath::Vector3 _rot_amount, int _rot_changeframe,
 	DirectX::SimpleMath::Vector3 _scale_amount, int _scale_changeframe,
-	bool _endless)
+	DirectX::SimpleMath::Vector4 _color,bool _endless)
 {
 	// 頂点バッファ取得
 	m_VertexBuffer = shared_data.m_2DVertexBuffer.get();
@@ -52,6 +52,7 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 
 	// テクスチャ情報取得(単体)
 	m_Texture = data.textures.back().get();
+	m_Materiale.get()->SetDiffuse(_color);
 
 	m_NumU = 1;
 	m_NumV = 1;

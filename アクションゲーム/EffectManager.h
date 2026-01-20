@@ -10,7 +10,7 @@ constexpr int EFFECT_POOLSIZE_2D = 10;
 constexpr int EMITTER_POOLSIZE_2D = 5;
 
 enum Effect{
-	EFFECT_TEST3D = 0,
+	EFFECT_PLAYER = 0,
 	EFFECT_SLASH,
 	EFFECT_FIRE,
 	EFFECT_SPARK,
