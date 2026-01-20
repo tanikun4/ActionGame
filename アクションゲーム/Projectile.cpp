@@ -300,7 +300,7 @@ Collision::ColliderVariant Projectile::GetCollision() {
 
 // Šp“x‚ð”½‘Î•ûŒü‚É‚·‚é
 void Projectile::Reflect(bool _pl,int _atk) {
-	m_ForwardRotation += {PI, PI, PI};
+	m_ForwardRotation.y += PI;
 	m_Rotation = m_ForwardRotation;
 	pl = _pl;
 	atk = _atk;

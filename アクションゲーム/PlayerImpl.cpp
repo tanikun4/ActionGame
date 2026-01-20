@@ -129,14 +129,19 @@ void Player::Impl::OnHit(Pole* po) {
     if (po->GetPl()) return;
     //if(RollFg && rollcount < 5 && po->GetAttackTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
     //if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
-    if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Parry(); return; } // ガードの初めに攻撃を受けたら相手を行動不能にする
+     // ジャストガード成功で相手を行動不能にする
+    if (GuardFg && guardcount <= justguardframe && po->GetAttackTime() < 10) { 
+        BossStan();
+        Parry(); 
+        return; 
+    }
     Damage(damage);
 }
 
 //弾と当たった場合
 void Player::Impl::OnHit(Bullet* bu) {
     if (bu->GetPl()) return;
-    if (GuardFg && guardcount < justguardframe) { Counter(); return; }
+    if (GuardFg && guardcount <= justguardframe) { Counter(); return; }
     Damage(bu->GetAtk());
 }
 
@@ -145,7 +150,11 @@ void Player::Impl::OnHit(Projectile* pr) {
     if (pr->GetPl()) return;
     if (!pr->GetAtkFg()) return;
 	// ジャストガードに成功したら反射する
-    if (GuardFg && guardcount < justguardframe) { pr->Reflect(true); return; }
+    if (GuardFg && guardcount <= justguardframe) {
+        Parry();
+        pr->Reflect(true); 
+        return; 
+    }
     Damage(pr->GetAtk());
 }
 
@@ -644,14 +653,20 @@ void Player::Impl::Counter() {
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 }
 
-// パリィ処理
-void Player::Impl::Parry() {
+void Player::Impl::BossStan() {
+    // ボスの動きを止める
     auto bosses = Game::GetInstance()->GetObjects<Boss>();
     if (!bosses.empty()) {
         Boss* boss = bosses[0];
         boss->Stun(m_Owner->m_ForwardRotation);
     }
+}
+
+// パリィ処理
+void Player::Impl::Parry() {
+    //状態変化し、攻撃判定のないスイングを行う
     GuardFg = false;
+	speed = 1.0f;
     if (m_weapon) m_weapon->GuardEnd();
 
     m_Owner->m_State = PARRY;

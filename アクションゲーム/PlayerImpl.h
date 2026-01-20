@@ -123,6 +123,7 @@ private:
     void Counter();
     void Jump();
     void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
+    void BossStan();// ボスの動きを止める
 	void Parry();//ジャストガード処理
 
 	// 回転斬り攻撃開始 
