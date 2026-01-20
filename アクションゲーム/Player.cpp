@@ -21,4 +21,5 @@ Pole* Player::GetWeapon() { return impl->GetWeapon(); }
 void Player::OnHit(Boss* bo) { impl->OnHit(bo); }
 void Player::OnHit(Pole* po) { impl->OnHit(po); }
 void Player::OnHit(Bullet* bu) { impl->OnHit(bu); }
+void Player::OnHit(Projectile* pr) { impl->OnHit(pr); }
 void Player::OnHit(TestCube* cube) { impl->OnHit(cube); }

@@ -258,7 +258,6 @@ void Game::ChangeSceneFadeOut(SceneName sName)// ƒtƒF[ƒhƒAƒEƒgŠ®—¹Œã‚ÉƒV[ƒ“‚ğ•
 // “n‚³‚ê‚½ƒIƒuƒWƒFƒNƒg‘S‚Ä‚ÌÕ“Ë”»’è‚ğs‚¤
 void Game::CollisionObject(std::vector<Object*>& Object)
 {
-
 	for (size_t i = 0; i < Object.size(); ++i) {
 		auto a = Object[i];
 		if (!a->GetLive()) { continue; };

@@ -8,6 +8,7 @@ class Boss;
 class Bullet;
 class TestCube;
 class PlayerImpl;
+class Projectile;
 
 class Player : public GolfBall
 {
@@ -30,6 +31,7 @@ public:
     void OnHit(Boss* bo);
     void OnHit(Pole* po);
     void OnHit(Bullet* bu);
+	void OnHit(Projectile* pr);
     void OnHit(TestCube* cube);
     void OnHit(Object* ob) override {};
 

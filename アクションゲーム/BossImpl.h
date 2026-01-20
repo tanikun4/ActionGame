@@ -27,7 +27,7 @@ public:
 	void ShotBullet();
 	bool GetLive();
 	int GetHP();
-
+	
 	Pole* GetWeapon();
 
 	void OnHit(Pole* pole);

@@ -5,7 +5,7 @@
 #include "Boss.h"
 #include "Ground.h"
 #include "Texture2D.h"
-//#include "Arrow.h"
+#include "Projectile.h"
 #include "Bullet.h"
 #include "Pole.h"
 #include "EnemyManager.h"
@@ -102,11 +102,20 @@ void Stage1Scene::Init()
 		bullet->SetState(0); // //弾を非表示
 	}
 
+	// 武器の取得
 	std::vector<Pole*> weapons = Game::GetInstance()->GetObjects<Pole>();
 	m_MySceneObjects.insert(
 		m_MySceneObjects.end(),    // 挿入位置
 		weapons.begin(),        // 挿入する範囲の開始
 		weapons.end()           // 挿入する範囲の終了
+	);
+
+	// 飛び道具の取得
+	std::vector<Projectile*> projectiles = Game::GetInstance()->GetObjects<Projectile>();
+	m_MySceneObjects.insert(
+		m_MySceneObjects.end(),    // 挿入位置
+		projectiles.begin(),        // 挿入する範囲の開始
+		projectiles.end()           // 挿入する範囲の終了
 	);
 
 	//壁の設置
@@ -116,10 +125,10 @@ void Stage1Scene::Init()
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
 	pt1->SetTexture("assets/texture/ui_back.png"); // 画像を指定
 	pt1->SetPosition(-560.0f, -300.0f, 0.0f); // 位置を設定
-	pt1->SetScale(100.0f, 100.0f, 0.0f); // 大きさを指定
+	pt1->SetScale(100.0f, 100.0f, 0.0f); // 大きさを指定d
 	m_MySceneObjects.emplace_back(pt1);
 
-	// UI(敵の数)
+	// UI(ボスHP文字)
 	Texture2D* pt2 = Game::GetInstance()->AddObject<Texture2D>();
 	pt2->SetTexture("assets/texture/ui_BossHP.png"); // 画像を指定
 	pt2->SetPosition(350.0f, 300.0f, 0.0f); // 位置を設定
@@ -135,7 +144,7 @@ void Stage1Scene::Init()
 	pt4->SetUV(m_Par + 1, 1, 10, 1); //UVを指定
 	m_MySceneObjects.emplace_back(pt4);
 
-	// UI(敵の数 1桁目)
+	// UI(ボスHP 1桁目)
 	Texture2D* pt5 = Game::GetInstance()->AddObject<Texture2D>();
 	pt5->SetTexture("assets/texture/number.png"); // 画像を指定
 	pt5->SetPosition(565.0f, 300.0f, 0.0f); // 位置を設定
@@ -143,7 +152,7 @@ void Stage1Scene::Init()
 	pt5->SetUV(2, 1, 10, 1); //UVを指定
 	m_MySceneObjects.emplace_back(pt5);
 
-	// UI(敵の数 2桁目)
+	// UI(ボスHP 2桁目)
 	Texture2D* pt6 = Game::GetInstance()->AddObject<Texture2D>();
 	pt6->SetTexture("assets/texture/number.png"); // 画像を指定
 	pt6->SetPosition(485.0f, 300.0f, 0.0f); // 位置を設定

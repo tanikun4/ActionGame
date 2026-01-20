@@ -9,7 +9,7 @@ class Weapon;
 enum WeaponType
 {
     POLE = 0,
-    ARROW,
+    PROJECTILE,
     SHIELD,
 
     WEAPON_MAX

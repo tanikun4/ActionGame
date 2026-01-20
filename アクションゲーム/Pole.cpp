@@ -133,8 +133,8 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 	}
 
 	//位置計算
-	float yaw = rotation.y + angle_debug.y; // 横回転（Y軸）
-	float pitch = rotation.x + angle_debug.x; // 縦回転（X軸）
+	float yaw = rotation.y; // 横回転（Y軸）
+	float pitch = rotation.x ; // 縦回転（X軸）
 
 	Vector3 forward;
 	forward.x = cosf(pitch) * sinf(yaw);

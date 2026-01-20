@@ -54,6 +54,16 @@ void Boss::Impl::DebugBossStatus() {//ƒ{ƒX‚Ìó‘Ô‚ð‘€ì‚·‚é
 		m_Owner->m_Velocity_f = 0;
 		attack_kind = debug_attack_kind;
 	}
+	static Vector3 projectile_offset = {0,-4,16};
+	ImGui::SliderFloat3("Projectile Offset", &projectile_offset.x,-30,30);
+
+	static Vector3 projectile_OBB_scale = { 10.0f,1.0f,1.0f };
+	ImGui::SliderFloat3("Projectile OBBScale", &projectile_OBB_scale.x, 0, 20);
+
+	for (auto& p : m_projectile) {
+		p->SetOffset(projectile_offset);
+		//p->SetOBBScale(projectile_OBB_scale);
+	}
 
 	if (update) {
 		notUpdate = false;
@@ -748,7 +758,7 @@ void Boss::Impl::AttackUpdate() {
 					m_attackPhase = AttackPhase::END;
 				}
 				else {
-					m_weapon->Stance();
+					//m_weapon->Stance();
 					ProjectileChargeMax();
 					m_attackPhase = AttackPhase::ATTACK;
 				}
@@ -762,6 +772,7 @@ void Boss::Impl::AttackUpdate() {
 			m_attackcount = 0;
 			rotate_speed = 0.01f;
 			attack_kind = NONE;//UŒ‚I—¹
+			m_attackPhase = AttackPhase::ENTER;
 		}
 	
 
@@ -880,6 +891,7 @@ void Boss::Impl::ProjectileCharge() {
 	{
 		if (pr->GetState() == 0) {
 			pr->ChargeStart(m_Owner->m_Position, m_Owner->m_Rotation,1.0f,true);
+			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2});
 			break;
 		}
 	}
@@ -889,7 +901,8 @@ void Boss::Impl::ProjectileChargeMax() {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == 0) {
-			pr->MaxCharge(m_Owner->m_Position, m_Owner->m_Rotation);
+			pr->MaxCharge(m_Owner->m_Position, m_Owner->m_Rotation,100,true);
+			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2 });
 			break;
 		}
 	}
@@ -899,7 +912,7 @@ void Boss::Impl::ProjectileChargeMax() {
 void Boss::Impl::ProjectileShot() {
 	for (auto& pr : m_projectile)
 	{
-		if (pr->GetState() == 2) {
+		if (pr->GetState() == 1) {
 			pr->Shot();
 			break;
 		}

@@ -7,7 +7,7 @@
 #include "Game.h"
 #include "Ground.h"
 #include "Pole.h"
-#include "Arrow.h"
+#include "Projectile.h"
 #include "sound.h"
 
 using namespace std;
@@ -142,7 +142,7 @@ void Enemy::SetArrow() {
 		}
 	}
 	if (m_arrow) {
-		m_arrow->EPose(m_Rotation.y, radius, m_Position);
+		//m_arrow->EPose(m_Rotation.y, radius, m_Position);
 	}
 }
 
@@ -158,7 +158,7 @@ void Enemy::Attack() {
 		}
 	}
 	if (m_arrow) {
-		m_arrow->EShot(m_Rotation.y, radius, m_Position);
+		//m_arrow->EShot(m_Rotation.y, radius, m_Position);
 		m_arrow = nullptr;
 	}
 }

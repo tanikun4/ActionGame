@@ -21,10 +21,9 @@ private:
 	int m_state = 0;
 	float power = 0;//溜めた量
 	float charge_power = 1;//溜める速度
-	float max_power = 180;//パワーの最大値
+	float max_power = 100;//パワーの最大値
 	int shottime = 120;//飛んでいる時間
 	int shottime_max = 120;//飛んでいる時間の最大値
-	int followOffset = 4;//持ち主からの距離
 	bool atkFg = false;//攻撃判定があるか
 	bool followFg = false;//持ち主に追従するか
 	Object* m_Owner = nullptr;//持ち主
@@ -43,7 +42,7 @@ public:
 	void Uninit();
 
 	void ChargeStart(DirectX::SimpleMath::Vector3 _pos,DirectX::SimpleMath::Vector3 _rot, float _power,bool _follow = false);//溜め開始
-	void MaxCharge(DirectX::SimpleMath::Vector3 _pos, DirectX::SimpleMath::Vector3 _rot, float _maxpower = 180, bool _follow = false);//最大まで溜める
+	void MaxCharge(DirectX::SimpleMath::Vector3 _pos, DirectX::SimpleMath::Vector3 _rot, float _maxpower = 100, bool _follow = false);//最大まで溜める
 	void Shot(float _speed = 3,int _atk = 2,int _time = 120,bool _follow = false);//発射
 	void Stance(DirectX::SimpleMath::Vector3 _pos,DirectX::SimpleMath::Vector3 _rot, DirectX::SimpleMath::Vector3 _scale);//構え状態
 	void Reflect(bool _pl);//反射関数
@@ -52,6 +51,8 @@ public:
 	void SetState(int s);
 	void SetOwner(Object* owner) { m_Owner = owner; }
 	void SetFollowFg(bool f) { followFg = f; }
+	void SetOBBScale(DirectX::SimpleMath::Vector3 _scale) { obb = {m_Position,m_Rotation,_scale}; }
+	void SetOffset(DirectX::SimpleMath::Vector3 off) { m_offset = off; }
 
 	// 矢印のベクトルを取得
 	DirectX::SimpleMath::Vector3 GetVector();
@@ -59,5 +60,10 @@ public:
 	int GetState();
 	bool GetAtkFg() { return atkFg; }
 	Collision::ColliderVariant GetCollision();
+
+	void HitObject(Object* ob) override { //当たり判定を増やす場合、Objectに基底関数を追加すること。
+		if (!atkFg) { return; };//攻撃判定フラグが無ければ判定を行わない
+		ob->OnHit(this);
+	}
 };
 

@@ -7,6 +7,7 @@
 #include "Boss.h"
 #include "Ground.h"
 #include "Bullet.h"
+#include "Projectile.h"
 #include "Pole.h"
 #include "GroundManager.h"
 #include "ICollider.h"
@@ -75,6 +76,14 @@ void TitleScene::Init()
 		m_MySceneObjects.end(),    // 挿入位置
 		weapons.begin(),        // 挿入する範囲の開始
 		weapons.end()           // 挿入する範囲の終了
+	);
+
+	// 飛び道具の取得
+	std::vector<Projectile*> projectiles = Game::GetInstance()->GetObjects<Projectile>();
+	m_MySceneObjects.insert(
+		m_MySceneObjects.end(),    // 挿入位置
+		projectiles.begin(),        // 挿入する範囲の開始
+		projectiles.end()           // 挿入する範囲の終了
 	);
 
 	//壁の設置
