@@ -5,7 +5,7 @@ class KeyboardState {
 public:
     void Update() {
         memcpy(prev, curr, sizeof(curr));
-        GetKeyboardState(curr);
+        bool keystate = GetKeyboardState(curr);
     }
 
     inline bool Press(int key) const {

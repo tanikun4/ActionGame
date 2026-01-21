@@ -81,23 +81,35 @@ void Game::Update()
 	// フェード更新
 	Fade::GetInstance()->Update();
 
-	//エフェクトマネージャ更新
-	EffectManager::Update();
+
+	if (m_Instance->slow_frame % 2 == 0) {
+		//エフェクトマネージャ更新
+		EffectManager::Update();
+	}
 
 
-	if (!m_Instance->stop) {
-		// オブジェクト更新
-		for (auto& o : m_Instance->m_Objects)
-		{
-			o->Update();
+	if (!m_Instance->stop){
+
+		if (m_Instance->slow_frame % 2 == 0) {
+			// オブジェクト更新
+			for (auto& o : m_Instance->m_Objects)
+			{
+				o->Update();
+			}
 		}
-
+		// スローモーション処理
+		if (m_Instance->slow) {
+			++m_Instance->slow_frame;
+			if (m_Instance->slow_frame >= m_Instance->max_slow_frame) {
+				m_Instance->slow = false;
+				m_Instance->slow_frame = 0;
+			}
+		}
 	}
 	else {
-		++m_Instance->framecount;
-		if (m_Instance->framecount > m_Instance->stopframe) {
+		++m_Instance->stop_frame;
+		if (m_Instance->stop_frame >= m_Instance->max_stop_frame) {
 			m_Instance->stop = false;
-
 		}
 	}
 
@@ -256,11 +268,19 @@ void Game::DeleteAllObject()
 	m_Instance->m_Objects.shrink_to_fit();
 }
 
-void Game::HitStop()
+void Game::HitStop(int _maxstop)
 {
 	stop = true;
-	framecount = 0;
+	stop_frame = 0;
+	max_stop_frame = _maxstop;
 	m_Camera->StartVibration(4.0f, PI * 0.5f, 3);//	カメラを揺らす
+}
+
+void Game::SlowMotion(int _maxslow)
+{
+	slow = true;
+	slow_frame = 0;
+	max_slow_frame = _maxslow;
 }
 
 void Game::ChangeSceneFadeOut(SceneName sName)// フェードアウト完了後にシーンを変更するための準備をする

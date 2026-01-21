@@ -23,17 +23,20 @@ private:
 
 	static Game* m_Instance; // ゲームインスタンス
 
-	Scene* m_Scene; // シーン
+	Scene* m_Scene = nullptr; // シーン
 
 	std::vector<std::unique_ptr<Object>> m_Objects; // オブジェクト
 	std::unique_ptr<Input> m_Input;  // 入力処理
 	std::unique_ptr<Camera> m_Camera; // カメラ
 	std::unique_ptr<WireRenderer> m_WireRenderer; // ワイヤーレンダラー
-	int stopframe = 3;//ヒットストップのフレーム
-	int framecount = 0;
+	int max_stop_frame = 3;//ヒットストップのフレーム
+	int stop_frame = 0;
 	bool stop = false;// trueの間はオブジェクトのUpdateを止める
+	bool slow = false; // スローモーション中かどうか
+	int slow_frame = 0; // スローモーションのフレーム管理
+	int max_slow_frame = 30; // スローモーションの最大フレーム数
 	bool change_request = false; // シーン変更要求
-	SceneName m_NextScene;
+	SceneName m_NextScene = TITLE;
 
 	bool debugmode = false; // デバッグモード
 public:
@@ -47,7 +50,8 @@ public:
 	
 	static Game* GetInstance();
 
-	void HitStop();
+	void HitStop(int _maxstop = 3);// ヒットストップ開始
+	void SlowMotion(int _maxslow = 120); // スローモーション開始
 	void ChangeScene(SceneName sName); // シーンを変更
 	void ChangeSceneFadeOut(SceneName sName); // フェードアウトしてシーンを変更
 	Camera& GetCamera(); // カメラ取得

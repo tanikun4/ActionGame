@@ -19,7 +19,7 @@ private:
 
 	DirectX::SimpleMath::Vector2 m_CameraDirection = DirectX::SimpleMath::Vector2(0, 0); //カメラの方向
 	const float pi = DirectX::XM_PI;
-	Object* m_TargetObject; //注視点オブジェクト
+	Object* m_TargetObject = nullptr; //注視点オブジェクト
 	
 	bool cameraInputFg = false; //カメラ操作入力有効フラグ
 

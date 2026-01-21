@@ -246,6 +246,13 @@ void Player::Impl::DebugPlayerStatus() {
     if (ImGui::Button("HP ZERO"))
         hp = 0;
 
+	static int slowtime = 300;
+
+    ImGui::SliderInt("SLOW Time", &slowtime, 0,1000);
+
+    if (ImGui::Button("SLOWMOTION"))
+        Game::GetInstance()->SlowMotion(slowtime);
+
     static bool select;
     ImGui::Checkbox("Invisible", &select);
 
@@ -683,6 +690,8 @@ void Player::Impl::Parry() {
     EffectManager::GetInstance()->Play(EFFECT_SHOCKWAVE, param);
 
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
+
+	Game::GetInstance()->SlowMotion(36); // スローモーション開始
 }
 
 // 指定座標の方向に向く
