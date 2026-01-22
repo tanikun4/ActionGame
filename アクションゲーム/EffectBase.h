@@ -40,7 +40,7 @@ public:
 	void BaseUpdate();//‹¤’ÊXVˆ—
 
 	void ResetLife() { m_lifeframe = 0; m_live = true; }
-	void SetLifeFlame(float flame) { m_lifeframe = flame; }
+	void SetLifeFlame(int flame) { m_lifeframe = flame; }
 
 
 	/*void PlayEffect(

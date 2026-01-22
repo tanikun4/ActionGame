@@ -80,7 +80,7 @@ private:
 	bool inviFg = false;
 	int invicount = 0;
 	float move_speed = 0.25f;
-	float rotate_speed = 0.01;
+	float m_rotatespeed = 0.01;
 	int attack_kind = 0;//UŒ‚‚Ìí—Ş
 	int m_attackframe = 0;//UŒ‚ŠÔ
 	int m_attackcount = 0;//UŒ‚‰ñ”‚ÌƒJƒEƒ“ƒg
