@@ -229,6 +229,18 @@ public:
     }
 };
 
+enum class ArcRotateDir
+{
+    CW,   // 時計回り
+    CCW   // 反時計回り
+};
+
+enum class ArcMoveDir
+{
+    Forward,   // 前進
+    Backward   // 後退
+};
+
 struct ArcMoveAnim
 {
 private:
@@ -241,21 +253,26 @@ private:
     DirectX::SimpleMath::Vector3 prevPos; // 前フレームの絶対位置
     bool first = true;
 
+    ArcRotateDir rotateDir = ArcRotateDir::CCW;
+    ArcMoveDir   moveDir = ArcMoveDir::Forward;
+
 public:
     // 開始
     void Start(
-        const DirectX::SimpleMath::Vector3& centerPos,
         const DirectX::SimpleMath::Vector3& startAngleXYZ,
         const DirectX::SimpleMath::Vector3& endAngleXYZ,
         float radius,
         int frame,
         float angleAccel = 0.0f,
+        ArcRotateDir rDir = ArcRotateDir::CCW,
+        ArcMoveDir mDir = ArcMoveDir::Forward,
         float heightStart = 0.0f,
         float heightEnd = 0.0f,
         float heightAccel = 0.0f)
     {
-        center = centerPos;
         first = true;
+        rotateDir = rDir;
+        moveDir = mDir;
 
         // xyz角度をそのまま補間
         angleAnim.StartAbsolute(
@@ -282,14 +299,19 @@ public:
     // 前フレームからの変化量を返す
     DirectX::SimpleMath::Vector3 Update()
     {
-        auto angle = angleAnim.UpdateAbsolute();
+        //auto angle = angleAnim.UpdateAbsolute();
         float radius = radiusAnim.UpdateAbsolute().x;
         float height = heightAnim.UpdateAbsolute().x;
 
-        // 今フレームの絶対位置を算出（XZ円弧 + Y）
+        // 回転方向
+        int rotSign = (rotateDir == ArcRotateDir::CCW) ? 1 : -1;
+
+        float yaw = angleAnim.UpdateAbsolute().y * rotSign;
+
+        // 今フレームの位置を算出（XZ円弧 + Y）
         DirectX::SimpleMath::Vector3 currentPos;
-        currentPos.x = center.x + std::cosf(angle.y) * radius;
-        currentPos.z = center.z + std::sinf(angle.y) * radius;
+        currentPos.x = std::sinf(yaw) * radius;
+        currentPos.z = std::cosf(yaw) * radius;
         currentPos.y = center.y + height;
 
         if (first)
@@ -301,7 +323,9 @@ public:
 
         DirectX::SimpleMath::Vector3 delta = currentPos - prevPos;
         prevPos = currentPos;
-        return delta;
+        // 進行方向
+       int moveSign = (moveDir == ArcMoveDir::Forward) ? -1 : 1;
+        return delta * moveSign;
     }
 
     bool IsPlaying() const

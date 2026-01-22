@@ -234,7 +234,8 @@ void Boss::Impl::LookAt(Vector3 ta_pos) {
 void Boss::Impl::AttackUpdate() {
 	int weapon_state = m_weapon->GetState();
 	switch (attack_kind) {
-	case NONE:
+	case NONE: // UŒ‚–³‚µ(–¢Žw’èó‘Ô)
+		m_attackPhase = AttackPhase::ENTER;
 		m_Owner->m_State = NORMAL;
 		break;
 	case SWING:// ‰¡U‚è
@@ -814,8 +815,27 @@ void Boss::Impl::AttackUpdate() {
 	
 
 		break;
+	case WRAPAROUND_THRUST:
+		if (m_attackPhase == AttackPhase::ENTER)
+		{
+			m_attackPhase = AttackPhase::PREPARE;
+			m_Owner->m_Velocity_f = 0.0f;//ˆÚ“®‘¬“x‚ð0‚É‚·‚é
+			Vector3 rot = m_Owner->m_Rotation;
+			rot.y -= PI;
+			m_ArcAnim.Start(m_Owner->m_Rotation, rot, m_Owner->radius * 3, 60.0f);
+		}
 
+		if (m_attackPhase == AttackPhase::PREPARE)
+		{
+			m_Owner->m_Position += m_ArcAnim.Update();
+			if (!m_ArcAnim.IsPlaying()) {
+				m_Owner->m_State = NORMAL;
+				m_attackPhase = AttackPhase::ENTER;
+			}
+		}
+		break;
 	case KIND_MAX:
+		m_attackPhase = AttackPhase::ENTER;
 		m_Owner->m_State = NORMAL;
 		break;
 	}

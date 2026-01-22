@@ -33,7 +33,7 @@ void Enemy::Init() {
 void Enemy::Update() {
 	if (hp <= 0) {
 		if (m_arrow) {
-			m_arrow->SetState(0);
+			m_arrow->SetState(ProjectileSTATE::NOT_ACTIVE);
 			m_arrow = nullptr;
 		}
 		return;
@@ -135,7 +135,7 @@ void Enemy::SetArrow() {
 	{
 		vector<Projectile*> arrow = Game::GetInstance()->GetObjects<Projectile>();
 		for (auto& ar : arrow) {
-			if (ar->GetState() == 0) {
+			if (ar->GetState() == ProjectileSTATE::NOT_ACTIVE) {
 				m_arrow = ar;
 				break;
 			}
@@ -151,7 +151,7 @@ void Enemy::Attack() {
 	{
 		vector<Projectile*> arrow = Game::GetInstance()->GetObjects<Projectile>();
 		for (auto& ar : arrow) {
-			if (ar->GetState() == 0) {
+			if (ar->GetState() == ProjectileSTATE::NOT_ACTIVE) {
 				m_arrow = ar;
 				break;
 			}

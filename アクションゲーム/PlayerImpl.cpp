@@ -149,12 +149,15 @@ void Player::Impl::OnHit(Bullet* bu) {
 void Player::Impl::OnHit(Projectile* pr) {
     if (pr->GetPl()) return;
     if (!pr->GetAtkFg()) return;
-	// ジャストガードに成功したら反射する
+	// ジャストガードに成功したら反射する、ジャストガードモーション中でも反射する
     if (GuardFg && guardcount <= justguardframe) {
         Parry();
-        pr->Reflect(true); 
-        return; 
     }
+    if (m_Owner->m_State == PARRY) {
+        pr->Reflect(true);
+        return;
+    }
+
     Damage(pr->GetAtk());
 }
 
@@ -690,6 +693,8 @@ void Player::Impl::Parry() {
     EffectManager::GetInstance()->Play(EFFECT_SHOCKWAVE, param);
 
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
+
+    m_Camera->StartVibration(10.0f, PI * 0.5f, 5);// カメラを揺らす
 
 	Game::GetInstance()->SlowMotion(20); // スローモーション開始
 }
