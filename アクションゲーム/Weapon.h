@@ -63,5 +63,7 @@ public:
 	void SetOffsetDebug(DirectX::SimpleMath::Vector3 off) { offset_debug = off; }
 
     void SetAngleDebug(DirectX::SimpleMath::Vector3 an) { angle_debug = an; }
+
+	void SetColor(DirectX::SimpleMath::Vector4 color, int index = -1);//マテリアルの色を変更する、 indexが0未満の場合全てのマテリアルの色を変更する
 };
 

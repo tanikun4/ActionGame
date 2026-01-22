@@ -2,6 +2,13 @@
 #include "TestCube.h"
 #include "Weapon.h"
 
+	enum class ProjectileSTATE {
+		NOT_ACTIVE = 0,
+		STANCE,
+		CHARGE,
+		SHOT,
+	};
+
 //-----------------------------------------------------------------------------
 // 飛び道具クラス
 //-----------------------------------------------------------------------------
@@ -9,16 +16,9 @@ class Projectile :public Weapon
 {
 private:
 
-	enum STATE {
-		NOT_ACTIVE = 0,
-		STANCE,
-		CHARGE,
-		SHOT,
-	};
-
 	//Collision::Sphere sphere { m_Position,m_Scale.x };
 
-	int m_state = 0;
+	ProjectileSTATE m_state = ProjectileSTATE::NOT_ACTIVE;
 	float power = 0;//溜めた量
 	float charge_power = 1;//溜める速度
 	float max_power = 100;//パワーの最大値
@@ -47,7 +47,7 @@ public:
 	void Stance(DirectX::SimpleMath::Vector3 _pos,DirectX::SimpleMath::Vector3 _rot, DirectX::SimpleMath::Vector3 _scale);//構え状態
 	void Reflect(bool _pl,int _atk = 5);//反射関数
 	// 状態の設定
-	void SetState(int s);
+	void SetState(ProjectileSTATE s);
 	void SetOwner(Object* owner) { m_Owner = owner; }
 	void SetFollowFg(bool f) { followFg = f; }
 	void SetOBBScale(DirectX::SimpleMath::Vector3 _scale) { obb = {m_Position,m_Rotation,_scale}; }
@@ -58,7 +58,7 @@ public:
 	// 矢印のベクトルを取得
 	DirectX::SimpleMath::Vector3 GetVector();
 	DirectX::SimpleMath::Vector3 GetForwardVector();
-	int GetState();
+	ProjectileSTATE GetState();
 	bool GetAtkFg() { return atkFg; }
 	Collision::ColliderVariant GetCollision();
 

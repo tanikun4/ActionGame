@@ -915,10 +915,11 @@ void Boss::Impl::Move(){
 
 // 弾のセットアップ
 void Boss::Impl::SetProjectile(){
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < projectile_max; ++i) {
 		m_projectile.emplace_back(Game::GetInstance()->AddObject<Projectile>());
 		m_projectile.back()->SetPl(false);
 		m_projectile.back()->SetOwner(m_Owner);
+		m_projectile.back()->SetColor({0,1,0,1});
 	}
 }
 
@@ -926,7 +927,7 @@ void Boss::Impl::SetProjectile(){
 void Boss::Impl::ProjectileCharge() {
 	for (auto& pr : m_projectile)
 	{
-		if (pr->GetState() == 0) {
+		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
 			pr->SetPl(false);
 			pr->ChargeStart(m_Owner->m_Position, m_Owner->m_Rotation,1.0f,true);
 			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2});
@@ -939,7 +940,7 @@ void Boss::Impl::ProjectileCharge() {
 void Boss::Impl::ProjectileCharge_VT() {
 	for (auto& pr : m_projectile)
 	{
-		if (pr->GetState() == 0) {
+		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
 			Vector3 rot = m_Owner->m_Rotation;
 			rot.z += PI * 0.5f;
 			pr->SetPl(false);
@@ -954,7 +955,7 @@ void Boss::Impl::ProjectileCharge_VT() {
 void Boss::Impl::ProjectileChargeMax() {
 	for (auto& pr : m_projectile)
 	{
-		if (pr->GetState() == 0) {
+		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
 			pr->SetPl(false);
 			pr->MaxCharge(m_Owner->m_Position, m_Owner->m_Rotation,100,true);
 			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2 });
@@ -967,7 +968,7 @@ void Boss::Impl::ProjectileChargeMax() {
 void Boss::Impl::ProjectileChargeMax_VT() {
 	for (auto& pr : m_projectile)
 	{
-		if (pr->GetState() == 0) {
+		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
 			Vector3 rot = m_Owner->m_Rotation;
 			rot.z += PI * 0.5f;
 			pr->SetPl(false);
@@ -982,7 +983,7 @@ void Boss::Impl::ProjectileChargeMax_VT() {
 void Boss::Impl::ProjectileShot() {
 	for (auto& pr : m_projectile)
 	{
-		if (pr->GetState() == 1) {
+		if (pr->GetState() == ProjectileSTATE::STANCE) {
 			pr->Shot();
 			break;
 		}

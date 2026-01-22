@@ -228,3 +228,93 @@ public:
 		current = { 0,0,0 };
     }
 };
+
+struct ArcMoveAnim
+{
+private:
+    AngleAnim angleAnim;   // xyz角度（ラジアン）
+    PositionAnim radiusAnim;
+    PositionAnim heightAnim;
+
+    DirectX::SimpleMath::Vector3 center;
+
+    DirectX::SimpleMath::Vector3 prevPos; // 前フレームの絶対位置
+    bool first = true;
+
+public:
+    // 開始
+    void Start(
+        const DirectX::SimpleMath::Vector3& centerPos,
+        const DirectX::SimpleMath::Vector3& startAngleXYZ,
+        const DirectX::SimpleMath::Vector3& endAngleXYZ,
+        float radius,
+        int frame,
+        float angleAccel = 0.0f,
+        float heightStart = 0.0f,
+        float heightEnd = 0.0f,
+        float heightAccel = 0.0f)
+    {
+        center = centerPos;
+        first = true;
+
+        // xyz角度をそのまま補間
+        angleAnim.StartAbsolute(
+            startAngleXYZ,
+            endAngleXYZ,
+            frame,
+            angleAccel
+        );
+
+        radiusAnim.StartAbsolute(
+            { radius,0,0 },
+            { radius,0,0 },
+            frame
+        );
+
+        heightAnim.StartAbsolute(
+            { heightStart,0,0 },
+            { heightEnd,0,0 },
+            frame,
+            heightAccel
+        );
+    }
+
+    // 前フレームからの変化量を返す
+    DirectX::SimpleMath::Vector3 Update()
+    {
+        auto angle = angleAnim.UpdateAbsolute();
+        float radius = radiusAnim.UpdateAbsolute().x;
+        float height = heightAnim.UpdateAbsolute().x;
+
+        // 今フレームの絶対位置を算出（XZ円弧 + Y）
+        DirectX::SimpleMath::Vector3 currentPos;
+        currentPos.x = center.x + std::cosf(angle.y) * radius;
+        currentPos.z = center.z + std::sinf(angle.y) * radius;
+        currentPos.y = center.y + height;
+
+        if (first)
+        {
+            prevPos = currentPos;
+            first = false;
+            return { 0,0,0 };
+        }
+
+        DirectX::SimpleMath::Vector3 delta = currentPos - prevPos;
+        prevPos = currentPos;
+        return delta;
+    }
+
+    bool IsPlaying() const
+    {
+        return angleAnim.IsPlaying();
+    }
+
+    void Reset()
+    {
+        angleAnim.Reset();
+        radiusAnim.Reset();
+        heightAnim.Reset();
+        first = true;
+    }
+};
+

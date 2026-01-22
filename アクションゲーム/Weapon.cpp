@@ -16,6 +16,22 @@ Weapon::~Weapon()
 
 }
 
+// F‚ÌÝ’è
+void Weapon::SetColor(DirectX::SimpleMath::Vector4 color, int index) {
+	if(index >= 0 && index < (int)m_Materiales.size()) {
+		m_Materiales[index]->SetDiffuse(color);
+		m_Materiales[index]->Update();
+		return;
+	}
+	else {
+		for (auto& m : m_Materiales) {
+			m->SetDiffuse(color);
+			m->Update();
+		}
+	}
+	return;
+}
+
 
 Collision::ColliderVariant Weapon::GetCollision() {
 	return Collision::OBB { m_Position, m_Rotation,m_Scale };

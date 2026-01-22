@@ -73,7 +73,7 @@ void Projectile::Init()
 	m_Scale.y = 1;
 	m_Scale.z = 1;
 
-	m_state = NOT_ACTIVE;
+	m_state = ProjectileSTATE::NOT_ACTIVE;
 	m_live = false;
 
 	obb = {
@@ -90,21 +90,21 @@ void Projectile::Update()
 {
 	switch (m_state)
 	{
-	case NOT_ACTIVE: // 非表示
+	case ProjectileSTATE::NOT_ACTIVE: // 非表示
 		return;
 		break;
-	case STANCE: // 構え、チャージ完了で移行する
+	case ProjectileSTATE::STANCE: // 構え、チャージ完了で移行する
 		break;
-	case CHARGE:// チャージ中
+	case ProjectileSTATE::CHARGE:// チャージ中
 		power += charge_power;
 		// 最大値チェック
 		if(power >= max_power) {
 			power = max_power;
-			m_state = STANCE;
+			m_state = ProjectileSTATE::STANCE;
 		}
 		m_Scale.x = power * 0.01f;
 		break;
-	case SHOT: // 発射
+	case ProjectileSTATE::SHOT: // 発射
 		UpdateShot();
 		break;
 	}
@@ -145,7 +145,7 @@ void Projectile::Update()
 //=======================================
 void Projectile::Draw()
 {
-	if (m_state == NOT_ACTIVE)return; // 非表示ならreturn
+	if (m_state == ProjectileSTATE::NOT_ACTIVE)return; // 非表示ならreturn
 
 	// SRT情報作成
 	Matrix r = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
@@ -209,7 +209,7 @@ void Projectile::Move()
 }
 
 //状態の設定
-void Projectile::SetState(int s)
+void Projectile::SetState(ProjectileSTATE s)
 {
 	m_state = s;
 }
@@ -235,7 +235,7 @@ void Projectile::ChargeStart(Vector3 _pos, Vector3 _rot, float _power,bool _foll
 	m_live = true;
 	m_Velocity_f = 0;
 	atkFg = false;
-	m_state = CHARGE;
+	m_state = ProjectileSTATE::CHARGE;
 	m_Rotation = _rot;
 	m_Position = _pos;
 	charge_power = _power;
@@ -247,7 +247,7 @@ void Projectile::MaxCharge(Vector3 _pos, Vector3 _rot, float _maxpower, bool _fo
 	m_live = true;
 	m_Velocity_f = 0;
 	atkFg = false;
-	m_state = STANCE;
+	m_state = ProjectileSTATE::STANCE;
 	m_Rotation = _rot;
 	m_Position = _pos;
 	max_power = _maxpower;
@@ -257,7 +257,7 @@ void Projectile::MaxCharge(Vector3 _pos, Vector3 _rot, float _maxpower, bool _fo
 
 // 発射
 void Projectile::Shot(float _speed,int _atk ,int _time, bool _follow) {
-	m_state = SHOT;
+	m_state = ProjectileSTATE::SHOT;
 	m_Velocity_f = _speed;
 	atk = _atk;
 	shottime = _time; 
@@ -271,7 +271,7 @@ void Projectile::Shot(float _speed,int _atk ,int _time, bool _follow) {
 void Projectile::Stance(Vector3 _pos,Vector3 _rot, Vector3 _scale) {
 	m_live = true;
 	m_Velocity_f = 0;
-	m_state = STANCE;
+	m_state = ProjectileSTATE::STANCE;
 	m_Rotation = _rot;
 	m_Position = _pos;
 	m_Scale = _scale;
@@ -281,14 +281,14 @@ void Projectile::UpdateShot() {
 	Move();
 	shottime--;
 	if (shottime <= 0) {
-		m_state = NOT_ACTIVE;
+		m_state = ProjectileSTATE::NOT_ACTIVE;
 		atkFg = false;
 		power = 0;
 		m_live = false;
 	}
 }
 
-int Projectile::GetState() {
+ProjectileSTATE Projectile::GetState() {
 	return m_state;
 }
 
@@ -310,7 +310,7 @@ void Projectile::Reflect(bool _pl,int _atk) {
 
 // リセット処理
 void Projectile::Reset() {
-	m_state = NOT_ACTIVE;
+	m_state = ProjectileSTATE::NOT_ACTIVE;
 	m_live = false;
 	power = 0;
 	atkFg = false;

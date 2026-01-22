@@ -82,34 +82,47 @@ void Game::Update()
 	Fade::GetInstance()->Update();
 
 
-	if (m_Instance->slow_frame % 2 == 0) {
-		//エフェクトマネージャ更新
-		EffectManager::Update();
-	}
+	// ------------------------------
+// 更新可否判定（最初に1回）
+// ------------------------------
+	bool updateObjects = true;
+	bool updateEffects = true;
 
+	if (m_Instance->stop)
+	{
+		updateObjects = false;
+		updateEffects = false;
 
-	if (!m_Instance->stop){
-
-		if (m_Instance->slow_frame % 2 == 0) {
-			// オブジェクト更新
-			for (auto& o : m_Instance->m_Objects)
-			{
-				o->Update();
-			}
-		}
-		// スローモーション処理
-		if (m_Instance->slow) {
-			++m_Instance->slow_frame;
-			if (m_Instance->slow_frame >= m_Instance->max_slow_frame) {
-				m_Instance->slow = false;
-				m_Instance->slow_frame = 0;
-			}
-		}
-	}
-	else {
 		++m_Instance->stop_frame;
-		if (m_Instance->stop_frame >= m_Instance->max_stop_frame) {
+		if (m_Instance->stop_frame >= m_Instance->max_stop_frame)
+		{
 			m_Instance->stop = false;
+			m_Instance->stop_frame = 0;
+		}
+	}
+	else if (m_Instance->slow)
+	{
+		// スローモーション中
+		updateObjects = (m_Instance->slow_frame & 1) == 0;
+		updateEffects = updateObjects;
+
+		++m_Instance->slow_frame;
+		if (m_Instance->slow_frame >= m_Instance->max_slow_frame)
+		{
+			m_Instance->slow = false;
+			m_Instance->slow_frame = 0;
+		}
+	}
+
+	// エフェクト更新処
+	if (updateEffects) EffectManager::Update();
+
+	// オブジェクト更新
+	if (updateObjects)
+	{
+		for (auto& o : m_Instance->m_Objects)
+		{
+			o->Update();
 		}
 	}
 

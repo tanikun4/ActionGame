@@ -54,6 +54,7 @@ private:
 		JUMP_SPINSLASH,
 		JUMP_SPINSLASH_RUSH,
 		SONICBOOM_SHOT,
+		WRAPAROUND_THRUST,
 
 		KIND_MAX
 	};
@@ -71,6 +72,7 @@ private:
 
 	AttackPhase m_attackPhase = AttackPhase::ENTER;
 
+	const int projectile_max = 5;//飛び道具の最大数
 
 	int hp = 50;
 	int def = 0; //防御力、値分ダメージを減らす
@@ -100,7 +102,9 @@ private:
 	Pole* m_weapon;
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 	Vibration m_vib; // 振動用のクラス
-	AngleAnim m_AngleAnim;
+
+	AngleAnim m_AngleAnim;// 角度アニメーション構造体
+	ArcMoveAnim m_ArcAnim;// 円弧移動アニメーション構造体
 
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	void Move();

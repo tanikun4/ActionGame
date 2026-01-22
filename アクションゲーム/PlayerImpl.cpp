@@ -691,7 +691,7 @@ void Player::Impl::Parry() {
 
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 
-	Game::GetInstance()->SlowMotion(36); // スローモーション開始
+	Game::GetInstance()->SlowMotion(20); // スローモーション開始
 }
 
 // 指定座標の方向に向く

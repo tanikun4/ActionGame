@@ -53,6 +53,7 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	// テクスチャ情報取得(単体)
 	m_Texture = data.textures.back().get();
 	m_Materiale.get()->SetDiffuse(_color);
+	m_Materiale.get()->Update();
 
 	m_NumU = 1;
 	m_NumV = 1;
