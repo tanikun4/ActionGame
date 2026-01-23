@@ -42,7 +42,7 @@ public:
 
 	GolfBall();
 	GolfBall(Camera* cam); // コンストラクタ
-	~GolfBall();//デストラクタ
+	virtual ~GolfBall();//デストラクタ
 
 	void GBInit(std::u8string modelfilename);
 	void GBUpdate();

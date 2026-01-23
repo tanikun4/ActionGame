@@ -40,7 +40,7 @@ protected:
 public:
     Weapon(Camera* cam);//コンストラクタ
     Weapon();
-    ~Weapon();//デストラクタ
+    virtual ~Weapon();//デストラクタ
     void HitObject(Object* ob) override {
         ob->OnHit(this);
     }

@@ -20,6 +20,7 @@ public:
 	void Init();
 	void Update();
 	void Draw();
+	void Uninit();
 	void Damage(int _atk);
 	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // 行動不能状態にする
 	void SetDEF(int _def) { def = _def; }
@@ -70,6 +71,27 @@ private:
 		END
 	};
 
+	// 突き攻撃の位置
+	enum class ThrustType
+	{
+		Center,
+		Left,
+		Right
+	};
+
+	struct ThrustStep
+	{
+		ThrustType type;
+		int delay;
+	};
+
+	static constexpr ThrustStep ComboThrust[] =
+	{
+		{ ThrustType::Center, 4 },
+		{ ThrustType::Left,   4 },
+		{ ThrustType::Right,  4 },
+	};
+
 	AttackPhase m_attackPhase = AttackPhase::ENTER;
 
 	const int projectile_max = 5;//飛び道具の最大数
@@ -112,6 +134,9 @@ private:
 	void StunUpdate();
 	void Jump();
 	void StateReset();//状態リセット
+
+	void Thrust(ThrustType type);
+	bool ManyThrust(int maxcount);
 
 	
 	// 飛び道具関連

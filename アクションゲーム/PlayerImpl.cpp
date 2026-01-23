@@ -782,7 +782,7 @@ void Player::Impl::UpdateDodge() {
     ++rollcount;
     if (rollcount % 3 == 0) {
         // 残像エフェクト再生
-        EffectParams   param;
+        EffectParams  param;
         param.pos = m_Owner->m_Position;
 		param.rot = m_Owner->m_Rotation;
         param.scale = m_Owner->m_Scale;

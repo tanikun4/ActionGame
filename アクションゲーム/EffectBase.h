@@ -21,7 +21,7 @@ protected:
 public:
 	EffectBase();
 	EffectBase(Camera* cam);
-	~EffectBase();
+	virtual ~EffectBase();
     virtual void Update() override = 0;
     virtual void Draw() override = 0;
 

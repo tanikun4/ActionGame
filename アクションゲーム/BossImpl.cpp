@@ -13,6 +13,7 @@
 using namespace std;
 using namespace DirectX::SimpleMath;
 
+
 Boss::Impl::Impl(Camera* cam, Boss* owner)
 	: m_Owner(owner)
 	, m_Camera(cam)
@@ -20,10 +21,22 @@ Boss::Impl::Impl(Camera* cam, Boss* owner)
 	m_weapon = Game::GetInstance()->AddObject<Pole>();
 }
 
-
+// デストラクタ
 Boss::Impl::~Impl()
 {
+	if (m_weapon)
+	{
+		m_weapon->SetLive(false);
+		m_weapon = nullptr;
+	}
 
+	for (auto& p : m_projectile)
+	{
+		p->Uninit();
+		p->SetLive(false);
+		p->SetOwner(nullptr);
+		p = nullptr;
+	}
 }
 
 void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
@@ -161,6 +174,15 @@ void Boss::Impl::Update() {
 void Boss::Impl::Draw()
 {
 	m_Owner->GBDraw();
+}
+
+void Boss::Impl::Uninit() 
+{
+	m_weapon->AttackEnd();
+	m_weapon->StanceEnd();
+	m_AngleAnim.Reset();
+	m_ArcAnim.Reset();
+
 }
 
 bool Boss::Impl::GetLive() {
@@ -858,7 +880,7 @@ void Boss::Impl::AttackUpdate() {
 				Vector3 rot = m_Owner->m_Rotation;
 				rot.y -= PI;
 				m_rotatespeed = 0.3f;
-				m_ArcAnim.Start(m_Owner->m_Rotation, rot, m_Owner->radius * 3, 60);
+				m_ArcAnim.Start(m_Owner->m_Rotation, rot, m_Owner->radius * 3, 60,0.7f);
 				m_attackPhase = AttackPhase::FOLLOW;
 				m_attackframe = 0;
 				m_Owner->m_Velocity_f = 0.0f;//移動停止
@@ -871,23 +893,23 @@ void Boss::Impl::AttackUpdate() {
 			if (!m_ArcAnim.IsPlaying()) {
 				m_lookatFg = false;
 				Move();
-				if (weapon_state == Pole::STATE::THRUST && m_weapon->GetAttackTime() > 4) {
-					m_attackcount++;
-					int attack_count_remaind = m_attackcount % 3;
-					if (attack_count_remaind == 0) {
-						m_weapon->Thrust();
-					}
-					else if (attack_count_remaind == 1) {
-						m_weapon->Thrust_Left();
-					}
-					else {
-						m_weapon->Thrust_Right();
-					}
-					Sound::GetInstance()->Play(SOUND_SE_SWING);
-				}
+				//if (weapon_state == Pole::STATE::THRUST && m_weapon->GetAttackTime() > 4) {
+				//	m_attackcount++;
+				//	int attack_count_remaind = m_attackcount % 3;
+				//	if (attack_count_remaind == 0) {
+				//		m_weapon->Thrust();
+				//	}
+				//	else if (attack_count_remaind == 1) {
+				//		m_weapon->Thrust_Left();
+				//	}
+				//	else {
+				//		m_weapon->Thrust_Right();
+				//	}
+				//	Sound::GetInstance()->Play(SOUND_SE_SWING);
+				//}
 
-				// 攻撃終了
-				if (m_attackcount > 5) {
+				// 攻撃終了するか
+				if (ManyThrust(6)) {//連続突きを行い、6回以上行っていたらtrueを返す
 					m_attackPhase = AttackPhase::RECOVER;
 					m_weapon->ThrustEnd();
 					m_Owner->m_Velocity_f = 0.0f;//移動停止
@@ -898,15 +920,17 @@ void Boss::Impl::AttackUpdate() {
 				m_Owner->m_Position += m_ArcAnim.Update();
 				++m_attackframe;
 				// 回り込み中に一定フレーム経過したら、縦の衝撃波飛ばしを行う
-				if (m_attackframe == 30) {
-					m_weapon->Swing_Vertical();
-					ProjectileChargeMax_VT();
-					ProjectileShot();
+				if (m_attackframe % 3 == 0) {
+					// 残像エフェクト再生
+					EffectParams  param;
+					param.pos = m_Owner->m_Position;
+					param.rot = m_Owner->m_Rotation;
+					param.scale = m_Owner->m_Scale;
+					param.maxLife = 10;
+					param.color = { 1,0.2f,0,0.3f };
+					EffectManager::GetInstance()->Play(EFFECT_PLAYER, param);
 				}
 
-				if (m_attackframe >= 59) {
-					m_weapon->Thrust();
-				}
 			}
 		}
 		// 硬直フェーズ、終了フェーズに以降するまで硬直する
@@ -1104,6 +1128,43 @@ void Boss::Impl::ProjectileShot() {
 			break;
 		}
 	}
+}
+
+// 突き攻撃処理
+void Boss::Impl::Thrust(ThrustType type) {
+	switch (type)
+	{
+	case ThrustType::Center: m_weapon->Thrust();       break;
+	case ThrustType::Left:   m_weapon->Thrust_Left();  break;
+	case ThrustType::Right:  m_weapon->Thrust_Right(); break;
+	}
+}
+
+// 連続突きの関数
+bool Boss::Impl::ManyThrust(int maxcount)
+{
+	if (m_attackcount == 0)
+	{
+		Thrust(ThrustType::Center);
+		Sound::GetInstance()->Play(SOUND_SE_SWING);
+		++m_attackcount;
+		return false;
+	}
+
+	if (m_weapon->GetState() != Pole::STATE::THRUST)
+		return false;
+
+	const int stepIndex = m_attackcount % std::size(ComboThrust);
+	const ThrustStep& step = ComboThrust[stepIndex];
+
+	if (m_weapon->GetAttackTime() < step.delay)
+		return false;
+
+	Thrust(step.type);
+	Sound::GetInstance()->Play(SOUND_SE_SWING);
+
+	++m_attackcount;
+	return m_attackcount >= maxcount;
 }
 
 // ジャンプ処理

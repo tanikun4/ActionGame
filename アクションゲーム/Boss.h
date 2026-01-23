@@ -20,6 +20,7 @@ public:
 	void Init();
 	void Update();
 	void Draw();
+	void Uninit();
 	void Damage(int _atk);
 
 	void SetDEF(int _def);

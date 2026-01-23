@@ -20,6 +20,8 @@ void Boss::Update() { impl->Update(); }
 
 void Boss::Draw() { impl->Draw(); }
 
+void Boss::Uninit() { impl->Uninit(); }
+
 bool Boss::GetLive() { return impl->GetLive(); }
 
 void Boss::Damage(int _atk) { impl->Damage(_atk); }
