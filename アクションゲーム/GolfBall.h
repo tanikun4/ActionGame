@@ -25,6 +25,7 @@ protected:
 	int m_StopCount = 0; // 静止カウント
 	float radius = 4.0f;//ボールモデルの直径
 	bool is_GROUND = false;//地面に接地しているかどうかのフラグ
+	bool is_SPECIALMOVE = false;//特殊移動中かどうかのフラグ
 
 	float m_Velocity_f = 0.0; // 現在の移動速度（前進後退）
 	DirectX::SimpleMath::Vector3 m_oldPos;

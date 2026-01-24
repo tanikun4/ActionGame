@@ -56,6 +56,9 @@ private:
 		JUMP_SPINSLASH_RUSH,
 		SONICBOOM_SHOT,
 		WRAPAROUND_THRUST,
+		JUMP_SPINSLASH_SHOT,
+		CROSS_SHOT,
+		ROTATESWING_FIBONACCI,
 
 		KIND_MAX
 	};
@@ -110,7 +113,9 @@ private:
 	bool notUpdate = false;//更新を止めるかどうか
 	bool m_lookatFg = true;//プレイヤーへの追従をするかどうか
 	bool m_rushFg = false;//突進しているかどうか
+	bool m_spinFg = false;//回転しているかどうか
 	float jumppower = 1.5f;//ジャンプ力
+	const float delta60f = 1.0f / 60.0f;// 60fps換算用
 
 	bool m_slowFg = false;//動きが遅い状態か
 	int slow_frame = 0;//遅くなっているフレーム数
@@ -127,12 +132,13 @@ private:
 
 	AngleAnim m_AngleAnim;// 角度アニメーション構造体
 	ArcMoveAnim m_ArcAnim;// 円弧移動アニメーション構造体
+	FibonacciAnim m_FiboAnim;// 黄金螺旋移動アニメーション構造体
 
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	void Move();
 	void AttackUpdate();
 	void StunUpdate();
-	void Jump();
+	void Jump(float _power = 1.5f);
 	void StateReset();//状態リセット
 
 	void Thrust(ThrustType type);
@@ -147,6 +153,9 @@ private:
 	void JumpSpinSlashRush();
 	void SonicBoomShot();
 	void WrapAroundThrust();
+	void JumpSpinSlashShot();
+	void CrossShot();
+	void RotateSwingFibonacci();
 	
 	// 飛び道具関連
 	void SetProjectile();

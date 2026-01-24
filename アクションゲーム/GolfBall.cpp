@@ -103,11 +103,12 @@ void GolfBall::GBUpdate()
 
 	float keepY = m_Velocity.y;
 
-	// 現在の座標を計算
-	m_Velocity = m_ForwardVector * m_Velocity_f;
-
-	m_Velocity.y = keepY;
-
+	//特殊移動中は処理をスキップ
+	if(!is_SPECIALMOVE) {
+		m_Velocity = m_ForwardVector * m_Velocity_f;
+		
+		m_Velocity.y = keepY;
+	}
 
 	//速度を座標に加算
 	m_Position += m_Velocity;

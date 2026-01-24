@@ -259,8 +259,8 @@ private:
 public:
     // 開始
     void Start(
-        const DirectX::SimpleMath::Vector3& startAngleXYZ,
-        const DirectX::SimpleMath::Vector3& endAngleXYZ,
+        const float& startAngle,
+        const float& endAngle,
         float radius,
         int frame,
         float angleAccel = 0.0f,
@@ -276,8 +276,8 @@ public:
 
         // xyz角度をそのまま補間
         angleAnim.StartAbsolute(
-            startAngleXYZ,
-            endAngleXYZ,
+            { 0, startAngle, 0 },
+            { 0, endAngle, 0 },
             frame,
             angleAccel
         );
@@ -338,6 +338,75 @@ public:
         angleAnim.Reset();
         radiusAnim.Reset();
         heightAnim.Reset();
+        first = true;
+    }
+};
+
+// 黄金螺旋移動構造体
+struct FibonacciAnim
+{
+private:
+    AngleAnim angleAnim; // y = θ
+    DirectX::SimpleMath::Vector3 center;
+
+    DirectX::SimpleMath::Vector3 prevPos;
+    bool first = true;
+
+    float baseRadius = 1.0f;
+    float phi = 1.61803398875f;
+
+public:
+    void Start(
+        float startAngle,
+        float endAngle,
+        float radius,
+        int frame,
+        float angleAccel = 0.0f)
+    {
+        baseRadius = radius;
+        first = true;
+
+        angleAnim.StartAbsolute(
+            { 0, startAngle, 0 },
+            { 0, endAngle, 0 },
+            frame,
+            angleAccel
+        );
+    }
+
+    DirectX::SimpleMath::Vector3 Update()
+    {
+        auto angle = angleAnim.UpdateAbsolute();
+        float theta = angle.y;
+
+        // 黄金螺旋：90度で φ 倍
+        float r = baseRadius * powf(phi, theta / (DirectX::XM_PI / 2.0f));
+
+        DirectX::SimpleMath::Vector3 current;
+        current.x = cosf(theta) * r;
+        current.z = sinf(theta) * r;
+        //current.y = center.y;
+
+        if (first)
+        {
+            prevPos = current;
+            first = false;
+            return { 0,0,0 };
+        }
+
+        auto delta = current - prevPos;
+        prevPos = current;
+        return delta;
+    }
+
+    bool IsPlaying() const
+    {
+        return angleAnim.IsPlaying();
+    }
+
+    void Reset()
+    {
+        angleAnim.Reset();
         first = true;
     }
 };

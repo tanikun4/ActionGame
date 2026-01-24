@@ -160,7 +160,8 @@ void Boss::Impl::Update() {
 		m_Owner->SetColor(Vector4(1, 0, 0, 1));
 	}
 
-	if (!(attack_kind == ROTATESWING))
+	// 回転していない場合は前方回転を適用
+	if (!m_spinFg)
 		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
 	m_Owner->GBUpdate();
@@ -327,6 +328,15 @@ void Boss::Impl::AttackUpdate() {
 	case WRAPAROUND_THRUST:
 		WrapAroundThrust();
 		break;
+	case JUMP_SPINSLASH_SHOT:
+		JumpSpinSlashShot();
+		break;
+	case CROSS_SHOT:
+		CrossShot();
+		break;
+	case ROTATESWING_FIBONACCI:
+		RotateSwingFibonacci();
+		break;
 	case KIND_MAX:
 		m_attackPhase = AttackPhase::ENTER;
 		m_Owner->m_State = NORMAL;
@@ -345,6 +355,7 @@ void Boss::Impl::RotateSwing() {
 	if (m_attackPhase == AttackPhase::PREPARE) {
 		if (m_weapon->GetStanceTime() > 90) {
 			m_weapon->AttackStart();
+			m_spinFg = true;
 			m_attackframe = 0;
 			m_attackPhase = AttackPhase::ATTACK;
 		}
@@ -378,6 +389,7 @@ void Boss::Impl::RotateSwing() {
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
 		m_Owner->m_State = NORMAL;
+		m_spinFg = false;
 		m_stateframe = 0;
 		m_attackframe = 0;
 		attack_kind = NONE;//攻撃終了
@@ -895,10 +907,11 @@ void Boss::Impl::WrapAroundThrust() {
 		//近づいたら回り込む
 		if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 3 &&
 			fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 3) {
-			Vector3 rot = m_Owner->m_Rotation;
-			rot.y -= PI;
+			float rot_y = m_Owner->m_Rotation.y;
+			m_Owner->is_SPECIALMOVE = true;// 特殊移動ON
+			rot_y -= PI;
 			m_rotatespeed = 0.3f;
-			m_ArcAnim.Start(m_Owner->m_Rotation, rot, m_Owner->radius * 3, 60, 0.7f);
+			m_ArcAnim.Start(m_Owner->m_Rotation.y, rot_y, m_Owner->radius * 3, 60, 0.7f);
 			m_attackPhase = AttackPhase::FOLLOW;
 			m_attackframe = 0;
 			m_Owner->m_Velocity_f = 0.0f;//移動停止
@@ -909,6 +922,7 @@ void Boss::Impl::WrapAroundThrust() {
 	if (m_attackPhase == AttackPhase::FOLLOW)
 	{
 		if (!m_ArcAnim.IsPlaying()) {
+			m_Owner->is_SPECIALMOVE = false;// 特殊移動OFF
 			m_lookatFg = false;
 			Move();
 
@@ -921,9 +935,8 @@ void Boss::Impl::WrapAroundThrust() {
 			}
 		}
 		else {
-			m_Owner->m_Position += m_ArcAnim.Update();
+			m_Owner->m_Velocity = m_ArcAnim.Update();
 			++m_attackframe;
-			// 回り込み中に一定フレーム経過したら、縦の衝撃波飛ばしを行う
 			if (m_attackframe % 3 == 0) {
 				// 残像エフェクト再生
 				EffectParams  param;
@@ -955,6 +968,204 @@ void Boss::Impl::WrapAroundThrust() {
 		m_rotatespeed = 0.01f;
 		m_rushFg = false;
 		m_attackcount = 0;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+}
+
+// ジャンプ回転切り→衝撃波飛ばし
+void Boss::Impl::JumpSpinSlashShot()
+{
+	// ジャンプしていなければジャンプする
+	if (m_attackPhase == AttackPhase::ENTER) {
+		Jump(2.0f);
+		m_Owner->m_Velocity_f = 0;//移動速度を0にする
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+
+	// 準備フェーズ
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		if (m_attackframe > 30) {
+			m_attackPhase = AttackPhase::ATTACK;
+			m_attackframe = 0;
+			m_Owner->m_Velocity_f = 0;//移動速度を0にする
+		}
+		++m_attackframe;
+
+	}
+
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		// 攻撃開始
+		if (m_weapon->GetState() == Pole::STATE::NORMAL) {
+			m_weapon->AttackStart(true, true);
+			Vector3 endrot = m_Owner->m_Rotation;
+			endrot.x += PI * 36;
+			m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 120, 0.0f);// 縦回転切り、絶対値参照で行う
+			Sound::GetInstance()->Play(SOUND_SE_SWING);
+		}
+
+		m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
+
+		// 着地したら回転終了して衝撃波発射、硬直へ
+		if (m_Owner->is_GROUND) {
+			m_Owner->m_Rotation.x = 0;
+			m_weapon->AttackEnd();
+			ProjectileChargeMax_VT();
+			ProjectileShot();
+			m_attackPhase = AttackPhase::RECOVER;
+		}
+
+	}
+
+	// 硬直フェーズ、一定フレーム経過後終了へ
+	if (m_attackPhase == AttackPhase::RECOVER)
+	{
+		++m_attackframe;
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::END;
+		}
+	}
+
+	// 終了フェーズ、攻撃終了処理を行う
+	if( m_attackPhase == AttackPhase::END)
+	{
+		m_Owner->m_State = NORMAL;
+		m_stateframe = 0;
+		m_attackframe = 0;
+		m_attackcount = 0;
+		m_rushFg = false;
+		m_lookatFg = true;
+		m_Owner->m_Rotation.x = 0;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+}
+
+// 十字衝撃波発射
+void Boss::Impl::CrossShot() {
+	// 開始フェーズ
+	if (m_attackPhase == AttackPhase::ENTER) {
+		// 十字衝撃波の構え、縦と横両方の衝撃波をチャージする
+		m_rotatespeed = 0.3f;
+		ProjectileCharge();
+		ProjectileCharge_VT();
+		m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+	// 準備フェーズ、一定フレーム経過後、攻撃フェーズに
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		++m_attackframe;
+		if (m_attackframe > 120) {
+			m_attackPhase = AttackPhase::ATTACK;
+			m_attackframe = 0;
+		}
+	}
+	// 攻撃フェーズ、十字衝撃波発射
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		m_lookatFg = false;
+		// 十字衝撃波発射
+		ProjectileShot();
+		ProjectileShot();
+		m_weapon->Swing_Vertical();
+		Sound::GetInstance()->Play(SOUND_SE_SWING);
+		m_attackPhase = AttackPhase::FOLLOW;
+		m_attackframe = 0;
+		++m_attackcount;
+		// 2回発射したら硬直へ
+		if( m_attackcount >= 2 ) {
+			m_attackPhase = AttackPhase::RECOVER;
+		}
+	}
+
+	if (m_attackPhase == AttackPhase::FOLLOW)
+	{
+		++m_attackframe;
+		if (m_weapon->GetMaxAttack()) {
+			m_lookatFg = true;
+			m_weapon->SwingEnd();
+			ProjectileChargeMax();
+			ProjectileChargeMax_VT();
+			m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+		}
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::ATTACK;
+		}
+	}
+
+	// 硬直フェーズ、一定フレーム経過後終了へ
+	if (m_attackPhase == AttackPhase::RECOVER) {
+		++m_attackframe;
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::END;
+		}
+	}
+
+	// 終了フェーズ、攻撃終了処理を行う
+	if (m_attackPhase == AttackPhase::END) {
+		m_weapon->SwingEnd();
+		m_attackframe = 0;
+		m_attackcount = 0;
+		m_rotatespeed = 0.01f;
+		attack_kind = NONE;//攻撃終了
+		m_lookatFg = true;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+}
+
+// 回転斬りフィボナッチ数列軌道
+void Boss::Impl::RotateSwingFibonacci()
+{
+	// 開始フェーズ
+	if (m_attackPhase == AttackPhase::ENTER) {
+		m_weapon->Stance();
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+	// 構えフェーズ、一定フレーム経過後、攻撃開始
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		if (m_weapon->GetStanceTime() > 90) {
+			m_lookatFg = false;
+			m_spinFg = true;
+			m_Owner->is_SPECIALMOVE = true;// 特殊移動モードにする
+			m_weapon->AttackStart();
+			m_FiboAnim.Start(m_Owner->m_ForwardRotation.y, m_Owner->m_ForwardRotation.y + PI * 2,m_Owner->radius,120,1.0f);
+			m_attackframe = 0;
+			m_attackPhase = AttackPhase::ATTACK;
+		}
+	}
+
+	// 攻撃フェーズ、回転しながら移動
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		m_Owner->m_Rotation.y += PI * 0.2f;
+		m_Owner->m_Velocity = m_FiboAnim.Update();
+		++m_attackframe;
+
+		if (m_attackframe % 30 == 0) {
+			Sound::GetInstance()->Play(SOUND_SE_ROTATEATTACK);
+		}
+
+		if (!m_FiboAnim.IsPlaying()) {
+			m_weapon->AttackEnd();
+			m_attackframe = 0;
+			m_attackPhase = AttackPhase::RECOVER;
+			m_Owner->m_Velocity_f = 0.0f;//移動を停止する
+			m_Owner->is_SPECIALMOVE = false; // 特殊移動モード解除
+		}
+	}
+
+	// 硬直フェーズ、攻撃終了後しばらく硬直
+	if (m_attackPhase == AttackPhase::RECOVER) {
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::END;
+		}
+		++m_attackframe;
+	}
+
+	// 終了フェーズ、終了処理を行う
+	if (m_attackPhase == AttackPhase::END) {
+		m_lookatFg = true;
+		m_spinFg = false;
+		m_Owner->m_State = NORMAL;
+		m_stateframe = 0;
+		m_attackframe = 0;
+		attack_kind = NONE;//攻撃終了
 		m_attackPhase = AttackPhase::ENTER;
 	}
 }
@@ -1166,8 +1377,8 @@ bool Boss::Impl::ManyThrust(int maxcount)
 }
 
 // ジャンプ処理
-void Boss::Impl::Jump() {
-	m_Owner->m_Velocity.y = jumppower;
+void Boss::Impl::Jump(float _power) {
+	m_Owner->m_Velocity.y = _power;
 	m_Owner->is_GROUND = false;
 	m_Owner->m_Position.y += 0.1f;
 }
