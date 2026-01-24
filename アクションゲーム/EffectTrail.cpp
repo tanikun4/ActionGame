@@ -33,6 +33,9 @@ void EffectTrail::Start()
 void EffectTrail::End()
 {
     m_Active = false;
+    m_Points.clear();
+    m_Vertices.clear();
+    m_Indices.clear();
 }
 
 // XVˆ—

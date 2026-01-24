@@ -304,660 +304,658 @@ void Boss::Impl::AttackUpdate() {
 		break;
 
 	case ROTATESWING://回転切り
-
-		// 開始フェーズ
-		if (m_attackPhase == AttackPhase::ENTER) {
-			m_weapon->Stance();
-			m_attackPhase = AttackPhase::PREPARE;
-		}
-		// 構えフェーズ、一定フレーム経過後、攻撃開始
-		if (m_attackPhase == AttackPhase::PREPARE) {
-			if (m_weapon->GetStanceTime() > 90) {
-				m_weapon->AttackStart();
-				m_attackframe = 0;
-				m_attackPhase = AttackPhase::ATTACK;
-			}
-		}
-		// 攻撃フェーズ、回転しながら移動
-		if (m_attackPhase == AttackPhase::ATTACK) {
-			m_Owner->m_Rotation.y += PI / 20;
-			Move();
-			++m_attackframe;
-
-			if (m_attackframe % 30 == 0) {
-				Sound::GetInstance()->Play(SOUND_SE_ROTATEATTACK);
-			}
-
-			if (m_attackframe > 300) {
-				m_weapon->AttackEnd();
-				m_attackframe = 0;
-				m_attackPhase = AttackPhase::RECOVER;
-				m_Owner->m_Velocity_f = 0.0f;//移動を停止する
-			}
-		}
-
-		// 硬直フェーズ、攻撃終了後しばらく硬直
-		if (m_attackPhase == AttackPhase::RECOVER) {
-			if (m_attackframe > 60) {
-				m_attackPhase = AttackPhase::END;
-			}
-			++m_attackframe;
-		}
-
-		// 終了フェーズ、終了処理を行う
-		if (m_attackPhase == AttackPhase::END) {
-			m_Owner->m_State = NORMAL;
-			m_stateframe = 0;
-			m_attackframe = 0;
-			attack_kind = NONE;//攻撃終了
-			m_attackPhase = AttackPhase::ENTER;
-		}
-
+		RotateSwing();
 		break;
-
 	case SWING_VERTICAL://縦振り
-
-		// 開始フェーズ
-		if (m_attackPhase == AttackPhase::ENTER) {
-			m_weapon->Stance_Vertical();
-			m_rotatespeed = 0.1f;
-			m_attackPhase = AttackPhase::PREPARE;
-		}
-
-		// 準備フェーズ、一定フレーム経過後、突進開始
-		if (m_attackPhase == AttackPhase::PREPARE) {
-			if (m_weapon->GetStanceTime() > 120) {
-				m_lookatFg = false;
-				m_ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
-				m_ta_pos.y = m_Owner->m_Position.y;//高さはそのまま
-				m_rushFg = true;
-				m_attackPhase = AttackPhase::ATTACK;
-			}
-
-		}
-
-		// 攻撃フェーズ、ターゲットに向かって突進
-		if (m_attackPhase == AttackPhase::ATTACK) {
-			Move();
-			if (m_stateframe > 3) {
-				// 土煙エフェクト再生
-				EffectParams   param;
-				param.pos = m_Owner->m_Position;
-				param.scale = m_Owner->m_Scale * 20;
-				param.maxLife = 30;
-				EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI, param);
-				m_stateframe = 0;
-			}
-			++m_attackframe;
-
-			//近づいたら振る
-			if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 2 &&
-				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 2) {
-				m_weapon->Swing_Vertical();
-				m_rushFg = false;
-				m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
-				m_attackframe = 0;
-				m_attackPhase = AttackPhase::RECOVER;
-			}
-		}
-
-		if (m_attackPhase == AttackPhase::RECOVER) {
-
-			// 大きな土煙エフェクト再生
-			if (m_weapon->GetAttackTime() == 10) {
-				//エフェクトパラメーター構造体作成
-				EffectParams param;
-				param.scale = m_Owner->m_Scale * 15;
-				param.maxLife = 60;
-				// エフェクト再生
-				m_weapon->TipToEffect(EFFECT_TUTIKEMURI_BIG, param);
-				Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
-			}
-
-			// 攻撃終了
-			if (m_weapon->GetAttackTime() > 30) {
-				m_attackPhase = AttackPhase::END;
-
-			}
-		}
-
-		if (m_attackPhase == AttackPhase::END) {
-			m_Owner->m_State = NORMAL;
-			m_attackframe = 0;
-			m_weapon->SwingEnd();
-			m_lookatFg = true;
-			m_rotatespeed = 0.01f;
-			m_attackPhase = AttackPhase::ENTER;
-		}
+		SwingVertical();
 		break;
-	case MANY_THRUST://連続突き
-
-		// 開始フェーズ
-		if (m_attackPhase == AttackPhase::ENTER) {
-			m_weapon->Stance_Thrust();
-			m_attackPhase = AttackPhase::PREPARE;
-			m_attackcount = 0;
-		}
-
-		// 準備フェーズ
-		if (m_attackPhase == AttackPhase::PREPARE) {
-			// 一定フレーム構えた後、攻撃開始
-			if (m_weapon->GetStanceTime() > 90) {
-				m_attackPhase = AttackPhase::ATTACK;
-				m_weapon->StanceEnd();
-				m_weapon->Thrust();
-				m_attackcount++;
-				Sound::GetInstance()->Play(SOUND_SE_SWING);
-			}
-		}
-
-
-		if (m_attackPhase == AttackPhase::ATTACK) {
-			Move();
-			if (weapon_state == Pole::STATE::THRUST && m_weapon->GetAttackTime() > 4) {
-				m_attackcount++;
-				int attack_count_remaind = m_attackcount % 3;
-				if (attack_count_remaind == 0) {
-					m_weapon->Thrust();
-				}
-				else if (attack_count_remaind == 1) {
-					m_weapon->Thrust_Left();
-				}
-				else {
-					m_weapon->Thrust_Right();
-				}
-				Sound::GetInstance()->Play(SOUND_SE_SWING);
-			}
-
-			// 攻撃終了
-			if (m_attackcount > 40) {
-				m_attackPhase = AttackPhase::RECOVER;
-				m_weapon->ThrustEnd();
-				m_lookatFg = false;
-				m_Owner->m_Velocity_f = 0.0f;//移動停止
-			}
-
-		}
-
-		if (m_attackPhase == AttackPhase::RECOVER) {
-			if (m_attackframe > 60) {
-				m_attackPhase = AttackPhase::END;
-			}
-			++m_attackframe;
-		}
-
-		if (m_attackPhase == AttackPhase::END) {
-			m_lookatFg = true;
-			m_attackframe = 0;
-			m_Owner->m_State = NORMAL;
-			m_attackcount = 0;
-			m_stateframe = 0;
-			m_attackPhase = AttackPhase::ENTER;
-		}
-
+	case MANY_THRUST_LOOKAT://連続突き
+		ManyThrustLookAt();
 		break;
-
 	case THREE_SWING://三連斬り
-
-		// 攻撃開始処理、構えに入る
-		if (m_attackPhase == AttackPhase::ENTER) {
-			m_weapon->Stance();
-			m_rotatespeed = 0.1f;
-			m_lookatFg = true;
-			m_rushFg = true;
-			m_attackPhase = AttackPhase::PREPARE;
-		}
-
-		// 準備フェーズ、構えが完了したら攻撃開始、三回攻撃を繰り返す
-		if (m_attackPhase == AttackPhase::PREPARE) {
-			// しばらく構えた後、攻撃に以降
-			if (m_weapon->GetStanceTime() > 60) {
-				m_attackPhase = AttackPhase::ATTACK;
-
-				if (m_attackcount == 0) {
-					m_weapon->Swing();
-					Sound::GetInstance()->Play(SOUND_SE_SWING);
-				}
-				else if (m_attackcount == 1) {
-					m_weapon->Swing_Return();
-					Sound::GetInstance()->Play(SOUND_SE_SWING);
-				}
-				else if (m_attackcount == 2) {
-					m_weapon->Swing(10, (int)SwingMode::VERTICAL);
-					Sound::GetInstance()->Play(SOUND_SE_SWING);
-				}
-				m_lookatFg = false;
-				++m_attackcount;
-			}
-		}
-
-		// 攻撃フェーズ、攻撃後準備フェーズに戻る、三回攻撃を繰り返す
-		if (m_attackPhase == AttackPhase::ATTACK) {
-			if (m_weapon->GetAttackTime() > 18) {
-				m_weapon->SwingEnd();
-
-				if (m_attackcount == 1) {
-					m_weapon->Stance_Return();
-				}
-				else if (m_attackcount == 2) {
-					m_weapon->Stance(10, (int)StanceMode::VERTICAL);
-				}
-				m_lookatFg = true;
-				m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
-				m_attackPhase = AttackPhase::FOLLOW;
-			}
-			else if (m_weapon->GetAttackTime() <= 18) { // 攻撃中は移動
-				Move();
-			}
-
-		}
-
-		// 攻撃後処理、三回攻撃したら終了、そうでなければ準備フェーズに戻る
-		if (m_attackPhase == AttackPhase::FOLLOW) {
-			// 三回攻撃したら終了
-			if (m_attackcount >= 3) {
-				m_lookatFg = false;
-				m_attackPhase = AttackPhase::RECOVER;
-			}
-			else {
-				m_attackPhase = AttackPhase::PREPARE;
-			}
-		}
-
-		// 硬直フェーズ、終了フェーズに以降するまで硬直する
-		if (m_attackPhase == AttackPhase::RECOVER) {
-			// 3回目の攻撃後、しばらくそのままで待機してから終了
-			if (m_attackframe > 90) {
-				m_attackPhase = AttackPhase::END;
-			}
-			++m_attackframe;
-		}
-
-		// 終了フェーズ、終了処理を行う
-		if (m_attackPhase == AttackPhase::END) {
-			m_weapon->StanceEnd();
-			m_Owner->m_State = NORMAL;
-			m_stateframe = 0;
-			m_attackframe = 0;
-			m_attackcount = 0;
-			m_rotatespeed = 0.01f;
-			m_rushFg = false;
-			m_lookatFg = true;
-			m_attackPhase = AttackPhase::ENTER;
-		}
-
+		ThreeSwing();
 		break;
-
 	case JUMP_SPINSLASH://ジャンプ回転切り
-		// ジャンプしていなければジャンプする
-		if (m_attackPhase == AttackPhase::ENTER) {
-			Jump();
-			m_rushFg = true;
-			move_speed = 0.1f;// 移動速度を下げる
-			m_attackPhase = AttackPhase::PREPARE;
-		}
-
-		// 準備フェーズ
-		if (m_attackPhase == AttackPhase::PREPARE) {
-			if (m_attackframe > 30) {
-				m_attackPhase = AttackPhase::ATTACK;
-				m_attackframe = 0;
-				m_Owner->m_Velocity_f = 0;//移動速度を0にする
-				m_rushFg = false;
-			}
-			++m_attackframe;
-
-		}
-
-		if (m_attackPhase == AttackPhase::ATTACK) {
-			m_Owner->m_Velocity.y = 0;//空中で停止する
-			// 攻撃開始
-			if (m_weapon->GetState() == Pole::STATE::NORMAL) {
-				m_weapon->AttackStart(true, true);
-				Vector3 endrot = m_Owner->m_Rotation;
-				endrot.x += PI * 4;
-				m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 30, 0.0f);// 縦回転切り、絶対値参照で行う
-				Sound::GetInstance()->Play(SOUND_SE_SWING);
-				++m_attackcount;
-			}
-
-			m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
-
-			if (!m_AngleAnim.IsPlaying()) {
-				m_Owner->m_Rotation.x = 0;
-				m_weapon->AttackEnd();
-				m_weapon->Stance(15, (int)StanceMode::VERTICAL);
-				m_attackPhase = AttackPhase::FOLLOW;
-			}
-
-		}
-
-		// 追撃フェーズ
-		if (m_attackPhase == AttackPhase::FOLLOW) {
-			if (m_weapon->GetStanceTime() > 90) {
-				m_weapon->StanceEnd();
-				// 攻撃開始
-				m_weapon->AttackStart(true, true);
-				Vector3 endrot = m_Owner->m_Rotation;
-				endrot.x += PI * 2;
-				m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 10, 0.0f);// 縦回転切り、絶対値参照で行う
-				Sound::GetInstance()->Play(SOUND_SE_SWING);
-				m_Owner->m_Velocity.y = -0.5f;//落下開始
-				move_speed = 0.25f;// 移動速度を元に戻す
-				m_rushFg = true;
-				++m_attackcount;
-			}
-
-			if (m_attackcount > 1) {
-				m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
-			}
-			else {
-				m_Owner->m_Velocity.y = 0;//空中で停止する
-			}
-
-		}
-
-		// 攻撃していないときのみ移動する
-		if (m_attackPhase == AttackPhase::PREPARE || m_rushFg) {
-			Move();
-		}
-
-		// 攻撃終了
-		if (m_Owner->is_GROUND && m_rushFg) {
-			m_attackPhase = AttackPhase::END;
-		}
-
-		// 攻撃終了処理
-		if (m_attackPhase == AttackPhase::END) {
-			m_weapon->AttackEnd();
-			m_Owner->m_State = NORMAL;
-			m_stateframe = 0;
-			m_attackframe = 0;
-			m_attackcount = 0;
-			m_rushFg = false;
-			m_lookatFg = true;
-			m_Owner->m_Rotation.x = 0;
-			m_attackPhase = AttackPhase::ENTER;
-		}
-
+		JumpSpinSlash();
 		break;
-
 	case JUMP_SPINSLASH_RUSH://ジャンプ回転切り突進
-		// ジャンプしていなければジャンプする
-		if (m_attackPhase == AttackPhase::ENTER) {
-			Jump();
-			m_attackPhase = AttackPhase::PREPARE;
-		}
-
-		// 準備フェーズ
-		if (m_attackPhase == AttackPhase::PREPARE) {
-			if (m_attackframe > 30) {
-				m_attackPhase = AttackPhase::ATTACK;
-				m_attackframe = 0;
-			}
-			++m_attackframe;
-
-		}
-
-		if (m_attackPhase == AttackPhase::ATTACK) {
-			m_Owner->m_Velocity.y = 0;//空中で停止する
-			// 攻撃開始
-			if (m_weapon->GetState() == Pole::STATE::NORMAL) {
-				m_weapon->AttackStart(true, true);
-				Vector3 endrot = m_Owner->m_Rotation;
-				endrot.x += PI * 24;
-				m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 90, 0.0f);// 縦回転切り、絶対値参照で行う
-				m_rushFg = true;
-				Sound::GetInstance()->Play(SOUND_SE_SWING);
-				m_lookatFg = false;
-			}
-
-			m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
-
-			//回転終了後、硬直フェーズへ。ここから着地まで何もしない
-			if (!m_AngleAnim.IsPlaying()) {
-				m_Owner->m_Rotation.x = 0;
-				m_weapon->AttackEnd();
-				m_attackPhase = AttackPhase::RECOVER;
-				m_rushFg = false;
-			}
-
-		}
-
-		// 突進フラグが有効なら移動する
-		if (m_rushFg) {
-			Move();
-		}
-
-		// 攻撃終了
-		if (m_Owner->is_GROUND) {
-			m_attackPhase = AttackPhase::END;
-		}
-
-		// 攻撃終了処理
-		if (m_attackPhase == AttackPhase::END) {
-			m_weapon->AttackEnd();
-			m_Owner->m_State = NORMAL;
-			m_stateframe = 0;
-			m_attackframe = 0;
-			m_attackcount = 0;
-			m_rushFg = false;
-			m_lookatFg = true;
-			m_Owner->m_Rotation.x = 0;
-			m_attackPhase = AttackPhase::ENTER;
-		}
-
+		JumpSpinSlashRush();
 		break;
-
 	case SONICBOOM_SHOT: //衝撃波発射
-		if (m_attackPhase == AttackPhase::ENTER) {
-			m_rand = rand() % 2;
-			// 衝撃波の構え、ランダムでモーション分岐
-			if (m_rand == 1) {
-				ProjectileCharge();
-				m_weapon->Stance();
-			}
-			else {
-				ProjectileCharge_VT();
-				m_weapon->Stance(18,(int)StanceMode::VERTICAL);
-			}
-			m_attackcount = 0;
-			m_attackframe = 0;
-			m_rotatespeed = 0.3f;
-			m_attackPhase = AttackPhase::PREPARE;
-		}
-
-		if (m_attackPhase == AttackPhase::PREPARE) {
-			++m_attackframe;
-			if (m_attackframe > 150) {
-				m_attackPhase = AttackPhase::ATTACK;
-			}
-		}
-
-		if (m_attackPhase == AttackPhase::ATTACK) {
-			// 衝撃波発射
-			m_lookatFg = false;
-			ProjectileShot();
-			// モーション分岐、構え時から乱数を変えていないので構えに応じた振り方になる
-			if (m_rand == 1) {
-				m_weapon->Swing();
-			}
-			else {
-				m_weapon->Swing_Vertical();
-			}
-			m_attackcount++;
-			m_attackframe = 0;
-			// 5回発射したら硬直へ、そうでなければ次の攻撃の構えに移る
-			if (m_attackcount >= 5) {
-				m_attackPhase = AttackPhase::RECOVER;
-			}
-			else {
-				m_attackPhase = AttackPhase::FOLLOW;
-			}
-			Sound::GetInstance()->Play(SOUND_SE_SWING);
-		}
-
-		if (m_attackPhase == AttackPhase::FOLLOW)
-		{
-			++m_attackframe;
-			if (m_weapon->GetMaxAttack()) {
-				m_lookatFg = true;
-				m_weapon->SwingEnd();
-				m_rand = rand() % 2;
-				// 次の衝撃波の構え、ランダムでモーション分岐
-				if (m_rand == 1) {
-					m_weapon->Stance();
-					ProjectileChargeMax();
-				}
-				else {
-					m_weapon->Stance(18,(int)StanceMode::VERTICAL);
-					ProjectileChargeMax_VT();
-				}
-			}
-			if (m_attackframe > 60) {
-				m_attackPhase = AttackPhase::ATTACK;
-			}
-		}
-
-		if(m_attackPhase == AttackPhase::RECOVER)
-		{
-			++m_attackframe;
-			if (m_attackframe > 90) {
-				m_attackPhase = AttackPhase::END;
-			}
-		}
-
-		if (m_attackPhase == AttackPhase::END)
-		{
-			m_weapon->SwingEnd();
-			m_attackframe = 0;
-			m_attackcount = 0;
-			m_rotatespeed = 0.01f;
-			attack_kind = NONE;//攻撃終了
-			m_lookatFg = true;
-			m_attackPhase = AttackPhase::ENTER;
-		}
-	
-
+		SonicBoomShot();
 		break;
 	case WRAPAROUND_THRUST:
-		// 開始フェーズ
-		if (m_attackPhase == AttackPhase::ENTER) {
-			m_weapon->Stance_Vertical();
-			m_rotatespeed = 0.1f;
-			m_Owner->m_Velocity_f = 0.0f;//速度を0にする
-			m_attackPhase = AttackPhase::PREPARE;
-			m_lookatFg = true;
-		}
-
-		// 準備フェーズ、一定フレーム経過後、突進開始
-		if (m_attackPhase == AttackPhase::PREPARE) {
-			if (m_weapon->GetStanceTime() > 120) {
-				m_rushFg = true;
-				m_attackPhase = AttackPhase::ATTACK;
-			}
-
-		}
-		// 攻撃フェーズ、ターゲットに向かって突進し、近づいたら回り込む
-		if (m_attackPhase == AttackPhase::ATTACK) {
-			Move();
-			m_ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
-			m_ta_pos.y = m_Owner->m_Position.y;//高さはそのまま
-			if (m_attackframe % 3) {
-				// 土煙エフェクト再生
-				EffectParams   param;
-				param.pos = m_Owner->m_Position;
-				param.scale = m_Owner->m_Scale * 20;
-				param.maxLife = 30;
-				EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI, param);
-				m_attackframe = 0;
-			}
-			++m_attackframe;
-
-			//近づいたら回り込む
-			if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 3 &&
-				fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 3) {
-				Vector3 rot = m_Owner->m_Rotation;
-				rot.y -= PI;
-				m_rotatespeed = 0.3f;
-				m_ArcAnim.Start(m_Owner->m_Rotation, rot, m_Owner->radius * 3, 60,0.7f);
-				m_attackPhase = AttackPhase::FOLLOW;
-				m_attackframe = 0;
-				m_Owner->m_Velocity_f = 0.0f;//移動停止
-			}
-		}
-
-		// 追撃フェーズ、回り込んでから連続突きを行う
-		if (m_attackPhase == AttackPhase::FOLLOW)
-		{
-			if (!m_ArcAnim.IsPlaying()) {
-				m_lookatFg = false;
-				Move();
-				//if (weapon_state == Pole::STATE::THRUST && m_weapon->GetAttackTime() > 4) {
-				//	m_attackcount++;
-				//	int attack_count_remaind = m_attackcount % 3;
-				//	if (attack_count_remaind == 0) {
-				//		m_weapon->Thrust();
-				//	}
-				//	else if (attack_count_remaind == 1) {
-				//		m_weapon->Thrust_Left();
-				//	}
-				//	else {
-				//		m_weapon->Thrust_Right();
-				//	}
-				//	Sound::GetInstance()->Play(SOUND_SE_SWING);
-				//}
-
-				// 攻撃終了するか
-				if (ManyThrust(6)) {//連続突きを行い、6回以上行っていたらtrueを返す
-					m_attackPhase = AttackPhase::RECOVER;
-					m_weapon->ThrustEnd();
-					m_Owner->m_Velocity_f = 0.0f;//移動停止
-					m_attackframe = 0;
-				}
-			}
-			else {
-				m_Owner->m_Position += m_ArcAnim.Update();
-				++m_attackframe;
-				// 回り込み中に一定フレーム経過したら、縦の衝撃波飛ばしを行う
-				if (m_attackframe % 3 == 0) {
-					// 残像エフェクト再生
-					EffectParams  param;
-					param.pos = m_Owner->m_Position;
-					param.rot = m_Owner->m_Rotation;
-					param.scale = m_Owner->m_Scale;
-					param.maxLife = 10;
-					param.color = { 1,0.2f,0,0.3f };
-					EffectManager::GetInstance()->Play(EFFECT_PLAYER, param);
-				}
-
-			}
-		}
-		// 硬直フェーズ、終了フェーズに以降するまで硬直する
-		if (m_attackPhase == AttackPhase::RECOVER) {
-
-			++m_attackframe;
-			if (m_attackframe > 60) {
-				m_attackPhase = AttackPhase::END;
-			}
-
-		}
-		// 終了フェーズ、終了処理を行う
-		if (m_attackPhase == AttackPhase::END) {
-			m_Owner->m_State = NORMAL;
-			m_attackframe = 0;
-			m_weapon->SwingEnd();
-			m_lookatFg = true;
-			m_rotatespeed = 0.01f;
-			m_rushFg = false;
-			m_attackcount = 0;
-			m_attackPhase = AttackPhase::ENTER;
-		}
+		WrapAroundThrust();
 		break;
 	case KIND_MAX:
 		m_attackPhase = AttackPhase::ENTER;
 		m_Owner->m_State = NORMAL;
 		break;
+	}
+}
+
+// 回転切り
+void Boss::Impl::RotateSwing() {
+	// 開始フェーズ
+	if (m_attackPhase == AttackPhase::ENTER) {
+		m_weapon->Stance();
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+	// 構えフェーズ、一定フレーム経過後、攻撃開始
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		if (m_weapon->GetStanceTime() > 90) {
+			m_weapon->AttackStart();
+			m_attackframe = 0;
+			m_attackPhase = AttackPhase::ATTACK;
+		}
+	}
+	// 攻撃フェーズ、回転しながら移動
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		m_Owner->m_Rotation.y += PI / 20;
+		Move();
+		++m_attackframe;
+
+		if (m_attackframe % 30 == 0) {
+			Sound::GetInstance()->Play(SOUND_SE_ROTATEATTACK);
+		}
+
+		if (m_attackframe > 300) {
+			m_weapon->AttackEnd();
+			m_attackframe = 0;
+			m_attackPhase = AttackPhase::RECOVER;
+			m_Owner->m_Velocity_f = 0.0f;//移動を停止する
+		}
+	}
+
+	// 硬直フェーズ、攻撃終了後しばらく硬直
+	if (m_attackPhase == AttackPhase::RECOVER) {
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::END;
+		}
+		++m_attackframe;
+	}
+
+	// 終了フェーズ、終了処理を行う
+	if (m_attackPhase == AttackPhase::END) {
+		m_Owner->m_State = NORMAL;
+		m_stateframe = 0;
+		m_attackframe = 0;
+		attack_kind = NONE;//攻撃終了
+		m_attackPhase = AttackPhase::ENTER;
+	}
+}
+
+// 突進縦振り
+void Boss::Impl::SwingVertical() {
+	// 開始フェーズ
+	if (m_attackPhase == AttackPhase::ENTER) {
+		m_weapon->Stance_Vertical();
+		m_rotatespeed = 0.1f;
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+
+	// 準備フェーズ、一定フレーム経過後、突進開始
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		if (m_weapon->GetStanceTime() > 120) {
+			m_lookatFg = false;
+			m_ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
+			m_ta_pos.y = m_Owner->m_Position.y;//高さはそのまま
+			m_rushFg = true;
+			m_attackPhase = AttackPhase::ATTACK;
+		}
+
+	}
+
+	// 攻撃フェーズ、ターゲットに向かって突進
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		Move();
+		if (m_stateframe > 3) {
+			// 土煙エフェクト再生
+			EffectParams   param;
+			param.pos = m_Owner->m_Position;
+			param.scale = m_Owner->m_Scale * 20;
+			param.maxLife = 30;
+			EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI, param);
+			m_stateframe = 0;
+		}
+		++m_attackframe;
+
+		//近づいたら振る
+		if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 2 &&
+			fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 2) {
+			m_weapon->Swing_Vertical();
+			m_rushFg = false;
+			m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
+			m_attackframe = 0;
+			m_attackPhase = AttackPhase::RECOVER;
+		}
+	}
+
+	if (m_attackPhase == AttackPhase::RECOVER) {
+
+		// 大きな土煙エフェクト再生
+		if (m_weapon->GetAttackTime() == 10) {
+			//エフェクトパラメーター構造体作成
+			EffectParams param;
+			param.scale = m_Owner->m_Scale * 15;
+			param.maxLife = 60;
+			// エフェクト再生
+			m_weapon->TipToEffect(EFFECT_TUTIKEMURI_BIG, param);
+			Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
+		}
+
+		// 攻撃終了
+		if (m_weapon->GetAttackTime() > 30) {
+			m_attackPhase = AttackPhase::END;
+
+		}
+	}
+
+	if (m_attackPhase == AttackPhase::END) {
+		m_Owner->m_State = NORMAL;
+		m_attackframe = 0;
+		m_weapon->SwingEnd();
+		m_lookatFg = true;
+		m_rotatespeed = 0.01f;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+}
+
+// 連続突き移動
+void Boss::Impl::ManyThrustLookAt() {
+	// 開始フェーズ
+	if (m_attackPhase == AttackPhase::ENTER) {
+		m_weapon->Stance_Thrust();
+		m_attackPhase = AttackPhase::PREPARE;
+		m_attackcount = 0;
+	}
+
+	// 準備フェーズ
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		// 一定フレーム構えた後、攻撃開始
+		if (m_weapon->GetStanceTime() > 90) {
+			m_attackPhase = AttackPhase::ATTACK;
+			m_weapon->StanceEnd();
+			m_weapon->Thrust();
+			m_attackcount++;
+			Sound::GetInstance()->Play(SOUND_SE_SWING);
+		}
+	}
+
+
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		Move();
+		// 攻撃終了するか
+		if (ManyThrust(40)) {//連続突きを行い、40回以上行っていたらtrueを返す
+			m_attackPhase = AttackPhase::RECOVER;
+			m_weapon->ThrustEnd();
+			m_Owner->m_Velocity_f = 0.0f;//移動停止
+			m_attackframe = 0;
+		}
+	}
+
+	if (m_attackPhase == AttackPhase::RECOVER) {
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::END;
+		}
+		++m_attackframe;
+	}
+
+	if (m_attackPhase == AttackPhase::END) {
+		m_lookatFg = true;
+		m_attackframe = 0;
+		m_Owner->m_State = NORMAL;
+		m_attackcount = 0;
+		m_stateframe = 0;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+
+}
+
+// 三連斬り
+void Boss::Impl::ThreeSwing() {
+	// 攻撃開始処理、構えに入る
+	if (m_attackPhase == AttackPhase::ENTER) {
+		m_weapon->Stance();
+		m_rotatespeed = 0.1f;
+		m_lookatFg = true;
+		m_rushFg = true;
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+
+	// 準備フェーズ、構えが完了したら攻撃開始、三回攻撃を繰り返す
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		// しばらく構えた後、攻撃に以降
+		if (m_weapon->GetStanceTime() > 60) {
+			m_attackPhase = AttackPhase::ATTACK;
+
+			if (m_attackcount == 0) {
+				m_weapon->Swing();
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+			}
+			else if (m_attackcount == 1) {
+				m_weapon->Swing_Return();
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+			}
+			else if (m_attackcount == 2) {
+				m_weapon->Swing(10, (int)SwingMode::VERTICAL);
+				Sound::GetInstance()->Play(SOUND_SE_SWING);
+			}
+			m_lookatFg = false;
+			++m_attackcount;
+		}
+	}
+
+	// 攻撃フェーズ、攻撃後準備フェーズに戻る、三回攻撃を繰り返す
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		if (m_weapon->GetAttackTime() > 18) {
+			m_weapon->SwingEnd();
+
+			if (m_attackcount == 1) {
+				m_weapon->Stance_Return();
+			}
+			else if (m_attackcount == 2) {
+				m_weapon->Stance(10, (int)StanceMode::VERTICAL);
+			}
+			m_lookatFg = true;
+			m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
+			m_attackPhase = AttackPhase::FOLLOW;
+		}
+		else if (m_weapon->GetAttackTime() <= 18) { // 攻撃中は移動
+			Move();
+		}
+
+	}
+
+	// 攻撃後処理、三回攻撃したら終了、そうでなければ準備フェーズに戻る
+	if (m_attackPhase == AttackPhase::FOLLOW) {
+		// 三回攻撃したら終了
+		if (m_attackcount >= 3) {
+			m_lookatFg = false;
+			m_attackPhase = AttackPhase::RECOVER;
+		}
+		else {
+			m_attackPhase = AttackPhase::PREPARE;
+		}
+	}
+
+	// 硬直フェーズ、終了フェーズに以降するまで硬直する
+	if (m_attackPhase == AttackPhase::RECOVER) {
+		// 3回目の攻撃後、しばらくそのままで待機してから終了
+		if (m_attackframe > 90) {
+			m_attackPhase = AttackPhase::END;
+		}
+		++m_attackframe;
+	}
+
+	// 終了フェーズ、終了処理を行う
+	if (m_attackPhase == AttackPhase::END) {
+		m_weapon->StanceEnd();
+		m_Owner->m_State = NORMAL;
+		m_stateframe = 0;
+		m_attackframe = 0;
+		m_attackcount = 0;
+		m_rotatespeed = 0.01f;
+		m_rushFg = false;
+		m_lookatFg = true;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+
+}
+
+// ジャンプ回転切り
+void Boss::Impl::JumpSpinSlash() {
+	// ジャンプしていなければジャンプする
+	if (m_attackPhase == AttackPhase::ENTER) {
+		Jump();
+		m_rushFg = true;
+		move_speed = 0.1f;// 移動速度を下げる
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+
+	// 準備フェーズ
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		if (m_attackframe > 30) {
+			m_attackPhase = AttackPhase::ATTACK;
+			m_attackframe = 0;
+			m_Owner->m_Velocity_f = 0;//移動速度を0にする
+			m_rushFg = false;
+		}
+		++m_attackframe;
+
+	}
+
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		m_Owner->m_Velocity.y = 0;//空中で停止する
+		// 攻撃開始
+		if (m_weapon->GetState() == Pole::STATE::NORMAL) {
+			m_weapon->AttackStart(true, true);
+			Vector3 endrot = m_Owner->m_Rotation;
+			endrot.x += PI * 4;
+			m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 30, 0.0f);// 縦回転切り、絶対値参照で行う
+			Sound::GetInstance()->Play(SOUND_SE_SWING);
+			++m_attackcount;
+		}
+
+		m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
+
+		if (!m_AngleAnim.IsPlaying()) {
+			m_Owner->m_Rotation.x = 0;
+			m_weapon->AttackEnd();
+			m_weapon->Stance(15, (int)StanceMode::VERTICAL);
+			m_attackPhase = AttackPhase::FOLLOW;
+		}
+
+	}
+
+	// 追撃フェーズ
+	if (m_attackPhase == AttackPhase::FOLLOW) {
+		if (m_weapon->GetStanceTime() > 90) {
+			m_weapon->StanceEnd();
+			// 攻撃開始
+			m_weapon->AttackStart(true, true);
+			Vector3 endrot = m_Owner->m_Rotation;
+			endrot.x += PI * 2;
+			m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 10, 0.0f);// 縦回転切り、絶対値参照で行う
+			Sound::GetInstance()->Play(SOUND_SE_SWING);
+			m_Owner->m_Velocity.y = -0.5f;//落下開始
+			move_speed = 0.25f;// 移動速度を元に戻す
+			m_rushFg = true;
+			++m_attackcount;
+		}
+
+		if (m_attackcount > 1) {
+			m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
+		}
+		else {
+			m_Owner->m_Velocity.y = 0;//空中で停止する
+		}
+
+	}
+
+	// 攻撃していないときのみ移動する
+	if (m_attackPhase == AttackPhase::PREPARE || m_rushFg) {
+		Move();
+	}
+
+	// 攻撃終了
+	if (m_Owner->is_GROUND && m_rushFg) {
+		m_attackPhase = AttackPhase::END;
+	}
+
+	// 攻撃終了処理
+	if (m_attackPhase == AttackPhase::END) {
+		m_weapon->AttackEnd();
+		m_Owner->m_State = NORMAL;
+		m_stateframe = 0;
+		m_attackframe = 0;
+		m_attackcount = 0;
+		m_rushFg = false;
+		m_lookatFg = true;
+		m_Owner->m_Rotation.x = 0;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+
+}
+
+// ジャンプ回転切り突進
+void Boss::Impl::JumpSpinSlashRush(){
+	// ジャンプしていなければジャンプする
+	if (m_attackPhase == AttackPhase::ENTER) {
+		Jump();
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+
+	// 準備フェーズ
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		if (m_attackframe > 30) {
+			m_attackPhase = AttackPhase::ATTACK;
+			m_attackframe = 0;
+		}
+		++m_attackframe;
+
+	}
+
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		m_Owner->m_Velocity.y = 0;//空中で停止する
+		// 攻撃開始
+		if (m_weapon->GetState() == Pole::STATE::NORMAL) {
+			m_weapon->AttackStart(true, true);
+			Vector3 endrot = m_Owner->m_Rotation;
+			endrot.x += PI * 24;
+			m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 90, 0.0f);// 縦回転切り、絶対値参照で行う
+			m_rushFg = true;
+			Sound::GetInstance()->Play(SOUND_SE_SWING);
+			m_lookatFg = false;
+		}
+
+		m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
+
+		//回転終了後、硬直フェーズへ。ここから着地まで何もしない
+		if (!m_AngleAnim.IsPlaying()) {
+			m_Owner->m_Rotation.x = 0;
+			m_weapon->AttackEnd();
+			m_attackPhase = AttackPhase::RECOVER;
+			m_rushFg = false;
+		}
+
+	}
+
+	// 突進フラグが有効なら移動する
+	if (m_rushFg) {
+		Move();
+	}
+
+	// 攻撃終了
+	if (m_Owner->is_GROUND) {
+		m_attackPhase = AttackPhase::END;
+	}
+
+	// 攻撃終了処理
+	if (m_attackPhase == AttackPhase::END) {
+		m_weapon->AttackEnd();
+		m_Owner->m_State = NORMAL;
+		m_stateframe = 0;
+		m_attackframe = 0;
+		m_attackcount = 0;
+		m_rushFg = false;
+		m_lookatFg = true;
+		m_Owner->m_Rotation.x = 0;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+
+}
+
+// 衝撃波発射
+void  Boss::Impl::SonicBoomShot() {
+	if (m_attackPhase == AttackPhase::ENTER) {
+		m_rand = rand() % 2;
+		// 衝撃波の構え、ランダムでモーション分岐
+		if (m_rand == 1) {
+			ProjectileCharge();
+			m_weapon->Stance();
+		}
+		else {
+			ProjectileCharge_VT();
+			m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+		}
+		m_attackcount = 0;
+		m_attackframe = 0;
+		m_rotatespeed = 0.3f;
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		++m_attackframe;
+		if (m_attackframe > 150) {
+			m_attackPhase = AttackPhase::ATTACK;
+		}
+	}
+
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		// 衝撃波発射
+		m_lookatFg = false;
+		ProjectileShot();
+		// モーション分岐、構え時から乱数を変えていないので構えに応じた振り方になる
+		if (m_rand == 1) {
+			m_weapon->Swing();
+		}
+		else {
+			m_weapon->Swing_Vertical();
+		}
+		m_attackcount++;
+		m_attackframe = 0;
+		// 5回発射したら硬直へ、そうでなければ次の攻撃の構えに移る
+		if (m_attackcount >= 5) {
+			m_attackPhase = AttackPhase::RECOVER;
+		}
+		else {
+			m_attackPhase = AttackPhase::FOLLOW;
+		}
+		Sound::GetInstance()->Play(SOUND_SE_SWING);
+	}
+
+	if (m_attackPhase == AttackPhase::FOLLOW)
+	{
+		++m_attackframe;
+		if (m_weapon->GetMaxAttack()) {
+			m_lookatFg = true;
+			m_weapon->SwingEnd();
+			m_rand = rand() % 2;
+			// 次の衝撃波の構え、ランダムでモーション分岐
+			if (m_rand == 1) {
+				m_weapon->Stance();
+				ProjectileChargeMax();
+			}
+			else {
+				m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+				ProjectileChargeMax_VT();
+			}
+		}
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::ATTACK;
+		}
+	}
+
+	if (m_attackPhase == AttackPhase::RECOVER)
+	{
+		++m_attackframe;
+		if (m_attackframe > 90) {
+			m_attackPhase = AttackPhase::END;
+		}
+	}
+
+	if (m_attackPhase == AttackPhase::END)
+	{
+		m_weapon->SwingEnd();
+		m_attackframe = 0;
+		m_attackcount = 0;
+		m_rotatespeed = 0.01f;
+		attack_kind = NONE;//攻撃終了
+		m_lookatFg = true;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+}
+
+// 回り込み→連続突き
+void Boss::Impl::WrapAroundThrust() {
+	// 開始フェーズ
+	if (m_attackPhase == AttackPhase::ENTER) {
+		m_weapon->Stance_Vertical();
+		m_rotatespeed = 0.1f;
+		m_Owner->m_Velocity_f = 0.0f;//速度を0にする
+		m_attackPhase = AttackPhase::PREPARE;
+		m_lookatFg = true;
+	}
+
+	// 準備フェーズ、一定フレーム経過後、突進開始
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		if (m_weapon->GetStanceTime() > 120) {
+			m_rushFg = true;
+			m_attackPhase = AttackPhase::ATTACK;
+		}
+
+	}
+	// 攻撃フェーズ、ターゲットに向かって突進し、近づいたら回り込む
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		Move();
+		m_ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
+		m_ta_pos.y = m_Owner->m_Position.y;//高さはそのまま
+		if (m_attackframe % 3) {
+			// 土煙エフェクト再生
+			EffectParams   param;
+			param.pos = m_Owner->m_Position;
+			param.scale = m_Owner->m_Scale * 20;
+			param.maxLife = 30;
+			EffectManager::GetInstance()->Play(EFFECT_TUTIKEMURI, param);
+			m_attackframe = 0;
+		}
+		++m_attackframe;
+
+		//近づいたら回り込む
+		if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 3 &&
+			fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 3) {
+			Vector3 rot = m_Owner->m_Rotation;
+			rot.y -= PI;
+			m_rotatespeed = 0.3f;
+			m_ArcAnim.Start(m_Owner->m_Rotation, rot, m_Owner->radius * 3, 60, 0.7f);
+			m_attackPhase = AttackPhase::FOLLOW;
+			m_attackframe = 0;
+			m_Owner->m_Velocity_f = 0.0f;//移動停止
+		}
+	}
+
+	// 追撃フェーズ、回り込んでから連続突きを行う
+	if (m_attackPhase == AttackPhase::FOLLOW)
+	{
+		if (!m_ArcAnim.IsPlaying()) {
+			m_lookatFg = false;
+			Move();
+
+			// 攻撃終了するか
+			if (ManyThrust(6)) {//連続突きを行い、6回以上行っていたらtrueを返す
+				m_attackPhase = AttackPhase::RECOVER;
+				m_weapon->ThrustEnd();
+				m_Owner->m_Velocity_f = 0.0f;//移動停止
+				m_attackframe = 0;
+			}
+		}
+		else {
+			m_Owner->m_Position += m_ArcAnim.Update();
+			++m_attackframe;
+			// 回り込み中に一定フレーム経過したら、縦の衝撃波飛ばしを行う
+			if (m_attackframe % 3 == 0) {
+				// 残像エフェクト再生
+				EffectParams  param;
+				param.pos = m_Owner->m_Position;
+				param.rot = m_Owner->m_Rotation;
+				param.scale = m_Owner->m_Scale;
+				param.maxLife = 10;
+				param.color = { 1,0.2f,0,0.3f };
+				EffectManager::GetInstance()->Play(EFFECT_PLAYER, param);
+			}
+
+		}
+	}
+	// 硬直フェーズ、終了フェーズに以降するまで硬直する
+	if (m_attackPhase == AttackPhase::RECOVER) {
+
+		++m_attackframe;
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::END;
+		}
+
+	}
+	// 終了フェーズ、終了処理を行う
+	if (m_attackPhase == AttackPhase::END) {
+		m_Owner->m_State = NORMAL;
+		m_attackframe = 0;
+		m_weapon->SwingEnd();
+		m_lookatFg = true;
+		m_rotatespeed = 0.01f;
+		m_rushFg = false;
+		m_attackcount = 0;
+		m_attackPhase = AttackPhase::ENTER;
 	}
 }
 

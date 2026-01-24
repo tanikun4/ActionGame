@@ -50,7 +50,7 @@ private:
 		SWING = 0,
 		ROTATESWING,
 		SWING_VERTICAL,
-		MANY_THRUST,
+		MANY_THRUST_LOOKAT,
 		THREE_SWING,
 		JUMP_SPINSLASH,
 		JUMP_SPINSLASH_RUSH,
@@ -138,6 +138,15 @@ private:
 	void Thrust(ThrustType type);
 	bool ManyThrust(int maxcount);
 
+	// 行動パターン別関数
+	void RotateSwing();
+	void SwingVertical();
+	void ManyThrustLookAt();
+	void ThreeSwing();
+	void JumpSpinSlash();
+	void JumpSpinSlashRush();
+	void SonicBoomShot();
+	void WrapAroundThrust();
 	
 	// 飛び道具関連
 	void SetProjectile();
