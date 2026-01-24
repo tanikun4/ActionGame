@@ -65,40 +65,35 @@ public:
     {
         using Vector3 = DirectX::SimpleMath::Vector3;
 
-        // 振動していなければ何もしない
         if (!m_Active)
             return Vector3::Zero;
 
-        // 通常の振動オフセット（既存ロジック）
+        // 振動量
         Vector3 rawOffset = Update();
 
-        // 移動方向が無い場合はそのまま返す
         if (moveDir.LengthSquared() <= 0.0f)
             return rawOffset;
 
+        // XZ平面の正規化
         Vector3 dir = moveDir;
+        dir.y = 0.0f;
+        if (dir.LengthSquared() <= 0.0f)
+            return Vector3::Zero;
         dir.Normalize();
 
-        // 移動方向に直交するベクトル（XZ平面）
-        Vector3 right(
-            dir.z,
-            0.0f,
-            -dir.x
-        );
+        // 右方向ベクトル
+        Vector3 right(-dir.z, 0.0f, dir.x);
 
-        if (right.LengthSquared() <= 0.0f)
-            return Vector3::Zero;
+        // 左右振動
+        Vector3 offset = right * rawOffset.x;
 
-        right.Normalize();
+        // Y方向の振動も残したい場合
+        //offset.y = rawOffset.y;
 
-        // 振動量を「直交方向のみに投影」
-        float strength =
-            rawOffset.x * right.x +
-            rawOffset.y * right.y +
-            rawOffset.z * right.z;
-
-        return right * strength;
+        return offset;
     }
+
+    
 
 
 private:

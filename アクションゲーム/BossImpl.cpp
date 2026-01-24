@@ -337,6 +337,9 @@ void Boss::Impl::AttackUpdate() {
 	case ROTATESWING_FIBONACCI:
 		RotateSwingFibonacci();
 		break;
+	case ALTEREGO_SHOT:
+		AlterEgoShot();
+		break;
 	case KIND_MAX:
 		m_attackPhase = AttackPhase::ENTER;
 		m_Owner->m_State = NORMAL;
@@ -1170,6 +1173,87 @@ void Boss::Impl::RotateSwingFibonacci()
 	}
 }
 
+// 分身して衝撃波発射
+void Boss::Impl::AlterEgoShot() 
+{
+	// 開始フェーズ
+	if (m_attackPhase == AttackPhase::ENTER) {
+		// 分身衝撃波の構え、縦の衝撃波をチャージする
+		m_rotatespeed = 0.3f;
+		ProjectileCharge_VT();
+		m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+		m_startpos = m_Owner->m_Position;
+		m_vib.Start(20, PI * 0.5f);//振動開始、振れ幅を大きくして分身っぽく見せる
+		m_Owner->is_SPECIALMOVE = true;
+		m_attackPhase = AttackPhase::PREPARE;
+	}
+	// 準備フェーズ、一定フレーム経過後、攻撃フェーズに
+	if (m_attackPhase == AttackPhase::PREPARE) {
+		m_Owner->m_Position = m_startpos;// 元の位置に戻す
+		Vector3 forward;
+		forward.x = sinf(m_Owner->m_ForwardRotation.y);
+		forward.y = 0.0f;
+		forward.z = cosf(m_Owner->m_ForwardRotation.y);
+
+		m_Owner->m_Velocity = m_vib.UpdateMoveDir(forward);
+
+		++m_attackframe;
+		if (m_attackframe == 120) {
+			m_Owner->m_Position = m_startpos;// 元の位置に戻す
+			// 左右に弾を発射する準備
+			ProjectileChargeMax_VT(20.0f,PI);
+			ProjectileChargeMax_VT(-20.0f, PI);
+		}
+
+		if (m_attackframe > 120) {
+			m_attackPhase = AttackPhase::ATTACK;
+			m_attackframe = 0;
+			m_Owner->is_SPECIALMOVE = false;
+			m_Owner->m_Velocity_f = 0;
+		}
+	}
+
+	// 攻撃フェーズ、三発同時に縦衝撃波発射
+	if (m_attackPhase == AttackPhase::ATTACK) {
+		m_lookatFg = false;
+		// 三方向衝撃波発射、位置を正すために更新も行う
+		for (auto& p : m_projectile) {
+			p->Update();
+		}
+		// 衝撃波発射
+		ProjectileShot_All();
+		m_weapon->Swing_Vertical();
+		Sound::GetInstance()->Play(SOUND_SE_SWING);
+		m_attackPhase = AttackPhase::FOLLOW;
+		m_attackframe = 0;
+		++m_attackcount;
+		m_attackPhase = AttackPhase::RECOVER;
+		//// 2回発射したら硬直へ
+		//if (m_attackcount >= 2) {
+		//	m_attackPhase = AttackPhase::RECOVER;
+		//}
+	}
+
+	// 硬直フェーズ、一定フレーム経過後終了へ
+	if (m_attackPhase == AttackPhase::RECOVER) {
+		++m_attackframe;
+		if (m_attackframe > 60) {
+			m_attackPhase = AttackPhase::END;
+		}
+	}
+
+	// 終了フェーズ、攻撃終了処理を行う
+	if (m_attackPhase == AttackPhase::END) {
+		m_weapon->SwingEnd();
+		m_attackframe = 0;
+		m_attackcount = 0;
+		m_rotatespeed = 0.01f;
+		attack_kind = NONE;//攻撃終了
+		m_lookatFg = true;
+		m_attackPhase = AttackPhase::ENTER;
+	}
+}
+
 // 行動不能状態更新
 void Boss::Impl::StunUpdate() 
 {
@@ -1248,6 +1332,7 @@ void Boss::Impl::ShotBullet() {
 
 }
 
+// 移動処理
 void Boss::Impl::Move(){
 	if (m_rushFg) {
 		m_Owner->m_Velocity_f = move_speed * 8;
@@ -1314,14 +1399,36 @@ void Boss::Impl::ProjectileChargeMax() {
 }
 
 // 飛び道具の最大チャージ、縦
-void Boss::Impl::ProjectileChargeMax_VT() {
+void Boss::Impl::ProjectileChargeMax_VT(float _offset , float _angle) {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
+			
+			bool follow = true;
+			Vector3 pos = m_Owner->m_Position;
+			// 現在位置からオフセット分ずらした位置にセット、ずらす方向も指定できる 
+			if (_offset != 0) {
+				//位置計算
+				float yaw = m_Owner->m_Rotation.y; // 横回転（Y軸）
+
+				Vector3 rotOffset;
+
+				// Yaw + Pitch 回転
+				rotOffset.x = cosf(yaw) + m_Owner->radius * 2 * sinf(yaw);
+
+				rotOffset.z = sinf(yaw) + m_Owner->radius * 2 * cosf(yaw);
+
+				pos += rotOffset;
+				//_offset += m_Owner->radius * 2;
+				pos.x += cosf(m_Owner->m_Rotation.y + _angle) * _offset;
+				pos.z += sinf(m_Owner->m_Rotation.y + _angle) * _offset;
+				follow = false;//　オフセット指定がある場合は追尾しない
+			}
+
 			Vector3 rot = m_Owner->m_Rotation;
 			rot.z += PI * 0.5f;
 			pr->SetPl(false);
-			pr->MaxCharge(m_Owner->m_Position, rot, 100, true);
+			pr->MaxCharge(pos, rot, 100, follow);
 			pr->SetOffset({ 0 ,0,m_Owner->radius * 2 });
 			break;
 		}
@@ -1335,6 +1442,17 @@ void Boss::Impl::ProjectileShot() {
 		if (pr->GetState() == ProjectileSTATE::STANCE) {
 			pr->Shot();
 			break;
+		}
+	}
+}
+
+// 飛び道具の発射、全弾
+void Boss::Impl::ProjectileShot_All()
+{
+	for (auto& pr : m_projectile)
+	{
+		if (pr->GetState() == ProjectileSTATE::STANCE) {
+			pr->Shot();
 		}
 	}
 }

@@ -51,7 +51,6 @@ public:
 	void SetOwner(Object* owner) { m_Owner = owner; }
 	void SetFollowFg(bool f) { followFg = f; }
 	void SetOBBScale(DirectX::SimpleMath::Vector3 _scale) { obb = {m_Position,m_Rotation,_scale}; }
-	void SetOffset(DirectX::SimpleMath::Vector3 off) { m_offset = off; }
 
 	void Reset();//ó‘Ô‚ğƒŠƒZƒbƒg‚·‚é
 

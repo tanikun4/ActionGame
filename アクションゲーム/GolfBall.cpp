@@ -101,14 +101,14 @@ void GolfBall::GBUpdate()
 
 	m_oldPos = m_Position; //1フレーム前の位置を記憶しておく
 
-	float keepY = m_Velocity.y;
 
 	//特殊移動中は処理をスキップ
 	if(!is_SPECIALMOVE) {
+		float keepY = m_Velocity.y;
 		m_Velocity = m_ForwardVector * m_Velocity_f;
-		
 		m_Velocity.y = keepY;
 	}
+
 
 	//速度を座標に加算
 	m_Position += m_Velocity;

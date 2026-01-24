@@ -59,6 +59,7 @@ private:
 		JUMP_SPINSLASH_SHOT,
 		CROSS_SHOT,
 		ROTATESWING_FIBONACCI,
+		ALTEREGO_SHOT,
 
 		KIND_MAX
 	};
@@ -115,7 +116,7 @@ private:
 	bool m_rushFg = false;//突進しているかどうか
 	bool m_spinFg = false;//回転しているかどうか
 	float jumppower = 1.5f;//ジャンプ力
-	const float delta60f = 1.0f / 60.0f;// 60fps換算用
+	//const float delta60f = 1.0f / 60.0f;// 60fps換算用
 
 	bool m_slowFg = false;//動きが遅い状態か
 	int slow_frame = 0;//遅くなっているフレーム数
@@ -128,6 +129,7 @@ private:
 	std::vector<Projectile*> m_projectile;
 	Pole* m_weapon;
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
+	DirectX::SimpleMath::Vector3 m_startpos; // 移動開始位置
 	Vibration m_vib; // 振動用のクラス
 
 	AngleAnim m_AngleAnim;// 角度アニメーション構造体
@@ -156,6 +158,7 @@ private:
 	void JumpSpinSlashShot();
 	void CrossShot();
 	void RotateSwingFibonacci();
+	void AlterEgoShot();
 	
 	// 飛び道具関連
 	void SetProjectile();
@@ -163,9 +166,10 @@ private:
 	void ProjectileCharge();
 	void ProjectileCharge_VT();
 	void ProjectileChargeMax();
-	void ProjectileChargeMax_VT();
+	void ProjectileChargeMax_VT(float offset = 0,float _angle = 0);
 	// 飛び道具発射
 	void ProjectileShot();
+	void ProjectileShot_All();
 
 	void DebugBossStatus();
 
