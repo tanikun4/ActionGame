@@ -163,9 +163,10 @@ private:
 	// 飛び道具関連
 	void SetProjectile();
 	// 飛び道具構え
-	void ProjectileCharge();
-	void ProjectileCharge_VT();
-	void ProjectileChargeMax();
+	// offset: 発射位置のオフセット、_angle: オフセットの方向指定。offsetが0のときは持ち主に追従する
+	void ProjectileCharge(float offset = 0, float _angle = 0);
+	void ProjectileCharge_VT(float offset = 0, float _angle = 0);
+	void ProjectileChargeMax(float offset = 0, float _angle = 0);
 	void ProjectileChargeMax_VT(float offset = 0,float _angle = 0);
 	// 飛び道具発射
 	void ProjectileShot();

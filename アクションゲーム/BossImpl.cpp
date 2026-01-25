@@ -1358,12 +1358,30 @@ void Boss::Impl::SetProjectile(){
 }
 
 // 飛び道具のチャージ開始
-void Boss::Impl::ProjectileCharge() {
+void Boss::Impl::ProjectileCharge(float _offset, float _angle) {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
+			bool follow = true;
+			Vector3 pos = m_Owner->m_Position;
+			// 現在位置からオフセット分ずらした位置にセット、ずらす方向も指定できる 
+			if (_offset != 0) {
+				//位置計算
+				Vector3 rotOffset;
+
+				// Yaw + Pitch 回転
+				rotOffset.x = _offset * cosf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * sinf(m_Owner->m_Rotation.y);
+
+				rotOffset.y = m_Owner->radius * -0.5f;
+
+				rotOffset.z = -_offset * sinf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * cosf(m_Owner->m_Rotation.y);
+
+				pos += rotOffset;
+				follow = false;//　オフセット指定がある場合は追尾しない
+			}
+
 			pr->SetPl(false);
-			pr->ChargeStart(m_Owner->m_Position, m_Owner->m_Rotation,1.0f,true);
+			pr->ChargeStart(m_Owner->m_Position, m_Owner->m_Rotation,1.0f,follow);
 			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2});
 			break;
 		}
@@ -1371,14 +1389,30 @@ void Boss::Impl::ProjectileCharge() {
 }
 
 // 飛び道具のチャージ開始、縦
-void Boss::Impl::ProjectileCharge_VT() {
+void Boss::Impl::ProjectileCharge_VT(float _offset, float _angle) {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
+			bool follow = true;
+			Vector3 pos = m_Owner->m_Position;
+			// 現在位置からオフセット分ずらした位置にセット、ずらす方向も指定できる 
+			if (_offset != 0) {
+				//位置計算
+				Vector3 rotOffset;
+
+				// Yaw + Pitch 回転
+				rotOffset.x = _offset * cosf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * sinf(m_Owner->m_Rotation.y);
+
+				rotOffset.z = -_offset * sinf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * cosf(m_Owner->m_Rotation.y);
+
+				pos += rotOffset;
+				follow = false;//　オフセット指定がある場合は追尾しない
+			}
+
 			Vector3 rot = m_Owner->m_Rotation;
 			rot.z += PI * 0.5f;
 			pr->SetPl(false);
-			pr->ChargeStart(m_Owner->m_Position, rot, 1.0f, true);
+			pr->ChargeStart(pos, rot, 1.0f, follow);
 			pr->SetOffset({ 0 ,0,m_Owner->radius * 2 });
 			break;
 		}
@@ -1386,12 +1420,30 @@ void Boss::Impl::ProjectileCharge_VT() {
 }
 
 // 飛び道具の最大チャージ
-void Boss::Impl::ProjectileChargeMax() {
+void Boss::Impl::ProjectileChargeMax(float _offset, float _angle) {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
+			bool follow = true;
+			Vector3 pos = m_Owner->m_Position;
+			// 現在位置からオフセット分ずらした位置にセット、ずらす方向も指定できる 
+			if (_offset != 0) {
+				//位置計算
+				Vector3 rotOffset;
+
+				// Yaw + Pitch 回転
+				rotOffset.x = _offset * cosf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * sinf(m_Owner->m_Rotation.y);
+
+				rotOffset.y = m_Owner->radius * -0.5f;
+
+				rotOffset.z = -_offset * sinf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * cosf(m_Owner->m_Rotation.y);
+
+				pos += rotOffset;
+				follow = false;//　オフセット指定がある場合は追尾しない
+			}
+
 			pr->SetPl(false);
-			pr->MaxCharge(m_Owner->m_Position, m_Owner->m_Rotation,100,true);
+			pr->MaxCharge(pos, m_Owner->m_Rotation,100,follow);
 			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2 });
 			break;
 		}
@@ -1409,19 +1461,14 @@ void Boss::Impl::ProjectileChargeMax_VT(float _offset , float _angle) {
 			// 現在位置からオフセット分ずらした位置にセット、ずらす方向も指定できる 
 			if (_offset != 0) {
 				//位置計算
-				float yaw = m_Owner->m_Rotation.y; // 横回転（Y軸）
-
 				Vector3 rotOffset;
 
 				// Yaw + Pitch 回転
-				rotOffset.x = cosf(yaw) + m_Owner->radius * 2 * sinf(yaw);
+				rotOffset.x = _offset * cosf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * sinf(m_Owner->m_Rotation.y);
 
-				rotOffset.z = sinf(yaw) + m_Owner->radius * 2 * cosf(yaw);
+				rotOffset.z = -_offset * sinf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * cosf(m_Owner->m_Rotation.y);
 
 				pos += rotOffset;
-				//_offset += m_Owner->radius * 2;
-				pos.x += cosf(m_Owner->m_Rotation.y + _angle) * _offset;
-				pos.z += sinf(m_Owner->m_Rotation.y + _angle) * _offset;
 				follow = false;//　オフセット指定がある場合は追尾しない
 			}
 

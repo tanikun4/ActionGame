@@ -112,7 +112,6 @@ void Projectile::Update()
 	if(followFg && m_Owner) {
 		// éùÇøéÂÇ…í«è]
 		Vector3 ownerForward = m_Owner->GetForwardRotation();
-		//m_Position = m_Owner->GetPosition() + ownerForward * m_offset;
 		m_Rotation.y = ownerForward.y;
 
 		//à íuåvéZ
