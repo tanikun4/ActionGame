@@ -27,6 +27,8 @@ private:
 	
 	void DebugCameraStatus();
 
+	float m_Distance = 100.0f; //ターゲットからの距離
+
 	Vibration m_vib; //カメラ振動用クラス
 
 

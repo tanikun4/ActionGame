@@ -200,7 +200,7 @@ void Player::Impl::OnHit(TestCube* cube) {
 // ImGui デバッグ関数
 // -------------------------
 
-// 武器のオフセット調整
+// 武器のステータス操作
 void Player::Impl::DebugWeaponStatus() {
     ImGui::Begin("WeaponStatus");
 
@@ -384,7 +384,7 @@ void Player::Impl::Move() {
 
 	// デモモード中はデモ用の移動方向を使用
     if (demoMode) dir = m_demoParam.demoMoveDir;
-    else dir = ActionInput::GetInstance().GetMoveDirectionRad();//SetMoveDirection();
+    else dir = ActionInput::GetInstance().GetMoveDirectionRad();
 
     if (dir >= 0.0f) {
         m_Owner->m_ForwardRotation.y = dir + m_Owner->m_Camera->GetCameraDirection().x;
@@ -489,14 +489,17 @@ void Player::Impl::SwingAttack() {
     case COMBO_1:
         m_weapon->Swing();
         m_weapon->SetAtk(atk);
+		m_Anim.StartAbsolute({ 0,-PI * 0.3f,0 }, { 0,PI * 0.3f,0 }, 18, 0.0f);
         break;
 	case COMBO_2:
         m_weapon->Swing_Return();
         m_weapon->SetAtk(atk);
+        m_Anim.StartAbsolute({ 0,PI * 0.3f,0 }, { 0,-PI * 0.3f,0 }, 18, 0.0f);
 		break;
     case COMBO_3:
         m_weapon->Swing_Vertical();
         m_weapon->SetAtk(atk + 1);
+        m_Anim.StartAbsolute({ -PI * 0.5f,0,0 }, { PI * 0.1f,0,0 }, 10, 0.0f);
         break;
     }
 	++attackcombo;
@@ -729,6 +732,10 @@ void Player::Impl::UpdateAttack() {
         m_Owner->m_State = NORMAL;
         break;
     case SWING:
+        if (m_Anim.IsPlaying()) {
+			// 通常攻撃アニメーション更新、絶対値参照
+			m_Owner->m_Rotation = m_Owner->m_ForwardRotation + m_Anim.UpdateAbsolute();//現在の前向き方向にアニメーション分を加算して算出する
+        }
         if (m_weapon->GetMaxAttack()) {
             m_Owner->m_State = NORMAL;
             m_weapon->SwingEnd();
@@ -879,8 +886,8 @@ void Player::Impl::UpdateCommon() {
 
     if (m_Owner->is_GROUND) is_JUMP = false;
 
-    // プレイヤーの向きを前方ベクトルに合わせる、回転切り中は除く
-    if (m_attackkind != SPINSLASH)
+    // プレイヤーの向きを前方ベクトルに合わせる、攻撃中は除く
+    if (m_Owner->m_State != ATTACK)
         m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
     m_Owner->GBUpdate();

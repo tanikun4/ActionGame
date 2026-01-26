@@ -21,6 +21,7 @@ private:
     DirectX::SimpleMath::Vector3 start;
     DirectX::SimpleMath::Vector3 end;
     DirectX::SimpleMath::Vector3 current;
+	DirectX::SimpleMath::Vector3 prev;
     int frame = 0;
     int maxFrame = 1;
     bool playing = false;
@@ -38,6 +39,7 @@ private:
         frame = 0;
         playing = true;
         current = start;
+		prev = start;
         accel = std::clamp(acc, 0.0f, 1.0f);
     }
 
@@ -47,7 +49,7 @@ private:
 
         float t = (float)frame / (float)maxFrame;
         float eased_t = EaseInOut(t, accel);
-
+		prev = current;
         current = start + (end - start) * eased_t;
 
         if (frame >= maxFrame) {
@@ -99,13 +101,13 @@ public:
     // 相対座標用、指定座標と足し合わせた値を返す
     DirectX::SimpleMath::Vector3 UpdateRelative(const DirectX::SimpleMath::Vector3& position)
     {
-        return position + Update();
+        return position + Update() - prev;
     }
 
     // 相対座標用、処理自体は絶対座標と同じ
     DirectX::SimpleMath::Vector3 UpdateRelative()
     {
-        return Update();
+        return Update() - prev;
     }
 
     bool IsPlaying() const { return playing; }
@@ -124,6 +126,7 @@ struct AngleAnim
 private:
     DirectX::SimpleMath::Vector3 start;
     DirectX::SimpleMath::Vector3 end;
+    DirectX::SimpleMath::Vector3 prev;
     DirectX::SimpleMath::Vector3 current;
     int frame = 0;
     int maxFrame = 1;
@@ -140,11 +143,12 @@ private:
         maxFrame = (f <= 0) ? 1 : f;
         frame = 0;
         playing = true;
+        prev = start;          
         current = start;
         accel = std::clamp(acc, 0.0f, 1.0f);
     }
 
-    // 1フレーム更新して、現在の角度差を返す
+    // 1フレーム更新して、現在の角度を返す
     DirectX::SimpleMath::Vector3 Update()
     {
         if (!playing) return current;
@@ -153,6 +157,7 @@ private:
 
         float eased_t = EaseInOut(t, accel);//加速度適用
 
+        prev = current;
         current = start + (end - start) * eased_t;
 
         if (frame >= maxFrame) {
@@ -211,13 +216,13 @@ public:
     // 相対角度用、指定角度と足し合わせた値を返す
     DirectX::SimpleMath::Vector3 UpdateRelative(const DirectX::SimpleMath::Vector3& rotation)
     {
-        return rotation + Update();
+        return rotation + Update() - prev;
     }
 
-    // 相対角度用、処理自体は絶対角度と同じ
+	// 相対角度用、前回角度との差分を返す
     DirectX::SimpleMath::Vector3 UpdateRelative()
     {
-        return Update();
+        return Update() - prev;
     }
 
     bool IsPlaying() const { return playing; }

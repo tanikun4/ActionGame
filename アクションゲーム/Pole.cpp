@@ -98,35 +98,33 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 
 	switch (m_State) {
 	case NORMAL: //通常状態
-		m_Rotation = { PI / 2 + angle_debug.x,  PI / 2 + rotation.y + angle_debug.y, PI / 2 + angle_debug.z};
+		m_Rotation = { PI * 0.5f + angle_debug.x,  PI * 0.5f + rotation.y + angle_debug.y, PI * 0.5f + angle_debug.z};
 		m_baseRotation = m_Rotation;
 		break;
 	case SWING: //振り攻撃中
+		m_baseRotation.y = rotation.y + PI * 0.5f;
+		m_baseRotation.z = rotation.x + PI * 0.5f;
 		SwingUpdate();
 		break;
 	case GUARD: //ガード中
-		m_Rotation = { PI / 2, rotation.y ,PI / 2 };
+		m_Rotation = { PI * 0.5f, rotation.y ,PI * 0.5f };
 		m_baseRotation = m_Rotation;
 		m_offset = { offset_debug.x + radius * 2 , offset_debug.y, offset_debug.z + radius * 0.5f};
 		break; 
 	case STANCE: //構え中
 		//構え中の補正処理
-		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
+		m_Rotation = { PI * 0.5f, rotation.y + PI * 0.5f ,PI * 0.5f };
 		m_baseRotation = m_Rotation;
 		StanceUpdate();
 		break;
 	case ATTACK: //攻撃中(回転攻撃など)
-		m_Rotation = { PI / 2, rotation.y + PI / 2 ,PI / 2 };
+		m_Rotation = { PI * 0.5f, rotation.y + PI * 0.5f ,PI * 0.5f };
 		if (followFg) m_Rotation.z += rotation.x;
 		if (verticalFg) m_Rotation.x = 0;
 		NormalizeRad(m_Rotation.z);
 		break;
-	case SWING_VERTICAL: //縦振り攻撃中
-		m_Rotation.z -= PI / 20;
-		++m_attacktime;
-		break;
 	case THRUST: //突き攻撃中
-		m_Rotation = { PI / 2 + angle_debug.x, rotation.y + PI / 2 + angle_debug.y, PI / 2 + angle_debug.z };
+		m_Rotation = { PI * 0.5f + angle_debug.x, rotation.y + PI * 0.5f + angle_debug.y, PI * 0.5f + angle_debug.z };
 		m_baseRotation = m_Rotation;
 		ThrustUpdate();
 		break;
@@ -266,41 +264,30 @@ void Pole::Uninit()
 // 振り攻撃開始、プリセット版
 void Pole::Swing() 
 {
-	//なんかしたときに視野角
-	//攻撃に当たったらカメラ揺らす
-	if (m_State == NORMAL) {
-		m_Rotation.y -= PI / 2;
-	}
-	SwingStart({0, 0, 0}, {0,PI,0}, 18, 0.7f);
+	
+	SwingStart({0, -PI * 0.5f, 0}, {0,PI * 0.5f,0}, 18, 0.7f);
 }
 
 // 逆振り攻撃開始
 void Pole::Swing_Return() 
 {
-	//なんかしたときに視野角
-	//攻撃に当たったらカメラ揺らす
-	if (m_State == NORMAL) {
-		m_Rotation.y += PI / 2;
-		m_Rotation.x -= PI;
-	}
-	SwingStart({ 0, 0, 0 }, { 0,-PI,0 }, 18, 0.7f);
+
+	SwingStart({ 0, PI * 0.5f, 0 }, { 0,-PI * 0.5f,0 }, 18, 0.7f);
 }
 
 // 縦振り攻撃開始、デフォルト版
 void Pole::Swing_Vertical() 
 {
-	//なんかしたときに視野角
-	//攻撃に当たったらカメラ揺らす
-	m_Rotation.x = PI;
-	m_Rotation.z = PI + 0.2f;
-	SwingStart({0,0,0}, {0,0,-PI * 0.5f}, 10, 1.0f);
+	
+	m_Rotation.x = PI;//縦向きにする
+	SwingStart({0,0,PI * 0.5f}, {0,0,-PI * 0.2f}, 10, 1.0f);
 }
 
 void Pole::Swing_Parry() 
 {
 	m_EffectTrail->Start();//軌跡エフェクト開始
 	m_offset = { 0,0,0 };//振り攻撃中はオフセット無し
-	m_AngleAnim.StartRelative({ 0, 0, 0 }, { 0,PI,0 }, 10, 1.0f);
+	m_AngleAnim.StartAbsolute({ 0, -PI * 0.5f, 0 }, { 0,PI * 0.5f,0 }, 10, 1.0f);
 	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	m_attacktime = 0;
@@ -313,27 +300,20 @@ void Pole::Swing_Parry()
 void Pole::Swing(int t,int mode) 
 {
 	m_State = STANCE;
-	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	switch (mode)
 	{
 	case (int)SwingMode::NORMAL:
-		if (m_State == NORMAL) {
-			m_Rotation.y -= PI / 2;
-		}
-		SwingStart({ 0, 0, 0 }, { 0,PI,0 }, t, 0.7f);
+		SwingStart({ 0, -PI * 0.5f, 0 }, { 0,PI * 0.5f,0 }, t, 0.7f);
 		break;
 
 	case (int)SwingMode::RETURN:
-		if (m_State == NORMAL) {
-			m_Rotation.y += PI / 2;
-			m_Rotation.x -= PI;
-		}
-		SwingStart({ 0, 0, 0 }, { 0,-PI,0 }, t, 0.7f);
+		SwingStart({ 0, PI * 0.5f, 0 }, { 0,-PI * 0.5f,0 }, t, 0.7f);
 		break;
 
 	case (int)SwingMode::VERTICAL:
-		SwingStart({ 0,0,0 }, { 0,0,-PI * 0.5f }, t);
+		m_Rotation.x = PI;
+		SwingStart({ 0,0,PI * 0.5f }, { 0,0,-PI * 0.2f }, t);
 		break;
 	}
 }
@@ -341,11 +321,11 @@ void Pole::Swing(int t,int mode)
 // 振り攻撃開始、パラメータ版
 void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
+	m_baseRotation = m_Rotation;// 基準角度を保存
 	m_EffectTrail->Start();//軌跡エフェクト開始
 	m_offset = { 0,0,0 };//振り攻撃中はオフセット無し
-	m_AngleAnim.StartRelative(s, e, t,accel);
+	m_AngleAnim.StartAbsolute(s, e, t,accel);
 	max_attacktime = t;
-	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	m_attacktime = 0;
 	m_State = SWING;
@@ -355,7 +335,7 @@ void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 // 振り攻撃中の処理
 void Pole::SwingUpdate() {
 	++m_attacktime;
-	m_Rotation = m_AngleAnim.UpdateRelative(m_baseRotation);
+	m_Rotation =  m_baseRotation + m_AngleAnim.UpdateAbsolute();
 }
 
 // 振り攻撃終了
@@ -388,7 +368,7 @@ void Pole::Thrust_Left() {
 void Pole::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
 	m_EffectTrail->Start();
-	m_PosAnim.StartRelative(s, e, t, accel);
+	m_PosAnim.StartAbsolute(s, e, t, accel);
 	max_attacktime = t;
 	m_stancetime = 0;
 	m_attacktime = 0;
@@ -399,7 +379,7 @@ void Pole::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
 // 突き攻撃中の処理
 void Pole::ThrustUpdate() {
 	++m_attacktime;
-	m_offset = m_PosAnim.UpdateRelative();
+	m_offset = m_PosAnim.UpdateAbsolute(); // 位置アニメーション更新
 	//　突き出し終わっていたら、引き戻す動きを開始
 	if (!m_PosAnim.IsPlaying() && atkFg) {
 		atkFg = false;
@@ -445,7 +425,6 @@ void Pole::AttackEnd() {
 //構え開始、デフォルト版
 void Pole::Stance() {
 	m_State = STANCE;
-	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 
 	StanceStart({ 0,0,0 }, {0,-PI * 0.5f,0}, 18);
@@ -453,7 +432,6 @@ void Pole::Stance() {
 
 void Pole::Stance_Return() {
 	m_State = STANCE;
-	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 
 	StanceStart({ 0,0,0 }, { 0,PI * 0.5f,0 }, 18);
@@ -462,7 +440,6 @@ void Pole::Stance_Return() {
 //構え開始、デフォルト版を時間、構えタイプの指定を可能にしたもの
 void Pole::Stance(int t,int mode) {
 	m_State = STANCE;
-	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	switch (mode)
 	{
@@ -485,7 +462,6 @@ void Pole::Stance(int t,int mode) {
 
 void Pole::Stance_Thrust() {
 	m_PosAnim.StartRelative({ 0,0,0 }, { 8, 0, -8 }, 20);
-	m_baseRotation = m_Rotation;
 	m_stancetime = 0;
 	m_State = STANCE;
 	max_stancetime = 30;
@@ -541,9 +517,9 @@ void Pole::ToSwing()
 //構え中の処理
 void Pole::StanceUpdate() 
 {
-	m_Rotation += m_AngleAnim.UpdateRelative();
+	m_Rotation += m_AngleAnim.UpdateAbsolute();
 	
-	m_offset = m_PosAnim.UpdateRelative();
+	m_offset = m_PosAnim.UpdateAbsolute();
 	
 	++m_stancetime;
 }

@@ -162,6 +162,7 @@ void Stage1Scene::Init()
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 	Sound::GetInstance()->SetVolume(SOUND_BGM_MAIN, 0.5f);
+	Sound::GetInstance()->SetMasterVolume(0.0f);
 	Fade::GetInstance()->StartFadeIn();
 	Game::GetInstance()->GetCamera().SetTarget(*player);
 
@@ -172,7 +173,7 @@ void Stage1Scene::Init()
 	// yaw, pitch を計算
 	Vector2 CameraDirection;
 	CameraDirection.x = 0;//PI - atan2(initialOffset.x, initialOffset.z); // yaw
-	CameraDirection.y = -2.14f;//PI + asin(initialOffset.y);                   // pitch
+	CameraDirection.y = -2.2f;//PI + asin(initialOffset.y);                   // pitch
 
 	Game::GetInstance()->GetCamera().SetDirection(CameraDirection);//カメラ方向設定
 	Game::GetInstance()->GetCamera().SetInputFg(true);//カメラ操作有効化

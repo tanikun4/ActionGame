@@ -19,6 +19,8 @@ void Camera::DebugCameraStatus() {
 
 	ImGui::SliderFloat3("Position", &m_Position.x, 0, 300);
 
+	ImGui::SliderFloat("Distance", &m_Distance, 0, 500);
+
 	ImGui::LabelText("Forward", "(%.2f, %.2f, %.2f)", forward.x, forward.y, forward.z);
 
 	ImGui::End();
@@ -51,8 +53,8 @@ void Camera::Update()
 	if (m_TargetObject) {
 
 		// ターゲットから一定距離後方にカメラを置く
-		float distance = 80.0f;
-		Vector3 offset = GetForwardVector() * distance;
+		
+		Vector3 offset = GetForwardVector() * m_Distance;
 
 		Vector3 pPos = m_TargetObject->GetPosition();
 

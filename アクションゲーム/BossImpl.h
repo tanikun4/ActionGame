@@ -60,6 +60,7 @@ private:
 		CROSS_SHOT,
 		ROTATESWING_FIBONACCI,
 		ALTEREGO_SHOT,
+		ALTEREGO_SPINSLASH,
 
 		KIND_MAX
 	};
@@ -159,6 +160,7 @@ private:
 	void CrossShot();
 	void RotateSwingFibonacci();
 	void AlterEgoShot();
+	void AlterEgoSpinSlash();
 	
 	// ”ò‚Ñ“¹‹ïŠÖ˜A
 	void SetProjectile();

@@ -48,7 +48,7 @@ private:
 	bool followFg = false;//持ち主と同じ角度になるかどうか
 	bool verticalFg = false;//縦かどうか
 
-	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る前の角度
+	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る際の基準角度
 
 	AngleAnim m_AngleAnim;//角度アニメーションで使う構造体
 	PositionAnim m_PosAnim;// 座標アニメーションで使う構造体
@@ -61,8 +61,9 @@ public:
 		GUARD,
 		STANCE,
 		ATTACK,
-		SWING_VERTICAL,
 		THRUST,
+
+		STATE_MAX,
 	};
 
 	Pole(Camera* cam); // コンストラクタ
