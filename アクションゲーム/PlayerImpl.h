@@ -91,6 +91,7 @@ private:
 	int moveframe = 0; // 移動フレームカウント
 	int attackframe = 0; // 攻撃フレームカウント
 	int maxattackframe = 30; // 攻撃最大フレーム
+	int swing_time = 18; // 振り攻撃時間
 	
     int attackcombo = 0; // 攻撃コンボ数
 	int attackcombomax = COMBO_MAX - 1; // 攻撃コンボ最大数

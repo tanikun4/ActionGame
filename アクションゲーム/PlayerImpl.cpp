@@ -459,7 +459,7 @@ void Player::Impl::Attack() {
             return;
         }
 		// 構え開始
-      m_weapon->Stance(30, (int)StanceMode::NORMAL);
+      m_weapon->Stance(30, StanceMode::NORMAL);
 	  speed = 0.5f;  
     }
     if (ActionInput::GetInstance().IsRelease(Action::Attack) && !GuardFg) {
@@ -487,19 +487,19 @@ void Player::Impl::SwingAttack() {
     maxattackframe = 48;
     switch (attackcombo) {
     case COMBO_1:
-        m_weapon->Swing();
+        m_weapon->Swing(swing_time,SwingMode::NORMAL);
         m_weapon->SetAtk(atk);
-		m_Anim.StartAbsolute({ 0,-PI * 0.3f,0 }, { 0,PI * 0.3f,0 }, 18, 0.0f);
+		m_Anim.StartAbsolute({ 0,-PI * 0.3f,0 }, { 0,PI * 0.3f,0 }, swing_time, 0.7f);
         break;
 	case COMBO_2:
-        m_weapon->Swing_Return();
+        m_weapon->Swing(swing_time,SwingMode::RETURN);
         m_weapon->SetAtk(atk);
-        m_Anim.StartAbsolute({ 0,PI * 0.3f,0 }, { 0,-PI * 0.3f,0 }, 18, 0.0f);
+        m_Anim.StartAbsolute({ 0,PI * 0.3f,0 }, { 0,-PI * 0.3f,0 }, swing_time, 0.7f);
 		break;
     case COMBO_3:
-        m_weapon->Swing_Vertical();
+        m_weapon->Swing(swing_time,SwingMode::VERTICAL);
         m_weapon->SetAtk(atk + 1);
-        m_Anim.StartAbsolute({ -PI * 0.5f,0,0 }, { PI * 0.1f,0,0 }, 10, 0.0f);
+        m_Anim.StartAbsolute({ -PI * 0.3f,0,0 }, { PI * 0.1f,0,0 }, swing_time, 1.0f);
         break;
     }
 	++attackcombo;
@@ -739,6 +739,8 @@ void Player::Impl::UpdateAttack() {
         if (m_weapon->GetMaxAttack()) {
             m_Owner->m_State = NORMAL;
             m_weapon->SwingEnd();
+			m_Owner->m_Rotation.x = 0;// 攻撃終了時にX回転リセット
+			m_attackkind = NONE;
         }
         break;
 
@@ -893,7 +895,7 @@ void Player::Impl::UpdateCommon() {
     m_Owner->GBUpdate();
 
     if (m_weapon)
-        m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation, 1.7f);
+        m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);
 
 }
 

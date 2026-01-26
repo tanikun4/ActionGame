@@ -49,7 +49,7 @@ private:
 		NONE = -1, //攻撃なし
 		SWING = 0,
 		ROTATESWING,
-		SWING_VERTICAL,
+		SWING_VERTICAL_RUSH,
 		MANY_THRUST_LOOKAT,
 		THREE_SWING,
 		JUMP_SPINSLASH,
@@ -149,7 +149,7 @@ private:
 
 	// 行動パターン別関数
 	void RotateSwing();
-	void SwingVertical();
+	void SwingVerticalRush();
 	void ManyThrustLookAt();
 	void ThreeSwing();
 	void JumpSpinSlash();

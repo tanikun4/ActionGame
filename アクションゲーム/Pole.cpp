@@ -93,7 +93,7 @@ void Pole::Update()
 //=======================================
 // 更新処理
 //=======================================
-void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset)//offsetはobbの距離調整用
+void Pole::Update(Vector3 position, float radius, Vector3 rotation)//offsetはobbの距離調整用
 {
 
 	switch (m_State) {
@@ -103,7 +103,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation, float offset
 		break;
 	case SWING: //振り攻撃中
 		m_baseRotation.y = rotation.y + PI * 0.5f;
-		m_baseRotation.z = rotation.x + PI * 0.5f;
+		m_baseRotation.z = -rotation.x + PI * 0.5f;
 		SwingUpdate();
 		break;
 	case GUARD: //ガード中
@@ -297,23 +297,23 @@ void Pole::Swing_Parry()
 }
 
 // 振り攻撃、時間とモード指定版
-void Pole::Swing(int t,int mode) 
+void Pole::Swing(int t, SwingMode mode)
 {
 	m_State = STANCE;
 	m_stancetime = 0;
 	switch (mode)
 	{
-	case (int)SwingMode::NORMAL:
+	case SwingMode::NORMAL:
 		SwingStart({ 0, -PI * 0.5f, 0 }, { 0,PI * 0.5f,0 }, t, 0.7f);
 		break;
 
-	case (int)SwingMode::RETURN:
+	case SwingMode::RETURN:
 		SwingStart({ 0, PI * 0.5f, 0 }, { 0,-PI * 0.5f,0 }, t, 0.7f);
 		break;
 
-	case (int)SwingMode::VERTICAL:
+	case SwingMode::VERTICAL:
 		m_Rotation.x = PI;
-		SwingStart({ 0,0,PI * 0.5f }, { 0,0,-PI * 0.2f }, t);
+		SwingStart({ 0,0,PI * 0.5f }, { 0,0,-PI * 0.2f }, t,1.0f);
 		break;
 	}
 }
@@ -438,23 +438,23 @@ void Pole::Stance_Return() {
 }
 
 //構え開始、デフォルト版を時間、構えタイプの指定を可能にしたもの
-void Pole::Stance(int t,int mode) {
+void Pole::Stance(int t, StanceMode mode) {
 	m_State = STANCE;
 	m_stancetime = 0;
 	switch (mode)
 	{
-	case (int)StanceMode::NORMAL:
+	case StanceMode::NORMAL:
 		StanceStart({ 0,0,0 }, { 0,-PI * 0.5f,0 }, t);
 		break;
 
-	case (int)StanceMode::RETURN:
+	case StanceMode::RETURN:
 		StanceStart({ 0,0,0 }, { 0,PI * 0.5f,0 }, t);
 		break;
 
-	case (int)StanceMode::VERTICAL:
+	case StanceMode::VERTICAL:
 		StanceStart({ 0,0,0 }, { PI * 0.5,0,(PI * 0.5) + 0.2f }, t);
 		break;
-	case (int)StanceMode::THRUST:
+	case StanceMode::THRUST:
 		Stance_Thrust();
 		break;
 	}

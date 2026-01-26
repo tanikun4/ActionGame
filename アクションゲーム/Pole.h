@@ -74,7 +74,7 @@ public:
 	//int atk = 3;//攻撃力
 	void Init();
 	void Update();
-	void Update(DirectX::SimpleMath::Vector3 position, float radius,DirectX::SimpleMath::Vector3 rotation, float offset);
+	void Update(DirectX::SimpleMath::Vector3 position, float radius,DirectX::SimpleMath::Vector3 rotation);
 	void Draw();
 	void Uninit();
 
@@ -95,7 +95,7 @@ public:
 	void Swing_Parry();//振り攻撃開始、デフォルト
 	void Swing_Return();//逆からの振り攻撃
 	void Swing_Vertical();// 縦振り攻撃開始
-	void Swing(int t ,int mode);//振り時間、モード指定版
+	void Swing(int t , SwingMode mode);//振り時間、モード指定版
 	void SwingEnd();
 
 	void SwingStart(const DirectX::SimpleMath::Vector3& s, const DirectX::SimpleMath::Vector3& e, int t, float accel = 0);// 振り攻撃開始、パラメータ版
@@ -114,7 +114,7 @@ public:
 	void Stance_Return();
 	void Stance_Vertical();
 	void Stance_Thrust(); // 突き状態の構え
-	void Stance(int t,int mode);//時間、構えタイプ指定版
+	void Stance(int t, StanceMode mode);//時間、構えタイプ指定版
 	void StanceUpdate();
 	void StanceEnd();
 

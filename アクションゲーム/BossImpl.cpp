@@ -67,6 +67,15 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 		m_Owner->m_Velocity_f = 0;
 		attack_kind = debug_attack_kind;
 	}
+
+	ImGui::SliderFloat3("Rotation", &m_Owner->m_Rotation.x, -2 * PI, 2 * PI);
+	if (ImGui::Button("Reset Rotation"))
+	{
+		m_Owner->m_Rotation.x = 0;
+		m_Owner->m_Rotation.z = 0;
+	}
+
+
 	static Vector3 projectile_offset = {0,-4,16};
 	ImGui::SliderFloat3("Projectile Offset", &projectile_offset.x,-30,30);
 
@@ -167,9 +176,7 @@ void Boss::Impl::Update() {
 	m_Owner->GBUpdate();
 
 	if (m_weapon)
-		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation, 1.0f);
-
-
+		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);
 }
 
 void Boss::Impl::Draw()
@@ -307,8 +314,8 @@ void Boss::Impl::AttackUpdate() {
 	case ROTATESWING://回転切り
 		RotateSwing();
 		break;
-	case SWING_VERTICAL://縦振り
-		SwingVertical();
+	case SWING_VERTICAL_RUSH://縦振り
+		SwingVerticalRush();
 		break;
 	case MANY_THRUST_LOOKAT://連続突き
 		ManyThrustLookAt();
@@ -404,7 +411,7 @@ void Boss::Impl::RotateSwing() {
 }
 
 // 突進縦振り
-void Boss::Impl::SwingVertical() {
+void Boss::Impl::SwingVerticalRush() {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
 		m_weapon->Stance_Vertical();
@@ -445,14 +452,16 @@ void Boss::Impl::SwingVertical() {
 			m_rushFg = false;
 			m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 			m_attackframe = 0;
-			m_attackPhase = AttackPhase::RECOVER;
+			m_attackPhase = AttackPhase::FOLLOW;
+			m_AngleAnim.StartAbsolute({ -PI * 0.3f,0,0 }, { PI * 0.1f,0,0 }, 18, 1.0f);
 		}
+
 	}
 
-	if (m_attackPhase == AttackPhase::RECOVER) {
-
+	if (m_attackPhase == AttackPhase::FOLLOW) {
+		m_Owner->m_Rotation = m_Owner->m_ForwardRotation + m_AngleAnim.UpdateAbsolute();
 		// 大きな土煙エフェクト再生
-		if (m_weapon->GetAttackTime() == 10) {
+		if (m_weapon->GetMaxAttack()) {
 			//エフェクトパラメーター構造体作成
 			EffectParams param;
 			param.scale = m_Owner->m_Scale * 15;
@@ -460,13 +469,17 @@ void Boss::Impl::SwingVertical() {
 			// エフェクト再生
 			m_weapon->TipToEffect(EFFECT_TUTIKEMURI_BIG, param);
 			Sound::GetInstance()->Play(SOUND_SE_SWINGVERTICAL);
+			m_attackPhase = AttackPhase::RECOVER;
+			m_attackcount = 0;
+			m_Owner->m_Rotation.x = 0.0f;//回転リセット
 		}
+	}
 
-		// 攻撃終了
-		if (m_weapon->GetAttackTime() > 30) {
+	if(m_attackPhase == AttackPhase::RECOVER) {
+		if (m_attackframe > 30) {
 			m_attackPhase = AttackPhase::END;
-
 		}
+		++m_attackframe;
 	}
 
 	if (m_attackPhase == AttackPhase::END) {
@@ -545,20 +558,23 @@ void Boss::Impl::ThreeSwing() {
 	if (m_attackPhase == AttackPhase::PREPARE) {
 		// しばらく構えた後、攻撃に以降
 		if (m_weapon->GetStanceTime() > 60) {
-			m_attackPhase = AttackPhase::ATTACK;
-
 			if (m_attackcount == 0) {
 				m_weapon->Swing();
+				m_AngleAnim.StartAbsolute({ 0, -PI * 0.3f,0 }, { 0, PI * 0.3f,0 }, 18, 0.7f);
 				Sound::GetInstance()->Play(SOUND_SE_SWING);
 			}
 			else if (m_attackcount == 1) {
 				m_weapon->Swing_Return();
+				m_AngleAnim.StartAbsolute({ 0, PI * 0.3f,0 }, { 0, -PI * 0.3f,0 }, 18, 0.7f);
 				Sound::GetInstance()->Play(SOUND_SE_SWING);
 			}
 			else if (m_attackcount == 2) {
-				m_weapon->Swing(10, (int)SwingMode::VERTICAL);
+				m_weapon->Swing(18, SwingMode::VERTICAL);
+				m_AngleAnim.StartAbsolute({ -PI * 0.3f,0,0 }, { PI * 0.1f,0,0 }, 18, 1.0f);
 				Sound::GetInstance()->Play(SOUND_SE_SWING);
 			}
+			m_attackPhase = AttackPhase::ATTACK;
+			m_spinFg = true;
 			m_lookatFg = false;
 			++m_attackcount;
 		}
@@ -566,21 +582,22 @@ void Boss::Impl::ThreeSwing() {
 
 	// 攻撃フェーズ、攻撃後準備フェーズに戻る、三回攻撃を繰り返す
 	if (m_attackPhase == AttackPhase::ATTACK) {
-		if (m_weapon->GetAttackTime() > 18) {
+		if (m_weapon->GetMaxAttack()) {
 			m_weapon->SwingEnd();
 
 			if (m_attackcount == 1) {
 				m_weapon->Stance_Return();
 			}
 			else if (m_attackcount == 2) {
-				m_weapon->Stance(10, (int)StanceMode::VERTICAL);
+				m_weapon->Stance(10, StanceMode::VERTICAL);
 			}
 			m_lookatFg = true;
 			m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 			m_attackPhase = AttackPhase::FOLLOW;
 		}
-		else if (m_weapon->GetAttackTime() <= 18) { // 攻撃中は移動
+		else { // 攻撃していない間は移動する
 			Move();
+			m_Owner->m_Rotation = m_Owner->m_ForwardRotation + m_AngleAnim.UpdateAbsolute();// アニメーション更新、絶対値と前進方向を合わせて算出する
 		}
 
 	}
@@ -595,6 +612,8 @@ void Boss::Impl::ThreeSwing() {
 		else {
 			m_attackPhase = AttackPhase::PREPARE;
 		}
+		m_spinFg = false;
+		m_Owner->m_Rotation.x = 0.0f;//回転リセット
 	}
 
 	// 硬直フェーズ、終了フェーズに以降するまで硬直する
@@ -658,7 +677,7 @@ void Boss::Impl::JumpSpinSlash() {
 		if (!m_AngleAnim.IsPlaying()) {
 			m_Owner->m_Rotation.x = 0;
 			m_weapon->AttackEnd();
-			m_weapon->Stance(15, (int)StanceMode::VERTICAL);
+			m_weapon->Stance(15, StanceMode::VERTICAL);
 			m_attackPhase = AttackPhase::FOLLOW;
 		}
 
@@ -793,7 +812,7 @@ void  Boss::Impl::SonicBoomShot() {
 		}
 		else {
 			ProjectileCharge_VT();
-			m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+			m_weapon->Stance(18, StanceMode::VERTICAL);
 		}
 		m_attackcount = 0;
 		m_attackframe = 0;
@@ -844,7 +863,7 @@ void  Boss::Impl::SonicBoomShot() {
 				ProjectileChargeMax();
 			}
 			else {
-				m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+				m_weapon->Stance(18, StanceMode::VERTICAL);
 				ProjectileChargeMax_VT();
 			}
 		}
@@ -1051,7 +1070,7 @@ void Boss::Impl::CrossShot() {
 		m_rotatespeed = 0.3f;
 		ProjectileCharge();
 		ProjectileCharge_VT();
-		m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+		m_weapon->Stance(18, StanceMode::VERTICAL);
 		m_attackPhase = AttackPhase::PREPARE;
 	}
 	// 準備フェーズ、一定フレーム経過後、攻撃フェーズに
@@ -1087,7 +1106,7 @@ void Boss::Impl::CrossShot() {
 			m_weapon->SwingEnd();
 			ProjectileChargeMax();
 			ProjectileChargeMax_VT();
-			m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+			m_weapon->Stance(18, StanceMode::VERTICAL);
 		}
 		if (m_attackframe > 60) {
 			m_attackPhase = AttackPhase::ATTACK;
@@ -1182,7 +1201,7 @@ void Boss::Impl::AlterEgoShot()
 		// 分身衝撃波の構え、縦の衝撃波をチャージする
 		m_rotatespeed = 0.3f;
 		ProjectileCharge_VT();
-		m_weapon->Stance(18, (int)StanceMode::VERTICAL);
+		m_weapon->Stance(18, StanceMode::VERTICAL);
 		m_startpos = m_Owner->m_Position;
 		m_vib.Start(20, PI * 0.5f);//振動開始、振れ幅を大きくして分身っぽく見せる
 		m_Owner->is_SPECIALMOVE = true;
@@ -1356,7 +1375,7 @@ void Boss::Impl::Stun(optional<Vector3> knockbackDir)
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
 	m_vib.Start(0.5f, 3);//振動開始
 	m_weapon->AttackEnd();
-	m_weapon->Stance(10,(int)StanceMode::VERTICAL);// 縦に構える
+	m_weapon->Stance(10,StanceMode::VERTICAL);// 縦に構える
 	m_Owner->m_State = STUN;
 	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 	m_spinFg = false;
@@ -1682,7 +1701,7 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 		    m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 
 			// 壁に当たったらその時点で攻撃する
-			if (attack_kind == SWING_VERTICAL) {
+			if (attack_kind == SWING_VERTICAL_RUSH) {
 				m_weapon->Swing_Vertical();
 			}
 
