@@ -41,10 +41,8 @@ Boss::Impl::~Impl()
 
 void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	ImGui::Begin("BossStatus");
-	static bool update = true;
-	static bool death;
 
-	ImGui::Checkbox("Update", &update);
+	ImGui::Checkbox("NotUpdate", &notUpdate);
 	ImGui::Checkbox("Slow", &m_slowFg);
 	ImGui::SliderInt("Slowrate", &slow_rate, 1, 59);
 
@@ -57,7 +55,7 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 		hp = 0;
 
 	if (ImGui::Button("BOSSHP MAX"))
-		hp = 50;
+		hp = maxhp;
 
 	static int debug_attack_kind = -1;
 	ImGui::SliderInt("AttackKind", &debug_attack_kind, -1, KIND_MAX - 1);
@@ -75,8 +73,23 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 		m_Owner->m_Rotation.z = 0;
 	}
 
+	//static Vector3 gauge_pos = { 500,300,0 };
+	//ImGui::SliderFloat3("GaugePos", &gauge_pos.x, 0, 700);
 
-	static Vector3 projectile_offset = {0,-4,16};
+	//static Vector2 gauge_scale = { 800,50 };
+	//ImGui::SliderFloat2("GaugeScale", &gauge_scale.x, 0, 1000);
+
+	//m_gauge.SetPosScale(gauge_pos, { gauge_scale.x, gauge_scale.y, 0});
+
+	if (ImGui::Button("Reset Rotation"))
+	{
+		m_Owner->m_Rotation.x = 0;
+		m_Owner->m_Rotation.z = 0;
+	}
+
+
+
+	/*static Vector3 projectile_offset = {0,-4,16};
 	ImGui::SliderFloat3("Projectile Offset", &projectile_offset.x,-30,30);
 
 	static Vector3 projectile_OBB_scale = { 10.0f,1.0f,1.0f };
@@ -85,14 +98,7 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	for (auto& p : m_projectile) {
 		p->SetOffset(projectile_offset);
 		p->SetOBBScale(projectile_OBB_scale);
-	}
-
-	if (update) {
-		notUpdate = false;
-	}
-	else {
-		notUpdate = true;
-	}
+	}*/
 
 	ImGui::End();
 }
@@ -101,7 +107,7 @@ void Boss::Impl::Init() {
 	m_Owner->GBInit(u8"assets/model/Character/boss.fbx");
 	m_Owner->m_Position = Vector3(0.0f, 50.0f, -50.0f);
 	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
-	hp = 50;
+	hp = maxhp;
 	def = 0;
 	m_Owner->m_Scale.x = 2;
 	m_Owner->m_Scale.y = 2;
@@ -158,7 +164,7 @@ void Boss::Impl::Update() {
 
 
 	if (m_lookatFg)
-	  LookAt(Game::GetInstance()->GetObjects<Player>()[0]->GetPosition());
+	  LookAt(m_player->GetPosition());
 	
 	if (inviFg) {
 		++invicount;
@@ -193,6 +199,12 @@ void Boss::Impl::Uninit()
 
 }
 
+// ゲージ初期化用、ゲームシーンでのみ呼び出す
+void Boss::Impl::SetGauge() {
+	m_gauge.Init({200, 325, 0}, { 800, 50, 0 });
+	m_gauge.SetColor({ 1,0.5f,0,1 });
+}
+
 bool Boss::Impl::GetLive() {
 	if (hp > 0) {
 		return true;
@@ -212,6 +224,8 @@ void Boss::Impl::Damage(int _atk) {
 	inviFg = true;
 	m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 	m_Owner->SetColor(Vector4(1, 1, 1, 0.5));
+
+	m_gauge.ChangeGauge(hp,maxhp);
 
 	//左から右へ移動するエフェクト再生
 	Vector3 pos = m_Owner->m_Position;

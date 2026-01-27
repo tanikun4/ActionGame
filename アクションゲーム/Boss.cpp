@@ -30,6 +30,10 @@ void Boss::Stun(optional<Vector3> knockbackDir) { impl->Stun(knockbackDir); }
 
 void Boss::ShotBullet() { impl->ShotBullet(); }
 
+void Boss::SetGauge() { impl->SetGauge(); }
+
+void Boss::SetPlayer(Player* player) { impl->SetPlayer(player); }
+
 void Boss::SetDEF(int _def) { impl->SetDEF(_def); }
 
 int Boss::GetHP() { return impl->GetHP(); }

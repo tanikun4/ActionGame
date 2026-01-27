@@ -64,6 +64,7 @@ struct HpGauge
     }
 
     void Uninit() {
+		if (!gaugeTex || !backTex) return;
         gaugeTex->Uninit();
         backTex->Uninit();
     }

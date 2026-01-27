@@ -55,15 +55,16 @@ void TitleScene::Init()
 
 	GroundManager::GetInstance().Init();
 
-	Boss* boss = Game::GetInstance()->AddObject<Boss>();
-	m_MySceneObjects.emplace_back(boss);
-	boss->SetDEF(99);//–³“Gó‘Ô‚É‚·‚é
-
 	Player* player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
 	player->SetState(0);
 	player->SetDemoMode(true);
 	
+	Boss* boss = Game::GetInstance()->AddObject<Boss>();
+	m_MySceneObjects.emplace_back(boss);
+	boss->SetDEF(99);//–³“Gó‘Ô‚É‚·‚é
+	boss->SetPlayer(player);
+
 
 	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //’e

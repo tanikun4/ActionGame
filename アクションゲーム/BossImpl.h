@@ -3,6 +3,7 @@
 #include <SimpleMath.h>
 #include "Boss.h"
 #include "AnimStruct.h"
+#include "UIStruct.h"
 
 class Camera;
 class Player;
@@ -24,6 +25,8 @@ public:
 	void Damage(int _atk);
 	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // 行動不能状態にする
 	void SetDEF(int _def) { def = _def; }
+	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
+	void SetPlayer(Player* player) { m_player = player; }
 
 	void ShotBullet();
 	bool GetLive();
@@ -102,6 +105,7 @@ private:
 	const int projectile_max = 5;//飛び道具の最大数
 
 	int hp = 50;
+	const int maxhp = 100;
 	int def = 0; //防御力、値分ダメージを減らす
 	int m_stateframe = 0;//状態継続フレーム数
 	bool inviFg = false;
@@ -129,6 +133,7 @@ private:
 	std::vector<Bullet*> m_bullet;
 	std::vector<Projectile*> m_projectile;
 	Pole* m_weapon;
+	Player* m_player = nullptr;// プレイヤー参照
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 	DirectX::SimpleMath::Vector3 m_startpos; // 移動開始位置
 	Vibration m_vib; // 振動用のクラス
@@ -136,6 +141,7 @@ private:
 	AngleAnim m_AngleAnim;// 角度アニメーション構造体
 	ArcMoveAnim m_ArcAnim;// 円弧移動アニメーション構造体
 	FibonacciAnim m_FiboAnim;// 黄金螺旋移動アニメーション構造体
+	HpGauge m_gauge; //  HPゲージ用構造体
 
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	void Move();

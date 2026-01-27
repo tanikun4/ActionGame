@@ -54,10 +54,6 @@ void Stage1Scene::Init()
 
 	GroundManager::GetInstance().Init();
 
-	boss = Game::GetInstance()->AddObject<Boss>();
-	m_MySceneObjects.emplace_back(boss);
-	boss->SetDEF(0);//無敵状態解除
-
 	//通常敵の配置
 	//for (int i = 0; i < 9; i++) {
 	//	int r1 = rand();
@@ -94,9 +90,16 @@ void Stage1Scene::Init()
 
 	player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
-	player->SetState(0);
 	player->SetDemoMode(false);
+
+	boss = Game::GetInstance()->AddObject<Boss>();
+	m_MySceneObjects.emplace_back(boss);
+	//boss->SetDEF(0);//無敵状態解除
+	boss->SetPlayer(player);
+
+	// ゲージの設定
 	player->SetGauge();
+	boss->SetGauge();
 
 	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //弾
@@ -123,7 +126,7 @@ void Stage1Scene::Init()
 	//壁の設置
 	WallManager::SetWall(ground->GetGroundSize(), m_MySceneObjects);
 
-	// UI(HP)
+	// UI(HP文字)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
 	pt1->SetTexture("assets/texture/ui_back.png"); // 画像を指定
 	pt1->SetPosition(-560.0f, -300.0f, 0.0f); // 位置を設定
@@ -133,41 +136,41 @@ void Stage1Scene::Init()
 	// UI(ボスHP文字)
 	Texture2D* pt2 = Game::GetInstance()->AddObject<Texture2D>();
 	pt2->SetTexture("assets/texture/ui_BossHP.png"); // 画像を指定
-	pt2->SetPosition(350.0f, 300.0f, 0.0f); // 位置を設定
+	pt2->SetPosition(-300.0f, 325.0f, 0.0f); // 位置を設定
 	pt2->SetScale(150.0f, 75.0f, 0.0f); // 大きさを指定
 	pt2->SetUV(1, 1, 1, 1); //UVを指定
 	m_MySceneObjects.emplace_back(pt2);
 
 	// UI(プレイヤーHP)
-	Texture2D* pt4 = Game::GetInstance()->AddObject<Texture2D>();
-	pt4->SetTexture("assets/texture/number.png"); // 画像を指定
-	pt4->SetPosition(-485.0f, -300.0f, 0.0f); // 位置を設定
-	pt4->SetScale(65.0f, 45.0f, 0.0f); // 大きさを指定
-	pt4->SetUV(m_Par + 1, 1, 10, 1); //UVを指定
-	m_MySceneObjects.emplace_back(pt4);
+	//Texture2D* pt4 = Game::GetInstance()->AddObject<Texture2D>();
+	//pt4->SetTexture("assets/texture/number.png"); // 画像を指定
+	//pt4->SetPosition(-485.0f, -300.0f, 0.0f); // 位置を設定
+	//pt4->SetScale(65.0f, 45.0f, 0.0f); // 大きさを指定
+	//pt4->SetUV(m_Par + 1, 1, 10, 1); //UVを指定
+	//m_MySceneObjects.emplace_back(pt4);
 
 	// UI(ボスHP 1桁目)
-	Texture2D* pt5 = Game::GetInstance()->AddObject<Texture2D>();
-	pt5->SetTexture("assets/texture/number.png"); // 画像を指定
-	pt5->SetPosition(565.0f, 300.0f, 0.0f); // 位置を設定
-	pt5->SetScale(95.0f, 72.0f, 0.0f); // 大きさを指定
-	pt5->SetUV(2, 1, 10, 1); //UVを指定
-	m_MySceneObjects.emplace_back(pt5);
+	//Texture2D* pt5 = Game::GetInstance()->AddObject<Texture2D>();
+	//pt5->SetTexture("assets/texture/number.png"); // 画像を指定
+	//pt5->SetPosition(565.0f, 300.0f, 0.0f); // 位置を設定
+	//pt5->SetScale(95.0f, 72.0f, 0.0f); // 大きさを指定
+	//pt5->SetUV(2, 1, 10, 1); //UVを指定
+	//m_MySceneObjects.emplace_back(pt5);
 
 	// UI(ボスHP 2桁目)
-	Texture2D* pt6 = Game::GetInstance()->AddObject<Texture2D>();
-	pt6->SetTexture("assets/texture/number.png"); // 画像を指定
-	pt6->SetPosition(485.0f, 300.0f, 0.0f); // 位置を設定
-	pt6->SetScale(95.0f, 72.0f, 0.0f); // 大きさを指定
-	pt6->SetUV(1, 1, 10, 1); //UVを指定
-	m_MySceneObjects.emplace_back(pt6);
+	//Texture2D* pt6 = Game::GetInstance()->AddObject<Texture2D>();
+	//pt6->SetTexture("assets/texture/number.png"); // 画像を指定
+	//pt6->SetPosition(485.0f, 300.0f, 0.0f); // 位置を設定
+	//pt6->SetScale(95.0f, 72.0f, 0.0f); // 大きさを指定
+	//pt6->SetUV(1, 1, 10, 1); //UVを指定
+	//m_MySceneObjects.emplace_back(pt6);
 
-	vector<Texture2D*> gauge = player->GetGauge();
-	m_MySceneObjects.insert(
-		m_MySceneObjects.end(),    // 挿入位置
-		gauge.begin(),        // 挿入する範囲の開始
-		gauge.end()           // 挿入する範囲の終了
-	);
+	//vector<Texture2D*> gauge = player->GetGauge();
+	//m_MySceneObjects.insert(
+	//	m_MySceneObjects.end(),    // 挿入位置
+	//	gauge.begin(),        // 挿入する範囲の開始
+	//	gauge.end()           // 挿入する範囲の終了
+	//);
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 	Sound::GetInstance()->SetVolume(SOUND_BGM_MAIN, 0.5f);
@@ -197,15 +200,15 @@ void Stage1Scene::Update()
 {
 	//Arrow* arrow = dynamic_cast<Arrow*>(m_MySceneObjects[2]); // 矢印
 	// 数を更新
-	Texture2D* count[3];
-	vector<Texture2D*> texture2D = Game::GetInstance()->GetObjects<Texture2D>();
-	count[0] = texture2D[texture2D.size() - 3];//プレイヤーHP
-	count[1] = texture2D[texture2D.size() - 2];//ボスのHP1桁目
-	count[2] = texture2D[texture2D.size() - 1];//ボスのHP2桁目
+	//Texture2D* count[3];
+	//vector<Texture2D*> texture2D = Game::GetInstance()->GetObjects<Texture2D>();
+	//count[0] = texture2D[texture2D.size() - 3];//プレイヤーHP
+	//count[1] = texture2D[texture2D.size() - 2];//ボスのHP1桁目
+	//count[2] = texture2D[texture2D.size() - 1];//ボスのHP2桁目
 
-	count[0]->SetUV(player->GetHP() + 1, 1, 10, 1); // プレイヤーHPのUVを指定
-	count[1]->SetUV((boss->GetHP() % 10) + 1, 1, 10, 1); // ボスHP1桁目のUVを指定
-	count[2]->SetUV((boss->GetHP() / 10) + 1, 1, 10, 1); // ボスHP2桁目のUVを指定
+	//count[0]->SetUV(player->GetHP() + 1, 1, 10, 1); // プレイヤーHPのUVを指定
+	//count[1]->SetUV((boss->GetHP() % 10) + 1, 1, 10, 1); // ボスHP1桁目のUVを指定
+	//count[2]->SetUV((boss->GetHP() / 10) + 1, 1, 10, 1); // ボスHP2桁目のUVを指定
 	// 各桁を後ろから取得していく
 	//vector<Enemy*> enemy = Game::GetInstance()->GetObjects<Enemy>();
 	//int enemycount = 0;
@@ -226,8 +229,8 @@ void Stage1Scene::Update()
 	if(boss->GetHP() <= 0){
 		Game::GetInstance()->ChangeSceneFadeOut(RESULT);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
-		count[1]->SetUV(1, 1, 10, 1);
-		count[2]->SetUV(1, 1, 10, 1);
+		//count[1]->SetUV(1, 1, 10, 1);
+		//count[2]->SetUV(1, 1, 10, 1);
 	}else if (player->GetHP() <= 0) {
 		Game::GetInstance()->ChangeSceneFadeOut(GAMEOVER);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
