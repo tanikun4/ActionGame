@@ -35,6 +35,7 @@ Player::Impl::Impl(Camera* cam, Player* owner)
 {
     m_arrow = nullptr;
     m_weapon = Game::GetInstance()->AddObject<Pole>();
+    m_weapon->SetOwner(m_Owner);
 }
 
 Player::Impl::~Impl()
@@ -108,11 +109,12 @@ void Player::Impl::Draw() {
 }
 
 void Player::Impl::Uninit() {
+    m_weapon->SetOwner(nullptr);
     m_weapon = nullptr;
 }
 
 void Player::Impl::SetGauge() {
-    m_hpgauge.Init({ -250 ,-300, 0 }, { 500,50, 0 });
+    m_hp_gauge.Init({ -250 ,-325, 0 }, { 500,50, 0 });
 }
 
 int Player::Impl::GetHP() {
@@ -125,8 +127,8 @@ Pole* Player::Impl::GetWeapon() {
 
 vector<Texture2D*> Player::Impl::GetGauge() {
 	vector<Texture2D*> gauge;
-    gauge.emplace_back(m_hpgauge.GetGauge(0));
-    gauge.emplace_back(m_hpgauge.GetGauge(1));
+    gauge.emplace_back(m_hp_gauge.GetGauge(0));
+    gauge.emplace_back(m_hp_gauge.GetGauge(1));
     return gauge;
 }
 
@@ -146,8 +148,10 @@ void Player::Impl::OnHit(Pole* po) {
     //if(RollFg && rollcount < 5 && po->GetAttackTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
     //if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
      // ジャストガード成功で相手を行動不能にする
-    if (GuardFg && guardcount <= justguardframe && po->GetAttackTime() < 10) { 
+    if (GuardFg && guardcount <= justguardframe) { 
         BossStan();
+		m_target = po->GetOwner();
+		//Counter();
         Parry(); 
         return; 
     }
@@ -167,9 +171,10 @@ void Player::Impl::OnHit(Projectile* pr) {
     if (!pr->GetAtkFg()) return;
 	// ジャストガードに成功したら反射する、ジャストガードモーション中でも反射する
     if (GuardFg && guardcount <= justguardframe) {
+        m_target = pr->GetOwner();
         Parry();
     }
-    if (m_Owner->m_State == PARRY) {
+    if (parryFg) {
         pr->Reflect(true);
         return;
     }
@@ -408,7 +413,7 @@ void Player::Impl::DebugHPGauge() {
         debug_gauge_scale = { 0,0,0 };
     }
 
-	m_hpgauge.SetPosScale(debug_gauge_pos, debug_gauge_scale);
+	m_hp_gauge.SetPosScale(debug_gauge_pos, debug_gauge_scale);
 
     ImGui::End();
 }
@@ -517,28 +522,28 @@ void Player::Impl::Attack() {
 }
 
 // 通常攻撃開始
-void Player::Impl::SwingAttack() {
+void Player::Impl::SwingAttack(int _swingtime,int _atk) {
     attackframe = 0;
     maxattackframe = 48;
     switch (attackcombo) {
     case COMBO_1:
-        m_weapon->Swing(swing_time,SwingMode::NORMAL);
-        m_weapon->SetAtk(atk);
-		m_Anim.StartAbsolute({ 0,-PI * 0.3f,0 }, { 0,PI * 0.3f,0 }, swing_time, 0.7f);
+        m_weapon->Swing(_swingtime,SwingMode::NORMAL);
+        m_weapon->SetAtk(_atk);
+		m_Anim.StartAbsolute({ 0,-PI * 0.3f,0 }, { 0,PI * 0.3f,0 }, _swingtime, 0.7f);
         break;
 	case COMBO_2:
-        m_weapon->Swing(swing_time,SwingMode::RETURN);
-        m_weapon->SetAtk(atk);
-        m_Anim.StartAbsolute({ 0,PI * 0.3f,0 }, { 0,-PI * 0.3f,0 }, swing_time, 0.7f);
+        m_weapon->Swing(_swingtime,SwingMode::RETURN);
+        m_weapon->SetAtk(_atk);
+        m_Anim.StartAbsolute({ 0,PI * 0.3f,0 }, { 0,-PI * 0.3f,0 }, _swingtime, 0.7f);
 		break;
     case COMBO_3:
-        m_weapon->Swing(swing_time,SwingMode::VERTICAL);
-        m_weapon->SetAtk(atk + 1);
-        m_Anim.StartAbsolute({ -PI * 0.3f,0,0 }, { PI * 0.1f,0,0 }, swing_time, 1.0f);
+        m_weapon->Swing(_swingtime,SwingMode::VERTICAL);
+        m_weapon->SetAtk(_atk + 1);
+        m_Anim.StartAbsolute({ -PI * 0.3f,0,0 }, { PI * 0.1f,0,0 },_swingtime, 1.0f);
         break;
     }
 	++attackcombo;
-    if (attackcombo > attackcombomax) attackcombo = 0;
+    if (attackcombo >= COMBO_MAX) attackcombo = 0;
     m_attackkind = SWING;
     Sound::GetInstance()->Play(SOUND_SE_SWING);
 }
@@ -561,7 +566,6 @@ void Player::Impl::SpinAttack(const int& t, const int& attack_t , const float& a
     Sound::GetInstance()->Play(SOUND_SE_SWING);
 }
 
-
 // 回転斬り攻撃開始
 void Player::Impl::SpinAttack_Vertical(int t, int attack_t, float accel) {
     m_weapon->AttackStart(true,true);
@@ -576,7 +580,6 @@ void Player::Impl::SpinAttack_Vertical(int t, int attack_t, float accel) {
     Sound::GetInstance()->Play(SOUND_SE_SWING);
 }
 
-
 // ジャンプ処理
 void Player::Impl::Jump() {
     if (demoMode) return;//デモ中は入力を受け付けない
@@ -588,7 +591,6 @@ void Player::Impl::Jump() {
         m_Owner->m_Position.y += 0.1f;
     }
 }
-
 
 void Player::Impl::Charge() {
     if (!m_arrow) {
@@ -665,7 +667,7 @@ void Player::Impl::Damage(int atk) {
 
     hp -= atk;
 
-    m_hpgauge.ChangeGauge(hp, maxhp);
+    m_hp_gauge.ChangeGauge(hp, maxhp);
     
 }
 
@@ -687,11 +689,9 @@ void Player::Impl::Guard() {
 
 //カウンター処理
 void Player::Impl::Counter() {
-    auto bosses = Game::GetInstance()->GetObjects<Boss>();
-    if (!bosses.empty()) {
-        Boss* boss = bosses[0];
-        LookAt(boss->GetPosition());
-    }
+    
+	m_ta_pos = m_target->GetPosition();
+    LookAt(m_ta_pos);
     rollcount = 0;
     m_Owner->m_State = COUNTER;
     speed = 1.0f;
@@ -714,13 +714,17 @@ void Player::Impl::BossStan() {
 
 // パリィ処理
 void Player::Impl::Parry() {
-    //状態変化し、攻撃判定のないスイングを行う
+    //一段目のスイングを行う
     GuardFg = false;
 	speed = 1.0f;
     if (m_weapon) m_weapon->GuardEnd();
-
-    m_Owner->m_State = PARRY;
-	m_weapon->Swing_Parry();
+	LookAt(m_target->GetPosition());
+    //m_Owner->m_State = PARRY;
+    //m_weapon->Swing_Parry();
+    m_Owner->m_State = ATTACK;
+	attackcombo = 0;
+	SwingAttack(10,6);
+	parryFg = true;
 
     // パリィエフェクト再生
     EffectParams param;
@@ -762,7 +766,8 @@ void Player::Impl::UpdateNormal() {
 
 //攻撃中
 void Player::Impl::UpdateAttack() {
-	if (m_Owner->is_GROUND) m_Owner->m_Velocity_f = 0.0f; //攻撃中は移動不可
+	if (m_Owner->is_GROUND) m_Owner->m_Velocity_f = 0.0f; //速度をリセット
+	if (parryFg) m_Owner->m_Velocity_f = speed * 0.5f;//パリィ中は少し動く
 	if (!m_weapon) { return; }
     switch (m_attackkind) {
     case NONE:
@@ -778,6 +783,7 @@ void Player::Impl::UpdateAttack() {
             m_weapon->SwingEnd();
 			m_Owner->m_Rotation.x = 0;// 攻撃終了時にX回転リセット
 			m_attackkind = NONE;
+			parryFg = false;// ジャストガードフラグリセット
         }
         break;
 
@@ -852,21 +858,19 @@ void Player::Impl::UpdateCounter() {
     //攻撃後も移動し続けるので、切り抜ける形になってかっこよくなった。
     m_Owner->m_Velocity_f = speed * 3;
 
-    if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 5 &&
-        fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 5) {
+    if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 2&&
+        fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 2) {
 
 		//カウンター攻撃処理
-        if (m_weapon->GetAttackTime() <= 0) {
-            m_weapon->SetAtk(atk * 2);
-            m_weapon->Swing_Vertical();
-        }
+        m_Owner->m_Velocity_f = 0;
+        invicount = 0;
+        m_Owner->m_State = ATTACK;
+        attackcombo = 0;
+        SwingAttack(10, 6);
+        
     }
     else {
-        auto bosses = Game::GetInstance()->GetObjects<Boss>();
-        if (!bosses.empty()) {
-            Boss* boss = bosses[0];
-            LookAt(boss->GetPosition());
-        }
+        LookAt(m_ta_pos);
     }
 	// カウンター攻撃終了判定
     if (m_weapon->GetMaxAttack()) {

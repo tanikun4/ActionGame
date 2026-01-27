@@ -330,7 +330,7 @@ public:
         prevPos = currentPos;
         // êiçsï˚å¸
        int moveSign = (moveDir == ArcMoveDir::Forward) ? -1 : 1;
-        return delta * moveSign;
+        return delta * (float)moveSign;
     }
 
     bool IsPlaying() const
@@ -358,7 +358,7 @@ private:
     bool first = true;
 
     float baseRadius = 1.0f;
-    float phi = 1.61803398875f;
+    const float phi = 1.61803398875f;
 
 public:
     void Start(
@@ -388,8 +388,8 @@ public:
         float r = baseRadius * powf(phi, theta / (DirectX::XM_PI / 2.0f));
 
         DirectX::SimpleMath::Vector3 current;
-        current.x = cosf(theta) * r;
-        current.z = sinf(theta) * r;
+        current.x = sinf(theta) * r;
+        current.z = cosf(theta) * r;
         //current.y = center.y;
 
         if (first)

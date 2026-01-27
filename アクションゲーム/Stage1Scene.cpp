@@ -94,13 +94,12 @@ void Stage1Scene::Init()
 
 	boss = Game::GetInstance()->AddObject<Boss>();
 	m_MySceneObjects.emplace_back(boss);
-	//boss->SetDEF(0);//無敵状態解除
 	boss->SetPlayer(player);
 
-	// ゲージの設定
-	player->SetGauge();
-	boss->SetGauge();
+	//壁の設置
+	WallManager::SetWall(ground->GetGroundSize(), m_MySceneObjects);
 
+	// 弾の取得
 	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //弾
 		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects.back()); //弾
@@ -123,14 +122,17 @@ void Stage1Scene::Init()
 		projectiles.end()           // 挿入する範囲の終了
 	);
 
-	//壁の設置
-	WallManager::SetWall(ground->GetGroundSize(), m_MySceneObjects);
+	// ここからUI関連
+
+	// ゲージの設定
+	player->SetGauge();
+	boss->SetGauge();
 
 	// UI(HP文字)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
 	pt1->SetTexture("assets/texture/ui_back.png"); // 画像を指定
-	pt1->SetPosition(-560.0f, -300.0f, 0.0f); // 位置を設定
-	pt1->SetScale(100.0f, 100.0f, 0.0f); // 大きさを指定d
+	pt1->SetPosition(-560.0f, -325.0f, 0.0f); // 位置を設定
+	pt1->SetScale(100.0f, 100.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(pt1);
 
 	// UI(ボスHP文字)

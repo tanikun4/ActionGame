@@ -711,8 +711,8 @@ namespace Collision
 		AABB aabb({ 0,0,0 }, { 0, 0, 0 });
 
 		width = fabs(width);
-		height = fabs(height);
-		depth = fabs(depth);
+		height = abs(height);
+		depth = abs(depth);
 
 		aabb.min.x = centerposition.x - width / 2.0f;
 		aabb.min.y = centerposition.y - height / 2.0f;

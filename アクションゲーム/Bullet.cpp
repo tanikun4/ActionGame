@@ -86,9 +86,9 @@ void Bullet::Update()
 	if (m_State == 1)
 	{
 		m_live = true;
-		m_Scale.x = power * 0.006 + 1;
-		m_Scale.y = power * 0.006 + 1;
-		m_Scale.z = power * 0.006 + 1; // ëÂÇ´Ç≥ÇÇΩÇﬂéûä‘Ç…âûÇ∂ÇΩÇ‡ÇÃÇ…Ç∑ÇÈ
+		m_Scale.x = power * 0.006f + 1;
+		m_Scale.y = power * 0.006f + 1;
+		m_Scale.z = power * 0.006f + 1; // ëÂÇ´Ç≥ÇÇΩÇﬂéûä‘Ç…âûÇ∂ÇΩÇ‡ÇÃÇ…Ç∑ÇÈ
 
 	}
 	// î≠éÀèÛë‘Ç»ÇÁ
@@ -210,7 +210,7 @@ void Bullet::PCharge(float rotation_y, float radius, Vector3 position) {
 void Bullet::PShot(float rotation_y, float radius, Vector3 position) {
 	m_State = 2;
 	m_Position = { position.x + sin(rotation_y) * radius * m_Scale.z, position.y,  position.z + cos(rotation_y) * radius * m_Scale.z };
-	m_Velocity_f = power * 0.03;
+	m_Velocity_f = power * 0.03f;
 	if (power == maxpower) {
 		atk = 5;
 	}
@@ -234,7 +234,7 @@ void Bullet::EShot(float rotation_y, float radius, Vector3 position) {
 	pl = false;
 	m_State = 2;
 	m_Position = { position.x + sin(rotation_y) * radius * m_Scale.z, position.y,  position.z + cos(rotation_y) * radius * m_Scale.z };
-	m_Velocity_f = power * 0.01;
+	m_Velocity_f = power * 0.01f;
 	atk = 1;
 }
 
@@ -256,7 +256,7 @@ void Bullet::LookAtShot(Vector3 position, Vector3 target, bool _pl) {
 	m_Position = position;
 	// atan2ÇégópÇµÇƒäpìxÇãÅÇﬂÇÈ
 	m_ForwardRotation.y = atan2f((target.x - m_Position.x), (target.z - m_Position.z));
-	m_Velocity_f = maxpower * 0.005;
+	m_Velocity_f = maxpower * 0.005f;
 	atk = 1;
 }
 

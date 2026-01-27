@@ -27,14 +27,14 @@ Enemy::~Enemy()
 void Enemy::Init() {
 	GBInit(u8"assets/model/gorufu/GolfBall_v2_red.fbx");
 	m_Velocity_f = 0.0f;//‚Í‚¶‚ß‚ÉˆÚ“®‘¬“x‚ð0‚É‚·‚é
-	hp = 10;
+	hp = maxhp;
 }
 
 void Enemy::Update() {
 	if (hp <= 0) {
-		if (m_arrow) {
-			m_arrow->SetState(ProjectileSTATE::NOT_ACTIVE);
-			m_arrow = nullptr;
+		if (m_projectile) {
+			m_projectile->SetState(ProjectileSTATE::NOT_ACTIVE);
+			m_projectile = nullptr;
 		}
 		return;
 	}
@@ -126,40 +126,40 @@ void Enemy::Update() {
 void Enemy::Damage(int atk) {
 	hp -= atk;
 	m_State = 2;
-	flamecount = 0.0f;
+	flamecount = 0;
 	m_Velocity_f = 0.0f;//ˆÚ“®‘¬“x‚ð0‚É‚·‚é
 }
 
 void Enemy::SetArrow() {
-	if (!m_arrow) 
+	if (!m_projectile)
 	{
 		vector<Projectile*> arrow = Game::GetInstance()->GetObjects<Projectile>();
 		for (auto& ar : arrow) {
 			if (ar->GetState() == ProjectileSTATE::NOT_ACTIVE) {
-				m_arrow = ar;
+				m_projectile = ar;
 				break;
 			}
 		}
 	}
-	if (m_arrow) {
+	if (m_projectile) {
 		//m_arrow->EPose(m_Rotation.y, radius, m_Position);
 	}
 }
 
 void Enemy::Attack() {
-	if (!m_arrow)
+	if (!m_projectile)
 	{
 		vector<Projectile*> arrow = Game::GetInstance()->GetObjects<Projectile>();
 		for (auto& ar : arrow) {
 			if (ar->GetState() == ProjectileSTATE::NOT_ACTIVE) {
-				m_arrow = ar;
+				m_projectile = ar;
 				break;
 			}
 		}
 	}
-	if (m_arrow) {
+	if (m_projectile) {
 		//m_arrow->EShot(m_Rotation.y, radius, m_Position);
-		m_arrow = nullptr;
+		m_projectile = nullptr;
 	}
 }
 

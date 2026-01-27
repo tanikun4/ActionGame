@@ -19,6 +19,7 @@ Boss::Impl::Impl(Camera* cam, Boss* owner)
 	, m_Camera(cam)
 {
 	m_weapon = Game::GetInstance()->AddObject<Pole>();
+	m_weapon->SetOwner(m_Owner);
 }
 
 // デストラクタ
@@ -27,6 +28,7 @@ Boss::Impl::~Impl()
 	if (m_weapon)
 	{
 		m_weapon->SetLive(false);
+		m_weapon->SetOwner(nullptr);
 		m_weapon = nullptr;
 	}
 
@@ -81,14 +83,6 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 
 	//m_gauge.SetPosScale(gauge_pos, { gauge_scale.x, gauge_scale.y, 0});
 
-	if (ImGui::Button("Reset Rotation"))
-	{
-		m_Owner->m_Rotation.x = 0;
-		m_Owner->m_Rotation.z = 0;
-	}
-
-
-
 	/*static Vector3 projectile_offset = {0,-4,16};
 	ImGui::SliderFloat3("Projectile Offset", &projectile_offset.x,-30,30);
 
@@ -112,7 +106,7 @@ void Boss::Impl::Init() {
 	m_Owner->m_Scale.x = 2;
 	m_Owner->m_Scale.y = 2;
 	m_Owner->m_Scale.z = 2;
-	m_Owner->radius *= 2;
+	m_Owner->radius *= m_Owner->m_Scale.x;
 
 	//丸影の大きさをセット
 	m_Owner->m_Shadow->SetBaseScale(18 * m_Owner->m_Scale.x);
@@ -201,8 +195,8 @@ void Boss::Impl::Uninit()
 
 // ゲージ初期化用、ゲームシーンでのみ呼び出す
 void Boss::Impl::SetGauge() {
-	m_gauge.Init({200, 325, 0}, { 800, 50, 0 });
-	m_gauge.SetColor({ 1,0.5f,0,1 });
+	m_hp_gauge.Init({200, 325, 0}, { 800, 50, 0 });
+	m_hp_gauge.SetColor({ 1,0.5f,0,1 });
 }
 
 bool Boss::Impl::GetLive() {
@@ -222,10 +216,8 @@ void Boss::Impl::Damage(int _atk) {
 	hp -= _atk;
 	invicount = 0;
 	inviFg = true;
-	m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
+	//m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 	m_Owner->SetColor(Vector4(1, 1, 1, 0.5));
-
-	m_gauge.ChangeGauge(hp,maxhp);
 
 	//左から右へ移動するエフェクト再生
 	Vector3 pos = m_Owner->m_Position;
@@ -246,6 +238,10 @@ void Boss::Impl::Damage(int _atk) {
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 	// ヒットストップ処理
 	Game::GetInstance()->HitStop();
+
+	// ダメージがある場合(デモ中でない)HPゲージ更新
+	if(_atk > 0)
+		m_hp_gauge.ChangeGauge(hp, maxhp);
 }
 
 void Boss::Impl::LookAt(Vector3 ta_pos) {
@@ -1162,7 +1158,7 @@ void Boss::Impl::RotateSwingFibonacci()
 			m_spinFg = true;
 			m_Owner->is_SPECIALMOVE = true;// 特殊移動モードにする
 			m_weapon->AttackStart();
-			m_FiboAnim.Start(m_Owner->m_ForwardRotation.y, m_Owner->m_ForwardRotation.y + PI * 2,m_Owner->radius * 0.75f,120,1.0f);
+			m_FiboAnim.Start(0, PI * 2,m_Owner->radius * 0.75f,120,1.0f);
 			m_attackframe = 0;
 			m_attackPhase = AttackPhase::ATTACK;
 		}
@@ -1171,7 +1167,15 @@ void Boss::Impl::RotateSwingFibonacci()
 	// 攻撃フェーズ、回転しながら移動
 	if (m_attackPhase == AttackPhase::ATTACK) {
 		m_Owner->m_Rotation.y += PI * 0.2f;
-		m_Owner->m_Velocity = m_FiboAnim.Update();
+
+		Matrix rot = Matrix::CreateRotationY(m_Owner->m_ForwardRotation.y);
+
+		// 平行移動を含まない回転なので TransformNormal
+		Vector3 worldVelocity = Vector3::TransformNormal(m_FiboAnim.Update(), rot);// フィボナッチ数列軌道に沿って移動、前進方向に合わせて速度を回転させる
+
+		// フィボナッチ数列軌道に沿って移動、前進方向に合わせて速度を回転させる
+		m_Owner->m_Velocity = worldVelocity;
+
 		++m_attackframe;
 
 		if (m_attackframe % 30 == 0) {

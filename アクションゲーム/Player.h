@@ -22,7 +22,7 @@ public:
     void Uninit() override;
 
 	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
-    void SetDemoMode(bool _demoMode);
+    void SetDemoMode(const bool _demoMode);
 	std::vector<Texture2D*> GetGauge();
 
     int GetHP();

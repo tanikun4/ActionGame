@@ -27,12 +27,12 @@ void EffectTrail::Init()
 void EffectTrail::Start()
 {
     m_Points.clear();
-    m_Active = true;
+    m_live = true;
 }
 
 void EffectTrail::End()
 {
-    m_Active = false;
+    m_live = false;
     m_Points.clear();
     m_Vertices.clear();
     m_Indices.clear();
@@ -67,7 +67,7 @@ void EffectTrail::Update()
 void EffectTrail::AddPoint(const Vector3& base, const Vector3& tip)
 {
 
-    if (!m_Active) return;
+    if (!m_live) return;
 
     // 新しいポイント追加
     TrailPoint p;
@@ -91,7 +91,7 @@ void EffectTrail::BuildMesh()
 
     for (size_t i = 0; i < m_Points.size(); i++)
     {
-        float alpha = m_Points[i].life / m_LifeTime;
+        float alpha = (float)m_Points[i].life / (float)m_LifeTime;
 
         VERTEX_3D v0, v1;
 

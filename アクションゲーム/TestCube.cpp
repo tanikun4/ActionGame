@@ -44,9 +44,9 @@ void TestCube::InitCube()
 	vertices[3].color = Color(1, 1, 1, 1);
 	//1
 	vertices[0].uv = Vector2(0, 0);
-	vertices[1].uv = Vector2(0.33, 0);
-	vertices[2].uv = Vector2(0, 0.5);
-	vertices[3].uv = Vector2(0.33, 0.5);
+	vertices[1].uv = Vector2(0.33f, 0);
+	vertices[2].uv = Vector2(0, 0);
+	vertices[3].uv = Vector2(0.33f, 0.5f);
 
 	vertices[0].normal = Vector3(0, 1, 0);
 	vertices[1].normal = Vector3(0, 1, 0);
@@ -64,10 +64,10 @@ void TestCube::InitCube()
 	vertices[7].color = Color(1, 1, 1, 1);
 
 	//3
-	vertices[4].uv = Vector2(0.66, 0);
+	vertices[4].uv = Vector2(0.66f, 0);
 	vertices[5].uv = Vector2(1, 0);
-	vertices[6].uv = Vector2(0.66, 0.5);
-	vertices[7].uv = Vector2(1, 0.5);
+	vertices[6].uv = Vector2(0.66f, 0.5f);
+	vertices[7].uv = Vector2(1, 0.5f);
 
 	vertices[4].normal = Vector3(0, 0, -1);
 	vertices[5].normal = Vector3(0, 0, -1);
@@ -85,10 +85,10 @@ void TestCube::InitCube()
 	vertices[11].color = Color(1, 1, 1, 1);
 	
 	//2
-	vertices[8].uv = Vector2(0.33, 0);
-	vertices[9].uv = Vector2(0.66, 0);
-	vertices[10].uv = Vector2(0.33, 0.5);
-	vertices[11].uv = Vector2(0.66, 0.5);
+	vertices[8].uv = Vector2(0.33f, 0);
+	vertices[9].uv = Vector2(0.66f, 0);
+	vertices[10].uv = Vector2(0.33f, 0.5f);
+	vertices[11].uv = Vector2(0.66f, 0.5f);
 
 	vertices[8].normal = Vector3(-1, 0, 0);
 	vertices[9].normal = Vector3(-1, 0, 0);
@@ -106,10 +106,10 @@ void TestCube::InitCube()
 	vertices[15].color = Color(1, 1, 1, 1);
 
 	//4
-	vertices[12].uv = Vector2(0, 0.5);
-	vertices[13].uv = Vector2(0.33, 0.5);
+	vertices[12].uv = Vector2(0, 0.5f);
+	vertices[13].uv = Vector2(0.33f, 0.5f);
 	vertices[14].uv = Vector2(0, 1);
-	vertices[15].uv = Vector2(0.33, 1);
+	vertices[15].uv = Vector2(0.33f, 1);
 
 	vertices[12].normal = Vector3(0, 0, 1);
 	vertices[13].normal = Vector3(0, 0, 1);
@@ -127,10 +127,10 @@ void TestCube::InitCube()
 	vertices[19].color = Color(1, 1, 1, 1);
 
 	//5
-	vertices[16].uv = Vector2(0.33, 0.5);
-	vertices[17].uv = Vector2(0.66, 0.5);
-	vertices[18].uv = Vector2(0.33, 1);
-	vertices[19].uv = Vector2(0.66, 1);
+	vertices[16].uv = Vector2(0.33f, 0.5f);
+	vertices[17].uv = Vector2(0.66f, 0.5f);
+	vertices[18].uv = Vector2(0.33f, 1);
+	vertices[19].uv = Vector2(0.66f, 1);
 
 	vertices[16].normal = Vector3(1, 0, 0);
 	vertices[17].normal = Vector3(1, 0, 0);
@@ -148,9 +148,9 @@ void TestCube::InitCube()
 	vertices[23].color = Color(1, 1, 1, 1);
 
 	//6
-	vertices[20].uv = Vector2(0.66, 0.5);
-	vertices[21].uv = Vector2(0.66, 1);
-	vertices[22].uv = Vector2(1, 0.5);
+	vertices[20].uv = Vector2(0.66f, 0.5f);
+	vertices[21].uv = Vector2(0.66f, 1);
+	vertices[22].uv = Vector2(1, 0.5f);
 	vertices[23].uv = Vector2(1, 1);
 
 	vertices[20].normal = Vector3(0, -1, 0);

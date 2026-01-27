@@ -32,7 +32,7 @@ private:
     {
         DirectX::SimpleMath::Vector3 base;
         DirectX::SimpleMath::Vector3 tip;
-        float   life;
+        int   life;
     };
 
     void BuildMesh();

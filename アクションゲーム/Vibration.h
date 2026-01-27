@@ -102,7 +102,7 @@ private:
     int m_Frame = 0;
     float m_Amplitude = 0.0f;
     float m_Frequency = 0.0f;
-    float m_Duration = -1.0f;
+    int m_Duration = -1;
 
     bool m_Active = false;
 };

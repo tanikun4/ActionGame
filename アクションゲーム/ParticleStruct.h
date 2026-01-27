@@ -29,7 +29,7 @@ struct ParticleEmitterParam2D
     float rotMax = 0;
     
     int     count = 10;        // 1回の発生数
-    float   interval = 60;     // 発生間隔（frame）
+    int   interval = 60;     // 発生間隔（frame）
     bool    loop = false;             // 永続発生
 
     // 初期速度
@@ -37,8 +37,8 @@ struct ParticleEmitterParam2D
     DirectX::SimpleMath::Vector3 velocityMax = DirectX::SimpleMath::Vector3(0, 0, 0);
 
     // 寿命
-    float   lifeMin = 1;
-    float   lifeMax = 1;
+    int   lifeMin = 1;
+    int   lifeMax = 1;
 
     // 見た目
     float   scaleMin = 1;

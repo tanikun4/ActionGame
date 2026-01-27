@@ -34,6 +34,8 @@ protected:
 
     DirectX::SimpleMath::Vector3 angle_debug{};//角度の補正値(デバッグ用)
 
+	Object* m_Owner = nullptr;//所有者
+ 
     int atk = 1;//攻撃力
     int framecount = 0;//タイマー変数
 	bool pl = false;//プレイヤーの武器かどうか(trueで味方、falseで敵)
@@ -45,19 +47,9 @@ public:
         ob->OnHit(this);
     }
     virtual Collision::ColliderVariant GetCollision();
-    void SetAtk(int a) {
-        atk = a;
-    }
-    int GetAtk() {
-        return atk;
-	}
-    void SetPl(bool p) {
-        pl = p;
-	}
-    bool GetPl() {
-        return pl;
-	}
+    void SetAtk(int a) { atk = a; }
 
+    void SetPl(bool p) { pl = p; }
 	void SetOffset(DirectX::SimpleMath::Vector3 off) { m_offset = off; }
 
 	void SetOffsetDebug(DirectX::SimpleMath::Vector3 off) { offset_debug = off; }
@@ -65,5 +57,13 @@ public:
     void SetAngleDebug(DirectX::SimpleMath::Vector3 an) { angle_debug = an; }
 
 	void SetColor(DirectX::SimpleMath::Vector4 color, int index = -1);//マテリアルの色を変更する、 indexが0未満の場合全てのマテリアルの色を変更する
+
+	void SetOwner(Object* owner) { m_Owner = owner; }// 所有者をセット
+    
+    bool GetPl() { return pl; }
+    
+    int GetAtk() { return atk; }
+
+	Object* GetOwner() { return m_Owner; }
 };
 

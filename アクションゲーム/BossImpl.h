@@ -111,7 +111,7 @@ private:
 	bool inviFg = false;
 	int invicount = 0;
 	float move_speed = 0.25f;
-	float m_rotatespeed = 0.01;
+	float m_rotatespeed = 0.01f;
 	int attack_kind = 0;//攻撃の種類
 	int m_attackframe = 0;//攻撃時間
 	int m_attackcount = 0;//攻撃回数のカウント
@@ -141,7 +141,7 @@ private:
 	AngleAnim m_AngleAnim;// 角度アニメーション構造体
 	ArcMoveAnim m_ArcAnim;// 円弧移動アニメーション構造体
 	FibonacciAnim m_FiboAnim;// 黄金螺旋移動アニメーション構造体
-	HpGauge m_gauge; //  HPゲージ用構造体
+	Gauge m_hp_gauge; //  HPゲージ用構造体
 
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	void Move();

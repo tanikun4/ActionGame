@@ -16,7 +16,7 @@ void Player::Uninit() { impl->Uninit(); }
 
 void Player::SetGauge() { impl->SetGauge(); }
 
-void Player::SetDemoMode(bool _demomode) { impl->SetDemoMode(_demomode); }
+void Player::SetDemoMode(const bool _demomode) { impl->SetDemoMode(_demomode); }
 
 int Player::GetHP() { return impl->GetHP(); }
 Pole* Player::GetWeapon() { return impl->GetWeapon(); }

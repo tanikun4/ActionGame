@@ -47,7 +47,7 @@ public:
 
 	void ResetTarget() { m_TargetObject = nullptr; } // 注視点をリセット
 
-	void StartVibration(float amplitude, float frequency, float duration = -1.0f) {
+	void StartVibration(float amplitude, float frequency, int duration = -1) {
 		if (cameraInputFg) m_vib.Start(amplitude, frequency, duration); // 操作有効時のみ
 	} // カメラ振動開始
 

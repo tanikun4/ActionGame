@@ -3,11 +3,11 @@
 #include "Texture2D.h"
 #include <algorithm>
 #include "Game.h"
-struct HpGauge
+struct Gauge
 {
-	Texture2D* gaugeTex;
-	Texture2D* backTex;
-	float baseScale_X;
+	Texture2D* gaugeTex = nullptr;
+	Texture2D* backTex = nullptr;
+	float baseScale_X = 0;
 
     void Init(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 scale) {
         backTex = Game::GetInstance()->AddObject<Texture2D>();
@@ -27,10 +27,10 @@ struct HpGauge
 
     }
 
-    void ChangeGauge(int cuHp, int maxHp)
+    void ChangeGauge(int cu, int max)
     {
-        cuHp = std::clamp(cuHp, 0, maxHp);
-		float rate = (float)cuHp / (float)maxHp;
+        cu = std::clamp(cu, 0, max);
+		float rate = (float)cu / (float)max;
 
 		DirectX::SimpleMath::Vector3 gaugeScale = gaugeTex->GetScale();
 

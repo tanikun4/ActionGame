@@ -26,7 +26,7 @@ private:
 	int shottime_max = 120;//”ò‚ñ‚Å‚¢‚éŠÔ‚ÌÅ‘å’l
 	bool atkFg = false;//UŒ‚”»’è‚ª‚ ‚é‚©
 	bool followFg = false;//‚¿å‚É’Ç]‚·‚é‚©
-	Object* m_Owner = nullptr;//‚¿å
+	//Object* m_Owner = nullptr;//‚¿å
 
 	Collision::OBB obb{ m_Position,m_Rotation,m_Scale };
 
@@ -48,7 +48,6 @@ public:
 	void Reflect(bool _pl,int _atk = 5);//”½ËŠÖ”
 	// ó‘Ô‚Ìİ’è
 	void SetState(ProjectileSTATE s);
-	void SetOwner(Object* owner) { m_Owner = owner; }
 	void SetFollowFg(bool f) { followFg = f; }
 	void SetOBBScale(DirectX::SimpleMath::Vector3 _scale) { obb = {m_Position,m_Rotation,_scale}; }
 

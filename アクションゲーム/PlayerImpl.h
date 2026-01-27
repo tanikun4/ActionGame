@@ -26,7 +26,7 @@ public:
     void Uninit();
 	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
 
-    void SetDemoMode(bool _demomode) { demoMode = _demomode; }
+    void SetDemoMode(const bool _demomode) { demoMode = _demomode; }
 
     int GetHP();
     Pole* GetWeapon();
@@ -83,7 +83,7 @@ private:
 	bool demoMode = false; // デモモード
 	DemoParam m_demoParam; // デモ用パラメータ
 
-    int hp;
+    int hp = 20;
 	const int maxhp = 20;
 	int atk = 3; // 攻撃力
     int framecount = 0;
@@ -96,27 +96,28 @@ private:
 	int moveframe = 0; // 移動フレームカウント
 	int attackframe = 0; // 攻撃フレームカウント
 	int maxattackframe = 30; // 攻撃最大フレーム
-	int swing_time = 18; // 振り攻撃時間
+	//int swing_time = 18; // 振り攻撃時間
 	
     int attackcombo = 0; // 攻撃コンボ数
-	int attackcombomax = COMBO_MAX - 1; // 攻撃コンボ最大数
 
     bool inviFg = false; // 無敵
     bool GuardFg = false; // ガード
     bool RollFg = false; // 回避
+	bool parryFg = false; // ジャストガード中フラグ
     bool is_JUMP = false; // ジャンプフラグ
 	bool is_InputMove = true; // 移動入力可能フラグ
 	int m_attackkind = NONE; // 攻撃種類
 
     float speed = 1.0f; // 移動速度
 
-    int justguardframe = 10; // ジャストガード有効フレーム
+    const int justguardframe = 10; // ジャストガード有効フレーム
 
     DirectX::SimpleMath::Vector3 m_ta_pos; // 目標点
     Bullet* m_arrow = nullptr;
     Pole* m_weapon = nullptr;
+	Object* m_target = nullptr; // 攻撃対象
 	AngleAnim m_Anim; // アニメーション用構造体
-    HpGauge m_hpgauge; //  HPゲージ用構造体
+    Gauge m_hp_gauge; //  HPゲージ用構造体
 
     // 各種行動関数
     void Move();
@@ -138,7 +139,7 @@ private:
 	// 縦回転斬り攻撃開始
 	void SpinAttack_Vertical(int t = 30, int attack_t = 20, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度
     //通常攻撃開始
-	void SwingAttack();
+	void SwingAttack(int _swingtime = 18,int _atk = 3);
 	// 共通Update処理関数
     void UpdateCommon();
 

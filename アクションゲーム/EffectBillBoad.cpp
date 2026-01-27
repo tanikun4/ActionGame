@@ -59,8 +59,8 @@ void EffectBillBoad::Init(LoadedEffectData& data, SharedEffect2DData& shared_dat
 	m_NumV = 1;
 
 	// UV分割数取得
-	m_SplitX = data.texture_uv.x;
-	m_SplitY = data.texture_uv.y;
+	m_SplitX = (float)data.texture_uv.x;
+	m_SplitY = (float)data.texture_uv.y;
 
 	m_animframe =  _maxlife / (int)(m_SplitX * m_SplitY); //アニメーション遷移フレーム数設定
 	if (m_animframe <= 0) m_animframe = 1;
