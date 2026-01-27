@@ -124,6 +124,9 @@
     <Filter Include="ソース ファイル\Effect\EffectTrail">
       <UniqueIdentifier>{f322f5c2-f65b-4fcb-a6bb-0dc297cd2de7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Object\UI">
+      <UniqueIdentifier>{a65420cf-61bc-453c-a214-3576c8642849}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -565,6 +568,9 @@
     </ClInclude>
     <ClInclude Include="EffectTrail.h">
       <Filter>ソース ファイル\Effect\EffectTrail</Filter>
+    </ClInclude>
+    <ClInclude Include="UIStruct.h">
+      <Filter>ソース ファイル\Object\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

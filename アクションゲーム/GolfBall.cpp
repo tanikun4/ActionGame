@@ -171,8 +171,8 @@ void GolfBall::GBDraw()
 			m_subsets[i].IndexBase, // 最初のインデックスバッファの位置	
 			m_subsets[i].VertexBase); // 頂点バッファの最初から使用
 	}
-
-	m_Shadow->Draw();
+	if(m_Shadow->GetLive())
+		m_Shadow->Draw();
 }
 
 void GolfBall::Draw() {

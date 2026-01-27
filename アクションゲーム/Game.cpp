@@ -211,14 +211,8 @@ Camera& Game::GetCamera()
 void Game::ChangeScene(SceneName sName)
 {
 	// 読み込み済みのシーンがあれば削除
-	int score = 0;
 	if (m_Instance->m_Scene != nullptr) 
 	{
-		// 消そうとしているシーンがStage1ならスコアを保存しておく
-		if (Stage1Scene* sObj = dynamic_cast<Stage1Scene*>(m_Instance->m_Scene)) 
-		{
-			score = sObj->GetScore();
-		}
 		delete m_Instance->m_Scene;
 		m_Instance->m_Scene = nullptr;
 

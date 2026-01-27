@@ -1148,7 +1148,7 @@ void Boss::Impl::RotateSwingFibonacci()
 			m_spinFg = true;
 			m_Owner->is_SPECIALMOVE = true;// 特殊移動モードにする
 			m_weapon->AttackStart();
-			m_FiboAnim.Start(m_Owner->m_ForwardRotation.y, m_Owner->m_ForwardRotation.y + PI * 2,m_Owner->radius * 0.5f,120,1.0f);
+			m_FiboAnim.Start(m_Owner->m_ForwardRotation.y, m_Owner->m_ForwardRotation.y + PI * 2,m_Owner->radius * 0.75f,120,1.0f);
 			m_attackframe = 0;
 			m_attackPhase = AttackPhase::ATTACK;
 		}
@@ -1205,6 +1205,7 @@ void Boss::Impl::AlterEgoShot()
 		m_startpos = m_Owner->m_Position;
 		m_vib.Start(20, PI * 0.5f);//振動開始、振れ幅を大きくして分身っぽく見せる
 		m_Owner->is_SPECIALMOVE = true;
+		m_Owner->m_Shadow->SetLive(false);// 分身中は影を消す
 		m_attackPhase = AttackPhase::PREPARE;
 	}
 	// 準備フェーズ、一定フレーム経過後、攻撃フェーズに
@@ -1248,6 +1249,7 @@ void Boss::Impl::AlterEgoShot()
 		m_attackframe = 0;
 		++m_attackcount;
 		m_attackPhase = AttackPhase::RECOVER;
+		m_Owner->m_Shadow->SetLive(true); // 分身終了、影を戻す
 		//// 2回発射したら硬直へ
 		//if (m_attackcount >= 2) {
 		//	m_attackPhase = AttackPhase::RECOVER;
@@ -1286,18 +1288,21 @@ void Boss::Impl::AlterEgoSpinSlash()
 		m_attackframe = 0;
 		m_weapon->Stance();
 		m_rand = rand() % 4;
+		m_Owner->m_Shadow->SetLive(false);// 分身中は影を消す
 	}
 	// 準備フェーズ、一定フレーム経過後、攻撃フェーズに
 	if (m_attackPhase == AttackPhase::PREPARE) {
 		m_Owner->m_Velocity = m_vib.Update();
 		m_Owner->m_Velocity.y = 0.0f;//高さは変えない
+
 		++m_attackframe;
 		if( m_attackframe == 120 + m_rand) {
 			m_lookatFg = false;
 			m_Owner->is_SPECIALMOVE = false;
+			m_Owner->m_Shadow->SetLive(true);
 		}
-		if (m_attackframe > 150 + m_rand) {
-			//m_Owner->m_Position = m_startpos;// 元の位置に戻す
+
+		if (m_attackframe >= 150 + m_rand) {
 			m_attackPhase = AttackPhase::ATTACK;
 			m_attackframe = 0;
 			m_rushFg = true;

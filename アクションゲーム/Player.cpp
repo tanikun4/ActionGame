@@ -11,12 +11,16 @@ Player::~Player() = default;
 
 void Player::Init() { impl->Init(); }
 void Player::Update() { impl->Update(); }
+void Player::Draw() { impl->Draw(); }
 void Player::Uninit() { impl->Uninit(); }
+
+void Player::SetGauge() { impl->SetGauge(); }
 
 void Player::SetDemoMode(bool _demomode) { impl->SetDemoMode(_demomode); }
 
 int Player::GetHP() { return impl->GetHP(); }
 Pole* Player::GetWeapon() { return impl->GetWeapon(); }
+std::vector<Texture2D*> Player::GetGauge() { return impl->GetGauge(); }
 
 void Player::OnHit(Boss* bo) { impl->OnHit(bo); }
 void Player::OnHit(Pole* po) { impl->OnHit(po); }

@@ -3,6 +3,7 @@
 #include <SimpleMath.h>
 #include "Player.h"
 #include "AnimStruct.h"
+#include "UIStruct.h"
 
 class Camera;
 class Player;
@@ -21,12 +22,15 @@ public:
 
     void Init();
     void Update();
+	void Draw();
     void Uninit();
+	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
 
     void SetDemoMode(bool _demomode) { demoMode = _demomode; }
 
     int GetHP();
     Pole* GetWeapon();
+    std::vector<Texture2D*> GetGauge();
 
     void OnHit(Boss* bo);
     void OnHit(Pole* po);
@@ -79,7 +83,8 @@ private:
 	bool demoMode = false; // デモモード
 	DemoParam m_demoParam; // デモ用パラメータ
 
-    int hp = 9;
+    int hp;
+	const int maxhp = 20;
 	int atk = 3; // 攻撃力
     int framecount = 0;
     int invicount = 0; // 無敵時間カウント
@@ -111,6 +116,7 @@ private:
     Bullet* m_arrow = nullptr;
     Pole* m_weapon = nullptr;
 	AngleAnim m_Anim; // アニメーション用構造体
+    HpGauge m_hpgauge; //  HPゲージ用構造体
 
     // 各種行動関数
     void Move();
@@ -128,7 +134,7 @@ private:
 	void Parry();//ジャストガード処理
 
 	// 回転斬り攻撃開始 
-	void SpinAttack(int t = 24, int attack_t = 18, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度
+	void SpinAttack(const int& t = 24, const int& attack_t = 18, const float& accel = 0);//全体フレーム、攻撃有効フレーム、加速度
 	// 縦回転斬り攻撃開始
 	void SpinAttack_Vertical(int t = 30, int attack_t = 20, float accel = 0);//全体フレーム、攻撃有効フレーム、加速度
     //通常攻撃開始
@@ -150,4 +156,5 @@ private:
     void DebugPlayerStatus();
     void DebugEffectPlay();
     void DebugParticlePlay();
+	void DebugHPGauge();
 };

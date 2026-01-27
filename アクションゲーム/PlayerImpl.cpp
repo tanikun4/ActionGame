@@ -48,7 +48,7 @@ void Player::Impl::Init() {
     m_Owner->GBInit(u8"assets/model/Character/player.fbx");
     m_Owner->m_Position = Vector3(0.0f, 50.0f, 0.0f);
     m_weapon->SetPl(true);
-    hp = 9;
+    hp = maxhp;
     framecount = 30;
     m_weapon->SetAtk(atk);
 
@@ -102,8 +102,17 @@ void Player::Impl::Update() {
 	UpdateCommon();
 }
 
+void Player::Impl::Draw() {
+	if (hp <= 0) return; // Ž€–S‚µ‚Ä‚¢‚½‚ç•`‰æ‚µ‚È‚¢
+    m_Owner->GBDraw();
+}
+
 void Player::Impl::Uninit() {
     m_weapon = nullptr;
+}
+
+void Player::Impl::SetGauge() {
+    m_hpgauge.Init({ -250 ,-300, 0 }, { 500,50, 0 });
 }
 
 int Player::Impl::GetHP() {
@@ -112,6 +121,13 @@ int Player::Impl::GetHP() {
 
 Pole* Player::Impl::GetWeapon() {
     return m_weapon;
+}
+
+vector<Texture2D*> Player::Impl::GetGauge() {
+	vector<Texture2D*> gauge;
+    gauge.emplace_back(m_hpgauge.GetGauge(0));
+    gauge.emplace_back(m_hpgauge.GetGauge(1));
+    return gauge;
 }
 
 // -------------------------
@@ -244,7 +260,7 @@ void Player::Impl::DebugPlayerStatus() {
     }
 
     if (ImGui::Button("HP MAX"))
-        hp = 9;
+        hp = maxhp;
 
     if (ImGui::Button("HP ZERO"))
         hp = 0;
@@ -374,6 +390,25 @@ void Player::Impl::DebugParticlePlay() {
     if (ImGui::Button("Play Particle")) {
         EffectManager::GetInstance()->Play(debug_effect_type, debug_param);
     }
+
+    ImGui::End();
+}
+
+void Player::Impl::DebugHPGauge() {
+    ImGui::Begin("HP Gauge");
+
+	static Vector3 debug_gauge_pos = { 0,0,0 };
+    ImGui::SliderFloat3("Position", &debug_gauge_pos.x, -1000.0f, 1000.0f);
+
+    static Vector3 debug_gauge_scale = { 1,1,1 };
+    ImGui::SliderFloat3("OffsetScale", &debug_gauge_scale.x, 0.0f, 1000.0f);
+
+    if (ImGui::Button("Reset")) {
+        debug_gauge_pos = { 0,0,0 };
+        debug_gauge_scale = { 0,0,0 };
+    }
+
+	m_hpgauge.SetPosScale(debug_gauge_pos, debug_gauge_scale);
 
     ImGui::End();
 }
@@ -509,7 +544,7 @@ void Player::Impl::SwingAttack() {
 }
 
 // ‰ñ“]Ža‚èUŒ‚ŠJŽn
-void Player::Impl::SpinAttack(int t,int attack_t ,float accel) {
+void Player::Impl::SpinAttack(const int& t, const int& attack_t , const float& accel) {
     m_weapon->AttackStart();
     m_weapon->SetAtk(atk * 2);
 	m_attackkind = SPINSLASH;
@@ -629,6 +664,8 @@ void Player::Impl::Damage(int atk) {
     }
 
     hp -= atk;
+
+    m_hpgauge.ChangeGauge(hp, maxhp);
     
 }
 

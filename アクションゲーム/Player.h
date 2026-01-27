@@ -18,9 +18,12 @@ public:
 
     void Init() override;
     void Update() override;
+	void Draw() override;
     void Uninit() override;
 
+	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
     void SetDemoMode(bool _demoMode);
+	std::vector<Texture2D*> GetGauge();
 
     int GetHP();
     Pole* GetWeapon();

@@ -457,6 +457,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="PlayerImpl.h" />
     <ClInclude Include="Skydome.h" />
+    <ClInclude Include="UIStruct.h" />
     <ClInclude Include="WallManager.h" />
     <ClInclude Include="WireRenderer.h" />
     <ClInclude Include="Object.h" />

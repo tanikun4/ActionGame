@@ -171,38 +171,3 @@ void TitleScene::Uninit()
 	m_MySceneObjects.clear();
 }
 
-// 初期化
-//void TitleScene::Init()
-//{
-//	// 背景画像オブジェクトを作成
-//	//Texture2D* pt = Game::GetInstance()->AddObject<Texture2D>();
-//	//pt->SetTexture("assets/texture/title.png"); // 画像を指定
-//	//pt->SetPosition(0.0f, 0.0f, 0.0f); // 位置を指定
-//	//pt->SetRotation(0.0f, 0.0f, 0.0f); // 角度を指定
-//	//pt->SetScale(1280.0f, 720.0f, 0.0f); // 大きさを指定
-//	//m_MySceneObjects.emplace_back(pt);
-//	
-//	EffectParams param;
-//	param.scale = DirectX::SimpleMath::Vector3(114.0f, 64.0f, 0.0f);
-//	param.maxLife = 150;
-//	param.endless = true;
-//	EffectManager::GetInstance()->Play(TITLE_UGOKU,param);
-//
-//	// press_enterkey画像オブジェクトを作成
-//	//press_enterkey = Game::GetInstance()->AddObject<Texture2D>();
-//	//press_enterkey->SetTexture("assets/texture/2DEffect/press_enterkey.png"); // 画像を指定
-//	//press_enterkey->SetPosition(0.0f, -300.0f, 0.0f); // 位置を指定
-//	//press_enterkey->SetScale(640.0f, 128.0f, 0.0f); // 大きさを指定
-//	//m_MySceneObjects.emplace_back(press_enterkey);
-//
-//}
-
-
-// 終了処理
-//void TitleScene::Uninit()
-//{
-//	// このシーンのオブジェクトを削除する
-//	for (auto& o : m_MySceneObjects) {
-//		Game::GetInstance()->DeleteObject(o);
-//	}
-//}

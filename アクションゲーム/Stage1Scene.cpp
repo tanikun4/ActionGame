@@ -10,6 +10,7 @@
 #include "Pole.h"
 #include "EnemyManager.h"
 #include "GroundManager.h"
+#include "WallManager.h"
 #include "ICollider.h"
 //#include "Skydome.h"
 #include "Fade.h"
@@ -95,6 +96,7 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(player);
 	player->SetState(0);
 	player->SetDemoMode(false);
+	player->SetGauge();
 
 	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //弾
@@ -103,7 +105,7 @@ void Stage1Scene::Init()
 	}
 
 	// 武器の取得
-	std::vector<Pole*> weapons = Game::GetInstance()->GetObjects<Pole>();
+	vector<Pole*> weapons = Game::GetInstance()->GetObjects<Pole>();
 	m_MySceneObjects.insert(
 		m_MySceneObjects.end(),    // 挿入位置
 		weapons.begin(),        // 挿入する範囲の開始
@@ -111,7 +113,7 @@ void Stage1Scene::Init()
 	);
 
 	// 飛び道具の取得
-	std::vector<Projectile*> projectiles = Game::GetInstance()->GetObjects<Projectile>();
+	vector<Projectile*> projectiles = Game::GetInstance()->GetObjects<Projectile>();
 	m_MySceneObjects.insert(
 		m_MySceneObjects.end(),    // 挿入位置
 		projectiles.begin(),        // 挿入する範囲の開始
@@ -119,7 +121,7 @@ void Stage1Scene::Init()
 	);
 
 	//壁の設置
-	SetWall();
+	WallManager::SetWall(ground->GetGroundSize(), m_MySceneObjects);
 
 	// UI(HP)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
@@ -160,6 +162,13 @@ void Stage1Scene::Init()
 	pt6->SetUV(1, 1, 10, 1); //UVを指定
 	m_MySceneObjects.emplace_back(pt6);
 
+	vector<Texture2D*> gauge = player->GetGauge();
+	m_MySceneObjects.insert(
+		m_MySceneObjects.end(),    // 挿入位置
+		gauge.begin(),        // 挿入する範囲の開始
+		gauge.end()           // 挿入する範囲の終了
+	);
+
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 	Sound::GetInstance()->SetVolume(SOUND_BGM_MAIN, 0.5f);
 	Sound::GetInstance()->SetMasterVolume(0.0f);
@@ -179,7 +188,7 @@ void Stage1Scene::Init()
 	Game::GetInstance()->GetCamera().SetInputFg(true);//カメラ操作有効化
 
 	DebugUI::RedistDebugFunction([this]() {
-		DebugWallStatus();
+		WallManager::DebugWallStatus();
 		});
 }
 
@@ -238,101 +247,4 @@ void Stage1Scene::Uninit()
 		o = nullptr;
 	}
 	m_MySceneObjects.clear();
-}
-
-// スコアを取得
-int Stage1Scene::GetScore()
-{
-	// 現在打数から標準打数ｗｐ引いた数値をreturn
-	return (m_StrokeCount - m_Par);
-}
-
-void Stage1Scene::SetWall() {
-	// Ground のサイズ
-	float halfX = groundsize.x / 2.0f;
-	float halfZ = groundsize.y / 2.0f;
-
-	// Cube の厚み（Z方向とX方向で壁として使う分）
-	float thickness = 1.0f; // 例：10 units
-	//Cubeの縦の厚み
-	float scaleY = 1.5f;
-	//初期色
-	Vector4 color{ 1,1,1,0.5f };//透明度を下げて見やすいようにしておく
-
-	// 上辺（+Z側）
-	TestCube* top = Game::GetInstance()->AddObject<TestCube>();
-	top->SetScale(Vector3(groundsize.x * 0.05f, scaleY, thickness)); // X幅は地面いっぱい、Zは薄く
-	top->SetPosition(Vector3(-halfX * 0.1f, scaleY * 10.0f, halfZ + halfZ * 0.1f)); // Yは高さ調整
-	top->SetColor(color);
-	m_MySceneObjects.emplace_back(top);
-
-	// 下辺（-Z側）
-	TestCube* bottom = Game::GetInstance()->AddObject<TestCube>();
-	bottom->SetScale(Vector3(groundsize.x * 0.05f, scaleY, thickness));
-	bottom->SetPosition(Vector3(-halfX * 0.1f, scaleY * 10.0f, -halfZ));
-	bottom->SetColor(color);
-	m_MySceneObjects.emplace_back(bottom);
-
-	// 右辺（+X側）
-	TestCube* right = Game::GetInstance()->AddObject<TestCube>();
-	right->SetScale(Vector3(thickness, scaleY, groundsize.y * 0.05f));
-	right->SetPosition(Vector3(halfX, scaleY * 10.0f, 0.0f));
-	right->SetColor(color);
-	m_MySceneObjects.emplace_back(right);
-
-	// 左辺（-X側）
-	TestCube* left = Game::GetInstance()->AddObject<TestCube>();
-	left->SetScale(Vector3(thickness, scaleY, groundsize.y * 0.05f));
-	left->SetPosition(Vector3(-halfX - halfX * 0.15f, scaleY * 10.0f, 0.0f));
-	left->SetColor(color);
-	m_MySceneObjects.emplace_back(left);
-}
-
-void Stage1Scene::DebugWallStatus() {//壁の大きさや位置を操作する
-	ImGui::Begin("WallStatus");
-
-	// 元の値を保持する static 配列
-	static bool initialized = false;
-	static std::vector<Vector3> originalScale;
-	static std::vector<Vector3> originalPos;
-
-	// TestCube を取得
-	auto cubes = Game::GetInstance()->GetObjects<TestCube>();
-
-	// 初期値を保存
-	if (!initialized) {
-		originalScale.clear();
-		originalPos.clear();
-		for (auto& c : cubes) {
-			originalScale.push_back(c->GetScale());
-			originalPos.push_back(c->GetPosition());
-		}
-		initialized = true;
-	}
-
-	static Vector3 wall_size{};
-	ImGui::SliderFloat3("WallSize", &wall_size.x, -10.0f, 10.0f);
-
-	static Vector3 wall_pos{};
-	ImGui::SliderFloat3("WallPosition", &wall_pos.x, -100.0f, 100.0f);
-
-	static Vector4 wall_color {1,1,1,0.5f};
-	ImGui::SliderFloat4("WallColor", &wall_color.x, 0.0f, 1.0f);
-
-	if (ImGui::Button("Reset Status")) {
-		wall_size = Vector3(0, 0, 0);
-		wall_pos = Vector3(0, 0, 0);
-		wall_color = Vector4(1, 1, 1, 0.5f);
-	}
-
-	vector<TestCube*> cube = Game::GetInstance()->GetObjects<TestCube>();
-
-	// 元の値にスライダー分だけ加える
-	for (size_t i = 0; i < cubes.size(); ++i) {
-		cubes[i]->SetScale(originalScale[i] + wall_size);
-		cubes[i]->SetPosition(originalPos[i] + wall_pos);
-		cubes[i]->SetColor(wall_color);
-	}
-
-	ImGui::End();
 }

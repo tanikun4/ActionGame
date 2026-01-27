@@ -252,6 +252,9 @@ void TestCube::DrawCube()
 	m_IndexBuffer.SetGPU();
 	m_Texture.SetGPU();
 
+	// カメラの設定を指定
+	m_Camera->SetCamera(0);
+
 	devicecontext->DrawIndexed(
 		36,							// 描画するインデックス数
 		0,							// 最初のインデックスバッファの位置
