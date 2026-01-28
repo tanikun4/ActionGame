@@ -8,6 +8,7 @@
 class Camera;
 class Player;
 class Pole;
+class Enemy;
 class Boss;
 class Bullet;
 class TestCube;
@@ -32,6 +33,7 @@ public:
     Pole* GetWeapon();
     std::vector<Texture2D*> GetGauge();
 
+    void OnHit(Enemy* en);
     void OnHit(Boss* bo);
     void OnHit(Pole* po);
     void OnHit(Bullet* bu);

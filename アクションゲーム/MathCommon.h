@@ -17,3 +17,9 @@ inline float NormalizeRad(float rad)
 
     return rad;
 }
+
+// min ` max“à‚Ìƒ‰ƒ“ƒ_ƒ€’l‚ğ•Ô‚·
+inline float RandRange(float min, float max)
+{
+    return min + (max - min) * (rand() / (float)RAND_MAX);
+}

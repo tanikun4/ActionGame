@@ -136,6 +136,11 @@ vector<Texture2D*> Player::Impl::GetGauge() {
 // OnHit 系
 // -------------------------
 
+//敵と当たった場合
+void Player::Impl::OnHit(Enemy* en) {
+    Damage(1);
+}
+
 //ボスと当たった場合
 void Player::Impl::OnHit(Boss* bo) {
     Damage(1);
@@ -723,6 +728,9 @@ void Player::Impl::Parry() {
 	attackcombo = 0;
 	SwingAttack(10,6);
 	parryFg = true;
+    // パリィ中は無敵にする
+    inviFg = true;
+    m_Owner->SetColor({ 0,0,1,0.5f });
 
     // パリィエフェクト再生
     EffectParams param;
@@ -765,7 +773,8 @@ void Player::Impl::UpdateNormal() {
 //攻撃中
 void Player::Impl::UpdateAttack() {
 	if (m_Owner->is_GROUND) m_Owner->m_Velocity_f = 0.0f; //速度をリセット
-	if (parryFg) m_Owner->m_Velocity_f = speed * 0.5f;//パリィ中は少し動く
+    if (parryFg) m_Owner->m_Velocity_f = speed * 2.0f;//パリィ中は前進する
+    
 	if (!m_weapon) { return; }
     switch (m_attackkind) {
     case NONE:

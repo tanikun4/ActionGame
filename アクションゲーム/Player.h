@@ -3,12 +3,7 @@
 #include "GolfBall.h"
 
 class Camera;
-class Pole;
-class Boss;
-class Bullet;
-class TestCube;
 class PlayerImpl;
-class Projectile;
 
 class Player : public GolfBall
 {
@@ -31,11 +26,12 @@ public:
     // Hit ŒniŠO•”‚©‚çŒÄ‚Î‚ê‚é‚Ì‚Å public ‚Ì‚Ü‚Üj
     void HitObject(Object* ob) override { ob->OnHit(this); }
 
-    void OnHit(Boss* bo);
-    void OnHit(Pole* po);
-    void OnHit(Bullet* bu);
-	void OnHit(Projectile* pr);
-    void OnHit(TestCube* cube);
+    void OnHit(class Enemy* en);
+    void OnHit(class Boss* bo);
+    void OnHit(class Pole* po);
+    void OnHit(class Bullet* bu);
+	void OnHit(class Projectile* pr);
+    void OnHit(class TestCube* cube);
     void OnHit(Object* ob) override {};
 
 private:

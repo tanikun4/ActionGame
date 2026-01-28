@@ -63,7 +63,7 @@ void TitleScene::Init()
 	Boss* boss = Game::GetInstance()->AddObject<Boss>();
 	m_MySceneObjects.emplace_back(boss);
 	boss->SetDEF(99);//–³“Gó‘Ô‚É‚·‚é
-	boss->SetPlayer(player);
+	boss->SetTarget(player);
 
 
 	for (int i = 0; i < 3; i++) {

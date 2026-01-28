@@ -118,8 +118,10 @@ void Boss::Impl::Init() {
 	// 武器の軌跡色をセット
 	m_weapon->SetTrailColor({ 1,0,1,1 });
 
+	m_weapon->SetScale({ 4.0f, 4.0f, 4.0f });
+
 	SetProjectile();
-	
+
 	DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
 
@@ -157,7 +159,7 @@ void Boss::Impl::Update() {
 
 
 	if (m_lookatFg)
-	  LookAt(m_player->GetPosition());
+	  LookAt(m_target->GetPosition());
 	
 	if (inviFg) {
 		++invicount;

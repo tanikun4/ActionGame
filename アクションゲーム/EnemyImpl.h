@@ -26,11 +26,11 @@ public:
 	void Damage(int _atk);
 	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // 行動不能状態にする
 	void SetDEF(int _def) { def = _def; }
-	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
-	void SetPlayer(Player* player) { m_player = player; }
+	void SetTarget(Object* ta) { m_target = ta; }
+
+	void ReInit();// 再初期化、敵を復活させる際の処理
 
 	void ShotBullet();
-	bool GetLive();
 	int GetHP();
 
 	Pole* GetWeapon();
@@ -105,7 +105,7 @@ private:
 
 	const int projectile_max = 5;//飛び道具の最大数
 
-	const int maxhp = 200;
+	const int maxhp = 20;
 	int hp = maxhp;
 	int def = 0; //防御力、値分ダメージを減らす
 	int m_stateframe = 0;//状態継続フレーム数
@@ -122,19 +122,17 @@ private:
 	bool m_rushFg = false;//突進しているかどうか
 	bool m_spinFg = false;//回転しているかどうか
 	float jumppower = 1.5f;//ジャンプ力
-	//const float delta60f = 1.0f / 60.0f;// 60fps換算用
 
 	bool m_slowFg = false;//動きが遅い状態か
 	int slow_frame = 0;//遅くなっているフレーム数
 	int slow_rate = 6;//元の速度の何分の1にするか
 
 	DirectX::SimpleMath::Vector3 m_destrot;//回転の目標点
-	//DirectX::XMFLOAT2 stagesize;
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
 	std::vector<Bullet*> m_bullet;
 	std::vector<Projectile*> m_projectile;
 	Pole* m_weapon;
-	Player* m_player = nullptr;// プレイヤー参照
+	Object* m_target = nullptr;// ターゲット参照
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 	DirectX::SimpleMath::Vector3 m_startpos; // 移動開始位置
 	Vibration m_vib; // 振動用のクラス
@@ -142,7 +140,6 @@ private:
 	AngleAnim m_AngleAnim;// 角度アニメーション構造体
 	ArcMoveAnim m_ArcAnim;// 円弧移動アニメーション構造体
 	FibonacciAnim m_FiboAnim;// 黄金螺旋移動アニメーション構造体
-	Gauge m_hp_gauge; //  HPゲージ用構造体
 
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	void Move();

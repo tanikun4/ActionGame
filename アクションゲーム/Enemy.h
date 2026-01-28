@@ -37,6 +37,9 @@ public:
 	void Draw() override;
 	void Uninit() override;
 
+	void ReInit();
+
+	void SetTarget(Object* ta);
 	int GetHP();
 	Pole* GetWeapon();
 

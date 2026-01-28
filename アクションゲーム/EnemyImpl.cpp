@@ -54,12 +54,10 @@ void Enemy::Impl::DebugBossStatus() {//ボスの状態を操作する
 
 	if (ImGui::Button("DEATH")) {
 		hp = 0;
-		m_hp_gauge.ChangeGauge(hp, maxhp);
 	}
 
 	if (ImGui::Button("HP MAX")) {
 		hp = maxhp;
-		m_hp_gauge.ChangeGauge(hp, maxhp);
 	}
 
 	static int debug_attack_kind = -1;
@@ -102,13 +100,13 @@ void Enemy::Impl::DebugBossStatus() {//ボスの状態を操作する
 
 void Enemy::Impl::Init() {
 	m_Owner->GBInit(u8"assets/model/Character/boss.fbx");
-	m_Owner->m_Position = Vector3(0.0f, 50.0f, -50.0f);
+	//m_Owner->m_Position = Vector3(0.0f, 50.0f, -50.0f);
 	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	hp = maxhp;
 	def = 0;
-	m_Owner->m_Scale.x = 2;
-	m_Owner->m_Scale.y = 2;
-	m_Owner->m_Scale.z = 2;
+	m_Owner->m_Scale.x = 1;
+	m_Owner->m_Scale.y = 1;
+	m_Owner->m_Scale.z = 1;
 	m_Owner->radius *= m_Owner->m_Scale.x;
 
 	//丸影の大きさをセット
@@ -119,7 +117,9 @@ void Enemy::Impl::Init() {
 
 	SetProjectile();
 
-	DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
+	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // 攻撃をランダムに設定、以降固定される
+
+	//DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
 
 void Enemy::Impl::Update() {
@@ -142,7 +142,6 @@ void Enemy::Impl::Update() {
 			m_Owner->m_State = ATTACK;
 			m_stateframe = 0;
 			m_Owner->m_Velocity_f = 0;
-			attack_kind = (rand() % (KIND_MAX - 1)) + 1;
 		}
 		++m_stateframe;
 		break;
@@ -156,7 +155,7 @@ void Enemy::Impl::Update() {
 
 
 	if (m_lookatFg)
-		LookAt(m_player->GetPosition());
+		LookAt(m_target->GetPosition());
 
 	if (inviFg) {
 		++invicount;
@@ -191,18 +190,19 @@ void Enemy::Impl::Uninit()
 
 }
 
-// ゲージ初期化用、ゲームシーンでのみ呼び出す
-void Enemy::Impl::SetGauge() {
-	m_hp_gauge.Init({ 200, 325, 0 }, { 800, 50, 0 });
-	m_hp_gauge.SetColor({ 1,0.5f,0,1 });
+void Enemy::Impl::ReInit() {
+	m_Owner->m_live = true;
+	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
+	hp = maxhp;
+	def = 0;
+	m_Owner->m_Scale.x = 1;
+	m_Owner->m_Scale.y = 1;
+	m_Owner->m_Scale.z = 1;
+	m_Owner->radius *= m_Owner->m_Scale.x;
+
+	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // 攻撃をランダムに設定、以降固定される
 }
 
-bool Enemy::Impl::GetLive() {
-	if (hp > 0) {
-		return true;
-	}
-	return false;
-}
 
 void Enemy::Impl::Damage(int _atk) {
 	if (inviFg)  return;
@@ -236,10 +236,6 @@ void Enemy::Impl::Damage(int _atk) {
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 	// ヒットストップ処理
 	Game::GetInstance()->HitStop();
-
-	// ダメージがある場合(デモ中でない)HPゲージ更新
-	if (_atk > 0)
-		m_hp_gauge.ChangeGauge(hp, maxhp);
 }
 
 void Enemy::Impl::LookAt(Vector3 ta_pos) {

@@ -24,7 +24,7 @@ public:
 	void Damage(int _atk);
 
 	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
-	void SetPlayer(class Player* player);
+	void SetTarget(class Player* player);
 	void SetDEF(int _def);
 	void ShotBullet();
 	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // 行動不能状態にする

@@ -32,7 +32,7 @@ void Boss::ShotBullet() { impl->ShotBullet(); }
 
 void Boss::SetGauge() { impl->SetGauge(); }
 
-void Boss::SetPlayer(Player* player) { impl->SetPlayer(player); }
+void Boss::SetTarget(Player* player) { impl->SetTarget(player); }
 
 void Boss::SetDEF(int _def) { impl->SetDEF(_def); }
 

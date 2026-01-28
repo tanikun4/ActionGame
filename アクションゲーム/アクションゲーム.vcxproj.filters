@@ -94,9 +94,6 @@
     <Filter Include="ソース ファイル\Effect\EfectObject%283D%29">
       <UniqueIdentifier>{0e283b26-692b-4d96-ba8f-fb00dd121563}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Effect\EffectManager">
-      <UniqueIdentifier>{7586cab4-08d0-4cd0-80a8-27e5e2be824b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Shadow">
       <UniqueIdentifier>{d860cb45-4b49-4b58-ab90-1e4f67824f2f}</UniqueIdentifier>
     </Filter>
@@ -127,6 +124,9 @@
     <Filter Include="ソース ファイル\Object\UI">
       <UniqueIdentifier>{a65420cf-61bc-453c-a214-3576c8642849}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Manager\EffectManager">
+      <UniqueIdentifier>{7586cab4-08d0-4cd0-80a8-27e5e2be824b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stb_image.cpp">
@@ -136,9 +136,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
-      <Filter>ソース ファイル\Object\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyManager.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -286,7 +283,7 @@
       <Filter>ソース ファイル\Effect\EfectObject%283D%29</Filter>
     </ClCompile>
     <ClCompile Include="EffectManager.cpp">
-      <Filter>ソース ファイル\Effect\EffectManager</Filter>
+      <Filter>ソース ファイル\Manager\EffectManager</Filter>
     </ClCompile>
     <ClCompile Include="EffectBillBoad.cpp">
       <Filter>ソース ファイル\Effect\EffectBillBoad%282D%29</Filter>
@@ -321,12 +318,12 @@
     <ClCompile Include="EnemyImpl.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>ソース ファイル\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
-      <Filter>ソース ファイル\Object\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyManager.h">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="GolfBall.h">
@@ -513,7 +510,7 @@
       <Filter>ソース ファイル\Effect\EfectObject%283D%29</Filter>
     </ClInclude>
     <ClInclude Include="EffectManager.h">
-      <Filter>ソース ファイル\Effect\EffectManager</Filter>
+      <Filter>ソース ファイル\Manager\EffectManager</Filter>
     </ClInclude>
     <ClInclude Include="EffectDataStruct.h">
       <Filter>ソース ファイル\Effect</Filter>
@@ -577,6 +574,9 @@
     </ClInclude>
     <ClInclude Include="EnemyImpl.h">
       <Filter>ソース ファイル\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h">
+      <Filter>ソース ファイル\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -52,6 +52,7 @@ public:
 	// îhê∂óp
 	virtual void OnHit(class Player* player) {} 
 	virtual void OnHit(class Boss* boss) {}    
+	virtual void OnHit(class Enemy* enemy) {}
 	virtual void OnHit(class Pole* pole) {}    
 	virtual void OnHit(class Bullet* bullet) {} 
 	virtual void OnHit(class Projectile* projectile) {}

@@ -22,6 +22,7 @@ int Player::GetHP() { return impl->GetHP(); }
 Pole* Player::GetWeapon() { return impl->GetWeapon(); }
 std::vector<Texture2D*> Player::GetGauge() { return impl->GetGauge(); }
 
+void Player::OnHit(Enemy* en) { impl->OnHit(en); }
 void Player::OnHit(Boss* bo) { impl->OnHit(bo); }
 void Player::OnHit(Pole* po) { impl->OnHit(po); }
 void Player::OnHit(Bullet* bu) { impl->OnHit(bu); }

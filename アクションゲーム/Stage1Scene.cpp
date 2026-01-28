@@ -43,6 +43,7 @@ void Stage1Scene::Init()
 
 	// ”wŒi
 	Texture2D* background = Game::GetInstance()->AddObject<Texture2D>();
+
 	background->SetTexture("assets/texture/sky.png"); // ‰æ‘œ‚ğw’è
 	background->SetPosition(-0.0f, 0.0f, 0.0f); // ˆÊ’u‚ğİ’è
 	background->SetScale(1280.0f, 720.0f, 0.0f); // ‘å‚«‚³‚ğw’è
@@ -54,47 +55,28 @@ void Stage1Scene::Init()
 
 	GroundManager::GetInstance().Init();
 
-	//’Êí“G‚Ì”z’u
-	//for (int i = 0; i < 9; i++) {
-	//	int r1 = rand();
-	//	int r2 = rand();
-	//	m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Enemy>()); // “G
-	//	Enemy* enemy = dynamic_cast<Enemy*>(m_MySceneObjects[m_MySceneObjects.size() - 1]); // “G
-	//	if (r1 % 2 == 0) {
-	//		r1 *= -1;
-	//	}
-	//	if (r2 % 2 == 0) {
-	//		r2 *= -1;
-	//	}
-	//	r1 %= (int)groundsize.x / 2;
-	//	r2 %= (int)groundsize.y / 2;
-	//	if (r1 < 50 && r2 < 50) {
-	//		switch (rand() % 4) {
-	//		case 0:
-	//			r1 += 50;
-	//			break;
-	//		case 1:
-	//			r2 += 50;
-	//			break;
-	//		case 3:
-	//			r1 -= 50;
-	//			break;
-	//		case 4:
-	//			r2 -= 50;
-	//			break;
-	//		}
-	//	}
-	//	enemy->SetPosition({(float)r1 ,50.0f,(float)r2});
-	//	enemy->SetStageSize(groundsize / 2);
-	//}
+	EnemyManager::Init();
+
 
 	player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
 	player->SetDemoMode(false);
 
+	// “G‚Ì”z’u
+	EnemyManager::GetInstance()->SetEnemy(5, { (groundsize.x - 50) * 0.5f,20,(groundsize.y - 50) * 0.5f });
+	EnemyManager::GetInstance()->SetTarget(player);
+
+	// “G‚Ìæ“¾
+	vector<Enemy*> enemy = Game::GetInstance()->GetObjects<Enemy>();
+	m_MySceneObjects.insert(
+		m_MySceneObjects.end(),    // ‘}“üˆÊ’u
+		enemy.begin(),        // ‘}“ü‚·‚é”ÍˆÍ‚ÌŠJn
+		enemy.end()           // ‘}“ü‚·‚é”ÍˆÍ‚ÌI—¹
+	);
+
 	boss = Game::GetInstance()->AddObject<Boss>();
 	m_MySceneObjects.emplace_back(boss);
-	boss->SetPlayer(player);
+	boss->SetTarget(player);
 
 	//•Ç‚Ìİ’u
 	WallManager::SetWall(ground->GetGroundSize(), m_MySceneObjects);

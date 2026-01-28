@@ -26,7 +26,7 @@ public:
 	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // 行動不能状態にする
 	void SetDEF(int _def) { def = _def; }
 	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
-	void SetPlayer(Player* player) { m_player = player; }
+	void SetTarget(Player* player) { m_target = player; }
 
 	void ShotBullet();
 	bool GetLive();
@@ -133,7 +133,7 @@ private:
 	std::vector<Bullet*> m_bullet;
 	std::vector<Projectile*> m_projectile;
 	Pole* m_weapon;
-	Player* m_player = nullptr;// プレイヤー参照
+	Player* m_target = nullptr;// プレイヤー参照
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 	DirectX::SimpleMath::Vector3 m_startpos; // 移動開始位置
 	Vibration m_vib; // 振動用のクラス

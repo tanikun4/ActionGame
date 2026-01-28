@@ -17,6 +17,10 @@ void Enemy::Update() { impl->Update(); }
 void Enemy::Draw() { impl->Draw(); }
 void Enemy::Uninit() { impl->Uninit(); }
 
+void Enemy::ReInit() { impl->ReInit(); }
+
+void Enemy::SetTarget(Object* ta) { impl->SetTarget(ta); }
+
 int Enemy::GetHP() { return impl->GetHP(); }
 Pole* Enemy::GetWeapon() { return impl->GetWeapon(); }
 
