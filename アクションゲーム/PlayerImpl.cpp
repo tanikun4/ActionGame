@@ -234,8 +234,8 @@ void Player::Impl::DebugWeaponStatus() {
     if (ImGui::Button("Reset OffSet"))
         weapon_offset = Vector3(0, 0, 0);
 
-    if (ImGui::Button("Set Int"))
-        weapon_offset = Vector3((int)weapon_offset.x, (int)weapon_offset.y, (int)weapon_offset.z);
+    //if (ImGui::Button("Set Int"))
+    //    weapon_offset = Vector3((int)weapon_offset.x, (int)weapon_offset.y, (int)weapon_offset.z);
 
     static Vector3 weapon_angle{};
     ImGui::SliderFloat3("WeaponAngle", &weapon_angle.x, -PI, PI);
@@ -265,10 +265,15 @@ void Player::Impl::DebugPlayerStatus() {
     }
 
     if (ImGui::Button("HP MAX"))
+    {
         hp = maxhp;
+        m_hp_gauge.ChangeGauge(hp, maxhp);
+    }
 
-    if (ImGui::Button("HP ZERO"))
+    if (ImGui::Button("HP ZERO")) {
         hp = 0;
+        m_hp_gauge.ChangeGauge(hp, maxhp);
+    }
 
 	static int slowtime = 300;
 
@@ -277,13 +282,11 @@ void Player::Impl::DebugPlayerStatus() {
     if (ImGui::Button("SLOWMOTION"))
         Game::GetInstance()->SlowMotion(slowtime);
 
-    static bool select;
-    ImGui::Checkbox("Invisible", &select);
+    ImGui::Checkbox("Invisible", &inviFg);
 
-    if (select) {
-        inviFg = true;
+    if (inviFg)
         m_Owner->SetColor({ 0,0,1,0.5f });
-    }
+    
 
 	ImGui::Checkbox("DEMOMODE", &demoMode);
 
@@ -555,9 +558,7 @@ void Player::Impl::SpinAttack(const int& t, const int& attack_t , const float& a
 	m_attackkind = SPINSLASH;
     speed = 2.0f;
 	maxattackframe = t;
-	Vector3 endrot = m_Owner->m_Rotation;
-	endrot.y += PI * 2;
-	m_Anim.StartAbsolute(m_Owner->m_Rotation, endrot,attack_t, accel);// 回転切り、絶対値参照で行う
+	m_Anim.StartAbsolute({ 0,0,0 }, {0,PI * 2,0}, attack_t, accel);// 回転切り、絶対値参照で行う
     m_Owner->SetColor({ 0,0,1,0.5f });
 	inviFg = true;
 	invicount = 0;
@@ -566,15 +567,13 @@ void Player::Impl::SpinAttack(const int& t, const int& attack_t , const float& a
     Sound::GetInstance()->Play(SOUND_SE_SWING);
 }
 
-// 回転斬り攻撃開始
+// 縦回転斬り攻撃開始
 void Player::Impl::SpinAttack_Vertical(int t, int attack_t, float accel) {
     m_weapon->AttackStart(true,true);
     m_weapon->SetAtk(atk + 1);
     m_attackkind = SPINSLASH_VT;
     maxattackframe = t;
-    Vector3 endrot = m_Owner->m_Rotation;
-    endrot.x += PI * 2;
-    m_Anim.StartAbsolute(m_Owner->m_Rotation, endrot, attack_t, accel);// 縦回転切り、絶対値参照で行う
+    m_Anim.StartAbsolute({ 0,0,0 }, { PI * 2 ,0,0}, attack_t, accel);// 縦回転切り、絶対値参照で行う
     attackframe = 0;
 
     Sound::GetInstance()->Play(SOUND_SE_SWING);
@@ -624,7 +623,6 @@ void Player::Impl::Shot() {
 void Player::Impl::Damage(int atk) {
     // 無敵状態なら処理を行わない
     if (inviFg) { return; }
-
 
 	// 攻撃中なら攻撃終了
     if (m_Owner->m_State == ATTACK) {
@@ -788,7 +786,7 @@ void Player::Impl::UpdateAttack() {
         break;
 
     case SPINSLASH:
-		m_Owner->m_Rotation = m_Anim.UpdateAbsolute();// 回転切りアニメーション更新、絶対値参照
+		m_Owner->m_Rotation = m_Owner->m_ForwardRotation + m_Anim.UpdateAbsolute();// 回転切りアニメーション更新、絶対値参照
         ++attackframe;
 		m_Owner->m_Velocity_f = speed;//回転切り中は現在方向に移動し続ける
         if (attackframe >= maxattackframe) {
@@ -804,7 +802,7 @@ void Player::Impl::UpdateAttack() {
     case SPINSLASH_VT:
         // 縦回転切中は移動可能
 		Move();
-        m_Owner->m_Rotation = m_Anim.UpdateAbsolute();// 回転切りアニメーション更新、絶対値参照
+        m_Owner->m_Rotation = m_Owner->m_ForwardRotation + m_Anim.UpdateAbsolute();// 回転切りアニメーション更新、絶対値参照
         ++attackframe;
 		//　攻撃時間終了、もしくは地面に着地したら攻撃終了
         if (attackframe >= maxattackframe || m_Owner->is_GROUND) {

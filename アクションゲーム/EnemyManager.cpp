@@ -20,7 +20,7 @@ void EnemyManager::SetEnemy(int num) {
 	for (int i = 0; i < num; ++i) {
 		//Game‘¤‚ÌInitˆ—‚Æ‹£‡‚·‚é‰Â”\«‘åAŽg‚¤Û‚ÍŒ©’¼‚·‚±‚Æ
 		m_enemies.emplace_back(Game::GetInstance()->AddObject<Enemy>());
-		m_enemies.back()->SetStageSize(m_stagesize);
+		//m_enemies.back()->SetStageSize(m_stagesize);
 		m_enemies.back()->Init();
 	}
 }

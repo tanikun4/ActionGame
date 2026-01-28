@@ -1,21 +1,22 @@
 #pragma once
+#pragma once
 #include <DirectXMath.h>
 #include <SimpleMath.h>
-#include "Boss.h"
+#include "Enemy.h"
 #include "AnimStruct.h"
 #include "UIStruct.h"
 
 class Camera;
 class Player;
 class Pole;
-class Boss;
+class Enemy;
 class Bullet;
 class TestCube;
 
-class Boss::Impl
-{ 
+class Enemy::Impl
+{
 public:
-	Impl(Camera* cam, Boss* owner);
+	Impl(Camera* cam, Enemy* owner);
 	~Impl();
 
 	void Init();
@@ -31,7 +32,7 @@ public:
 	void ShotBullet();
 	bool GetLive();
 	int GetHP();
-	
+
 	Pole* GetWeapon();
 
 	void OnHit(Pole* pole);
@@ -40,7 +41,7 @@ public:
 	void OnHit(Projectile* pr);
 private:
 	// 所有者とカメラ参照
-	Boss* m_Owner = nullptr;
+	Enemy* m_Owner = nullptr;
 	Camera* m_Camera = nullptr;
 	enum State {
 		NORMAL = 0, //通常状態
@@ -167,7 +168,7 @@ private:
 	void RotateSwingFibonacci();
 	void AlterEgoShot();
 	void AlterEgoSpinSlash();
-	
+
 	// 飛び道具関連
 	void SetProjectile();
 	// 飛び道具構え
@@ -175,7 +176,7 @@ private:
 	void ProjectileCharge(float offset = 0, float _angle = 0);
 	void ProjectileCharge_VT(float offset = 0, float _angle = 0);
 	void ProjectileChargeMax(float offset = 0, float _angle = 0);
-	void ProjectileChargeMax_VT(float offset = 0,float _angle = 0);
+	void ProjectileChargeMax_VT(float offset = 0, float _angle = 0);
 	// 飛び道具発射
 	void ProjectileShot();
 	void ProjectileShot_All();
@@ -183,4 +184,3 @@ private:
 	void DebugBossStatus();
 
 };
-

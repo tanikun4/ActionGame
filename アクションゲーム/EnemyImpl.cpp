@@ -1,5 +1,4 @@
-#include "BossImpl.h"
-
+#include "EnemyImpl.h"
 #include "Player.h"
 #include "Ground.h"
 #include "Game.h"
@@ -14,7 +13,7 @@ using namespace std;
 using namespace DirectX::SimpleMath;
 
 
-Boss::Impl::Impl(Camera* cam, Boss* owner)
+Enemy::Impl::Impl(Camera* cam, Enemy* owner)
 	: m_Owner(owner)
 	, m_Camera(cam)
 {
@@ -23,7 +22,7 @@ Boss::Impl::Impl(Camera* cam, Boss* owner)
 }
 
 // デストラクタ
-Boss::Impl::~Impl()
+Enemy::Impl::~Impl()
 {
 	if (m_weapon)
 	{
@@ -41,7 +40,7 @@ Boss::Impl::~Impl()
 	}
 }
 
-void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
+void Enemy::Impl::DebugBossStatus() {//ボスの状態を操作する
 	ImGui::Begin("BossStatus");
 
 	ImGui::Checkbox("NotUpdate", &notUpdate);
@@ -49,7 +48,7 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	ImGui::SliderInt("Slowrate", &slow_rate, 1, 59);
 
 	ImGui::SliderFloat("JumpPower", &jumppower, 0, 10);
-	
+
 	if (ImGui::Button("STUN"))
 		Stun();
 
@@ -101,7 +100,7 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	ImGui::End();
 }
 
-void Boss::Impl::Init() {
+void Enemy::Impl::Init() {
 	m_Owner->GBInit(u8"assets/model/Character/boss.fbx");
 	m_Owner->m_Position = Vector3(0.0f, 50.0f, -50.0f);
 	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
@@ -119,11 +118,11 @@ void Boss::Impl::Init() {
 	m_weapon->SetTrailColor({ 1,0,1,1 });
 
 	SetProjectile();
-	
+
 	DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
 
-void Boss::Impl::Update() {
+void Enemy::Impl::Update() {
 	if (hp <= 0 || notUpdate) { return; };
 	//　簡易的なスローモーション処理
 	if (m_slowFg) {
@@ -157,8 +156,8 @@ void Boss::Impl::Update() {
 
 
 	if (m_lookatFg)
-	  LookAt(m_player->GetPosition());
-	
+		LookAt(m_player->GetPosition());
+
 	if (inviFg) {
 		++invicount;
 	}
@@ -178,12 +177,12 @@ void Boss::Impl::Update() {
 		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);
 }
 
-void Boss::Impl::Draw()
+void Enemy::Impl::Draw()
 {
 	m_Owner->GBDraw();
 }
 
-void Boss::Impl::Uninit() 
+void Enemy::Impl::Uninit()
 {
 	m_weapon->AttackEnd();
 	m_weapon->StanceEnd();
@@ -193,19 +192,19 @@ void Boss::Impl::Uninit()
 }
 
 // ゲージ初期化用、ゲームシーンでのみ呼び出す
-void Boss::Impl::SetGauge() {
-	m_hp_gauge.Init({200, 325, 0}, { 800, 50, 0 });
+void Enemy::Impl::SetGauge() {
+	m_hp_gauge.Init({ 200, 325, 0 }, { 800, 50, 0 });
 	m_hp_gauge.SetColor({ 1,0.5f,0,1 });
 }
 
-bool Boss::Impl::GetLive() {
+bool Enemy::Impl::GetLive() {
 	if (hp > 0) {
 		return true;
 	}
 	return false;
 }
 
-void Boss::Impl::Damage(int _atk) {
+void Enemy::Impl::Damage(int _atk) {
 	if (inviFg)  return;
 	//防御力分ダメージ軽減
 	_atk -= def;
@@ -226,7 +225,7 @@ void Boss::Impl::Damage(int _atk) {
 	//エフェクトパラメーター構造体作成
 	EffectParams param;
 	param.pos = pos;
-	param.pos_amount = { m_Owner->radius * 2, 0 ,0};
+	param.pos_amount = { m_Owner->radius * 2, 0 ,0 };
 	param.scale = m_Owner->m_Scale * 10;
 	param.maxLife = 12;
 
@@ -239,11 +238,11 @@ void Boss::Impl::Damage(int _atk) {
 	Game::GetInstance()->HitStop();
 
 	// ダメージがある場合(デモ中でない)HPゲージ更新
-	if(_atk > 0)
+	if (_atk > 0)
 		m_hp_gauge.ChangeGauge(hp, maxhp);
 }
 
-void Boss::Impl::LookAt(Vector3 ta_pos) {
+void Enemy::Impl::LookAt(Vector3 ta_pos) {
 
 	// atan2を使用して角度を求める
 	m_destrot.y = atan2f((ta_pos.x - m_Owner->m_Position.x), (ta_pos.z - m_Owner->m_Position.z));
@@ -273,7 +272,7 @@ void Boss::Impl::LookAt(Vector3 ta_pos) {
 	}
 }
 
-void Boss::Impl::AttackUpdate() {
+void Enemy::Impl::AttackUpdate() {
 	int weapon_state = m_weapon->GetState();
 	switch (attack_kind) {
 	case NONE: // 攻撃無し(未指定状態)
@@ -367,7 +366,7 @@ void Boss::Impl::AttackUpdate() {
 }
 
 // 回転切り
-void Boss::Impl::RotateSwing() {
+void Enemy::Impl::RotateSwing() {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
 		m_weapon->Stance();
@@ -420,7 +419,7 @@ void Boss::Impl::RotateSwing() {
 }
 
 // 突進縦振り
-void Boss::Impl::SwingVerticalRush() {
+void Enemy::Impl::SwingVerticalRush() {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
 		m_weapon->Stance_Vertical();
@@ -484,7 +483,7 @@ void Boss::Impl::SwingVerticalRush() {
 		}
 	}
 
-	if(m_attackPhase == AttackPhase::RECOVER) {
+	if (m_attackPhase == AttackPhase::RECOVER) {
 		if (m_attackframe > 30) {
 			m_attackPhase = AttackPhase::END;
 		}
@@ -502,7 +501,7 @@ void Boss::Impl::SwingVerticalRush() {
 }
 
 // 連続突き移動
-void Boss::Impl::ManyThrustLookAt() {
+void Enemy::Impl::ManyThrustLookAt() {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
 		m_weapon->Stance_Thrust();
@@ -553,7 +552,7 @@ void Boss::Impl::ManyThrustLookAt() {
 }
 
 // 三連斬り
-void Boss::Impl::ThreeSwing() {
+void Enemy::Impl::ThreeSwing() {
 	// 攻撃開始処理、構えに入る
 	if (m_attackPhase == AttackPhase::ENTER) {
 		m_weapon->Stance();
@@ -650,7 +649,7 @@ void Boss::Impl::ThreeSwing() {
 }
 
 // ジャンプ回転切り
-void Boss::Impl::JumpSpinSlash() {
+void Enemy::Impl::JumpSpinSlash() {
 	// ジャンプしていなければジャンプする
 	if (m_attackPhase == AttackPhase::ENTER) {
 		Jump();
@@ -676,7 +675,7 @@ void Boss::Impl::JumpSpinSlash() {
 		// 攻撃開始
 		if (m_weapon->GetState() == Pole::STATE::NORMAL) {
 			m_weapon->AttackStart(true, true);
-			m_AngleAnim.StartRelative({PI * 4,0,0} ,30, 0.0f);// 縦回転切り
+			m_AngleAnim.StartRelative({ PI * 4,0,0 }, 30, 0.0f);// 縦回転切り
 			Sound::GetInstance()->Play(SOUND_SE_SWING);
 			++m_attackcount;
 		}
@@ -743,7 +742,7 @@ void Boss::Impl::JumpSpinSlash() {
 }
 
 // ジャンプ回転切り突進
-void Boss::Impl::JumpSpinSlashRush(){
+void Enemy::Impl::JumpSpinSlashRush() {
 	// ジャンプしていなければジャンプする
 	if (m_attackPhase == AttackPhase::ENTER) {
 		Jump();
@@ -811,7 +810,7 @@ void Boss::Impl::JumpSpinSlashRush(){
 }
 
 // 衝撃波発射
-void  Boss::Impl::SonicBoomShot() {
+void  Enemy::Impl::SonicBoomShot() {
 	if (m_attackPhase == AttackPhase::ENTER) {
 		m_rand = rand() % 2;
 		// 衝撃波の構え、ランダムでモーション分岐
@@ -907,7 +906,7 @@ void  Boss::Impl::SonicBoomShot() {
 }
 
 // 回り込み→連続突き
-void Boss::Impl::WrapAroundThrust() {
+void Enemy::Impl::WrapAroundThrust() {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
 		m_weapon->Stance_Vertical();
@@ -1010,7 +1009,7 @@ void Boss::Impl::WrapAroundThrust() {
 }
 
 // ジャンプ回転切り→衝撃波飛ばし
-void Boss::Impl::JumpSpinSlashShot()
+void Enemy::Impl::JumpSpinSlashShot()
 {
 	// ジャンプしていなければジャンプする
 	if (m_attackPhase == AttackPhase::ENTER) {
@@ -1063,7 +1062,7 @@ void Boss::Impl::JumpSpinSlashShot()
 	}
 
 	// 終了フェーズ、攻撃終了処理を行う
-	if( m_attackPhase == AttackPhase::END)
+	if (m_attackPhase == AttackPhase::END)
 	{
 		m_Owner->m_State = NORMAL;
 		m_stateframe = 0;
@@ -1077,7 +1076,7 @@ void Boss::Impl::JumpSpinSlashShot()
 }
 
 // 十字衝撃波発射
-void Boss::Impl::CrossShot() {
+void Enemy::Impl::CrossShot() {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
 		// 十字衝撃波の構え、縦と横両方の衝撃波をチャージする
@@ -1107,7 +1106,7 @@ void Boss::Impl::CrossShot() {
 		m_attackframe = 0;
 		++m_attackcount;
 		// 2回発射したら硬直へ
-		if( m_attackcount >= 2 ) {
+		if (m_attackcount >= 2) {
 			m_attackPhase = AttackPhase::RECOVER;
 		}
 	}
@@ -1148,7 +1147,7 @@ void Boss::Impl::CrossShot() {
 }
 
 // 回転斬りフィボナッチ数列軌道
-void Boss::Impl::RotateSwingFibonacci()
+void Enemy::Impl::RotateSwingFibonacci()
 {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
@@ -1162,7 +1161,7 @@ void Boss::Impl::RotateSwingFibonacci()
 			m_spinFg = true;
 			m_Owner->is_SPECIALMOVE = true;// 特殊移動モードにする
 			m_weapon->AttackStart();
-			m_FiboAnim.Start(0, PI * 2,m_Owner->radius * 0.75f,120,1.0f);
+			m_FiboAnim.Start(0, PI * 2, m_Owner->radius * 0.75f, 120, 1.0f);
 			m_attackframe = 0;
 			m_attackPhase = AttackPhase::ATTACK;
 		}
@@ -1216,7 +1215,7 @@ void Boss::Impl::RotateSwingFibonacci()
 }
 
 // 分身して衝撃波発射
-void Boss::Impl::AlterEgoShot() 
+void Enemy::Impl::AlterEgoShot()
 {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
@@ -1251,7 +1250,7 @@ void Boss::Impl::AlterEgoShot()
 		if (m_attackframe > 120) {
 			m_Owner->m_Position = m_startpos;// 元の位置に戻す
 			// 左右に弾を発射する準備
-			ProjectileChargeMax_VT(20.0f,PI);
+			ProjectileChargeMax_VT(20.0f, PI);
 			ProjectileChargeMax_VT(-20.0f, PI);
 			m_attackPhase = AttackPhase::ATTACK;
 			m_attackframe = 0;
@@ -1307,7 +1306,7 @@ void Boss::Impl::AlterEgoShot()
 }
 
 // 分身の後、回転斬り突進
-void Boss::Impl::AlterEgoSpinSlash()
+void Enemy::Impl::AlterEgoSpinSlash()
 {
 	// 開始フェーズ
 	if (m_attackPhase == AttackPhase::ENTER) {
@@ -1326,7 +1325,7 @@ void Boss::Impl::AlterEgoSpinSlash()
 		m_Owner->m_Velocity.y = 0.0f;//高さは変えない
 
 		++m_attackframe;
-		if( m_attackframe == 120 + m_rand) {
+		if (m_attackframe == 120 + m_rand) {
 			m_lookatFg = false;
 			m_Owner->is_SPECIALMOVE = false;
 			m_Owner->m_Shadow->SetLive(true);
@@ -1357,7 +1356,7 @@ void Boss::Impl::AlterEgoSpinSlash()
 		}
 	}
 
-	if( m_attackPhase == AttackPhase::RECOVER) {
+	if (m_attackPhase == AttackPhase::RECOVER) {
 		++m_attackframe;
 		if (m_attackframe > 60) {
 			m_attackPhase = AttackPhase::END;
@@ -1377,7 +1376,7 @@ void Boss::Impl::AlterEgoSpinSlash()
 }
 
 // 行動不能状態更新
-void Boss::Impl::StunUpdate() 
+void Enemy::Impl::StunUpdate()
 {
 	if (m_stateframe > 10) {
 		m_Owner->m_Velocity_f = 0.0f;//10フレーム経過後ノックバック停止
@@ -1404,13 +1403,13 @@ void Boss::Impl::StunUpdate()
 }
 
 // 行動不能状態にする
-void Boss::Impl::Stun(optional<Vector3> knockbackDir) 
+void Enemy::Impl::Stun(optional<Vector3> knockbackDir)
 {
 	StateReset();
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
 	m_vib.Start(1.0f, PI * 0.5f);//振動開始
 	m_weapon->AttackEnd();
-	m_weapon->Stance(10,StanceMode::VERTICAL);// 縦に構える
+	m_weapon->Stance(10, StanceMode::VERTICAL);// 縦に構える
 	m_Owner->m_State = STUN;
 	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 	m_spinFg = false;
@@ -1424,7 +1423,7 @@ void Boss::Impl::Stun(optional<Vector3> knockbackDir)
 }
 
 // スタン時等の際のリセット処理
-void Boss::Impl::StateReset() {
+void Enemy::Impl::StateReset() {
 	attack_kind = NONE;//攻撃終了
 	m_Owner->m_Rotation.x = 0;
 	m_attackcount = 0;
@@ -1436,7 +1435,7 @@ void Boss::Impl::StateReset() {
 	m_attackPhase = AttackPhase::ENTER;// 攻撃フェーズ初期化
 }
 
-void Boss::Impl::ShotBullet() {
+void Enemy::Impl::ShotBullet() {
 	int r1 = rand();
 	int r2 = rand();
 	Vector3 ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
@@ -1458,7 +1457,7 @@ void Boss::Impl::ShotBullet() {
 }
 
 // 移動処理
-void Boss::Impl::Move(){
+void Enemy::Impl::Move() {
 	if (m_rushFg) {
 		m_Owner->m_Velocity_f = move_speed * 8;
 		//m_Owner->m_Rotation.x += 0.2f;
@@ -1473,17 +1472,17 @@ void Boss::Impl::Move(){
 }
 
 // 弾のセットアップ
-void Boss::Impl::SetProjectile(){
+void Enemy::Impl::SetProjectile() {
 	for (int i = 0; i < projectile_max; ++i) {
 		m_projectile.emplace_back(Game::GetInstance()->AddObject<Projectile>());
 		m_projectile.back()->SetPl(false);
 		m_projectile.back()->SetOwner(m_Owner);
-		m_projectile.back()->SetColor({0,1,0,1});
+		m_projectile.back()->SetColor({ 0,1,0,1 });
 	}
 }
 
 // 飛び道具のチャージ開始
-void Boss::Impl::ProjectileCharge(float _offset, float _angle) {
+void Enemy::Impl::ProjectileCharge(float _offset, float _angle) {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
@@ -1506,15 +1505,15 @@ void Boss::Impl::ProjectileCharge(float _offset, float _angle) {
 			}
 
 			pr->SetPl(false);
-			pr->ChargeStart(m_Owner->m_Position, m_Owner->m_Rotation,1.0f,follow);
-			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2});
+			pr->ChargeStart(m_Owner->m_Position, m_Owner->m_Rotation, 1.0f, follow);
+			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2 });
 			break;
 		}
 	}
 }
 
 // 飛び道具のチャージ開始、縦
-void Boss::Impl::ProjectileCharge_VT(float _offset, float _angle) {
+void Enemy::Impl::ProjectileCharge_VT(float _offset, float _angle) {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
@@ -1545,7 +1544,7 @@ void Boss::Impl::ProjectileCharge_VT(float _offset, float _angle) {
 }
 
 // 飛び道具の最大チャージ
-void Boss::Impl::ProjectileChargeMax(float _offset, float _angle) {
+void Enemy::Impl::ProjectileChargeMax(float _offset, float _angle) {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
@@ -1568,7 +1567,7 @@ void Boss::Impl::ProjectileChargeMax(float _offset, float _angle) {
 			}
 
 			pr->SetPl(false);
-			pr->MaxCharge(pos, m_Owner->m_Rotation,100,follow);
+			pr->MaxCharge(pos, m_Owner->m_Rotation, 100, follow);
 			pr->SetOffset({ 0 ,m_Owner->radius * -0.5f ,m_Owner->radius * 2 });
 			break;
 		}
@@ -1576,11 +1575,11 @@ void Boss::Impl::ProjectileChargeMax(float _offset, float _angle) {
 }
 
 // 飛び道具の最大チャージ、縦
-void Boss::Impl::ProjectileChargeMax_VT(float _offset , float _angle) {
+void Enemy::Impl::ProjectileChargeMax_VT(float _offset, float _angle) {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::NOT_ACTIVE) {
-			
+
 			bool follow = true;
 			Vector3 pos = m_Owner->m_Position;
 			// 現在位置からオフセット分ずらした位置にセット、ずらす方向も指定できる 
@@ -1608,7 +1607,7 @@ void Boss::Impl::ProjectileChargeMax_VT(float _offset , float _angle) {
 }
 
 // 飛び道具の発射
-void Boss::Impl::ProjectileShot() {
+void Enemy::Impl::ProjectileShot() {
 	for (auto& pr : m_projectile)
 	{
 		if (pr->GetState() == ProjectileSTATE::STANCE) {
@@ -1619,7 +1618,7 @@ void Boss::Impl::ProjectileShot() {
 }
 
 // 飛び道具の発射、全弾
-void Boss::Impl::ProjectileShot_All()
+void Enemy::Impl::ProjectileShot_All()
 {
 	for (auto& pr : m_projectile)
 	{
@@ -1630,7 +1629,7 @@ void Boss::Impl::ProjectileShot_All()
 }
 
 // 突き攻撃処理
-void Boss::Impl::Thrust(ThrustType type) {
+void Enemy::Impl::Thrust(ThrustType type) {
 	switch (type)
 	{
 	case ThrustType::Center: m_weapon->Thrust();       break;
@@ -1640,7 +1639,7 @@ void Boss::Impl::Thrust(ThrustType type) {
 }
 
 // 連続突きの関数
-bool Boss::Impl::ManyThrust(int maxcount)
+bool Enemy::Impl::ManyThrust(int maxcount)
 {
 	if (m_attackcount == 0)
 	{
@@ -1667,39 +1666,39 @@ bool Boss::Impl::ManyThrust(int maxcount)
 }
 
 // ジャンプ処理
-void Boss::Impl::Jump(float _power) {
+void Enemy::Impl::Jump(float _power) {
 	m_Owner->m_Velocity.y = _power;
 	m_Owner->is_GROUND = false;
 	m_Owner->m_Position.y += 0.1f;
 }
 
-int Boss::Impl::GetHP() {
+int Enemy::Impl::GetHP() {
 	return hp;
 }
 
-Pole* Boss::Impl::GetWeapon() {
+Pole* Enemy::Impl::GetWeapon() {
 	return m_weapon;
 }
 
-void Boss::Impl::OnHit(Pole* po) {
+void Enemy::Impl::OnHit(Pole* po) {
 	if (!po->GetPl()) return;
 	Damage(po->GetAtk());
 	return;
 }
 
-void Boss::Impl::OnHit(Bullet* bu) {
+void Enemy::Impl::OnHit(Bullet* bu) {
 	if (!bu->GetPl()) return;
 	Damage(bu->GetAtk());
 	return;
 }
 
-void Boss::Impl::OnHit(Projectile* pr) {
+void Enemy::Impl::OnHit(Projectile* pr) {
 	if (!pr->GetPl()) return;
 	Damage(pr->GetAtk());
 	return;
 }
 
-void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
+void Enemy::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 	// 法線方向への速度成分
 	auto& col = m_Owner->GetLastCollision();
 	float vn = m_Owner->m_Velocity.Dot(col.normal);
@@ -1708,7 +1707,7 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 
 	// 法線方向の速度を打ち消す（めり込み防止）
 	m_Owner->m_Velocity -= col.normal * vn;
-	
+
 	// 床・壁・天井の区別
 	if (col.normal.y > 0.6f)
 	{
@@ -1732,8 +1731,8 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 
 		// 突進中の処理
 		if (m_rushFg) {
-		    m_rushFg = false;
-		    m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
+			m_rushFg = false;
+			m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 
 			// 壁に当たったらその時点で攻撃する
 			if (attack_kind == SWING_VERTICAL_RUSH) {
@@ -1741,12 +1740,12 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 			}
 
 			// 攻撃終了処理へ移行
-			if(attack_kind == JUMP_SPINSLASH_RUSH) {
+			if (attack_kind == JUMP_SPINSLASH_RUSH) {
 				m_attackPhase = AttackPhase::RECOVER;
 				m_Owner->m_Rotation.x = 0;
 			}
 		}
 	}
-	
+
 
 }

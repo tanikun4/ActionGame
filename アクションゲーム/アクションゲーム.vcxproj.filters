@@ -318,6 +318,9 @@
     <ClCompile Include="EffectTrail.cpp">
       <Filter>ソース ファイル\Effect\EffectTrail</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyImpl.cpp">
+      <Filter>ソース ファイル\Object\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
@@ -571,6 +574,9 @@
     </ClInclude>
     <ClInclude Include="UIStruct.h">
       <Filter>ソース ファイル\Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyImpl.h">
+      <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

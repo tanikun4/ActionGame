@@ -48,6 +48,7 @@
     <ProjectGuid>{3b357178-0658-42ed-85d4-02d14c18a265}</ProjectGuid>
     <RootNamespace>アクションゲーム</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>アクションボールバトル</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -331,6 +332,7 @@
   <ItemGroup>
     <ClCompile Include="ActionInput.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="EnemyImpl.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="AssimpPerse.cpp" />
     <ClCompile Include="Boss.cpp" />
@@ -402,6 +404,7 @@
     <ClInclude Include="ActionState.h" />
     <ClInclude Include="AnimStruct.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="EnemyImpl.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="AssimpPerse.h" />
     <ClInclude Include="Boss.h" />
