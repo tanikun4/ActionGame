@@ -154,7 +154,7 @@ void Player::Impl::OnHit(Pole* po) {
     //if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
      // ジャストガード成功で相手を行動不能にする
     if (GuardFg && guardcount <= justguardframe) { 
-        BossStan();
+        po->GetOwner()->Stun();
 		m_target = po->GetOwner();
 		//Counter();
         Parry(); 
@@ -711,7 +711,7 @@ void Player::Impl::BossStan() {
     auto bosses = Game::GetInstance()->GetObjects<Boss>();
     if (!bosses.empty()) {
         Boss* boss = bosses[0];
-        boss->Stun(m_Owner->m_ForwardRotation);
+        boss->Stun();
     }
 }
 

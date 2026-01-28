@@ -1,4 +1,5 @@
 #include "Weapon.h"
+#include "GolfBall.h"
 
 //コンストラクタ
 Weapon::Weapon(Camera* cam) : Object(cam) {
@@ -32,6 +33,9 @@ void Weapon::SetColor(DirectX::SimpleMath::Vector4 color, int index) {
 	return;
 }
 
+void Weapon::SetOwner(GolfBall* owner) { m_Owner = owner; }// 所有者をセット
+
+GolfBall* Weapon::GetOwner() { return m_Owner; }
 
 Collision::ColliderVariant Weapon::GetCollision() {
 	return Collision::OBB { m_Position, m_Rotation,m_Scale };

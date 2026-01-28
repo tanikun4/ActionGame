@@ -54,6 +54,8 @@ public:
 	void Uninit();
 	bool CheckGround();
 
+	// 行動不能になる関数、オーバーライドの基底用
+	virtual void Stun(){}
 	
 
 	// 状態の設定・取得

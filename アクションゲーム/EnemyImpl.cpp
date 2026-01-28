@@ -112,6 +112,7 @@ void Enemy::Impl::Init() {
 	//丸影の大きさをセット
 	m_Owner->m_Shadow->SetBaseScale(18 * m_Owner->m_Scale.x);
 
+	m_weapon->SetScale({2,2,2});
 	// 武器の軌跡色をセット
 	m_weapon->SetTrailColor({ 1,0,1,1 });
 
@@ -236,6 +237,19 @@ void Enemy::Impl::Damage(int _atk) {
 	Sound::GetInstance()->Play(SOUND_SE_SWORDHIT);
 	// ヒットストップ処理
 	Game::GetInstance()->HitStop();
+
+	if (hp <= 0) {
+		Death();
+	}
+}
+
+void Enemy::Impl::Death()
+{
+	// 武器、影を非表示
+	m_Owner->m_live = false;
+	m_weapon->SetLive(false);
+	m_Owner->m_Shadow->SetLive(false);
+	hp = 0;
 }
 
 void Enemy::Impl::LookAt(Vector3 ta_pos) {
@@ -1399,7 +1413,7 @@ void Enemy::Impl::StunUpdate()
 }
 
 // 行動不能状態にする
-void Enemy::Impl::Stun(optional<Vector3> knockbackDir)
+void Enemy::Impl::Stun()
 {
 	StateReset();
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする

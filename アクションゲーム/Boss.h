@@ -27,10 +27,9 @@ public:
 	void SetTarget(class Player* player);
 	void SetDEF(int _def);
 	void ShotBullet();
-	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // s“®•s”\ó‘Ô‚É‚·‚é
-	bool GetLive();
-	int GetHP();
+	void Stun();
 	Pole* GetWeapon();
+	int GetHP();
 	void HitObject(Object* ob) override {
 		ob->OnHit(this);
 	}

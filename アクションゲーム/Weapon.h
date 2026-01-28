@@ -34,7 +34,7 @@ protected:
 
     DirectX::SimpleMath::Vector3 angle_debug{};//角度の補正値(デバッグ用)
 
-	Object* m_Owner = nullptr;//所有者
+	GolfBall* m_Owner = nullptr;//所有者
  
     int atk = 1;//攻撃力
     int framecount = 0;//タイマー変数
@@ -58,12 +58,12 @@ public:
 
 	void SetColor(DirectX::SimpleMath::Vector4 color, int index = -1);//マテリアルの色を変更する、 indexが0未満の場合全てのマテリアルの色を変更する
 
-	void SetOwner(Object* owner) { m_Owner = owner; }// 所有者をセット
+    void SetOwner(class GolfBall* owner);
     
     bool GetPl() { return pl; }
     
     int GetAtk() { return atk; }
 
-	Object* GetOwner() { return m_Owner; }
+    GolfBall* GetOwner();
 };
 

@@ -19,6 +19,8 @@ void Enemy::Uninit() { impl->Uninit(); }
 
 void Enemy::ReInit() { impl->ReInit(); }
 
+void Enemy::Stun() { impl->Stun(); }
+
 void Enemy::SetTarget(Object* ta) { impl->SetTarget(ta); }
 
 int Enemy::GetHP() { return impl->GetHP(); }

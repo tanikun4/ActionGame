@@ -24,7 +24,7 @@ public:
 	void Draw();
 	void Uninit();
 	void Damage(int _atk);
-	void Stun(std::optional<DirectX::SimpleMath::Vector3> knockbackDir = std::nullopt); // 行動不能状態にする
+	void Stun(); // 行動不能状態にする
 	void SetDEF(int _def) { def = _def; }
 	void SetTarget(Object* ta) { m_target = ta; }
 
@@ -147,6 +147,7 @@ private:
 	void StunUpdate();
 	void Jump(float _power = 1.5f);
 	void StateReset();//状態リセット
+	void Death();
 
 	void Thrust(ThrustType type);
 	bool ManyThrust(int maxcount);

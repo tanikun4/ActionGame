@@ -11,14 +11,20 @@ using namespace DirectX::SimpleMath;
 void EnemyManager::Init() {
 	if (m_Instance) return; // “ñd‰Šú‰»–h~
 	m_Instance = make_unique<EnemyManager>();
-	for(int i = 0; i < ENEMY_POOLSIZE; ++i){
-		m_Instance->m_enemies.emplace_back(Game::GetInstance()->AddObject<Enemy>());
-		m_Instance->m_enemies.back()->SetLive(false);
-	}
 }
 
 EnemyManager* EnemyManager::GetInstance() {
 	return m_Instance.get();
+}
+
+// “GƒIƒuƒWƒFƒNƒg‚ğŠm•Û‚·‚é
+void EnemyManager::AddEnemys()
+{
+    m_enemies.clear();
+    for (int i = 0; i < ENEMY_POOLSIZE; ++i) {
+        m_enemies.emplace_back(Game::GetInstance()->AddObject<Enemy>());
+        m_enemies.back()->SetLive(false);
+    }
 }
 
 void EnemyManager::SetTarget(Object* ta)
@@ -43,7 +49,7 @@ void EnemyManager::SetEnemy(int num, const Vector3& spawnrange) {
     if (num > ENEMY_POOLSIZE)
         num = ENEMY_POOLSIZE;
 
-    constexpr float MIN_DISTANCE = 5.0f; // “G“¯m‚ÌÅ¬‹——£
+    constexpr float MIN_DISTANCE = 20.0f; // “G“¯m‚ÌÅ¬‹——£
     constexpr int   MAX_TRY = 30;          // ˆø‚«’¼‚µãŒÀ
 
     std::vector<Vector3> placedPositions;
@@ -88,6 +94,6 @@ void EnemyManager::SetEnemy(int num, const Vector3& spawnrange) {
     }
 }
 
-const vector<unique_ptr<Enemy>>& EnemyManager::GetEnemies() {
+const vector<Enemy*> EnemyManager::GetEnemies() {
 	return m_enemies;
 }

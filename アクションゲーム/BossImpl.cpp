@@ -54,7 +54,7 @@ void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 		Stun();
 
 	if (ImGui::Button("DEATH")) {
-		hp = 0;
+		Death();
 		m_hp_gauge.ChangeGauge(hp, maxhp);
 	}
 
@@ -200,13 +200,6 @@ void Boss::Impl::SetGauge() {
 	m_hp_gauge.SetColor({ 1,0.5f,0,1 });
 }
 
-bool Boss::Impl::GetLive() {
-	if (hp > 0) {
-		return true;
-	}
-	return false;
-}
-
 void Boss::Impl::Damage(int _atk) {
 	if (inviFg)  return;
 	//防御力分ダメージ軽減
@@ -243,6 +236,17 @@ void Boss::Impl::Damage(int _atk) {
 	// ダメージがある場合(デモ中でない)HPゲージ更新
 	if(_atk > 0)
 		m_hp_gauge.ChangeGauge(hp, maxhp);
+
+	if (hp <= 0) Death();
+}
+
+void Boss::Impl::Death()
+{
+	// 武器、影を非表示にする
+	m_Owner->m_live = false;
+	m_weapon->SetLive(false);
+	m_Owner->m_Shadow->SetLive(false);
+	hp = 0;
 }
 
 void Boss::Impl::LookAt(Vector3 ta_pos) {
@@ -1406,7 +1410,7 @@ void Boss::Impl::StunUpdate()
 }
 
 // 行動不能状態にする
-void Boss::Impl::Stun(optional<Vector3> knockbackDir) 
+void Boss::Impl::Stun() 
 {
 	StateReset();
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
@@ -1417,11 +1421,6 @@ void Boss::Impl::Stun(optional<Vector3> knockbackDir)
 	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 	m_spinFg = false;
 	m_Owner->is_SPECIALMOVE = false;// 特殊移動解除
-	/*if (knockbackDir) {
-		m_Owner->m_ForwardRotation.y = knockbackDir.value().y;
-		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
-
-	}*/
 	m_Owner->m_Rotation.x -= PI / 8;//少し上に仰け反る
 }
 

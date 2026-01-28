@@ -56,7 +56,7 @@ void Stage1Scene::Init()
 	GroundManager::GetInstance().Init();
 
 	EnemyManager::Init();
-
+	EnemyManager::GetInstance()->AddEnemys();
 
 	player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);

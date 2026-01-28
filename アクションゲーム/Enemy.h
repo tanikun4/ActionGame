@@ -2,12 +2,6 @@
 #include "GolfBall.h"
 
 class Camera;
-class Pole;
-class Boss;
-class Bullet;
-class TestCube;
-class PlayerImpl;
-class Projectile;
 
 class Enemy :
     public GolfBall
@@ -38,6 +32,7 @@ public:
 	void Uninit() override;
 
 	void ReInit();
+	void Stun();
 
 	void SetTarget(Object* ta);
 	int GetHP();
@@ -46,10 +41,10 @@ public:
 	// Hit ŒniŠO•”‚©‚çŒÄ‚Î‚ê‚é‚Ì‚Å public ‚Ì‚Ü‚Üj
 	void HitObject(Object* ob) override { ob->OnHit(this); }
 
-	void OnHit(Pole* po);
-	void OnHit(Bullet* bu);
-	void OnHit(Projectile* pr);
-	void OnHit(TestCube* cube);
+	void OnHit(class Pole* po);
+	void OnHit(class Bullet* bu);
+	void OnHit(class Projectile* pr);
+	void OnHit(class TestCube* cube);
 	void OnHit(Object* ob) override {};
 };
 

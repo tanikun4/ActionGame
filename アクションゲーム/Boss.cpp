@@ -22,11 +22,9 @@ void Boss::Draw() { impl->Draw(); }
 
 void Boss::Uninit() { impl->Uninit(); }
 
-bool Boss::GetLive() { return impl->GetLive(); }
-
 void Boss::Damage(int _atk) { impl->Damage(_atk); }
 
-void Boss::Stun(optional<Vector3> knockbackDir) { impl->Stun(knockbackDir); }
+void Boss::Stun() { impl->Stun(); }
 
 void Boss::ShotBullet() { impl->ShotBullet(); }
 

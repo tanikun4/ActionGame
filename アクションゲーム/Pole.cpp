@@ -349,18 +349,18 @@ void Pole::SwingEnd() {
 
 // 突き攻撃開始、デフォルト版
 void Pole::Thrust() {
-	ThrustStart({ 0, 0, 0 }, { 0, 0, 10 }, 2, 0.3f);
+	ThrustStart({ 0, 0, 0 }, { 0, 0, m_Scale.y * 2.5f }, 2, 0.3f);
 }
 
 // 突き攻撃開始、デフォルト版
 void Pole::Thrust_Right() {
-	ThrustStart({ 6, 0, 0 }, { 6, 0, 10 }, 2, 0.3f);
+	ThrustStart({ m_Scale.x * 1.5f, 0, 0 }, { m_Scale.x * 1.5f, 0, m_Scale.y * 2.5f }, 2, 0.3f);
 }
 
 
 // 突き攻撃開始、デフォルト版
 void Pole::Thrust_Left() {
-	ThrustStart({ -6, 0, 0 }, { -6, 0, 10 }, 2, 0.3f);
+	ThrustStart({ -m_Scale.x * 1.5f, 0, 0 }, { -m_Scale.x * 1.5f, 0, m_Scale.y * 2.5f }, 2, 0.3f);
 }
 
 
