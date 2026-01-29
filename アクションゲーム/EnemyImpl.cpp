@@ -139,12 +139,12 @@ void Enemy::Impl::Update() {
 	switch (m_Owner->m_State) {
 	case NORMAL:
 		Move();
-		if (m_stateframe > 240) {
-			m_Owner->m_State = ATTACK;
-			m_stateframe = 0;
-			m_Owner->m_Velocity_f = 0;
-		}
-		++m_stateframe;
+		//if (m_stateframe > 240) {
+		//	m_Owner->m_State = ATTACK;
+		//	m_stateframe = 0;
+		//	m_Owner->m_Velocity_f = 0;
+		//}
+		//++m_stateframe;
 		break;
 	case ATTACK:
 		AttackUpdate();
@@ -204,6 +204,11 @@ void Enemy::Impl::ReInit() {
 	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // 攻撃をランダムに設定、以降固定される
 }
 
+void Enemy::Impl::Attack()
+{
+	m_Owner->m_State = ATTACK;
+	m_Owner->m_Velocity_f = 0;
+}
 
 void Enemy::Impl::Damage(int _atk) {
 	if (inviFg)  return;
@@ -242,6 +247,7 @@ void Enemy::Impl::Damage(int _atk) {
 		Death();
 	}
 }
+
 
 void Enemy::Impl::Death()
 {
@@ -321,11 +327,14 @@ void Enemy::Impl::AttackUpdate() {
 
 		// 終了フェーズ、終了処理を行う
 		if (m_attackPhase == AttackPhase::END) {
-			m_Owner->m_State = NORMAL;
-			m_attackframe = 0;
-			attack_kind = NONE;//攻撃終了
+			//m_Owner->m_State = NORMAL;
+			//m_attackframe = 0;
+			//attack_kind = NONE;//攻撃終了
+			//m_attackPhase = AttackPhase::ENTER;
+
 			m_weapon->SwingEnd();
-			m_attackPhase = AttackPhase::ENTER;
+			m_Owner->m_State = NORMAL;
+			StateReset();
 		}
 		break;
 
@@ -419,12 +428,15 @@ void Enemy::Impl::RotateSwing() {
 
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
+		//m_Owner->m_State = NORMAL;
+		//m_spinFg = false;
+		//m_stateframe = 0;
+		//m_attackframe = 0;
+		//attack_kind = NONE;//攻撃終了
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_Owner->m_State = NORMAL;
-		m_spinFg = false;
-		m_stateframe = 0;
-		m_attackframe = 0;
-		attack_kind = NONE;//攻撃終了
-		m_attackPhase = AttackPhase::ENTER;
+		StateReset();
 	}
 }
 
@@ -501,12 +513,16 @@ void Enemy::Impl::SwingVerticalRush() {
 	}
 
 	if (m_attackPhase == AttackPhase::END) {
-		m_Owner->m_State = NORMAL;
-		m_attackframe = 0;
+		//m_Owner->m_State = NORMAL;
+		//m_attackframe = 0;
+		//m_weapon->SwingEnd();
+		//m_lookatFg = true;
+		//m_rotatespeed = 0.01f;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_weapon->SwingEnd();
-		m_lookatFg = true;
-		m_rotatespeed = 0.01f;
-		m_attackPhase = AttackPhase::ENTER;
+		m_Owner->m_State = NORMAL;
+		StateReset();
 	}
 }
 
@@ -551,12 +567,15 @@ void Enemy::Impl::ManyThrustLookAt() {
 	}
 
 	if (m_attackPhase == AttackPhase::END) {
-		m_lookatFg = true;
-		m_attackframe = 0;
+		//m_lookatFg = true;
+		//m_attackframe = 0;
+		//m_Owner->m_State = NORMAL;
+		//m_attackcount = 0;
+		//m_stateframe = 0;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_Owner->m_State = NORMAL;
-		m_attackcount = 0;
-		m_stateframe = 0;
-		m_attackPhase = AttackPhase::ENTER;
+		StateReset();
 	}
 
 }
@@ -645,15 +664,19 @@ void Enemy::Impl::ThreeSwing() {
 
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
+		//m_weapon->StanceEnd();
+		//m_Owner->m_State = NORMAL;
+		//m_stateframe = 0;
+		//m_attackframe = 0;
+		//m_attackcount = 0;
+		//m_rotatespeed = 0.01f;
+		//m_rushFg = false;
+		//m_lookatFg = true;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_weapon->StanceEnd();
 		m_Owner->m_State = NORMAL;
-		m_stateframe = 0;
-		m_attackframe = 0;
-		m_attackcount = 0;
-		m_rotatespeed = 0.01f;
-		m_rushFg = false;
-		m_lookatFg = true;
-		m_attackPhase = AttackPhase::ENTER;
+		StateReset();
 	}
 
 }
@@ -738,15 +761,18 @@ void Enemy::Impl::JumpSpinSlash() {
 
 	// 攻撃終了処理
 	if (m_attackPhase == AttackPhase::END) {
+		//m_Owner->m_State = NORMAL;
+		//m_stateframe = 0;
+		//m_attackframe = 0;
+		//m_attackcount = 0;
+		//m_rushFg = false;
+		//m_lookatFg = true;
+		//m_Owner->m_Rotation.x = 0;
+		//m_attackPhase = AttackPhase::ENTER;
+		
 		m_weapon->AttackEnd();
 		m_Owner->m_State = NORMAL;
-		m_stateframe = 0;
-		m_attackframe = 0;
-		m_attackcount = 0;
-		m_rushFg = false;
-		m_lookatFg = true;
-		m_Owner->m_Rotation.x = 0;
-		m_attackPhase = AttackPhase::ENTER;
+		StateReset();
 	}
 
 }
@@ -807,14 +833,18 @@ void Enemy::Impl::JumpSpinSlashRush() {
 	// 攻撃終了処理
 	if (m_attackPhase == AttackPhase::END) {
 		m_weapon->AttackEnd();
+		//m_Owner->m_State = NORMAL;
+		//m_stateframe = 0;
+		//m_attackframe = 0;
+		//m_attackcount = 0;
+		//m_rushFg = false;
+		//m_lookatFg = true;
+		//m_Owner->m_Rotation.x = 0;
+		//m_attackPhase = AttackPhase::ENTER;
+
+		m_weapon->AttackEnd();
 		m_Owner->m_State = NORMAL;
-		m_stateframe = 0;
-		m_attackframe = 0;
-		m_attackcount = 0;
-		m_rushFg = false;
-		m_lookatFg = true;
-		m_Owner->m_Rotation.x = 0;
-		m_attackPhase = AttackPhase::ENTER;
+		StateReset();
 	}
 
 }
@@ -905,13 +935,16 @@ void  Enemy::Impl::SonicBoomShot() {
 
 	if (m_attackPhase == AttackPhase::END)
 	{
+		//m_attackframe = 0;
+		//m_attackcount = 0;
+		//m_rotatespeed = 0.01f;
+		//attack_kind = NONE;//攻撃終了
+		//m_lookatFg = true;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_weapon->SwingEnd();
-		m_attackframe = 0;
-		m_attackcount = 0;
-		m_rotatespeed = 0.01f;
-		attack_kind = NONE;//攻撃終了
-		m_lookatFg = true;
-		m_attackPhase = AttackPhase::ENTER;
+		m_Owner->m_State = NORMAL;
+		StateReset();
 	}
 }
 
@@ -1007,14 +1040,17 @@ void Enemy::Impl::WrapAroundThrust() {
 	}
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
-		m_Owner->m_State = NORMAL;
-		m_attackframe = 0;
+		//m_Owner->m_State = NORMAL;
+		//m_attackframe = 0;
+		//m_lookatFg = true;
+		//m_rotatespeed = 0.01f;
+		//m_rushFg = false;
+		//m_attackcount = 0;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_weapon->SwingEnd();
-		m_lookatFg = true;
-		m_rotatespeed = 0.01f;
-		m_rushFg = false;
-		m_attackcount = 0;
-		m_attackPhase = AttackPhase::ENTER;
+		m_Owner->m_State = NORMAL;
+		StateReset();
 	}
 }
 
@@ -1074,14 +1110,17 @@ void Enemy::Impl::JumpSpinSlashShot()
 	// 終了フェーズ、攻撃終了処理を行う
 	if (m_attackPhase == AttackPhase::END)
 	{
+		//m_Owner->m_State = NORMAL;
+		//m_stateframe = 0;
+		//m_attackframe = 0;
+		//m_attackcount = 0;
+		//m_rushFg = false;
+		//m_lookatFg = true;
+		//m_Owner->m_Rotation.x = 0;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_Owner->m_State = NORMAL;
-		m_stateframe = 0;
-		m_attackframe = 0;
-		m_attackcount = 0;
-		m_rushFg = false;
-		m_lookatFg = true;
-		m_Owner->m_Rotation.x = 0;
-		m_attackPhase = AttackPhase::ENTER;
+		StateReset();
 	}
 }
 
@@ -1146,13 +1185,16 @@ void Enemy::Impl::CrossShot() {
 
 	// 終了フェーズ、攻撃終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
+		//m_attackframe = 0;
+		//m_attackcount = 0;
+		//m_rotatespeed = 0.01f;
+		//attack_kind = NONE;//攻撃終了
+		//m_lookatFg = true;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_weapon->SwingEnd();
-		m_attackframe = 0;
-		m_attackcount = 0;
-		m_rotatespeed = 0.01f;
-		attack_kind = NONE;//攻撃終了
-		m_lookatFg = true;
-		m_attackPhase = AttackPhase::ENTER;
+		m_Owner->m_State = NORMAL;
+		StateReset();
 	}
 }
 
@@ -1214,13 +1256,16 @@ void Enemy::Impl::RotateSwingFibonacci()
 
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
-		m_lookatFg = true;
-		m_spinFg = false;
+		//m_lookatFg = true;
+		//m_spinFg = false;
+		//m_Owner->m_State = NORMAL;
+		//m_stateframe = 0;
+		//m_attackframe = 0;
+		//attack_kind = NONE;//攻撃終了
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_Owner->m_State = NORMAL;
-		m_stateframe = 0;
-		m_attackframe = 0;
-		attack_kind = NONE;//攻撃終了
-		m_attackPhase = AttackPhase::ENTER;
+		StateReset();
 	}
 }
 
@@ -1305,13 +1350,16 @@ void Enemy::Impl::AlterEgoShot()
 
 	// 終了フェーズ、攻撃終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
+		//m_attackframe = 0;
+		//m_attackcount = 0;
+		//m_rotatespeed = 0.01f;
+		//attack_kind = NONE;//攻撃終了
+		//m_lookatFg = true;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_weapon->SwingEnd();
-		m_attackframe = 0;
-		m_attackcount = 0;
-		m_rotatespeed = 0.01f;
-		attack_kind = NONE;//攻撃終了
-		m_lookatFg = true;
-		m_attackPhase = AttackPhase::ENTER;
+		m_Owner->m_State = NORMAL;
+		StateReset();
 	}
 }
 
@@ -1375,13 +1423,16 @@ void Enemy::Impl::AlterEgoSpinSlash()
 
 	// 終了フェーズ、攻撃終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
+		//m_Owner->m_State = NORMAL;
+		//m_stateframe = 0;
+		//m_attackframe = 0;
+		//m_attackcount = 0;
+		//m_rushFg = false;
+		//m_lookatFg = true;
+		//m_attackPhase = AttackPhase::ENTER;
+
 		m_Owner->m_State = NORMAL;
-		m_stateframe = 0;
-		m_attackframe = 0;
-		m_attackcount = 0;
-		m_rushFg = false;
-		m_lookatFg = true;
-		m_attackPhase = AttackPhase::ENTER;
+		StateReset();
 	}
 }
 
@@ -1434,7 +1485,6 @@ void Enemy::Impl::Stun()
 
 // スタン時等の際のリセット処理
 void Enemy::Impl::StateReset() {
-	attack_kind = NONE;//攻撃終了
 	m_Owner->m_Rotation.x = 0;
 	m_attackcount = 0;
 	m_stateframe = 0;

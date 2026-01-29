@@ -18,6 +18,7 @@ void Enemy::Draw() { impl->Draw(); }
 void Enemy::Uninit() { impl->Uninit(); }
 
 void Enemy::ReInit() { impl->ReInit(); }
+void Enemy::Attack() { impl->Attack(); }
 
 void Enemy::Stun() { impl->Stun(); }
 
@@ -25,6 +26,8 @@ void Enemy::SetTarget(Object* ta) { impl->SetTarget(ta); }
 
 int Enemy::GetHP() { return impl->GetHP(); }
 Pole* Enemy::GetWeapon() { return impl->GetWeapon(); }
+bool Enemy::IsAttackable() { return impl->IsAttackable(); }
+bool Enemy::IsAttacking() { return impl->IsAttacking(); }
 
 void Enemy::OnHit(Pole* po) { impl->OnHit(po); }
 void Enemy::OnHit(Bullet* bu) { impl->OnHit(bu); }

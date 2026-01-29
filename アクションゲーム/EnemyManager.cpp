@@ -1,6 +1,7 @@
 #include "EnemyManager.h"
 #include "Game.h"
 #include "Enemy.h"
+#include "RandomCommon.h"
 
 // static メンバの実体定義
 std::unique_ptr<EnemyManager> EnemyManager::m_Instance = nullptr;
@@ -45,6 +46,7 @@ int EnemyManager::EnemyCount()
 	return count;
 }
 
+// 敵の配置
 void EnemyManager::SetEnemy(int num, const Vector3& spawnrange) {
     if (num > ENEMY_POOLSIZE)
         num = ENEMY_POOLSIZE;
@@ -62,8 +64,8 @@ void EnemyManager::SetEnemy(int num, const Vector3& spawnrange) {
 
         for (int t = 0; t < MAX_TRY; ++t)
         {
-            pos.x = RandRange(-spawnrange.x, spawnrange.x);
-            pos.z = RandRange(-spawnrange.z, spawnrange.z);
+            pos.x = RandomRange(-spawnrange.x, spawnrange.x);
+            pos.z = RandomRange(-spawnrange.z, spawnrange.z);
             pos.y = spawnrange.y;
 
             bool tooClose = false;
@@ -92,8 +94,41 @@ void EnemyManager::SetEnemy(int num, const Vector3& spawnrange) {
         m_enemies[i]->SetPosition(pos);
         m_enemies[i]->ReInit();
     }
+
+    // 攻撃タイミングを設定
+    attackframe = baseInterval + RandomRange(-randomRange, randomRange);
 }
 
 const vector<Enemy*> EnemyManager::GetEnemies() {
 	return m_enemies;
 }
+void EnemyManager::Update() {
+    --attackframe;
+
+    if (attackframe <= 0)
+    {
+		AttackEnemy();
+        // 次の攻撃タイミングを設定
+        attackframe = baseInterval + RandomRange(-randomRange, randomRange);
+    }
+}
+
+void EnemyManager::AttackEnemy() {
+    if (current_attacker >= max_attacker)
+        return;
+
+    std::vector<Enemy*> candidates;
+    for (auto* e : m_enemies)
+    {
+        if (e->IsAttackable())
+            candidates.emplace_back(e);
+    }
+
+    if (candidates.empty())
+        return;
+
+    Enemy* chosen = candidates[rand() % candidates.size()];
+    chosen->Attack(); // 外部攻撃開始
+    ++current_attacker;
+}
+

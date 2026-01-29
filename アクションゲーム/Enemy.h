@@ -33,10 +33,13 @@ public:
 
 	void ReInit();
 	void Stun();
+	void Attack();//UŒ‚‚·‚é
 
 	void SetTarget(Object* ta);
 	int GetHP();
 	Pole* GetWeapon();
+	bool IsAttackable();
+	bool IsAttacking();
 
 	// Hit ŒniŠO•”‚©‚çŒÄ‚Î‚ê‚é‚Ì‚Å public ‚Ì‚Ü‚Üj
 	void HitObject(Object* ob) override { ob->OnHit(this); }

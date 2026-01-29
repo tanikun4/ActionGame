@@ -28,12 +28,15 @@ public:
 	void SetDEF(int _def) { def = _def; }
 	void SetTarget(Object* ta) { m_target = ta; }
 
+	void Attack();//攻撃開始する、マネージャーからこの関数を呼び出し、攻撃処理を開始する
+	// 自前では攻撃開始を行わない。
 	void ReInit();// 再初期化、敵を復活させる際の処理
 
 	void ShotBullet();
 	int GetHP();
-
 	Pole* GetWeapon();
+	bool IsAttackable() { return m_Owner->m_State == NORMAL; }// 攻撃可能かを返す
+	bool IsAttacking() { return m_Owner->m_State == ATTACK; } // 攻撃中かを返す
 
 	void OnHit(Pole* pole);
 	void OnHit(Bullet* bu);
