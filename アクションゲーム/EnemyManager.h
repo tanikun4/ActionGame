@@ -5,6 +5,7 @@
 #include <memory>
 
 constexpr int ENEMY_POOLSIZE = 5;
+constexpr float ENEMY_MIN_DISTANCE = 20.0f;
 
 class Object;
 class Enemy;
@@ -16,14 +17,15 @@ public:
     friend class Manager<EnemyManager>;
     int EnemyCount();
     void SetEnemy(int num,const DirectX::SimpleMath::Vector3& spawnrange);
-    static void Init();
+    //static void Init();
     void Update();
     void Draw();
     void Uninit();
-    static EnemyManager* GetInstance();
+    //static EnemyManager* GetInstance();
     void AddEnemys();
     void SetTarget(Object* ta);
     const std::vector<Enemy*> GetEnemies();
+    bool NearDistance(const Enemy* self ,DirectX::SimpleMath::Vector3* awaydir = nullptr) const;
 private:
     //EnemyManager() {};
     //~EnemyManager() {};
@@ -31,7 +33,7 @@ private:
     std::vector<Enemy*> m_enemies;
     static std::unique_ptr<EnemyManager> m_Instance; // ƒQ[ƒ€ƒCƒ“ƒXƒ^ƒ“ƒX
 
-	int max_attacker = 2; //“¯‚ÉUŒ‚‚·‚é“G‚ÌÅ‘å”
+	int max_attacker = 1; //“¯‚ÉUŒ‚‚·‚é“G‚ÌÅ‘å”
 	int current_attacker = 0;// Œ»İUŒ‚’†‚Ì“G‚Ì”
 
 	int attackframe = 0; // UŒ‚—pƒtƒŒ[ƒ€ƒJƒEƒ“ƒg

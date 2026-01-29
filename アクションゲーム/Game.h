@@ -26,7 +26,7 @@ private:
 	Scene* m_Scene = nullptr; // シーン
 
 	std::vector<std::unique_ptr<Object>> m_Objects; // オブジェクト
-	std::unique_ptr<Input> m_Input;  // 入力処理
+	//std::unique_ptr<Input> m_Input;  // 入力処理
 	std::unique_ptr<Camera> m_Camera; // カメラ
 	std::unique_ptr<WireRenderer> m_WireRenderer; // ワイヤーレンダラー
 	int max_stop_frame = 3;//ヒットストップのフレーム

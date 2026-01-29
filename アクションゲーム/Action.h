@@ -10,6 +10,7 @@ enum class Action {
 	Guard,
 	Dodge,
     Debug,
+    Enter,
 
 	ActionMax
 };

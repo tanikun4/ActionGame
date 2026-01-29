@@ -15,7 +15,7 @@ Game* Game::m_Instance;
 // コンストラクタ
 Game::Game()
 {
-	m_Input = std::make_unique<Input>(); //入力処理を作成
+	//m_Input = std::make_unique<Input>(); //入力処理を作成
 	m_Camera = std::make_unique<Camera>(); //カメラを作成
 	m_WireRenderer = std::make_unique<WireRenderer>(); //ワイヤーレンダラーを作成
 }
@@ -75,19 +75,18 @@ void Game::Update()
 	m_Instance->m_Camera->Update();
 
 	// 入力処理更新
-	m_Instance->m_Input->Update();
+	//m_Instance->m_Input->Update();
 	ActionInput::GetInstance().Update();
 
 	// フェード更新
 	Fade::GetInstance()->Update();
 
 
-	// ------------------------------
-// 更新可否判定（最初に1回）
-// ------------------------------
+	// 更新可否判定（最初に1回）
 	bool updateObjects = true;
 	bool updateEffects = true;
 
+	// ストップ処理
 	if (m_Instance->stop)
 	{
 		updateObjects = false;
@@ -100,9 +99,9 @@ void Game::Update()
 			m_Instance->stop_frame = 0;
 		}
 	}
-	else if (m_Instance->slow)
+	else if (m_Instance->slow)//スローモーション処理
 	{
-		// スローモーション中
+		//偶数フレームでのみ更新
 		updateObjects = (m_Instance->slow_frame & 1) == 0;
 		updateEffects = updateObjects;
 
@@ -114,7 +113,7 @@ void Game::Update()
 		}
 	}
 
-	// エフェクト更新処
+	// エフェクト更新処理
 	if (updateEffects) EffectManager::Update();
 
 	// オブジェクト更新
@@ -126,7 +125,7 @@ void Game::Update()
 		}
 	}
 
-	if (Input::GetKeyTrigger(VK_O)) { // デバッグモード切り替え
+	if (ActionInput::GetInstance().IsTrigger(Action::Debug)) { // デバッグモード切り替え
 		m_Instance->debugmode = !m_Instance->debugmode;
 	}
 
@@ -144,8 +143,7 @@ void Game::Draw()
 	Renderer::Begin();
 
 	// カメラ描画
-	m_Instance->m_Camera->Draw();
-
+	//m_Instance->m_Camera->Draw();
 
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)
@@ -180,6 +178,7 @@ void Game::Uninit()
 	// デバッグUIの終了処理
 	DebugUI::DisposeUI();
 
+	Fade::GetInstance()->Uninit();
 
 	//エフェクトマネージャ終了処理
 	EffectManager::Uninit();

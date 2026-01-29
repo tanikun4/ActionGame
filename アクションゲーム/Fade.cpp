@@ -11,7 +11,7 @@ void Fade::Init(Camera* cam)
 	fadetex = std::make_unique<Texture2D>(cam);
 	fadetex->Init();
 	fadetex->SetTexture("assets/texture/fade.png");
-	fadetex->SetPosition(0.0f, 0.0f, 0.0f);
+	fadetex->SetPosition(0.0f, 0.0f, -10.0f);//­‚µŽè‘O‚É’u‚­
 	fadetex->SetRotation(0.0f, 0.0f, 0.0f);
 	fadetex->SetScale(1280.0f, 720.0f, 0.0f);
 	fadetex->SetColor({ 0,0,0,0 });
@@ -37,7 +37,7 @@ void Fade::Draw()
 
 void Fade::Uninit() 
 {
-	
+	m_Instance.reset();
 }
 
 Fade* Fade::GetInstance() {

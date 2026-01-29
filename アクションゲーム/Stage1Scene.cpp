@@ -55,16 +55,16 @@ void Stage1Scene::Init()
 
 	GroundManager::GetInstance().Init();
 
-	EnemyManager::Init();
-	EnemyManager::GetInstance()->AddEnemys();
+	//EnemyManager::Init();
+	EnemyManager::GetInstance().AddEnemys();
 
 	player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
 	player->SetDemoMode(false);
 
 	// 敵の配置
-	EnemyManager::GetInstance()->SetEnemy(5, { (groundsize.x - 50) * 0.5f,20,(groundsize.y - 50) * 0.5f });
-	EnemyManager::GetInstance()->SetTarget(player);
+	EnemyManager::GetInstance().SetEnemy(5, { (groundsize.x - 50) * 0.5f,20,(groundsize.y - 50) * 0.5f });
+	EnemyManager::GetInstance().SetTarget(player);
 
 	// 敵の取得
 	vector<Enemy*> enemy = Game::GetInstance()->GetObjects<Enemy>();
@@ -182,39 +182,12 @@ void Stage1Scene::Init()
 //更新
 void Stage1Scene::Update()
 {
-	//Arrow* arrow = dynamic_cast<Arrow*>(m_MySceneObjects[2]); // 矢印
-	// 数を更新
-	//Texture2D* count[3];
-	//vector<Texture2D*> texture2D = Game::GetInstance()->GetObjects<Texture2D>();
-	//count[0] = texture2D[texture2D.size() - 3];//プレイヤーHP
-	//count[1] = texture2D[texture2D.size() - 2];//ボスのHP1桁目
-	//count[2] = texture2D[texture2D.size() - 1];//ボスのHP2桁目
-
-	//count[0]->SetUV(player->GetHP() + 1, 1, 10, 1); // プレイヤーHPのUVを指定
-	//count[1]->SetUV((boss->GetHP() % 10) + 1, 1, 10, 1); // ボスHP1桁目のUVを指定
-	//count[2]->SetUV((boss->GetHP() / 10) + 1, 1, 10, 1); // ボスHP2桁目のUVを指定
-	// 各桁を後ろから取得していく
-	//vector<Enemy*> enemy = Game::GetInstance()->GetObjects<Enemy>();
-	//int enemycount = 0;
-	//for (auto& en : enemy) {
-	//	if (en->GetLive()) {
-	//		enemycount++;
-	//	}
-	//}
-	//for (int i = 0; i < 2; i++) {
-	//	int cnt = enemycount % (int)pow(10, i + 1) / (int)pow(10, i); // 1桁取り出す
-
-	//	count[i + 1]->SetUV(cnt + 1, 1, 10, 1);  // 敵の数のUVを指定
-	//}
-	//count[1]->SetUV(EnemyManager::GetInstance().EnemyCount() + 1, 1, 10, 1); // 敵の数のUVを指定
-
 	Game::GetInstance()->CollisionObject(m_MySceneObjects);
+	EnemyManager::GetInstance().Update();
 
 	if(boss->GetHP() <= 0){
 		Game::GetInstance()->ChangeSceneFadeOut(RESULT);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
-		//count[1]->SetUV(1, 1, 10, 1);
-		//count[2]->SetUV(1, 1, 10, 1);
 	}else if (player->GetHP() <= 0) {
 		Game::GetInstance()->ChangeSceneFadeOut(GAMEOVER);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
@@ -233,5 +206,6 @@ void Stage1Scene::Uninit()
 		if(o) Game::GetInstance()->DeleteObject(o);
 		o = nullptr;
 	}
+	EnemyManager::GetInstance().Uninit();
 	m_MySceneObjects.clear();
 }

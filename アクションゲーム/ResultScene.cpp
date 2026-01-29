@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Texture2D.h"
 #include "Fade.h"
+#include "ActionInput.h"
 
 // コンストラクタ
 ResultScene::ResultScene()
@@ -30,7 +31,7 @@ void ResultScene::Init()
 void ResultScene::Update()
 {
 	// エンターキーを押してタイトルへ
-	if (Input::GetKeyTrigger(VK_RETURN))
+	if (ActionInput::GetInstance().IsTrigger(Action::Enter))
 	{
 		Game::GetInstance()->ChangeScene(TITLE);
 	}

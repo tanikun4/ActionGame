@@ -287,10 +287,13 @@ void Player::Impl::DebugPlayerStatus() {
     if (ImGui::Button("SLOWMOTION"))
         Game::GetInstance()->SlowMotion(slowtime);
 
-    ImGui::Checkbox("Invisible", &inviFg);
+	static bool inviFg_Debug = false;
+    ImGui::Checkbox("Invisible", &inviFg_Debug);
 
-    if (inviFg)
+    if (inviFg_Debug) {
+		inviFg = true;
         m_Owner->SetColor({ 0,0,1,0.5f });
+    }
     
 
 	ImGui::Checkbox("DEMOMODE", &demoMode);

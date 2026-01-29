@@ -37,6 +37,7 @@ public:
 	Pole* GetWeapon();
 	bool IsAttackable() { return m_Owner->m_State == NORMAL; }// 攻撃可能かを返す
 	bool IsAttacking() { return m_Owner->m_State == ATTACK; } // 攻撃中かを返す
+	bool IsAway() { return m_awayFg; } // 距離を取る動きをしているかを返す
 
 	void OnHit(Pole* pole);
 	void OnHit(Bullet* bu);
@@ -106,7 +107,7 @@ private:
 
 	AttackPhase m_attackPhase = AttackPhase::ENTER;
 
-	const int projectile_max = 5;//飛び道具の最大数
+	const int projectile_max = 3;//飛び道具の最大数
 
 	const int maxhp = 20;
 	int hp = maxhp;
@@ -114,7 +115,7 @@ private:
 	int m_stateframe = 0;//状態継続フレーム数
 	bool inviFg = false;
 	int invicount = 0;
-	float move_speed = 0.25f;
+	float move_speed = 0.1f;
 	float m_rotatespeed = 0.01f;
 	int attack_kind = 0;//攻撃の種類
 	int m_attackframe = 0;//攻撃時間
@@ -124,6 +125,8 @@ private:
 	bool m_lookatFg = true;//プレイヤーへの追従をするかどうか
 	bool m_rushFg = false;//突進しているかどうか
 	bool m_spinFg = false;//回転しているかどうか
+
+	bool m_awayFg = false;//距離を取る動きをしているかどうか
 	float jumppower = 1.5f;//ジャンプ力
 
 	bool m_slowFg = false;//動きが遅い状態か
@@ -145,6 +148,7 @@ private:
 	FibonacciAnim m_FiboAnim;// 黄金螺旋移動アニメーション構造体
 
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
+	void DistanceMove();// 他の敵と距離を取る移動
 	void Move();
 	void AttackUpdate();
 	void StunUpdate();
@@ -182,6 +186,6 @@ private:
 	void ProjectileShot();
 	void ProjectileShot_All();
 
-	void DebugBossStatus();
+	void DebugEnemyStatus();
 
 };

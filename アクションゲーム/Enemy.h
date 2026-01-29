@@ -40,6 +40,7 @@ public:
 	Pole* GetWeapon();
 	bool IsAttackable();
 	bool IsAttacking();
+	bool IsAway();
 
 	// Hit ŒniŠO•”‚©‚çŒÄ‚Î‚ê‚é‚Ì‚Å public ‚Ì‚Ü‚Üj
 	void HitObject(Object* ob) override { ob->OnHit(this); }

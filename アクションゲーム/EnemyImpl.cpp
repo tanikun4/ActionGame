@@ -8,6 +8,7 @@
 #include "Bullet.h"
 #include "DebugUI.h"
 #include "EffectManager.h"
+#include "EnemyManager.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -33,15 +34,15 @@ Enemy::Impl::~Impl()
 
 	for (auto& p : m_projectile)
 	{
-		p->Uninit();
 		p->SetLive(false);
 		p->SetOwner(nullptr);
+		p->Uninit();
 		p = nullptr;
 	}
 }
 
-void Enemy::Impl::DebugBossStatus() {//ボスの状態を操作する
-	ImGui::Begin("BossStatus");
+void Enemy::Impl::DebugEnemyStatus() {//ボスの状態を操作する
+	ImGui::Begin("EnemyStatus");
 
 	ImGui::Checkbox("NotUpdate", &notUpdate);
 	ImGui::Checkbox("Slow", &m_slowFg);
@@ -62,7 +63,7 @@ void Enemy::Impl::DebugBossStatus() {//ボスの状態を操作する
 
 	static int debug_attack_kind = -1;
 	ImGui::SliderInt("AttackKind", &debug_attack_kind, -1, KIND_MAX - 1);
-	if (ImGui::Button("BOSSATTACK")) {
+	if (ImGui::Button("ENEMYATTACK")) {
 		m_Owner->m_State = ATTACK;
 		m_stateframe = 0;
 		m_Owner->m_Velocity_f = 0;
@@ -116,9 +117,10 @@ void Enemy::Impl::Init() {
 	// 武器の軌跡色をセット
 	m_weapon->SetTrailColor({ 1,0,1,1 });
 
+	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // 攻撃をランダムに設定、以降固定される
+
 	SetProjectile();
 
-	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // 攻撃をランダムに設定、以降固定される
 
 	//DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
@@ -136,15 +138,13 @@ void Enemy::Impl::Update() {
 		}
 	}
 
+	// 目標に向かう
+	if (m_lookatFg)
+		LookAt(m_target->GetPosition());
+
 	switch (m_Owner->m_State) {
 	case NORMAL:
-		Move();
-		//if (m_stateframe > 240) {
-		//	m_Owner->m_State = ATTACK;
-		//	m_stateframe = 0;
-		//	m_Owner->m_Velocity_f = 0;
-		//}
-		//++m_stateframe;
+		DistanceMove();
 		break;
 	case ATTACK:
 		AttackUpdate();
@@ -154,13 +154,10 @@ void Enemy::Impl::Update() {
 		break;
 	}
 
-
-	if (m_lookatFg)
-		LookAt(m_target->GetPosition());
-
 	if (inviFg) {
 		++invicount;
 	}
+
 	if (invicount > 20) {
 		inviFg = false;
 		invicount = 0;
@@ -225,7 +222,7 @@ void Enemy::Impl::Damage(int _atk) {
 
 	//左から右へ移動するエフェクト再生
 	Vector3 pos = m_Owner->m_Position;
-	pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x);
+	pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x * 1.5f);
 	pos -= m_Camera->GetRightVector() * m_Owner->radius;
 
 	//エフェクトパラメーター構造体作成
@@ -256,6 +253,12 @@ void Enemy::Impl::Death()
 	m_weapon->SetLive(false);
 	m_Owner->m_Shadow->SetLive(false);
 	hp = 0;
+	for(auto& p : m_projectile)
+	{
+		p->SetLive(false);
+		p->SetOwner(nullptr);
+		p = nullptr;
+	}
 }
 
 void Enemy::Impl::LookAt(Vector3 ta_pos) {
@@ -1467,14 +1470,13 @@ void Enemy::Impl::StunUpdate()
 void Enemy::Impl::Stun()
 {
 	StateReset();
+	m_lookatFg = false;// lookat無効
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
 	m_vib.Start(1.0f, PI * 0.5f);//振動開始
 	m_weapon->AttackEnd();
 	m_weapon->Stance(10, StanceMode::VERTICAL);// 縦に構える
 	m_Owner->m_State = STUN;
 	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
-	m_spinFg = false;
-	m_Owner->is_SPECIALMOVE = false;// 特殊移動解除
 	/*if (knockbackDir) {
 		m_Owner->m_ForwardRotation.y = knockbackDir.value().y;
 		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
@@ -1489,8 +1491,10 @@ void Enemy::Impl::StateReset() {
 	m_attackcount = 0;
 	m_stateframe = 0;
 	m_attackframe = 0;
-	m_lookatFg = false;//lookat解除
+	m_lookatFg = true;//lookatを戻す
 	m_rushFg = false;
+	m_spinFg = false; // 回転状態フラグ解除
+	m_Owner->is_SPECIALMOVE = false;// 特殊移動解除
 	move_speed = 0.25f;// 移動速度を戻す
 	m_attackPhase = AttackPhase::ENTER;// 攻撃フェーズ初期化
 }
@@ -1513,6 +1517,34 @@ void Enemy::Impl::ShotBullet() {
 			break;
 		}
 	}
+
+}
+
+// 距離を取る移動処理
+void Enemy::Impl::DistanceMove() {
+
+	Vector3 forwardDir;
+	forwardDir.x = sinf(m_Owner->m_ForwardRotation.y);
+	forwardDir.z = cosf(m_Owner->m_ForwardRotation.y);
+	forwardDir.y = 0.0f;
+	forwardDir.Normalize();
+
+	// 敵から離れる方向を取得
+	Vector3 awayDir;
+	m_awayFg = EnemyManager::GetInstance().NearDistance(m_Owner, &awayDir);
+
+	constexpr float AVOID_RATE = 0.2f; // 0～1 小さいほどゆっくり回る
+
+	Vector3 blendedDir = forwardDir;
+
+	if (m_awayFg)
+	{
+		blendedDir = Vector3::Lerp(forwardDir, awayDir, AVOID_RATE);
+		blendedDir.Normalize();
+
+		m_Owner->m_ForwardRotation.y = atan2f(blendedDir.x, blendedDir.z);
+	}
+	Move();
 
 }
 

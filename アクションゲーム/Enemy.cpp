@@ -28,6 +28,7 @@ int Enemy::GetHP() { return impl->GetHP(); }
 Pole* Enemy::GetWeapon() { return impl->GetWeapon(); }
 bool Enemy::IsAttackable() { return impl->IsAttackable(); }
 bool Enemy::IsAttacking() { return impl->IsAttacking(); }
+bool Enemy::IsAway() { return impl->IsAway(); }
 
 void Enemy::OnHit(Pole* po) { impl->OnHit(po); }
 void Enemy::OnHit(Bullet* bu) { impl->OnHit(bu); }

@@ -11,6 +11,7 @@ public:
 
     void Init();
     void Update();
+	void Uninit();
 
     bool IsPress(Action a)   const;
     bool IsTrigger(Action a) const;

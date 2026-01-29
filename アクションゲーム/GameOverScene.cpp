@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Texture2D.h"
 #include "Fade.h"
+#include "ActionInput.h"
 
 // コンストラクタ
 GameOverScene::GameOverScene()
@@ -30,7 +31,7 @@ void GameOverScene::Init()
 void GameOverScene::Update()
 {
 	// エンターキーを押してタイトルへ
-	if (Input::GetKeyTrigger(VK_RETURN))
+	if (ActionInput::GetInstance().IsTrigger(Action::Enter))
 	{
 		Game::GetInstance()->ChangeScene(TITLE);
 	}

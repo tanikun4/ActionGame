@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Enemy.h"
 #include "RandomCommon.h"
+#include "Player.h"
 
 // static メンバの実体定義
 std::unique_ptr<EnemyManager> EnemyManager::m_Instance = nullptr;
@@ -9,14 +10,15 @@ std::unique_ptr<EnemyManager> EnemyManager::m_Instance = nullptr;
 using namespace std;
 using namespace DirectX::SimpleMath;
 
-void EnemyManager::Init() {
-	if (m_Instance) return; // 二重初期化防止
-	m_Instance = make_unique<EnemyManager>();
-}
-
-EnemyManager* EnemyManager::GetInstance() {
-	return m_Instance.get();
-}
+//void EnemyManager::Init() {
+//	if (m_Instance) return; // 二重初期化防止
+//	m_Instance = make_unique<EnemyManager>();
+//}
+//
+//EnemyManager* EnemyManager::GetInstance()
+//{
+//	return m_Instance.get();
+//}
 
 // 敵オブジェクトを確保する
 void EnemyManager::AddEnemys()
@@ -56,6 +58,13 @@ void EnemyManager::SetEnemy(int num, const Vector3& spawnrange) {
 
     std::vector<Vector3> placedPositions;
     placedPositions.reserve(num);
+
+	// プレイヤーの位置も対象にする
+    Player* player = Game::GetInstance()->GetObjects<Player>()[0];
+    if (player)
+    {
+        placedPositions.emplace_back(player->GetPosition());
+    }
 
     for (int i = 0; i < num; ++i)
     {
@@ -113,13 +122,27 @@ void EnemyManager::Update() {
     }
 }
 
+void EnemyManager::Uninit() {
+	m_enemies.clear();
+}
+
 void EnemyManager::AttackEnemy() {
-    if (current_attacker >= max_attacker)
-        return;
+    int current_attacker = 0;
 
     std::vector<Enemy*> candidates;
     for (auto* e : m_enemies)
     {
+
+        // 生存していなければスキップ
+        if (!e->GetLive())
+            continue;
+
+        if (e->IsAttacking()) {
+            ++current_attacker;
+            if (current_attacker >= max_attacker)
+                return;
+        }
+
         if (e->IsAttackable())
             candidates.emplace_back(e);
     }
@@ -127,8 +150,66 @@ void EnemyManager::AttackEnemy() {
     if (candidates.empty())
         return;
 
+	// ランダムに攻撃する敵を選択
     Enemy* chosen = candidates[rand() % candidates.size()];
     chosen->Attack(); // 外部攻撃開始
-    ++current_attacker;
 }
+
+bool EnemyManager::NearDistance(
+    const Enemy* self,
+    Vector3* awaydir
+) const
+{
+    bool found = false;
+    Vector3 awaySum = Vector3::Zero;
+
+    for (auto* e : m_enemies)
+    {
+
+		// 自分自身は無視
+        if (e == self)
+            continue;
+
+		// 生存していなければ対象にしない
+        if (!e->GetLive())
+            continue;
+
+		// 攻撃中なら対象にしない
+       /* if(e->IsAttacking())
+			continue;*/
+
+		// 距離を取っているなら対象にしない
+        if(e->IsAway())
+			continue;
+
+        Vector3 diff = self->GetPosition() - e->GetPosition();
+        float distSq = diff.LengthSquared();
+
+        if (distSq < ENEMY_MIN_DISTANCE * ENEMY_MIN_DISTANCE)
+        {
+            found = true;
+
+            // 方向が欲しい場合だけ計算
+            if (awaydir)
+                awaySum += diff;
+        }
+    }
+
+    // 方向出力が求められていて、敵がいた場合
+    if (awaydir)
+    {
+        if (found && awaySum.LengthSquared() > 0.0001f)
+        {
+            awaySum.Normalize();
+            *awaydir = awaySum;
+        }
+        else
+        {
+            *awaydir = Vector3::Zero;
+        }
+    }
+
+    return found;
+}
+
 

@@ -16,17 +16,14 @@ class Projectile :public Weapon
 {
 private:
 
-	//Collision::Sphere sphere { m_Position,m_Scale.x };
-
 	ProjectileSTATE m_state = ProjectileSTATE::NOT_ACTIVE;
 	float power = 0;//溜めた量
-	float charge_power = 1;//溜める速度
-	float max_power = 100;//パワーの最大値
+	float charge_power = 1.0f;//溜める速度
+	float max_power = 100.0f;//パワーの最大値
 	int shottime = 120;//飛んでいる時間
 	int shottime_max = 120;//飛んでいる時間の最大値
 	bool atkFg = false;//攻撃判定があるか
 	bool followFg = false;//持ち主に追従するか
-	//Object* m_Owner = nullptr;//持ち主
 
 	Collision::OBB obb{ m_Position,m_Rotation,m_Scale };
 

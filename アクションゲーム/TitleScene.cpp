@@ -12,6 +12,7 @@
 #include "GroundManager.h"
 #include "ICollider.h"
 #include "Fade.h"
+#include "ActionInput.h"
 
 #include "DebugUI.h"
 
@@ -29,10 +30,6 @@ TitleScene::~TitleScene()
 {
 	Uninit();
 }
-
-
-
-
 
 // 初期化
 void TitleScene::Init()
@@ -150,8 +147,8 @@ void TitleScene::Update()
 
 	Game::GetInstance()->CollisionObject(m_MySceneObjects);
 
-	// スペースキーを押してステージ1へ
-	if (Input::GetKeyTrigger(VK_RETURN))
+	// エンターキーを押してステージ1へ
+	if (ActionInput::GetInstance().IsTrigger(Action::Enter))
 	{
 		Game::GetInstance()->ChangeSceneFadeOut(STAGE1);
 	}

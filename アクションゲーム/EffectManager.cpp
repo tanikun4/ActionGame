@@ -15,7 +15,7 @@ EffectManager::EffectManager()
 // デストラクタ
 EffectManager::~EffectManager()
 {
-	m_Instance = nullptr;
+    //m_Instance.reset();
 }
 
 // 初期化

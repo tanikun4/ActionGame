@@ -18,6 +18,7 @@ void ActionInput::Init()
     bindings[(int)Action::Guard] = { 'I', XINPUT_GAMEPAD_Y};
     bindings[(int)Action::Dodge] = { 'J', XINPUT_GAMEPAD_B };
     bindings[(int)Action::Debug] = { 'O', XINPUT_GAMEPAD_BACK };
+	bindings[(int)Action::Enter] = { VK_RETURN, XINPUT_GAMEPAD_START };
 }
 
 void ActionInput::Update()

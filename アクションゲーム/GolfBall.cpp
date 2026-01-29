@@ -9,7 +9,7 @@
 
 using namespace std;
 using namespace DirectX::SimpleMath;
-extern Input input;
+//extern Input input;
 
 // コンストラクタ
 GolfBall::GolfBall(Camera* cam) : Object(cam)
