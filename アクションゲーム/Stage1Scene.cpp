@@ -12,6 +12,7 @@
 #include "GroundManager.h"
 #include "WallManager.h"
 #include "ICollider.h"
+#include "EffectManager.h"
 //#include "Skydome.h"
 #include "Fade.h"
 
@@ -58,12 +59,14 @@ void Stage1Scene::Init()
 	//EnemyManager::Init();
 	EnemyManager::GetInstance().AddEnemys();
 
+
+	// プレイヤーの配置
 	player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
 	player->SetDemoMode(false);
 
 	// 敵の配置
-	EnemyManager::GetInstance().SetEnemy(5, { (groundsize.x - 50) * 0.5f,30,(groundsize.y - 50) * 0.5f });
+	//EnemyManager::GetInstance().SetEnemy(5, { (groundsize.x - 50) * 0.5f,30,(groundsize.y - 50) * 0.5f });
 	EnemyManager::GetInstance().SetTarget(player);
 
 	// 敵の取得
@@ -109,8 +112,8 @@ void Stage1Scene::Init()
 
 	// ゲージの設定
 	player->SetGauge();
-	//boss->SetGauge();
-	
+	boss->SetGauge();
+	boss->SetGaugeLive(false);
 
 	// UI(HP文字)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
@@ -127,6 +130,33 @@ void Stage1Scene::Init()
 	boss_hp_text->SetUV(1, 1, 1, 1); //UVを指定
 	m_MySceneObjects.emplace_back(boss_hp_text);
 	boss_hp_text->SetLive(false); // 最初は非表示
+
+	// UI(Wave1文字)
+	wave1_text = Game::GetInstance()->AddObject<Texture2D>();
+	wave1_text->SetTexture("assets/texture/Wave1.png"); // 画像を指定
+	wave1_text->SetPosition(0.0f, 0.0f, 0.0f); // 位置を設定
+	wave1_text->SetScale(600.0f, 200.0f, 0.0f); // 大きさを指定
+	wave1_text->SetUV(1, 1, 1, 1); //UVを指定
+	m_MySceneObjects.emplace_back(wave1_text);
+	wave1_text->SetLive(true); // wave1は最初表示
+
+	// UI(Wave2文字)
+	wave2_text = Game::GetInstance()->AddObject<Texture2D>();
+	wave2_text->SetTexture("assets/texture/Wave2.png"); // 画像を指定
+	wave2_text->SetPosition(0.0f, 0.0f, 0.0f); // 位置を設定
+	wave2_text->SetScale(600.0f, 200.0f, 0.0f); // 大きさを指定
+	wave2_text->SetUV(1, 1, 1, 1); //UVを指定
+	m_MySceneObjects.emplace_back(wave2_text);
+	wave2_text->SetLive(false); // wave2は非表示
+
+	// UI(FinalWave文字)
+	finalwave_text = Game::GetInstance()->AddObject<Texture2D>();
+	finalwave_text->SetTexture("assets/texture/FinalWave.png"); // 画像を指定
+	finalwave_text->SetPosition(0.0f, 0.0f, 0.0f); // 位置を設定
+	finalwave_text->SetScale(800.0f, 400.0f, 0.0f); // 大きさを指定
+	finalwave_text->SetUV(1, 1, 1, 1); //UVを指定
+	m_MySceneObjects.emplace_back(finalwave_text);
+	finalwave_text->SetLive(false); // wave2は非表示
 
 	// UI(プレイヤーHP)
 	//Texture2D* pt4 = Game::GetInstance()->AddObject<Texture2D>();
@@ -161,7 +191,7 @@ void Stage1Scene::Init()
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 	Sound::GetInstance()->SetVolume(SOUND_BGM_MAIN, 0.5f);
-	Sound::GetInstance()->SetMasterVolume(0.0f);
+	Sound::GetInstance()->SetMasterVolume(0.3f);
 	Fade::GetInstance()->StartFadeIn();
 	Game::GetInstance()->GetCamera().SetTarget(*player);
 
@@ -178,6 +208,8 @@ void Stage1Scene::Init()
 	Game::GetInstance()->GetCamera().SetInputFg(true);//カメラ操作有効化
 
 	wave = 1;// 最初のWaveに設定
+	m_waveState = WaveState::WaveEffect;
+	framecount = 0;
 
 	DebugUI::RedistDebugFunction([this]() {
 		WallManager::DebugWallStatus();
@@ -198,28 +230,7 @@ void Stage1Scene::Update()
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
 	}
 
-	if(boss->GetLive()){
-		++framecount;
-		if(framecount > 180){
-			boss->SetNotUpdate(false);
-			framecount = 0;
-		}
-	}
-	else {
-		if (EnemyManager::GetInstance().GetLiveEnemy() <= 0) {
-			++wave;
-			if (wave < maxwave) {
-				EnemyManager::GetInstance().SetEnemy(5, { (groundsize.x - 50) * 0.5f,30,(groundsize.y - 50) * 0.5f });
-			}
-			else if(wave == maxwave){
-				boss->ReInit();
-				boss->SetLive(true);
-				boss->SetNotUpdate(true);
-				//boss->SetGauge();
-				boss_hp_text->SetLive(true);
-			}
-		}
-	}
+	WaveChange();
 
 }
 
@@ -238,3 +249,80 @@ void Stage1Scene::Uninit()
 	EnemyManager::GetInstance().Uninit();
 	m_MySceneObjects.clear();
 }
+
+// Wave変更処理
+void Stage1Scene::WaveChange()
+{
+	switch (m_waveState)
+	{
+	case WaveState::None:
+		UpdateWaveCheck();
+		break;
+
+	case WaveState::WaveEffect:
+		UpdateWaveEffect();
+		break;
+
+	case WaveState::SpawnEnemy:
+		UpdateSpawnEnemy();
+		break;
+
+	}
+}
+
+void Stage1Scene::UpdateWaveCheck()
+{
+	if (boss->GetLive()) {
+		m_waveState = WaveState::BossBattle;
+		return;
+	}
+
+	if (EnemyManager::GetInstance().GetLiveEnemy() > 0) {
+		return;
+	}
+
+	++wave;
+	if (wave == 2) {
+		wave2_text->SetLive(true);
+	}
+	else if (wave == maxwave) {
+		finalwave_text->SetLive(true);
+		// ボス出現、行動はしない
+		boss->SetNotUpdate(true);
+		boss->ReInit();
+		boss->SetGaugeLive(true);
+		boss_hp_text->SetLive(true);
+	}
+	m_waveState = WaveState::WaveEffect;
+	framecount = 0;
+}
+
+void Stage1Scene::UpdateWaveEffect()
+{
+	//++framecount;
+	if (++framecount >= 120){
+		if (wave == 1) {
+			wave1_text->SetLive(false);
+		}
+		else if (wave == 2) {
+			wave2_text->SetLive(false);
+		}else if(wave == maxwave){
+			finalwave_text->SetLive(false);
+		}
+		framecount = 0;
+		m_waveState = WaveState::SpawnEnemy;
+	}
+}
+
+void Stage1Scene::UpdateSpawnEnemy()
+{
+	if (wave < maxwave) {
+		EnemyManager::GetInstance().SetEnemy(5,{ (groundsize.x - 50) * 0.5f, 30, (groundsize.y - 50) * 0.5f });
+	}
+	else if (wave == maxwave) {
+		//	ボス行動開始
+		boss->SetNotUpdate(false); 
+	}
+	m_waveState = WaveState::None;
+}
+

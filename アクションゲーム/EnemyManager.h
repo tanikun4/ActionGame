@@ -40,7 +40,7 @@ private:
 	int m_livecount = 0;// ¶‘¶‚µ‚Ä‚¢‚é“G‚Ì”
 
 	int attackframe = 0; // UŒ‚—pƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
-	int baseInterval = 180; // “G‚ÌUŒ‚ŠÔŠu‚ÌŠî€’l
+	int baseInterval = 240; // “G‚ÌUŒ‚ŠÔŠu‚ÌŠî€’l
 	int randomRange = 60; // “G‚ÌUŒ‚ŠÔŠu‚Ìƒ‰ƒ“ƒ_ƒ€”ÍˆÍ
 	void AttackEnemy();//UŒ‚w¦‚ğs‚¤
 };

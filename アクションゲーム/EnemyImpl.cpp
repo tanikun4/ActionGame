@@ -120,7 +120,9 @@ void Enemy::Impl::Init() {
 	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // UŒ‚‚ğƒ‰ƒ“ƒ_ƒ€‚Éİ’èAˆÈ~ŒÅ’è‚³‚ê‚é
 
 	SetProjectile();
-
+	// •ŠíA‰e‚ğ”ñ•\¦
+	m_weapon->SetLive(false);
+	m_Owner->m_Shadow->SetLive(false);
 
 	//DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
@@ -192,14 +194,17 @@ void Enemy::Impl::ReInit() {
 	m_Owner->m_live = true;
 	m_Owner->m_Velocity_f = 0.0f;//‚Í‚¶‚ß‚ÉˆÚ“®‘¬“x‚ğ0‚É‚·‚é
 	hp = maxhp;
-	def = 0;
 	m_Owner->m_Scale.x = 1;
 	m_Owner->m_Scale.y = 1;
 	m_Owner->m_Scale.z = 1;
 	m_Owner->radius *= m_Owner->m_Scale.x;
 
 	m_weapon->SetLive(true);
+	m_Owner->m_Shadow->SetLive(true);
 
+	m_Owner->m_State = NORMAL;
+	m_weapon->AttackEnd();
+	StateReset();
 	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // UŒ‚‚ğƒ‰ƒ“ƒ_ƒ€‚Éİ’èAˆÈ~ŒÅ’è‚³‚ê‚é
 }
 
@@ -258,7 +263,7 @@ void Enemy::Impl::Death()
 	EnemyManager::GetInstance().EnemyDeath();
 	for(auto& p : m_projectile)
 	{
-		p->SetLive(false);
+		p->Reset();
 	}
 }
 

@@ -23,6 +23,7 @@ public:
 	void Draw();
 	void Uninit();
 	void ReInit();// 再初期化、正式に出現時の処理
+	void SetGaugeLive(bool _live) { m_hp_gauge.SetLive(_live); };
 
 	void Damage(int _atk);
 	void Stun(); // 行動不能状態にする

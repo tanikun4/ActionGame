@@ -25,6 +25,7 @@ public:
 	void Damage(int _atk);
 
 	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
+	void SetGaugeLive(bool _live);
 	void SetTarget(class Player* player);
 	void SetDEF(int _def);
 	void ShotBullet();

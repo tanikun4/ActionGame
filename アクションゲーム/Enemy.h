@@ -37,7 +37,7 @@ public:
 
 	void SetTarget(Object* ta);
 	int GetHP();
-	Pole* GetWeapon();
+	class Pole* GetWeapon();
 	bool IsAttackable();
 	bool IsAttacking();
 	bool IsAway();
@@ -45,7 +45,7 @@ public:
 	// Hit ŒniŠO•”‚©‚çŒÄ‚Î‚ê‚é‚Ì‚Å public ‚Ì‚Ü‚Üj
 	void HitObject(Object* ob) override { ob->OnHit(this); }
 
-	void OnHit(class Pole* po);
+	void OnHit(Pole* po);
 	void OnHit(class Bullet* bu);
 	void OnHit(class Projectile* pr);
 	void OnHit(class TestCube* cube);

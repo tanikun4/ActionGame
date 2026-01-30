@@ -54,7 +54,7 @@ void EnemyManager::SetEnemy(int num, const Vector3& spawnrange) {
     if (num > ENEMY_POOLSIZE)
         num = ENEMY_POOLSIZE;
 
-    constexpr float MIN_DISTANCE = 20.0f; // “G“¯m‚ÌÅ¬‹——£
+    constexpr float MIN_DISTANCE = 40.0f; // “G“¯m‚ÌÅ¬‹——£
     constexpr int   MAX_TRY = 30;          // ˆø‚«’¼‚µãŒÀ
 
     std::vector<Vector3> placedPositions;

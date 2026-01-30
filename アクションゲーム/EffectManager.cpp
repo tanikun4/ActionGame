@@ -43,7 +43,7 @@ void EffectManager::Init()
         {"assets/texture/2DEffect/hibana.png","","","",5,4},
         {"assets/texture/2DEffect/kemuri_syou.png","","","",5,14},
 		{"assets/texture/2DEffect/kemuri_dai.png","","","",5,22},
-        {"assets/texture/2DEffect/press_enterkey.png","","","",1,1},
+        {"assets/texture/2DEffect/PressEnterKey.png","","","",1,1},
         {"assets/texture/2DEffect/syougekiha.png","","","",5,3},
 	};
 

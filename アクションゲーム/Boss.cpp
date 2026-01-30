@@ -32,6 +32,8 @@ void Boss::ShotBullet() { impl->ShotBullet(); }
 
 void Boss::SetGauge() { impl->SetGauge(); }
 
+void Boss::SetGaugeLive(bool _live) { impl->SetGaugeLive(_live); }
+
 void Boss::SetTarget(Player* player) { impl->SetTarget(player); }
 
 void Boss::SetDEF(int _def) { impl->SetDEF(_def); }

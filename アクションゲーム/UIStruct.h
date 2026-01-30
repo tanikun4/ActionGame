@@ -69,6 +69,12 @@ struct Gauge
         backTex->Uninit();
     }
 
+    void SetLive(bool _live) 
+    {
+		backTex->SetLive(_live);
+		gaugeTex->SetLive(_live);
+    }
+
     Texture2D* GetGauge(int no) {
         if (no == 0) {
             return backTex;

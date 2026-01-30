@@ -203,10 +203,13 @@ void Boss::Impl::ReInit() {
 	m_Owner->m_live = true;
 	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	hp = maxhp;
-	def = 0;
 	m_weapon->SetLive(true);
+	if (m_weapon)
+		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);
+	
 	m_Owner->m_Shadow->SetLive(true);
-	SetGauge();
+	//丸影の更新
+	m_Owner->m_Shadow->UpdateShadow(m_Owner->m_Position, -0.1f);//地面座標が一旦決め打ち、そのうち地面のシステムから変えたい。
 }
 
 // ゲージ初期化用、ゲームシーンでのみ呼び出す

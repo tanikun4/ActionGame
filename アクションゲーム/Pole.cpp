@@ -461,7 +461,7 @@ void Pole::Stance(int t, StanceMode mode) {
 }
 
 void Pole::Stance_Thrust() {
-	m_PosAnim.StartRelative({ 0,0,0 }, { 8, 0, -8 }, 20);
+	m_PosAnim.StartRelative({ 0,0,0 }, { m_Scale.x * 2, 0, -m_Scale.z * 2 }, 20);
 	m_stancetime = 0;
 	m_State = STANCE;
 	max_stancetime = 30;

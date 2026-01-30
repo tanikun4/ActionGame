@@ -61,7 +61,7 @@ void TitleScene::Init()
 	m_MySceneObjects.emplace_back(boss);
 	boss->SetDEF(99);//–³“Gó‘Ô‚É‚·‚é
 	boss->SetTarget(player);
-
+	boss->ReInit();
 
 	for (int i = 0; i < 3; i++) {
 		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //’e

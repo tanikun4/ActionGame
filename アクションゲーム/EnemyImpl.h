@@ -109,7 +109,7 @@ private:
 
 	const int projectile_max = 3;//飛び道具の最大数
 
-	const int maxhp = 20;
+	const int maxhp = 10;
 	int hp = maxhp;
 	int def = 0; //防御力、値分ダメージを減らす
 	int m_stateframe = 0;//状態継続フレーム数
