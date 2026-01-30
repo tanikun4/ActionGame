@@ -21,6 +21,7 @@ public:
 	void Update();
 	void Draw();
 	void Uninit();
+	void ReInit();
 	void Damage(int _atk);
 
 	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
@@ -28,6 +29,7 @@ public:
 	void SetDEF(int _def);
 	void ShotBullet();
 	void Stun();
+	void SetNotUpdate(bool _notupdate);
 	Pole* GetWeapon();
 	int GetHP();
 	void HitObject(Object* ob) override {

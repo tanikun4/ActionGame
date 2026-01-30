@@ -7,6 +7,7 @@ class Player;
 class Enemy;
 class Boss;
 class Ground;
+class Texture2D;
 
 // Stage1Scenクラス
 class Stage1Scene : public Scene
@@ -22,6 +23,12 @@ private:
 	Player* player;
 	Boss* boss;
 	Ground* ground;
+
+	int wave = 0; //現在のWave数　
+	const int maxwave = 3;//最大Wave数。このWaveに到達するとボスが出現し、倒せばクリア。
+
+	int framecount = 0;//フレームカウント用
+	Texture2D* boss_hp_text = nullptr;// ボスHP文字
 
 	void Init(); // 初期化
 	void Uninit(); // 終了処理

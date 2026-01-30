@@ -122,11 +122,16 @@ void Boss::Impl::Init() {
 
 	SetProjectile();
 
+	// 非表示にする
+	m_Owner->m_live = false;
+	m_Owner->m_Shadow->SetLive(false);
+	m_weapon->SetLive(false);
+
 	DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
 
 void Boss::Impl::Update() {
-	if (hp <= 0 || notUpdate) { return; };
+	if (!m_Owner->m_live || notUpdate) { return; };
 	//　簡易的なスローモーション処理
 	if (m_slowFg) {
 		++slow_frame;
@@ -194,6 +199,16 @@ void Boss::Impl::Uninit()
 
 }
 
+void Boss::Impl::ReInit() {
+	m_Owner->m_live = true;
+	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
+	hp = maxhp;
+	def = 0;
+	m_weapon->SetLive(true);
+	m_Owner->m_Shadow->SetLive(true);
+	SetGauge();
+}
+
 // ゲージ初期化用、ゲームシーンでのみ呼び出す
 void Boss::Impl::SetGauge() {
 	m_hp_gauge.Init({200, 325, 0}, { 800, 50, 0 });
@@ -201,6 +216,7 @@ void Boss::Impl::SetGauge() {
 }
 
 void Boss::Impl::Damage(int _atk) {
+	// 無敵状態なら処理しない
 	if (inviFg)  return;
 	//防御力分ダメージ軽減
 	_atk -= def;
@@ -247,6 +263,7 @@ void Boss::Impl::Death()
 	m_weapon->SetLive(false);
 	m_Owner->m_Shadow->SetLive(false);
 	hp = 0;
+	m_hp_gauge.ChangeGauge(hp, maxhp);
 }
 
 void Boss::Impl::LookAt(Vector3 ta_pos) {

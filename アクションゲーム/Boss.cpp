@@ -22,6 +22,8 @@ void Boss::Draw() { impl->Draw(); }
 
 void Boss::Uninit() { impl->Uninit(); }
 
+void Boss::ReInit() { impl->ReInit(); }
+
 void Boss::Damage(int _atk) { impl->Damage(_atk); }
 
 void Boss::Stun() { impl->Stun(); }
@@ -33,6 +35,8 @@ void Boss::SetGauge() { impl->SetGauge(); }
 void Boss::SetTarget(Player* player) { impl->SetTarget(player); }
 
 void Boss::SetDEF(int _def) { impl->SetDEF(_def); }
+
+void Boss::SetNotUpdate(bool _notupdate) { impl->SetNotUpdate(_notupdate); }
 
 int Boss::GetHP() { return impl->GetHP(); }
 

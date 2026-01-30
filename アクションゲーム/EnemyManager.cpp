@@ -37,15 +37,16 @@ void EnemyManager::SetTarget(Object* ta)
     }
 }
 
-int EnemyManager::EnemyCount()
+int EnemyManager::GetLiveEnemy()
 {
-	int count = 0;
-	for (auto& e : m_enemies) {
-		if (e->GetLive()) {
-			++count;
-		}
-	}
-	return count;
+    return m_livecount;
+}
+
+void EnemyManager::EnemyDeath()
+{
+    --m_livecount;
+    if(m_livecount < 0)
+		m_livecount = 0;
 }
 
 // 敵の配置
@@ -102,6 +103,7 @@ void EnemyManager::SetEnemy(int num, const Vector3& spawnrange) {
         // 敵の配置・初期化
         m_enemies[i]->SetPosition(pos);
         m_enemies[i]->ReInit();
+        ++m_livecount;// 生存数を増やす
     }
 
     // 攻撃タイミングを設定

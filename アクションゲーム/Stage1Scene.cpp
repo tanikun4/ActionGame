@@ -63,7 +63,7 @@ void Stage1Scene::Init()
 	player->SetDemoMode(false);
 
 	// 敵の配置
-	EnemyManager::GetInstance().SetEnemy(5, { (groundsize.x - 50) * 0.5f,20,(groundsize.y - 50) * 0.5f });
+	EnemyManager::GetInstance().SetEnemy(5, { (groundsize.x - 50) * 0.5f,30,(groundsize.y - 50) * 0.5f });
 	EnemyManager::GetInstance().SetTarget(player);
 
 	// 敵の取得
@@ -77,6 +77,7 @@ void Stage1Scene::Init()
 	boss = Game::GetInstance()->AddObject<Boss>();
 	m_MySceneObjects.emplace_back(boss);
 	boss->SetTarget(player);
+	boss->SetLive(false); // 最初は非表示
 
 	//壁の設置
 	WallManager::SetWall(ground->GetGroundSize(), m_MySceneObjects);
@@ -108,7 +109,8 @@ void Stage1Scene::Init()
 
 	// ゲージの設定
 	player->SetGauge();
-	boss->SetGauge();
+	//boss->SetGauge();
+	
 
 	// UI(HP文字)
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
@@ -118,12 +120,13 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(pt1);
 
 	// UI(ボスHP文字)
-	Texture2D* pt2 = Game::GetInstance()->AddObject<Texture2D>();
-	pt2->SetTexture("assets/texture/ui_BossHP.png"); // 画像を指定
-	pt2->SetPosition(-300.0f, 325.0f, 0.0f); // 位置を設定
-	pt2->SetScale(150.0f, 75.0f, 0.0f); // 大きさを指定
-	pt2->SetUV(1, 1, 1, 1); //UVを指定
-	m_MySceneObjects.emplace_back(pt2);
+	boss_hp_text = Game::GetInstance()->AddObject<Texture2D>();
+	boss_hp_text->SetTexture("assets/texture/ui_BossHP.png"); // 画像を指定
+	boss_hp_text->SetPosition(-300.0f, 325.0f, 0.0f); // 位置を設定
+	boss_hp_text->SetScale(150.0f, 75.0f, 0.0f); // 大きさを指定
+	boss_hp_text->SetUV(1, 1, 1, 1); //UVを指定
+	m_MySceneObjects.emplace_back(boss_hp_text);
+	boss_hp_text->SetLive(false); // 最初は非表示
 
 	// UI(プレイヤーHP)
 	//Texture2D* pt4 = Game::GetInstance()->AddObject<Texture2D>();
@@ -174,6 +177,8 @@ void Stage1Scene::Init()
 	Game::GetInstance()->GetCamera().SetDirection(CameraDirection);//カメラ方向設定
 	Game::GetInstance()->GetCamera().SetInputFg(true);//カメラ操作有効化
 
+	wave = 1;// 最初のWaveに設定
+
 	DebugUI::RedistDebugFunction([this]() {
 		WallManager::DebugWallStatus();
 		});
@@ -192,6 +197,30 @@ void Stage1Scene::Update()
 		Game::GetInstance()->ChangeSceneFadeOut(GAMEOVER);
 		Sound::GetInstance()->Stop(SOUND_BGM_MAIN);
 	}
+
+	if(boss->GetLive()){
+		++framecount;
+		if(framecount > 180){
+			boss->SetNotUpdate(false);
+			framecount = 0;
+		}
+	}
+	else {
+		if (EnemyManager::GetInstance().GetLiveEnemy() <= 0) {
+			++wave;
+			if (wave < maxwave) {
+				EnemyManager::GetInstance().SetEnemy(5, { (groundsize.x - 50) * 0.5f,30,(groundsize.y - 50) * 0.5f });
+			}
+			else if(wave == maxwave){
+				boss->ReInit();
+				boss->SetLive(true);
+				boss->SetNotUpdate(true);
+				//boss->SetGauge();
+				boss_hp_text->SetLive(true);
+			}
+		}
+	}
+
 }
 
 // 終了処理

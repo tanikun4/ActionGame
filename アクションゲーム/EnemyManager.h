@@ -15,8 +15,9 @@ class EnemyManager :
 {
 public:
     friend class Manager<EnemyManager>;
-    int EnemyCount();
+    int GetLiveEnemy();// “G‚Ì¶‘¶”‚ğ•Ô‚·
     void SetEnemy(int num,const DirectX::SimpleMath::Vector3& spawnrange);
+	void EnemyDeath();//“G‚ª“|‚³‚ê‚½‚ÉŒÄ‚Ño‚·
     //static void Init();
     void Update();
     void Draw();
@@ -35,6 +36,8 @@ private:
 
 	int max_attacker = 1; //“¯‚ÉUŒ‚‚·‚é“G‚ÌÅ‘å”
 	int current_attacker = 0;// Œ»İUŒ‚’†‚Ì“G‚Ì”
+
+	int m_livecount = 0;// ¶‘¶‚µ‚Ä‚¢‚é“G‚Ì”
 
 	int attackframe = 0; // UŒ‚—pƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
 	int baseInterval = 180; // “G‚ÌUŒ‚ŠÔŠu‚ÌŠî€’l

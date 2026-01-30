@@ -198,6 +198,8 @@ void Enemy::Impl::ReInit() {
 	m_Owner->m_Scale.z = 1;
 	m_Owner->radius *= m_Owner->m_Scale.x;
 
+	m_weapon->SetLive(true);
+
 	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // 攻撃をランダムに設定、以降固定される
 }
 
@@ -253,11 +255,10 @@ void Enemy::Impl::Death()
 	m_weapon->SetLive(false);
 	m_Owner->m_Shadow->SetLive(false);
 	hp = 0;
+	EnemyManager::GetInstance().EnemyDeath();
 	for(auto& p : m_projectile)
 	{
 		p->SetLive(false);
-		p->SetOwner(nullptr);
-		p = nullptr;
 	}
 }
 
@@ -374,12 +375,14 @@ void Enemy::Impl::AttackUpdate() {
 	case ROTATESWING_FIBONACCI:
 		RotateSwingFibonacci();
 		break;
-	case ALTEREGO_SHOT:
+
+	// 分身攻撃は削除
+	/*case ALTEREGO_SHOT:
 		AlterEgoShot();
 		break;
 	case ALTEREGO_SPINSLASH:
 		AlterEgoSpinSlash();
-		break;
+		break;*/
 	case KIND_MAX:
 		m_attackPhase = AttackPhase::ENTER;
 		m_Owner->m_State = NORMAL;
@@ -803,9 +806,9 @@ void Enemy::Impl::JumpSpinSlashRush() {
 		// 攻撃開始
 		if (m_weapon->GetState() == Pole::STATE::NORMAL) {
 			m_weapon->AttackStart(true, true);
-			Vector3 endrot = m_Owner->m_Rotation;
-			endrot.x += PI * 24;
-			m_AngleAnim.StartAbsolute(m_Owner->m_Rotation, endrot, 90, 0.0f);// 縦回転切り、絶対値参照で行う
+	/*		Vector3 endrot = m_Owner->m_Rotation;
+			endrot.x += PI * 8;*/
+			m_AngleAnim.StartAbsolute({ 0,0,0 }, { PI * 8 ,0,0}, 30, 0.0f);// 縦回転切り、絶対値参照で行う
 			m_rushFg = true;
 			Sound::GetInstance()->Play(SOUND_SE_SWING);
 			m_lookatFg = false;
@@ -1495,7 +1498,7 @@ void Enemy::Impl::StateReset() {
 	m_rushFg = false;
 	m_spinFg = false; // 回転状態フラグ解除
 	m_Owner->is_SPECIALMOVE = false;// 特殊移動解除
-	move_speed = 0.25f;// 移動速度を戻す
+	move_speed = 0.1f;// 移動速度を戻す
 	m_attackPhase = AttackPhase::ENTER;// 攻撃フェーズ初期化
 }
 

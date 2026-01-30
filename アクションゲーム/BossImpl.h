@@ -22,12 +22,14 @@ public:
 	void Update();
 	void Draw();
 	void Uninit();
+	void ReInit();// 再初期化、正式に出現時の処理
+
 	void Damage(int _atk);
 	void Stun(); // 行動不能状態にする
 	void SetDEF(int _def) { def = _def; }
 	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
 	void SetTarget(Player* player) { m_target = player; }
-
+	void SetNotUpdate(bool _notupdate) { notUpdate = _notupdate;  }
 	void ShotBullet();
 	int GetHP();
 	
