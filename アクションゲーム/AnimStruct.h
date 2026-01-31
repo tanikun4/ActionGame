@@ -246,6 +246,7 @@ enum class ArcMoveDir
     Backward   // Œã‘Ş
 };
 
+// ‰~ŒÊˆÚ“®\‘¢‘Ì
 struct ArcMoveAnim
 {
 private:

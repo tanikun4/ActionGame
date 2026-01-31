@@ -30,7 +30,6 @@ struct SharedEffect2DData {
 };
 
 // エフェクトパラメータ構造体、エフェクト再生時のパラメータをまとめて渡すために使用
-//-FLT_MAXは変数が未代入であることを示す、この値のままの場合は変化させない
 struct EffectParams
 {
     DirectX::SimpleMath::Vector3 pos = {0,0,0};                                     // 開始位置

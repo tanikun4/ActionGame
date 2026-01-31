@@ -36,7 +36,6 @@ private:
 	std::vector<ParticleEmitter2D*> m_Emitter2D; // 2Dパーティクルエミッタ配列
 	std::unique_ptr<ParticleRenderer2D> m_Renderer2D; //2Dパーティクルレンダラ
 
-
 	SharedEffect2DData m_Shared2D_Data;//2Dエフェクト共通データ
 
 	Camera* m_Camera;//自身のカメラ、Gameからポインタ参照を取ってくる

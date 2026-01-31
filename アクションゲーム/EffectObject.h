@@ -4,8 +4,8 @@
 #include "Texture.h"
 #include "Material.h"
 
-class EffectObject :
-	public EffectBase
+// EffectObjectクラス、3Dエフェクト用のメッシュ表示クラス
+class EffectObject : public EffectBase
 {
 public:
     EffectObject();

@@ -342,10 +342,8 @@ void EffectManager::Play(int _id,
 }
 
 //エフェクト再生関数、EffectParams版
-void EffectManager::Play(int _id,
-    EffectParams& _param)
+void EffectManager::Play(int _id, EffectParams& _param)
 {
-
     if (m_LoadData[_id].mesh != nullptr) {// 3D初期化
 
         for (auto& e : m_Effects3D) {

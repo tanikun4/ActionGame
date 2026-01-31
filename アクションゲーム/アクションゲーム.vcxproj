@@ -152,8 +152,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\assimp-6.0.3\include;C:\directxtk\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\directxtk\lib\x64\Debug;C:\assimp-6.0.3\build\lib\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\assimp-6.0.3\include;$(ProjectDir)\directxtk\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\directxtk\lib\x64\Debug;$(ProjectDir)\assimp-6.0.3\build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DirectX 3Dゲーム制作 デバッグビルド|x64'">
     <IncludePath>C:\assimp\assimp\5.2.5\include;C:\directxtk\include;$(IncludePath)</IncludePath>
@@ -245,14 +245,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);C:\Users\tanik\Desktop\就職作品\制作環境\アクションゲーム\imgui;C:\Users\tanik\Desktop\就職作品\制作環境\アクションゲーム\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(ProjectDir)\imgui;$(ProjectDir)\imgui\backends</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\assimp-6.0.3\build\lib\Debug;C:\directxtk\lib\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\assimp-6.0.3\build\lib\Debug;$(ProjectDir)\directxtk\lib\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
