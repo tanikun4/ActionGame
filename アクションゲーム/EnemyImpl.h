@@ -126,6 +126,7 @@ private:
 	bool m_lookatFg = true;//プレイヤーへの追従をするかどうか
 	bool m_rushFg = false;//突進しているかどうか
 	bool m_spinFg = false;//回転しているかどうか
+	bool hitwall = false;//壁に当たったかどうか
 
 	bool m_awayFg = false;//距離を取る動きをしているかどうか
 	float jumppower = 1.5f;//ジャンプ力

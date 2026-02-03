@@ -191,33 +191,34 @@ void Player::Impl::OnHit(TestCube* cube) {
     auto& col = m_Owner->GetLastCollision();
     float vn = m_Owner->m_Velocity.Dot(col.normal);
 
-    if (vn < 0.0f) {
-        m_Owner->m_Velocity -= col.normal * vn;
+    if (vn >= 0.0f) { return; }
 
-        if (col.normal.y > 0.6f) {
-            // °
-            m_Owner->m_Velocity.y = 0.0f;
-            m_Owner->m_Position.y = m_Owner->m_oldPos.y;
-            m_Owner->is_GROUND = true;
-        }
-        else if (col.normal.y < -0.6f) {
-            // “Vˆä
-            m_Owner->m_Velocity.y = 0.0f;
-        }
-        else {
-            // •Ç
-            m_Owner->m_Velocity.x = 0.0f;
-            m_Owner->m_Velocity.z = 0.0f;
-            m_Owner->m_Position.x = m_Owner->m_oldPos.x;
-            m_Owner->m_Position.z = m_Owner->m_oldPos.z;
+    m_Owner->m_Velocity -= col.normal * vn;
 
-            if(demoMode) {
-                // ƒfƒ‚’†‚Í•Ç‚É‚Ô‚Â‚©‚Á‚½‚ç•ûŒü“]Š·
-                m_demoParam.demoMoveDir += PI;
-                if (m_demoParam.demoMoveDir > PI * 2) m_demoParam.demoMoveDir -= PI * 2;
-			}
-        }
+    if (col.normal.y > 0.6f) {
+        // °
+        m_Owner->m_Velocity.y = 0.0f;
+        m_Owner->m_Position.y = m_Owner->m_oldPos.y;
+        m_Owner->is_GROUND = true;
     }
+    else if (col.normal.y < -0.6f) {
+        // “Vˆä
+        m_Owner->m_Velocity.y = 0.0f;
+    }
+    else {
+        // •Ç
+        //m_Owner->m_Velocity.x = 0.0f;
+        //m_Owner->m_Velocity.z = 0.0f;
+        m_Owner->m_Position.x = m_Owner->m_oldPos.x;
+        m_Owner->m_Position.z = m_Owner->m_oldPos.z;
+
+        if(demoMode) {
+            // ƒfƒ‚’†‚Í•Ç‚É‚Ô‚Â‚©‚Á‚½‚ç•ûŒü“]Š·
+            m_demoParam.demoMoveDir += PI;
+            if (m_demoParam.demoMoveDir > PI * 2) m_demoParam.demoMoveDir -= PI * 2;
+		}
+    }
+    
 }
 
 
@@ -238,8 +239,14 @@ void Player::Impl::DebugWeaponStatus() {
     if (ImGui::Button("Reset OffSet"))
         weapon_offset = Vector3(0, 0, 0);
 
-    //if (ImGui::Button("Set Int"))
-    //    weapon_offset = Vector3((int)weapon_offset.x, (int)weapon_offset.y, (int)weapon_offset.z);
+    static Vector3 debug_scale{3,3,3};
+    ImGui::SliderFloat3("WeaponScale", &debug_scale.x, 0.0f, 10.0f);
+
+    if (ImGui::Button("Reset Scale"))
+        debug_scale = Vector3(3, 3, 3);
+
+    if (ImGui::Button("Set Int"))
+        debug_scale = Vector3((int)debug_scale.x, (int)debug_scale.y, (int)debug_scale.z);
 
     static Vector3 weapon_angle{};
     ImGui::SliderFloat3("WeaponAngle", &weapon_angle.x, -PI, PI);
@@ -251,6 +258,7 @@ void Player::Impl::DebugWeaponStatus() {
         m_weapon->SetOffsetDebug(weapon_offset);
         m_weapon->SetAngleDebug(weapon_angle);
         m_weapon->SetTrailSize(trailsize);
+		m_weapon->SetScale(debug_scale);
     }
 
     ImGui::End();

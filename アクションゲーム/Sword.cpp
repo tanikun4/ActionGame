@@ -49,6 +49,9 @@ void Sword::Init()
 
 	m_MeshRenderer.Init(staticmesh);
 
+	// ここで取得
+	m_baseSize = staticmesh.GetBaseSize();
+
 	// シェーダオブジェクト生成
 	m_Shader.Create("shader/litTextureVS.hlsl", "shader/litTexturePS.hlsl");
 
@@ -185,10 +188,21 @@ void Sword::UpdateOBB() {
 
 	Matrix world = S * R * T;
 
-	//OBBの更新
-	// OBB の中心位置を「武器の中心」に補正
-	// ポールモデルの pivot は "持ち手先端"
-	Vector3 obbLocalCenter = { 0.0f, m_Scale.y * 0.8f, 0.0f };
+	// OBBの更新
+	
+	// OBB の中心位置を武器の中心に補正
+	// 剣モデルのpivotは持ち手先端
+	//Vector3 obbLocalCenter = { 0.0f, m_Scale.y * (1.0f - m_Scale.y * 0.1f), 0.0f };
+
+	constexpr float HIT_CENTER_RATIO = 0.5f;
+
+	Vector3 obbLocalCenter =
+	{
+		0.0f,
+		m_baseSize.y * HIT_CENTER_RATIO,
+		0.0f
+	};
+
 
 	// ワールド座標へ変換
 	Vector3 obbWorldCenter = Vector3::Transform(obbLocalCenter, world);
@@ -197,7 +211,7 @@ void Sword::UpdateOBB() {
 	obb = {
 		obbWorldCenter,
 		m_Rotation,
-		{ m_Scale.x, m_Scale.y * 2.5f, m_Scale.z }
+		{ m_Scale.x * m_baseSize.x * 0.5f, m_Scale.y * m_baseSize.y * 0.5f, m_Scale.z * m_baseSize.z * 0.5f}
 	};
 
 	m_EffectTrail->Update();
@@ -470,7 +484,7 @@ void Sword::Stance_Thrust() {
 
 // 縦構え開始、デフォルト版
 void Sword::Stance_Vertical() {
-	StanceStart({0,0,0}, { PI * 0.5,0,(PI * 0.5) + 0.2f}, 60);
+	StanceStart({0,0,0}, { PI * 0.5f,0,(PI * 0.5f) + 0.2f}, 60);
 }
 
 

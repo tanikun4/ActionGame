@@ -49,10 +49,12 @@ private:
 	bool verticalFg = false;//縦かどうか
 
 	DirectX::SimpleMath::Vector3 m_baseRotation { 0,0,0 };//振る際の基準角度
+	DirectX::SimpleMath::Vector3 m_baseSize{ 1,1,1 };//モデル自体のサイズ
+
 
 	AngleAnim m_AngleAnim;//角度アニメーションで使う構造体
 	PositionAnim m_PosAnim;// 座標アニメーションで使う構造体
-	EffectTrail* m_EffectTrail; // 軌跡のエフェクト
+	EffectTrail* m_EffectTrail = nullptr; // 軌跡のエフェクト
 public:
 
 	enum STATE {

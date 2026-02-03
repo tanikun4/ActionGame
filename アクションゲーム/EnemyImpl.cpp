@@ -171,6 +171,7 @@ void Enemy::Impl::Update() {
 		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
 	m_Owner->BallUpdate();
+	hitwall = false;
 
 	if (m_weapon)
 		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);
@@ -247,9 +248,9 @@ void Enemy::Impl::Damage(int _atk) {
 	// ヒットストップ処理
 	Game::GetInstance()->HitStop();
 
-	if (hp <= 0) {
-		Death();
-	}
+	if (hp <= 0)
+	  Death();
+	
 }
 
 
@@ -336,11 +337,6 @@ void Enemy::Impl::AttackUpdate() {
 
 		// 終了フェーズ、終了処理を行う
 		if (m_attackPhase == AttackPhase::END) {
-			//m_Owner->m_State = NORMAL;
-			//m_attackframe = 0;
-			//attack_kind = NONE;//攻撃終了
-			//m_attackPhase = AttackPhase::ENTER;
-
 			m_weapon->SwingEnd();
 			m_Owner->m_State = NORMAL;
 			StateReset();
@@ -439,12 +435,6 @@ void Enemy::Impl::RotateSwing() {
 
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
-		//m_Owner->m_State = NORMAL;
-		//m_spinFg = false;
-		//m_stateframe = 0;
-		//m_attackframe = 0;
-		//attack_kind = NONE;//攻撃終了
-		//m_attackPhase = AttackPhase::ENTER;
 
 		m_Owner->m_State = NORMAL;
 		StateReset();
@@ -486,9 +476,9 @@ void Enemy::Impl::SwingVerticalRush() {
 		}
 		++m_attackframe;
 
-		//近づいたら振る
+		//近づくか、壁に当たったら振る
 		if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 2 &&
-			fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 2) {
+			fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 2 || hitwall) {
 			m_weapon->Swing_Vertical();
 			m_rushFg = false;
 			m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
@@ -524,12 +514,6 @@ void Enemy::Impl::SwingVerticalRush() {
 	}
 
 	if (m_attackPhase == AttackPhase::END) {
-		//m_Owner->m_State = NORMAL;
-		//m_attackframe = 0;
-		//m_weapon->SwingEnd();
-		//m_lookatFg = true;
-		//m_rotatespeed = 0.01f;
-		//m_attackPhase = AttackPhase::ENTER;
 
 		m_weapon->SwingEnd();
 		m_Owner->m_State = NORMAL;
@@ -578,12 +562,6 @@ void Enemy::Impl::ManyThrustLookAt() {
 	}
 
 	if (m_attackPhase == AttackPhase::END) {
-		//m_lookatFg = true;
-		//m_attackframe = 0;
-		//m_Owner->m_State = NORMAL;
-		//m_attackcount = 0;
-		//m_stateframe = 0;
-		//m_attackPhase = AttackPhase::ENTER;
 
 		m_Owner->m_State = NORMAL;
 		StateReset();
@@ -675,15 +653,6 @@ void Enemy::Impl::ThreeSwing() {
 
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
-		//m_weapon->StanceEnd();
-		//m_Owner->m_State = NORMAL;
-		//m_stateframe = 0;
-		//m_attackframe = 0;
-		//m_attackcount = 0;
-		//m_rotatespeed = 0.01f;
-		//m_rushFg = false;
-		//m_lookatFg = true;
-		//m_attackPhase = AttackPhase::ENTER;
 
 		m_weapon->StanceEnd();
 		m_Owner->m_State = NORMAL;
@@ -772,14 +741,6 @@ void Enemy::Impl::JumpSpinSlash() {
 
 	// 攻撃終了処理
 	if (m_attackPhase == AttackPhase::END) {
-		//m_Owner->m_State = NORMAL;
-		//m_stateframe = 0;
-		//m_attackframe = 0;
-		//m_attackcount = 0;
-		//m_rushFg = false;
-		//m_lookatFg = true;
-		//m_Owner->m_Rotation.x = 0;
-		//m_attackPhase = AttackPhase::ENTER;
 		
 		m_weapon->AttackEnd();
 		m_Owner->m_State = NORMAL;
@@ -822,7 +783,7 @@ void Enemy::Impl::JumpSpinSlashRush() {
 		m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
 
 		//回転終了後、硬直フェーズへ。ここから着地まで何もしない
-		if (!m_AngleAnim.IsPlaying()) {
+		if (!m_AngleAnim.IsPlaying() || hitwall) {
 			m_Owner->m_Rotation.x = 0;
 			m_weapon->AttackEnd();
 			m_attackPhase = AttackPhase::RECOVER;
@@ -844,14 +805,6 @@ void Enemy::Impl::JumpSpinSlashRush() {
 	// 攻撃終了処理
 	if (m_attackPhase == AttackPhase::END) {
 		m_weapon->AttackEnd();
-		//m_Owner->m_State = NORMAL;
-		//m_stateframe = 0;
-		//m_attackframe = 0;
-		//m_attackcount = 0;
-		//m_rushFg = false;
-		//m_lookatFg = true;
-		//m_Owner->m_Rotation.x = 0;
-		//m_attackPhase = AttackPhase::ENTER;
 
 		m_weapon->AttackEnd();
 		m_Owner->m_State = NORMAL;
@@ -901,8 +854,8 @@ void  Enemy::Impl::SonicBoomShot() {
 		}
 		m_attackcount++;
 		m_attackframe = 0;
-		// 5回発射したら硬直へ、そうでなければ次の攻撃の構えに移る
-		if (m_attackcount >= 5) {
+		// 3回発射したら硬直へ、そうでなければ次の攻撃の構えに移る
+		if (m_attackcount >= 3) {
 			m_attackPhase = AttackPhase::RECOVER;
 		}
 		else {
@@ -946,13 +899,6 @@ void  Enemy::Impl::SonicBoomShot() {
 
 	if (m_attackPhase == AttackPhase::END)
 	{
-		//m_attackframe = 0;
-		//m_attackcount = 0;
-		//m_rotatespeed = 0.01f;
-		//attack_kind = NONE;//攻撃終了
-		//m_lookatFg = true;
-		//m_attackPhase = AttackPhase::ENTER;
-
 		m_weapon->SwingEnd();
 		m_Owner->m_State = NORMAL;
 		StateReset();
@@ -1051,13 +997,6 @@ void Enemy::Impl::WrapAroundThrust() {
 	}
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
-		//m_Owner->m_State = NORMAL;
-		//m_attackframe = 0;
-		//m_lookatFg = true;
-		//m_rotatespeed = 0.01f;
-		//m_rushFg = false;
-		//m_attackcount = 0;
-		//m_attackPhase = AttackPhase::ENTER;
 
 		m_weapon->SwingEnd();
 		m_Owner->m_State = NORMAL;
@@ -1121,14 +1060,6 @@ void Enemy::Impl::JumpSpinSlashShot()
 	// 終了フェーズ、攻撃終了処理を行う
 	if (m_attackPhase == AttackPhase::END)
 	{
-		//m_Owner->m_State = NORMAL;
-		//m_stateframe = 0;
-		//m_attackframe = 0;
-		//m_attackcount = 0;
-		//m_rushFg = false;
-		//m_lookatFg = true;
-		//m_Owner->m_Rotation.x = 0;
-		//m_attackPhase = AttackPhase::ENTER;
 
 		m_Owner->m_State = NORMAL;
 		StateReset();
@@ -1196,12 +1127,6 @@ void Enemy::Impl::CrossShot() {
 
 	// 終了フェーズ、攻撃終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
-		//m_attackframe = 0;
-		//m_attackcount = 0;
-		//m_rotatespeed = 0.01f;
-		//attack_kind = NONE;//攻撃終了
-		//m_lookatFg = true;
-		//m_attackPhase = AttackPhase::ENTER;
 
 		m_weapon->SwingEnd();
 		m_Owner->m_State = NORMAL;
@@ -1267,14 +1192,6 @@ void Enemy::Impl::RotateSwingFibonacci()
 
 	// 終了フェーズ、終了処理を行う
 	if (m_attackPhase == AttackPhase::END) {
-		//m_lookatFg = true;
-		//m_spinFg = false;
-		//m_Owner->m_State = NORMAL;
-		//m_stateframe = 0;
-		//m_attackframe = 0;
-		//attack_kind = NONE;//攻撃終了
-		//m_attackPhase = AttackPhase::ENTER;
-
 		m_Owner->m_State = NORMAL;
 		StateReset();
 	}
@@ -1306,12 +1223,6 @@ void Enemy::Impl::AlterEgoShot()
 		m_Owner->m_Velocity = m_vib.UpdateMoveDir(forward);
 
 		++m_attackframe;
-		//if (m_attackframe == 120) {
-		//	m_Owner->m_Position = m_startpos;// 元の位置に戻す
-		//	// 左右に弾を発射する準備
-		//	ProjectileChargeMax_VT(20.0f,PI);
-		//	ProjectileChargeMax_VT(-20.0f, PI);
-		//}
 
 		if (m_attackframe > 120) {
 			m_Owner->m_Position = m_startpos;// 元の位置に戻す
@@ -1342,10 +1253,6 @@ void Enemy::Impl::AlterEgoShot()
 		++m_attackcount;
 		m_attackPhase = AttackPhase::RECOVER;
 		m_Owner->m_Shadow->SetLive(true); // 分身終了、影を戻す
-		//// 2回発射したら硬直へ
-		//if (m_attackcount >= 2) {
-		//	m_attackPhase = AttackPhase::RECOVER;
-		//}
 	}
 
 	// 硬直フェーズ、一定フレーム経過後終了へ
@@ -1829,22 +1736,8 @@ void Enemy::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 		m_Owner->m_Position.x = m_Owner->m_oldPos.x;
 		m_Owner->m_Position.z = m_Owner->m_oldPos.z;
 
-		// 突進中の処理
-		if (m_rushFg) {
-			m_rushFg = false;
-			m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
-
-			// 壁に当たったらその時点で攻撃する
-			if (attack_kind == SWING_VERTICAL_RUSH) {
-				m_weapon->Swing_Vertical();
-			}
-
-			// 攻撃終了処理へ移行
-			if (attack_kind == JUMP_SPINSLASH_RUSH) {
-				m_attackPhase = AttackPhase::RECOVER;
-				m_Owner->m_Rotation.x = 0;
-			}
-		}
+		hitwall = true;
+		
 	}
 
 

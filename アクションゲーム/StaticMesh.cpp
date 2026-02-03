@@ -24,6 +24,13 @@ void StaticMesh::Load(std::string filename, std::string texturedirectory)
 	{
 		for (auto& v : mv)
 		{
+			DirectX::SimpleMath::Vector3 pos(v.pos.x, v.pos.y, v.pos.z);
+
+			// AABB 更新
+			m_BoundsMin = DirectX::SimpleMath::Vector3::Min(m_BoundsMin, pos);
+			m_BoundsMax = DirectX::SimpleMath::Vector3::Vector3::Max(m_BoundsMax, pos);
+
+
 			VERTEX_3D vertex{};
 			vertex.position = DirectX::SimpleMath::Vector3(v.pos.x, v.pos.y, v.pos.z);
 			vertex.normal = DirectX::SimpleMath::Vector3(v.normal.x, v.normal.y, v.normal.z);
@@ -33,6 +40,8 @@ void StaticMesh::Load(std::string filename, std::string texturedirectory)
 			m_vertices.emplace_back(vertex);
 		}
 	}
+
+	m_BaseSize = m_BoundsMax - m_BoundsMin;
 
 	// インデックスデータ作成
 	for (const auto& mi : indices)
