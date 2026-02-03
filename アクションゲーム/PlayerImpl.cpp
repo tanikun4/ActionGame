@@ -651,7 +651,7 @@ void Player::Impl::Damage(int atk) {
 
 	// 攻撃中なら攻撃終了
     if (m_Owner->m_State == ATTACK) {
-        m_Owner->m_State = NORMAL;
+        //m_Owner->m_State = NORMAL;
         m_weapon->AttackEnd();
         m_attackkind = NONE;
         m_Owner->m_Rotation.x = 0;
@@ -689,6 +689,7 @@ void Player::Impl::Damage(int atk) {
     }
 
     hp -= atk;
+	m_Owner->m_Scale = { 1.3f, 0.5f, 0.7f };// ダメージを受けたら少し変形する
 
     m_hp_gauge.ChangeGauge(hp, maxhp);
     
@@ -852,6 +853,7 @@ void Player::Impl::UpdateDamage() {
     Attack();
     if (framecount > 10) {
         m_Owner->m_State = NORMAL;
+        m_Owner->m_Scale = { 1.0f, 1.0f, 1.0f };
     }
 }
 
