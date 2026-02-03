@@ -28,9 +28,9 @@ public:
 		return std::move(m_textures);
 	}
 
-	const DirectX::SimpleMath::Vector3 const GetBaseSize() { return m_BaseSize; }
-	const DirectX::SimpleMath::Vector3 const GetBoundsMin() { return m_BoundsMin; }
-	const DirectX::SimpleMath::Vector3 const GetBoundsMax() { return m_BoundsMax; }
+	const DirectX::SimpleMath::Vector3 GetBaseSize() { return m_BaseSize; }
+	const DirectX::SimpleMath::Vector3 GetBoundsMin() { return m_BoundsMin; }
+	const DirectX::SimpleMath::Vector3 GetBoundsMax() { return m_BoundsMax; }
 
 private:
 	DirectX::SimpleMath::Vector3 m_BoundsMin;

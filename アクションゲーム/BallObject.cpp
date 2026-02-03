@@ -52,6 +52,10 @@ void BallObject::BallInit(std::u8string modelfilename)
 
 	m_MeshRenderer.Init(staticmesh);
 
+	//半径を計算
+	base_radius = staticmesh.GetBaseSize().x * 0.5f;
+	radius = base_radius;
+
 	// シェーダオブジェクト生成
 	m_Shader.Create("shader/litTextureVS_notlight.hlsl", "shader/litTexturePS.hlsl");
 

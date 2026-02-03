@@ -194,6 +194,7 @@ void Sword::UpdateOBB() {
 	// 剣モデルのpivotは持ち手先端
 	//Vector3 obbLocalCenter = { 0.0f, m_Scale.y * (1.0f - m_Scale.y * 0.1f), 0.0f };
 
+	// ヒット判定位置の基準比率
 	constexpr float HIT_CENTER_RATIO = 0.5f;
 
 	Vector3 obbLocalCenter =
@@ -213,9 +214,10 @@ void Sword::UpdateOBB() {
 		m_Rotation,
 		{ m_Scale.x * m_baseSize.x * 0.5f, m_Scale.y * m_baseSize.y * 0.5f, m_Scale.z * m_baseSize.z * 0.5f}
 	};
+	// 見た目通りの大きさだが、小さすぎるかもしれない。
 
+	// 軌跡エフェクト更新処理
 	m_EffectTrail->Update();
-
 
 	if (!atkFg) return;
 

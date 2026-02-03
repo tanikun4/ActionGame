@@ -23,7 +23,8 @@ protected:
 
 	int m_State = 0; //状態変数、クラスによって意味が異なる
 	int m_StopCount = 0; // 静止カウント
-	float radius = 4.0f;//ボールモデルの直径
+	float base_radius = 4.0f;//基本のボールモデルの半径
+	float radius = base_radius;//自身の半径
 	bool is_GROUND = false;//地面に接地しているかどうかのフラグ
 	bool is_SPECIALMOVE = false;//特殊移動中かどうかのフラグ
 

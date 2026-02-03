@@ -276,6 +276,16 @@ void Player::Impl::DebugPlayerStatus() {
         m_Owner->m_Rotation.z = 0;
     }
 
+	static float debug_scale = 1;
+    ImGui::SliderFloat("Scale", &debug_scale, 0, 10);
+
+    if (ImGui::Button("Reset Scale")) {
+        debug_scale = 1;
+    }
+
+	m_Owner->m_Scale = Vector3(debug_scale, debug_scale, debug_scale);
+	m_Owner->radius = m_Owner->base_radius * debug_scale;
+
     if (ImGui::Button("HP MAX"))
     {
         hp = maxhp;
