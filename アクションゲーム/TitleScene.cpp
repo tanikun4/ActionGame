@@ -8,7 +8,7 @@
 #include "Ground.h"
 #include "Bullet.h"
 #include "Projectile.h"
-#include "Pole.h"
+#include "Sword.h"
 #include "GroundManager.h"
 #include "ICollider.h"
 #include "Fade.h"
@@ -69,7 +69,7 @@ void TitleScene::Init()
 		bullet->SetState(0); // //’e‚ð”ñ•\Ž¦
 	}
 
-	std::vector<Pole*> weapons = Game::GetInstance()->GetObjects<Pole>();
+	std::vector<Sword*> weapons = Game::GetInstance()->GetObjects<Sword>();
 	m_MySceneObjects.insert(
 		m_MySceneObjects.end(),    // ‘}“üˆÊ’u
 		weapons.begin(),        // ‘}“ü‚·‚é”ÍˆÍ‚ÌŠJŽn

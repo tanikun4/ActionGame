@@ -7,7 +7,7 @@
 
 class Camera;
 class Player;
-class Pole;
+class Sword;
 class Boss;
 class Bullet;
 class TestCube;
@@ -34,9 +34,9 @@ public:
 	void ShotBullet();
 	int GetHP();
 	
-	Pole* GetWeapon();
+	Sword* GetWeapon();
 
-	void OnHit(Pole* pole);
+	void OnHit(Sword* pole);
 	void OnHit(Bullet* bu);
 	void OnHit(TestCube* cube);
 	void OnHit(Projectile* pr);
@@ -134,7 +134,7 @@ private:
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
 	std::vector<Bullet*> m_bullet;
 	std::vector<Projectile*> m_projectile;
-	Pole* m_weapon;
+	Sword* m_weapon;
 	Player* m_target = nullptr;// プレイヤー参照
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 	DirectX::SimpleMath::Vector3 m_startpos; // 移動開始位置

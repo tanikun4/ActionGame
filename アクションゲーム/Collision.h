@@ -223,9 +223,6 @@ namespace Collision
 	//};
 
 
-
-
-
 	// AABB‚ğì‚é
 	AABB SetAABB(DirectX::SimpleMath::Vector3 centerposition, float width, int height, int depth);
 

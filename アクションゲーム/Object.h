@@ -53,10 +53,10 @@ public:
 	virtual void OnHit(class Player* player) {} 
 	virtual void OnHit(class Boss* boss) {}    
 	virtual void OnHit(class Enemy* enemy) {}
-	virtual void OnHit(class Pole* pole) {}    
+	virtual void OnHit(class Sword* pole) {}    
 	virtual void OnHit(class Bullet* bullet) {} 
 	virtual void OnHit(class Projectile* projectile) {}
-	virtual void OnHit(class GolfBall* ball) {} 
+	virtual void OnHit(class BallObject* ball) {} 
 	virtual void OnHit(class TestCube* cube) {};
 
 	virtual bool GetLive() { return m_live; }

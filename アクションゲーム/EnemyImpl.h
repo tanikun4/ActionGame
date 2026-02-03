@@ -8,7 +8,7 @@
 
 class Camera;
 class Player;
-class Pole;
+class Sword;
 class Enemy;
 class Bullet;
 class TestCube;
@@ -34,12 +34,12 @@ public:
 
 	void ShotBullet();
 	int GetHP();
-	Pole* GetWeapon();
+	Sword* GetWeapon();
 	bool IsAttackable() { return m_Owner->m_State == NORMAL; }// 攻撃可能かを返す
 	bool IsAttacking() { return m_Owner->m_State == ATTACK; } // 攻撃中かを返す
 	bool IsAway() { return m_awayFg; } // 距離を取る動きをしているかを返す
 
-	void OnHit(Pole* pole);
+	void OnHit(Sword* pole);
 	void OnHit(Bullet* bu);
 	void OnHit(TestCube* cube);
 	void OnHit(Projectile* pr);
@@ -137,7 +137,7 @@ private:
 	DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
 	std::vector<Bullet*> m_bullet;
 	std::vector<Projectile*> m_projectile;
-	Pole* m_weapon;
+	Sword* m_weapon;
 	Object* m_target = nullptr;// ターゲット参照
 	DirectX::SimpleMath::Vector3 m_ta_pos; // 突進などの目標点
 	DirectX::SimpleMath::Vector3 m_startpos; // 移動開始位置

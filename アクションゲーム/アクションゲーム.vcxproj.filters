@@ -144,7 +144,7 @@
     <ClCompile Include="Boss.cpp">
       <Filter>ソース ファイル\Object\Boss</Filter>
     </ClCompile>
-    <ClCompile Include="GolfBall.cpp">
+    <ClCompile Include="BallObject.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
     <ClCompile Include="Ground.cpp">
@@ -162,7 +162,7 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>ソース ファイル\Object\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="Pole.cpp">
+    <ClCompile Include="Sword.cpp">
       <Filter>ソース ファイル\Object\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
@@ -326,7 +326,7 @@
     <ClInclude Include="Enemy.h">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="GolfBall.h">
+    <ClInclude Include="BallObject.h">
       <Filter>ソース ファイル\Object</Filter>
     </ClInclude>
     <ClInclude Include="TestCube.h">
@@ -341,7 +341,7 @@
     <ClInclude Include="Ground.h">
       <Filter>ソース ファイル\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Pole.h">
+    <ClInclude Include="Sword.h">
       <Filter>ソース ファイル\Object\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">

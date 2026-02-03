@@ -1,12 +1,12 @@
 #pragma once
-#include "Golfball.h"
+#include "BallObject.h"
 #include <vector>
 class Projectile;
-class Pole;
+class Sword;
 class Bullet;
 
 class Boss :
-    public GolfBall
+    public BallObject
 {
 private:
 	//pimplパターン、実装を隠す
@@ -31,12 +31,12 @@ public:
 	void ShotBullet();
 	void Stun();
 	void SetNotUpdate(bool _notupdate);
-	Pole* GetWeapon();
+	Sword* GetWeapon();
 	int GetHP();
 	void HitObject(Object* ob) override {
 		ob->OnHit(this);
 	}
-	void OnHit(Pole* pole);
+	void OnHit(Sword* pole);
 	void OnHit(Bullet* bu);
 	void OnHit(TestCube* cube);
 	void OnHit(Projectile* pr);

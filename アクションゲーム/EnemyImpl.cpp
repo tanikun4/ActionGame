@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "Ground.h"
 #include "Game.h"
-#include "Pole.h"
+#include "Sword.h"
 #include "Collision.h"
 #include "Projectile.h"
 #include "Bullet.h"
@@ -18,7 +18,7 @@ Enemy::Impl::Impl(Camera* cam, Enemy* owner)
 	: m_Owner(owner)
 	, m_Camera(cam)
 {
-	m_weapon = Game::GetInstance()->AddObject<Pole>();
+	m_weapon = Game::GetInstance()->AddObject<Sword>();
 	m_weapon->SetOwner(m_Owner);
 }
 
@@ -100,7 +100,7 @@ void Enemy::Impl::DebugEnemyStatus() {//ƒ{ƒX‚Ìó‘Ô‚ð‘€ì‚·‚é
 }
 
 void Enemy::Impl::Init() {
-	m_Owner->GBInit(u8"assets/model/Character/boss.fbx");
+	m_Owner->BallInit(u8"assets/model/Character/boss.fbx");
 	//m_Owner->m_Position = Vector3(0.0f, 50.0f, -50.0f);
 	m_Owner->m_Velocity_f = 0.0f;//‚Í‚¶‚ß‚ÉˆÚ“®‘¬“x‚ð0‚É‚·‚é
 	hp = maxhp;
@@ -170,7 +170,7 @@ void Enemy::Impl::Update() {
 	if (!m_spinFg)
 		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
-	m_Owner->GBUpdate();
+	m_Owner->BallUpdate();
 
 	if (m_weapon)
 		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);
@@ -178,7 +178,7 @@ void Enemy::Impl::Update() {
 
 void Enemy::Impl::Draw()
 {
-	m_Owner->GBDraw();
+	m_Owner->BallDraw();
 }
 
 void Enemy::Impl::Uninit()
@@ -717,7 +717,7 @@ void Enemy::Impl::JumpSpinSlash() {
 	if (m_attackPhase == AttackPhase::ATTACK) {
 		m_Owner->m_Velocity.y = 0;//‹ó’†‚Å’âŽ~‚·‚é
 		// UŒ‚ŠJŽn
-		if (m_weapon->GetState() == Pole::STATE::NORMAL) {
+		if (m_weapon->GetState() == Sword::STATE::NORMAL) {
 			m_weapon->AttackStart(true, true);
 			m_AngleAnim.StartRelative({ PI * 4,0,0 }, 30, 0.0f);// c‰ñ“]Ø‚è
 			Sound::GetInstance()->Play(SOUND_SE_SWING);
@@ -809,7 +809,7 @@ void Enemy::Impl::JumpSpinSlashRush() {
 	if (m_attackPhase == AttackPhase::ATTACK) {
 		m_Owner->m_Velocity.y = 0;//‹ó’†‚Å’âŽ~‚·‚é
 		// UŒ‚ŠJŽn
-		if (m_weapon->GetState() == Pole::STATE::NORMAL) {
+		if (m_weapon->GetState() == Sword::STATE::NORMAL) {
 			m_weapon->AttackStart(true, true);
 	/*		Vector3 endrot = m_Owner->m_Rotation;
 			endrot.x += PI * 8;*/
@@ -1088,7 +1088,7 @@ void Enemy::Impl::JumpSpinSlashShot()
 
 	if (m_attackPhase == AttackPhase::ATTACK) {
 		// UŒ‚ŠJŽn
-		if (m_weapon->GetState() == Pole::STATE::NORMAL) {
+		if (m_weapon->GetState() == Sword::STATE::NORMAL) {
 			m_weapon->AttackStart(true, true);
 			Vector3 endrot = m_Owner->m_Rotation;
 			endrot.x += PI * 36;
@@ -1749,7 +1749,7 @@ bool Enemy::Impl::ManyThrust(int maxcount)
 		return false;
 	}
 
-	if (m_weapon->GetState() != Pole::STATE::THRUST)
+	if (m_weapon->GetState() != Sword::STATE::THRUST)
 		return false;
 
 	const int stepIndex = m_attackcount % std::size(ComboThrust);
@@ -1776,11 +1776,11 @@ int Enemy::Impl::GetHP() {
 	return hp;
 }
 
-Pole* Enemy::Impl::GetWeapon() {
+Sword* Enemy::Impl::GetWeapon() {
 	return m_weapon;
 }
 
-void Enemy::Impl::OnHit(Pole* po) {
+void Enemy::Impl::OnHit(Sword* po) {
 	if (!po->GetPl()) return;
 	Damage(po->GetAtk());
 	return;

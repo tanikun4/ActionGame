@@ -1,10 +1,9 @@
 #include <memory>
-#include "GolfBall.h"
+#include "BallObject.h"
 #include "StaticMesh.h"
 #include "utility.h"
 #include "Game.h"
 #include "Ground.h"
-#include "Pole.h"
 #include "GroundManager.h"
 
 using namespace std;
@@ -12,31 +11,31 @@ using namespace DirectX::SimpleMath;
 //extern Input input;
 
 // コンストラクタ
-GolfBall::GolfBall(Camera* cam) : Object(cam)
+BallObject::BallObject(Camera* cam) : Object(cam)
 {
 
 }
 
-GolfBall::GolfBall()
+BallObject::BallObject()
 {
 
 }
 
 // デストラクタ
-GolfBall::~GolfBall() 
+BallObject::~BallObject() 
 {
 
 }
 
-void GolfBall::Init() {
-	GBInit(u8"assets/model/gorufu/GolfBall_v2.fbx");
+void BallObject::Init() {
+	BallInit(u8"assets/model/gorufu/GolfBall_v2.fbx");
 }
 
-void GolfBall::Update() {
-	GBUpdate();
+void BallObject::Update() {
+	BallUpdate();
 }
 
-void GolfBall::GBInit(std::u8string modelfilename)
+void BallObject::BallInit(std::u8string modelfilename)
 {
 	// メッシュ読み込み
 	StaticMesh staticmesh;
@@ -94,7 +93,7 @@ void GolfBall::GBInit(std::u8string modelfilename)
 	m_Shadow->Init();
 }
 
-void GolfBall::GBUpdate()
+void BallObject::BallUpdate()
 {
 	//行列の更新
 	UpdateForwardDirectionVectors();
@@ -135,7 +134,7 @@ void GolfBall::GBUpdate()
 
 }
 
-void GolfBall::GBDraw()
+void BallObject::BallDraw()
 {
 
 	// SRT情報作成
@@ -175,27 +174,27 @@ void GolfBall::GBDraw()
 		m_Shadow->Draw();
 }
 
-void GolfBall::Draw() {
-	GBDraw();
+void BallObject::Draw() {
+	BallDraw();
 }
 
-void GolfBall::Uninit()
+void BallObject::Uninit()
 {
 
 }
 
 // 状態の設定・取得
-void GolfBall::SetState(int s) { m_State = s; }
-int GolfBall::GetState() { return m_State; }
+void BallObject::SetState(int s) { m_State = s; }
+int BallObject::GetState() { return m_State; }
 
 // ショット
-void GolfBall::Shot(Vector3 v) { m_Velocity = v;}
+void BallObject::Shot(Vector3 v) { m_Velocity = v;}
 
-float GolfBall::GetRadius() { return radius; }
+float BallObject::GetRadius() { return radius; }
 
-Vector3 GolfBall::GetForwardVector() { return m_ForwardVector; }
+Vector3 BallObject::GetForwardVector() { return m_ForwardVector; }
 
-bool GolfBall::CheckGround() {
+bool BallObject::CheckGround() {
 	//Groundの頂点データを取得
 
 	const auto& ground_polygon = GroundManager::GetInstance().GetGroundPolygons();
@@ -249,18 +248,18 @@ bool GolfBall::CheckGround() {
 }
 
 
-Collision::ColliderVariant GolfBall::GetCollision(){
+Collision::ColliderVariant BallObject::GetCollision(){
 	return Collision::Sphere{ m_Position, radius };
 }
 
-void GolfBall::SetColor(const DirectX::SimpleMath::Vector4& color) {//色を変える
+void BallObject::SetColor(const DirectX::SimpleMath::Vector4& color) {//色を変える
 	for (auto& m : m_Materiales) {
 		m.get()->SetDiffuse(color);
 		m.get()->Update();
 	}
 }
 
-Vector3 GolfBall::ToCameraEffectPos(Vector3 _pos, float _dist) {
+Vector3 BallObject::ToCameraEffectPos(Vector3 _pos, float _dist) {
 	//エフェクト再生の位置調整
 	Vector3 forward = m_Camera->GetForwardVector();
 	Vector3 toCamera = m_Camera->GetPosition() - _pos;

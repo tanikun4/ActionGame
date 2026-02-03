@@ -1,6 +1,6 @@
 //#include <memory>
-#include "Pole.h"
-#include "GolfBall.h"
+#include "Sword.h"
+#include "BallObject.h"
 #include "StaticMesh.h"
 #include "utility.h"
 #include "Game.h"
@@ -14,17 +14,17 @@ using namespace std;
 using namespace DirectX::SimpleMath;
 
 // コンストラクタ
-Pole::Pole(Camera* cam) :Weapon(cam)
+Sword::Sword(Camera* cam) :Weapon(cam)
 {
 	m_EffectTrail = Game::GetInstance()->AddObject<EffectTrail>();
 }
 
-Pole::Pole() {
+Sword::Sword() {
 
 }
 
 // デストラクタ
-Pole::~Pole()
+Sword::~Sword()
 {
 
 }
@@ -32,7 +32,7 @@ Pole::~Pole()
 //=======================================
 // 初期化処理
 //=======================================
-void Pole::Init()
+void Sword::Init()
 {
 	// メッシュ読み込み
 	StaticMesh staticmesh;
@@ -85,7 +85,7 @@ void Pole::Init()
 }
 
 
-void Pole::Update()
+void Sword::Update()
 {
 	
 }
@@ -93,7 +93,7 @@ void Pole::Update()
 //=======================================
 // 更新処理
 //=======================================
-void Pole::Update(Vector3 position, float radius, Vector3 rotation)//offsetはobbの距離調整用
+void Sword::Update(Vector3 position, float radius, Vector3 rotation)//offsetはobbの距離調整用
 {
 
 	switch (m_State) {
@@ -148,7 +148,7 @@ void Pole::Update(Vector3 position, float radius, Vector3 rotation)//offsetはobb
 
 }
 
-void Pole::UpdateOffset(float _yaw) {
+void Sword::UpdateOffset(float _yaw) {
 	//オフセット部分の更新
 	Vector3 rotOffset;
 
@@ -173,7 +173,7 @@ void Pole::UpdateOffset(float _yaw) {
 }
 
 // OBBの更新処理
-void Pole::UpdateOBB() {
+void Sword::UpdateOBB() {
 	// 回転行列とワールド行列
 	Matrix S = Matrix::CreateScale(m_Scale);
 	Matrix R = Matrix::CreateFromYawPitchRoll(
@@ -216,7 +216,7 @@ void Pole::UpdateOBB() {
 }
 
 // 描画処理
-void Pole::Draw()
+void Sword::Draw()
 {
 
 	// SRT情報作成
@@ -256,34 +256,34 @@ void Pole::Draw()
 }
 
 // 終了処理
-void Pole::Uninit()
+void Sword::Uninit()
 {
 
 }
 
 // 振り攻撃開始、プリセット版
-void Pole::Swing() 
+void Sword::Swing() 
 {
 	
 	SwingStart({0, -PI * 0.5f, 0}, {0,PI * 0.5f,0}, 18, 0.7f);
 }
 
 // 逆振り攻撃開始
-void Pole::Swing_Return() 
+void Sword::Swing_Return() 
 {
 
 	SwingStart({ 0, PI * 0.5f, 0 }, { 0,-PI * 0.5f,0 }, 18, 0.7f);
 }
 
 // 縦振り攻撃開始、デフォルト版
-void Pole::Swing_Vertical() 
+void Sword::Swing_Vertical() 
 {
 	
 	m_Rotation.x = PI;//縦向きにする
 	SwingStart({0,0,PI * 0.5f}, {0,0,-PI * 0.2f}, 10, 1.0f);
 }
 
-void Pole::Swing_Parry() 
+void Sword::Swing_Parry() 
 {
 	m_EffectTrail->Start();//軌跡エフェクト開始
 	m_offset = { 0,0,0 };//振り攻撃中はオフセット無し
@@ -297,7 +297,7 @@ void Pole::Swing_Parry()
 }
 
 // 振り攻撃、時間とモード指定版
-void Pole::Swing(int t, SwingMode mode)
+void Sword::Swing(int t, SwingMode mode)
 {
 	m_State = STANCE;
 	m_stancetime = 0;
@@ -319,7 +319,7 @@ void Pole::Swing(int t, SwingMode mode)
 }
 
 // 振り攻撃開始、パラメータ版
-void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
+void Sword::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
 	m_baseRotation = m_Rotation;// 基準角度を保存
 	m_EffectTrail->Start();//軌跡エフェクト開始
@@ -333,13 +333,13 @@ void Pole::SwingStart(const Vector3& s, const Vector3& e, int t, float accel)
 }
 
 // 振り攻撃中の処理
-void Pole::SwingUpdate() {
+void Sword::SwingUpdate() {
 	++m_attacktime;
 	m_Rotation =  m_baseRotation + m_AngleAnim.UpdateAbsolute();
 }
 
 // 振り攻撃終了
-void Pole::SwingEnd() {
+void Sword::SwingEnd() {
 	if (m_State != SWING) { return; }
 	m_State = NORMAL;
 	atkFg = false;
@@ -348,24 +348,24 @@ void Pole::SwingEnd() {
 }
 
 // 突き攻撃開始、デフォルト版
-void Pole::Thrust() {
+void Sword::Thrust() {
 	ThrustStart({ 0, 0, 0 }, { 0, 0, m_Scale.y * 2.5f }, 2, 0.3f);
 }
 
 // 突き攻撃開始、デフォルト版
-void Pole::Thrust_Right() {
+void Sword::Thrust_Right() {
 	ThrustStart({ m_Scale.x * 1.5f, 0, 0 }, { m_Scale.x * 1.5f, 0, m_Scale.y * 2.5f }, 2, 0.3f);
 }
 
 
 // 突き攻撃開始、デフォルト版
-void Pole::Thrust_Left() {
+void Sword::Thrust_Left() {
 	ThrustStart({ -m_Scale.x * 1.5f, 0, 0 }, { -m_Scale.x * 1.5f, 0, m_Scale.y * 2.5f }, 2, 0.3f);
 }
 
 
 // 突き攻撃開始、パラメータ版
-void Pole::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
+void Sword::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
 {
 	m_EffectTrail->Start();
 	m_PosAnim.StartAbsolute(s, e, t, accel);
@@ -377,7 +377,7 @@ void Pole::ThrustStart(const Vector3& s, const Vector3& e, int t, float accel)
 }
 
 // 突き攻撃中の処理
-void Pole::ThrustUpdate() {
+void Sword::ThrustUpdate() {
 	++m_attacktime;
 	m_offset = m_PosAnim.UpdateAbsolute(); // 位置アニメーション更新
 	//　突き出し終わっていたら、引き戻す動きを開始
@@ -389,7 +389,7 @@ void Pole::ThrustUpdate() {
 }
 
 // 突き攻撃終了
-void Pole::ThrustEnd() {
+void Sword::ThrustEnd() {
 	if (m_State != THRUST) { return; }
 	m_State = NORMAL;
 	atkFg = false;
@@ -400,7 +400,7 @@ void Pole::ThrustEnd() {
 
 
 //攻撃状態になるだけの関数、回転切り等で使用
-void Pole::AttackStart(bool _follow,bool _vt) {
+void Sword::AttackStart(bool _follow,bool _vt) {
 	m_EffectTrail->Start();
 	m_State = ATTACK;
 	m_attacktime = 0;
@@ -412,7 +412,7 @@ void Pole::AttackStart(bool _follow,bool _vt) {
 }
 
 //攻撃状態終了
-void Pole::AttackEnd() {
+void Sword::AttackEnd() {
 	m_EffectTrail->End();
 	m_State = NORMAL;
 	atkFg = false;
@@ -423,14 +423,14 @@ void Pole::AttackEnd() {
 }
 
 //構え開始、デフォルト版
-void Pole::Stance() {
+void Sword::Stance() {
 	m_State = STANCE;
 	m_stancetime = 0;
 
 	StanceStart({ 0,0,0 }, {0,-PI * 0.5f,0}, 18);
 }
 
-void Pole::Stance_Return() {
+void Sword::Stance_Return() {
 	m_State = STANCE;
 	m_stancetime = 0;
 
@@ -438,7 +438,7 @@ void Pole::Stance_Return() {
 }
 
 //構え開始、デフォルト版を時間、構えタイプの指定を可能にしたもの
-void Pole::Stance(int t, StanceMode mode) {
+void Sword::Stance(int t, StanceMode mode) {
 	m_State = STANCE;
 	m_stancetime = 0;
 	switch (mode)
@@ -460,7 +460,7 @@ void Pole::Stance(int t, StanceMode mode) {
 	}
 }
 
-void Pole::Stance_Thrust() {
+void Sword::Stance_Thrust() {
 	m_PosAnim.StartRelative({ 0,0,0 }, { m_Scale.x * 2, 0, -m_Scale.z * 2 }, 20);
 	m_stancetime = 0;
 	m_State = STANCE;
@@ -469,13 +469,13 @@ void Pole::Stance_Thrust() {
 }
 
 // 縦構え開始、デフォルト版
-void Pole::Stance_Vertical() {
+void Sword::Stance_Vertical() {
 	StanceStart({0,0,0}, { PI * 0.5,0,(PI * 0.5) + 0.2f}, 60);
 }
 
 
 //構え開始、パラメータ版
-void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {
+void Sword::StanceStart(const Vector3& s, const Vector3& e, int t) {
 	m_AngleAnim.StartRelative(s, e, t);
 	m_PosAnim.Reset();
 	m_baseRotation = m_Rotation;
@@ -486,7 +486,7 @@ void Pole::StanceStart(const Vector3& s, const Vector3& e, int t) {
 
 
 //構えてから振る(没関数)
-void Pole::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t_stance,
+void Sword::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t_stance,
 	const Vector3& s_swing, const Vector3& e_swing, int t_swing, int swingframe) 
 {
 	m_AngleAnim.StartRelative(s_stance, e_stance, t_stance);
@@ -497,7 +497,7 @@ void Pole::StanceToSwing(const Vector3& s_stance, const Vector3& e_stance, int t
 }
 
 //現在角度から振る
-void Pole::ToSwing(const DirectX::SimpleMath::Vector3& e, int t, float accel)
+void Sword::ToSwing(const DirectX::SimpleMath::Vector3& e, int t, float accel)
 {
 	m_AngleAnim.StartRelative(e, t, accel);
 	max_attacktime = t;
@@ -507,7 +507,7 @@ void Pole::ToSwing(const DirectX::SimpleMath::Vector3& e, int t, float accel)
 	atkFg = true;
 }
 
-void Pole::ToSwing()
+void Sword::ToSwing()
 {
 	Vector3 endrot = m_baseRotation;
 	endrot.y += PI;
@@ -515,7 +515,7 @@ void Pole::ToSwing()
 }
 
 //構え中の処理
-void Pole::StanceUpdate() 
+void Sword::StanceUpdate() 
 {
 	m_Rotation += m_AngleAnim.UpdateAbsolute();
 	
@@ -524,22 +524,22 @@ void Pole::StanceUpdate()
 	++m_stancetime;
 }
 
-void Pole::StanceEnd() 
+void Sword::StanceEnd() 
 {
 	m_State = NORMAL;
 	m_Rotation = m_baseRotation;
 	m_offset = { 0,0,0 };
 }
 
-int Pole::GetState() { return m_State; }
+int Sword::GetState() { return m_State; }
 
 //位置の設定
-void Pole::SetPosition(float x, float y, float z)
+void Sword::SetPosition(float x, float y, float z)
 {
 	Vector3 p = { x, y, z };
 	SetPosition(p);
 }
-void Pole::SetPosition(Vector3 pos)
+void Sword::SetPosition(Vector3 pos)
 {
 	m_Position = pos;
 
@@ -590,26 +590,26 @@ void Pole::SetPosition(Vector3 pos)
 	}
 }
 
-void Pole::SetTrailColor(Vector4 color) {
+void Sword::SetTrailColor(Vector4 color) {
 	m_EffectTrail->SetColor(color);
 }
 
-Collision::ColliderVariant Pole::GetCollision() {
+Collision::ColliderVariant Sword::GetCollision() {
 	return obb;
 }
 
-void Pole::GuardStart() {
+void Sword::GuardStart() {
 	m_State = 2;
 	m_baseRotation = m_Rotation;
 }
 
-void Pole::GuardEnd() {
+void Sword::GuardEnd() {
 	m_State = 0;
 	m_offset = { 0,0,0 };
 }
 
 // 武器の先端位置にエフェクトを表示する
-void Pole::TipToEffect(int _id, EffectParams _param)
+void Sword::TipToEffect(int _id, EffectParams _param)
 {
 	Matrix S = Matrix::CreateScale(m_Scale);
 	Matrix R = Matrix::CreateFromYawPitchRoll(
@@ -634,7 +634,7 @@ void Pole::TipToEffect(int _id, EffectParams _param)
 
 
 
-void Pole::DebugPoleStatus() {
+void Sword::DebugPoleStatus() {
 	Matrix S = Matrix::CreateScale(m_Scale);
 	Matrix R = Matrix::CreateFromYawPitchRoll(
 		m_Rotation.y,
@@ -651,7 +651,7 @@ void Pole::DebugPoleStatus() {
 	Vector3 yAxis = Vector3::TransformNormal(Vector3(0, 1, 0), world);
 	Vector3 zAxis = Vector3::TransformNormal(Vector3(0, 0, 1), world);
 
-	ImGui::Begin("Pole Axis Debug");
+	ImGui::Begin("Sword Axis Debug");
 
 	ImGui::Text("X Axis (Right):   %.2f %.2f %.2f", xAxis.x, xAxis.y, xAxis.z);
 	ImGui::Text("Y Axis (Up/Tip?): %.2f %.2f %.2f", yAxis.x, yAxis.y, yAxis.z);
@@ -661,14 +661,14 @@ void Pole::DebugPoleStatus() {
 
 }
 
-bool Pole::GetMaxAttack() {
+bool Sword::GetMaxAttack() {
 	if (m_attacktime >= max_attacktime) {
 		return true;
 	}
 	return false;
 }
 
-bool Pole::GetMaxStance() {
+bool Sword::GetMaxStance() {
 	if (m_stancetime >= max_stancetime) {
 		return true;
 	}

@@ -3,7 +3,6 @@
 
 class ICollider
 {
-protected:
 
 public:
     virtual ~ICollider() {}

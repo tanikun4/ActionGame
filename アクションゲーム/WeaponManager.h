@@ -2,7 +2,7 @@
 #include "Manager.h"
 #include <vector>
 
-class Pole;
+class Sword;
 class Projectile;
 class Weapon;
 

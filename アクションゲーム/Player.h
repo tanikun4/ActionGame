@@ -1,11 +1,11 @@
 #pragma once
 #include <memory>
-#include "GolfBall.h"
+#include "BallObject.h"
 
 class Camera;
 class PlayerImpl;
 
-class Player : public GolfBall
+class Player : public BallObject
 {
 public:
     Player(Camera* cam);
@@ -21,14 +21,14 @@ public:
 	std::vector<Texture2D*> GetGauge();
 
     int GetHP();
-    Pole* GetWeapon();
+    Sword* GetWeapon();
 
     // Hit ŒniŠO•”‚©‚çŒÄ‚Î‚ê‚é‚Ì‚Å public ‚Ì‚Ü‚Üj
     void HitObject(Object* ob) override { ob->OnHit(this); }
 
     void OnHit(class Enemy* en);
     void OnHit(class Boss* bo);
-    void OnHit(class Pole* po);
+    void OnHit(class Sword* po);
     void OnHit(class Bullet* bu);
 	void OnHit(class Projectile* pr);
     void OnHit(class TestCube* cube);

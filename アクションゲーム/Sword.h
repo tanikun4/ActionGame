@@ -26,7 +26,7 @@ class EffectTrail;
 //-----------------------------------------------------------------------------
 // Poleクラス
 //-----------------------------------------------------------------------------
-class Pole :public Weapon
+class Sword :public Weapon
 {
 private:
 
@@ -66,9 +66,9 @@ public:
 		STATE_MAX,
 	};
 
-	Pole(Camera* cam); // コンストラクタ
-	Pole(); // コンストラクタ
-	~Pole(); // デストラクタ
+	Sword(Camera* cam); // コンストラクタ
+	Sword(); // コンストラクタ
+	~Sword(); // デストラクタ
 
 	//TestCube hitbox;
 	//int atk = 3;//攻撃力

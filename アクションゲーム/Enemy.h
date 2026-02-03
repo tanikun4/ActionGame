@@ -1,23 +1,12 @@
 #pragma once
-#include "GolfBall.h"
+#include "BallObject.h"
 
 class Camera;
 
 class Enemy :
-    public GolfBall
+    public BallObject
 {
 private:
-	//int hp = 10;
-	//const int maxhp = 10;
-	//int flamecount = 0;
-	//DirectX::XMFLOAT2 stagesize = {0.0f,0.0f};
-	//DirectX::SimpleMath::Vector3 hitbackrotation = { 0,0,0 };//攻撃に当たった時のノックバックする向き
-	//Projectile* m_projectile = nullptr;
-	//Pole* m_weapon = nullptr;
-
-	//void Attack();
-	//void SetArrow();
-	//bool HitCheck();//攻撃に当たったかを返す
 	//pimplパターン、実装を隠す
 	//Implクラスの宣言
 	class Impl;
@@ -37,7 +26,7 @@ public:
 
 	void SetTarget(Object* ta);
 	int GetHP();
-	class Pole* GetWeapon();
+	class Sword* GetWeapon();
 	bool IsAttackable();
 	bool IsAttacking();
 	bool IsAway();
@@ -45,7 +34,7 @@ public:
 	// Hit 系（外部から呼ばれるので public のまま）
 	void HitObject(Object* ob) override { ob->OnHit(this); }
 
-	void OnHit(Pole* po);
+	void OnHit(Sword* po);
 	void OnHit(class Bullet* bu);
 	void OnHit(class Projectile* pr);
 	void OnHit(class TestCube* cube);

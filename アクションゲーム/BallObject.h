@@ -9,7 +9,7 @@
 #include "ShadowCircle.h"
 #include "Vibration.h"
 
-class GolfBall :public Object , public ICollider
+class BallObject :public Object , public ICollider
 {
 protected:
 
@@ -41,13 +41,13 @@ protected:
 
 public:
 
-	GolfBall();
-	GolfBall(Camera* cam); // コンストラクタ
-	virtual ~GolfBall();//デストラクタ
+	BallObject();
+	BallObject(Camera* cam); // コンストラクタ
+	virtual ~BallObject();//デストラクタ
 
-	void GBInit(std::u8string modelfilename);
-	void GBUpdate();
-	void GBDraw();
+	void BallInit(std::u8string modelfilename);
+	void BallUpdate();
+	void BallDraw();
 	void Init();
 	void Update();
 	void Draw();

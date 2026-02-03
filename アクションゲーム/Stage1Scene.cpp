@@ -7,7 +7,7 @@
 #include "Texture2D.h"
 #include "Projectile.h"
 #include "Bullet.h"
-#include "Pole.h"
+#include "Sword.h"
 #include "EnemyManager.h"
 #include "GroundManager.h"
 #include "WallManager.h"
@@ -93,7 +93,7 @@ void Stage1Scene::Init()
 	}
 
 	// •Ší‚Ìæ“¾
-	vector<Pole*> weapons = Game::GetInstance()->GetObjects<Pole>();
+	vector<Sword*> weapons = Game::GetInstance()->GetObjects<Sword>();
 	m_MySceneObjects.insert(
 		m_MySceneObjects.end(),    // ‘}“üˆÊ’u
 		weapons.begin(),        // ‘}“ü‚·‚é”ÍˆÍ‚ÌŠJn

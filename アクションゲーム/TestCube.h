@@ -7,7 +7,7 @@
 #include "Object.h"
 #include "ICollider.h"
 
-class GolfBall;
+class BallObject;
 
 //-----------------------------------------------------------------------------
 //TestCubeƒNƒ‰ƒX

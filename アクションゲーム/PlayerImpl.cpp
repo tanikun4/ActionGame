@@ -5,7 +5,7 @@
 #include "Collision.h"
 #include "Game.h"
 #include "Ground.h"
-#include "Pole.h"
+#include "Sword.h"
 #include "Projectile.h"
 #include "Bullet.h"
 #include "Enemy.h"
@@ -34,7 +34,7 @@ Player::Impl::Impl(Camera* cam, Player* owner)
     , m_Camera(cam)
 {
     m_arrow = nullptr;
-    m_weapon = Game::GetInstance()->AddObject<Pole>();
+    m_weapon = Game::GetInstance()->AddObject<Sword>();
     m_weapon->SetOwner(m_Owner);
 }
 
@@ -46,7 +46,7 @@ Player::Impl::~Impl()
 // public関数
 // -------------------------
 void Player::Impl::Init() {
-    m_Owner->GBInit(u8"assets/model/Character/player.fbx");
+    m_Owner->BallInit(u8"assets/model/Character/player.fbx");
     m_Owner->m_Position = Vector3(0.0f, 50.0f, 0.0f);
     m_weapon->SetPl(true);
     hp = maxhp;
@@ -105,7 +105,7 @@ void Player::Impl::Update() {
 
 void Player::Impl::Draw() {
 	if (hp <= 0) return; // 死亡していたら描画しない
-    m_Owner->GBDraw();
+    m_Owner->BallDraw();
 }
 
 void Player::Impl::Uninit() {
@@ -121,7 +121,7 @@ int Player::Impl::GetHP() {
     return hp;
 }
 
-Pole* Player::Impl::GetWeapon() {
+Sword* Player::Impl::GetWeapon() {
     return m_weapon;
 }
 
@@ -147,21 +147,20 @@ void Player::Impl::OnHit(Boss* bo) {
 }
 
 //近接武器と当たった場合
-void Player::Impl::OnHit(Pole* po) {
-    const int damage = 2;
+void Player::Impl::OnHit(Sword* po) {
     if (po->GetPl()) return;
-    //if(RollFg && rollcount < 5 && po->GetAttackTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
-    //if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
      // ジャストガード成功で相手を行動不能にする
     if (GuardFg && guardcount <= justguardframe) { 
         po->GetOwner()->Stun();
 		m_target = po->GetOwner();
-		//Counter();
         Parry(); 
         return; 
     }
-    Damage(damage);
+    Damage(2);
 }
+		//Counter();
+    //if(RollFg && rollcount < 5 && po->GetAttackTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
+    //if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
 
 //弾と当たった場合
 void Player::Impl::OnHit(Bullet* bu) {
@@ -943,7 +942,7 @@ void Player::Impl::UpdateCommon() {
     if (m_Owner->m_State != ATTACK)
         m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
-    m_Owner->GBUpdate();
+    m_Owner->BallUpdate();
 
     if (m_weapon)
         m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);

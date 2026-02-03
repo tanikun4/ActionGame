@@ -5,7 +5,7 @@ using namespace std;
 using namespace DirectX::SimpleMath;
 
 Enemy::Enemy(Camera* cam)
-    : GolfBall(cam)
+    : BallObject(cam)
     , impl(std::make_unique<Impl>(cam, this))
 {
 }
@@ -25,12 +25,12 @@ void Enemy::Stun() { impl->Stun(); }
 void Enemy::SetTarget(Object* ta) { impl->SetTarget(ta); }
 
 int Enemy::GetHP() { return impl->GetHP(); }
-Pole* Enemy::GetWeapon() { return impl->GetWeapon(); }
+Sword* Enemy::GetWeapon() { return impl->GetWeapon(); }
 bool Enemy::IsAttackable() { return impl->IsAttackable(); }
 bool Enemy::IsAttacking() { return impl->IsAttacking(); }
 bool Enemy::IsAway() { return impl->IsAway(); }
 
-void Enemy::OnHit(Pole* po) { impl->OnHit(po); }
+void Enemy::OnHit(Sword* po) { impl->OnHit(po); }
 void Enemy::OnHit(Bullet* bu) { impl->OnHit(bu); }
 void Enemy::OnHit(Projectile* pr) { impl->OnHit(pr); }
 void Enemy::OnHit(TestCube* cube) { impl->OnHit(cube); }

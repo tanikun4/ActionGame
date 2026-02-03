@@ -164,8 +164,8 @@
     <LibraryPath>C:\directxtk\lib\x64\Debug;C:\assimp\assimp\5.2.5\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\directxtk\include;C:\assimp-6.0.3\include\assimp;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\assimp-6.0.3\build\lib\Release;C:\directxtk\lib\x64\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\directxtk\include;$(ProjectDir)\assimp-6.0.3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\assimp-6.0.3\build\lib\Release;$(ProjectDir)\directxtk\lib\x64\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DirectX 3Dゲーム制作 リリースビルド|x64'">
     <IncludePath>C:\directxtk\include;C:\assimp\assimp\5.2.5\include;$(IncludePath)</IncludePath>
@@ -297,7 +297,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\assimp-6.0.3\include;C:\directxtk\include;%(AdditionalIncludeDirectories);C:\Users\tanik\Desktop\就職作品\制作環境\アクションゲーム\imgui;C:\Users\tanik\Desktop\就職作品\制作環境\アクションゲーム\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\assimp-6.0.3\include;$(ProjectDir)\directxtk\include;%(AdditionalIncludeDirectories);C:\Users\tanik\Desktop\就職作品\制作環境\アクションゲーム\imgui;C:\Users\tanik\Desktop\就職作品\制作環境\アクションゲーム\imgui\backends</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -305,7 +305,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\assimp-6.0.3\build\lib\Release;C:\directxtk\lib\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\assimp-6.0.3\build\lib\Release;$(ProjectDir)\directxtk\lib\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -358,7 +358,7 @@
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
-    <ClCompile Include="GolfBall.cpp" />
+    <ClCompile Include="BallObject.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="GroundManager.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
@@ -374,7 +374,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerImpl.cpp" />
-    <ClCompile Include="Pole.cpp" />
+    <ClCompile Include="Sword.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -436,7 +436,7 @@
     <ClInclude Include="Fade.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameOverScene.h" />
-    <ClInclude Include="GolfBall.h" />
+    <ClInclude Include="BallObject.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="GroundManager.h" />
     <ClInclude Include="ICollider.h" />
@@ -465,7 +465,7 @@
     <ClInclude Include="WireRenderer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Pole.h" />
+    <ClInclude Include="Sword.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResultScene.h" />

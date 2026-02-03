@@ -7,7 +7,7 @@
 
 class Camera;
 class Player;
-class Pole;
+class Sword;
 class Enemy;
 class Boss;
 class Bullet;
@@ -30,12 +30,12 @@ public:
     void SetDemoMode(const bool _demomode) { demoMode = _demomode; }
 
     int GetHP();
-    Pole* GetWeapon();
+    Sword* GetWeapon();
     std::vector<Texture2D*> GetGauge();
 
     void OnHit(Enemy* en);
     void OnHit(Boss* bo);
-    void OnHit(Pole* po);
+    void OnHit(Sword* po);
     void OnHit(Bullet* bu);
     void OnHit(Projectile* pr);
     void OnHit(TestCube* cube);
@@ -116,7 +116,7 @@ private:
 
     DirectX::SimpleMath::Vector3 m_ta_pos; // 目標点
     Bullet* m_arrow = nullptr;
-    Pole* m_weapon = nullptr;
+    Sword* m_weapon = nullptr;
 	Object* m_target = nullptr; // 攻撃対象
 	AngleAnim m_Anim; // アニメーション用構造体
     Gauge m_hp_gauge; //  HPゲージ用構造体

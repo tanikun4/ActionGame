@@ -5,7 +5,7 @@ using namespace std;
 using namespace DirectX::SimpleMath;
 
 Boss::Boss(Camera* cam)
-	: GolfBall(cam)
+	: BallObject(cam)
 	, impl(std::make_unique<Impl>(cam, this))
 {
 
@@ -42,9 +42,9 @@ void Boss::SetNotUpdate(bool _notupdate) { impl->SetNotUpdate(_notupdate); }
 
 int Boss::GetHP() { return impl->GetHP(); }
 
-Pole* Boss::GetWeapon() { return impl->GetWeapon(); }
+Sword* Boss::GetWeapon() { return impl->GetWeapon(); }
 
-void Boss::OnHit(Pole* po) { impl->OnHit(po); }
+void Boss::OnHit(Sword* po) { impl->OnHit(po); }
 
 void Boss::OnHit(Bullet* bu) { impl->OnHit(bu); }
 

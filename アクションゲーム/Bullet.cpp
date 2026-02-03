@@ -1,6 +1,6 @@
 #include "Bullet.h"
 #include "Game.h"
-#include "Pole.h"
+#include "Sword.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -260,7 +260,7 @@ void Bullet::LookAtShot(Vector3 position, Vector3 target, bool _pl) {
 	atk = 1;
 }
 
-void Bullet::OnHit(Pole* po) {
+void Bullet::OnHit(Sword* po) {
 	if (m_State != 2) return;
 	if (po->GetPl() && !pl) { //’e‚Ì‘Å‚¿•Ô‚µ
 		atk = 5;

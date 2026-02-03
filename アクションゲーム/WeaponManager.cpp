@@ -1,12 +1,12 @@
 #include "WeaponManager.h"
 #include "Projectile.h"
-#include "Pole.h"
+#include "Sword.h"
 #include "Game.h"
 
 Weapon* WeaponManager::SetWeapon(int id) {//‘½•ªŽg‚í‚È‚¢
 	switch (id) {
 	case POLE:
-		m_weapons.emplace_back(new Pole());
+		m_weapons.emplace_back(new Sword());
 		break;
 	case PROJECTILE:
 		m_weapons.emplace_back(new Projectile());

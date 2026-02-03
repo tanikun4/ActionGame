@@ -3,7 +3,7 @@
 #include "StaticMesh.h"
 #include "utility.h"
 #include "Game.h"
-#include "GolfBall.h"
+#include "BallObject.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
