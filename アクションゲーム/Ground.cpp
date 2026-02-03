@@ -35,12 +35,12 @@ void Ground::Init()
 		for (int x = 0; x < m_SizeX; x++) {
 			
 			int n = z * m_SizeZ * 6 + x * 6;
-			m_Vertices[n + 0].position = Vector3(-0.5 + x - m_SizeX / 2, 0, 0.5 - z + m_SizeZ / 2);
-			m_Vertices[n + 1].position = Vector3(0.5 + x - m_SizeX / 2, 0, 0.5 - z + m_SizeZ / 2);
-			m_Vertices[n + 2].position = Vector3(-0.5 + x - m_SizeX / 2, 0, -0.5 - z + m_SizeZ / 2);
-			m_Vertices[n + 3].position = Vector3(-0.5 + x - m_SizeX / 2, 0, -0.5 - z + m_SizeZ / 2);
-			m_Vertices[n + 4].position = Vector3(0.5 + x - m_SizeX / 2, 0, 0.5 - z + m_SizeZ / 2);
-			m_Vertices[n + 5].position = Vector3(0.5 + x - m_SizeX / 2, 0, -0.5 - z + m_SizeZ / 2);
+			m_Vertices[n + 0].position = Vector3(-0.5f + x - m_SizeX / 2, 0, 0.5f - z + m_SizeZ / 2);
+			m_Vertices[n + 1].position = Vector3(0.5f + x - m_SizeX / 2, 0, 0.5f - z + m_SizeZ / 2);
+			m_Vertices[n + 2].position = Vector3(-0.5f + x - m_SizeX / 2, 0, -0.5f - z + m_SizeZ / 2);
+			m_Vertices[n + 3].position = Vector3(-0.5f + x - m_SizeX / 2, 0, -0.5f - z + m_SizeZ / 2);
+			m_Vertices[n + 4].position = Vector3(0.5f + x - m_SizeX / 2, 0, 0.5f - z + m_SizeZ / 2);
+			m_Vertices[n + 5].position = Vector3(0.5f + x - m_SizeX / 2, 0, -0.5f - z + m_SizeZ / 2);
 
 			m_Vertices[n + 0].color = Color(1, 1, 1, 1);
 			m_Vertices[n + 1].color = Color(1, 1, 1, 1);
@@ -85,8 +85,8 @@ void Ground::Init()
 		for (int z = 0; z < m_SizeZ; z++) {
 			for (int x = 0; x < m_SizeX; x++) {
 
-				int picX = x * (float)width / m_SizeX;
-				int picY = z * (float)height / m_SizeZ;
+				int picX = x * width / m_SizeX;
+				int picY = z * height / m_SizeZ;
 				unsigned char pixelValue = imageData[picY * width + picX];
 				float h = (float)pixelValue / 15.0f;
 				int n = z * m_SizeZ * 6 + x * 6;

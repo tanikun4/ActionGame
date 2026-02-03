@@ -188,20 +188,20 @@ bool Camera::CameraInput() {
 	bool inputFg = false;
 
 	//上下左右キーでカメラ回転
-	if (Input::GetKeyPress(VK_LEFT)) {
-		m_CameraDirection.x += 0.02;
+	if (ActionInput::GetInstance().IsPress(Action::Left)) {
+		m_CameraDirection.x += 0.02f;
 		inputFg = true;
 	}
-	if (Input::GetKeyPress(VK_RIGHT)) {
-		m_CameraDirection.x -= 0.02;
+	if (ActionInput::GetInstance().IsPress(Action::Right)) {
+		m_CameraDirection.x -= 0.02f;
 		inputFg = true;
 	}
-	if (Input::GetKeyPress(VK_UP)) {
-		m_CameraDirection.y -= 0.02;
+	if (ActionInput::GetInstance().IsPress(Action::Up)) {
+		m_CameraDirection.y -= 0.02f;
 		inputFg = true;
 	}
-	if (Input::GetKeyPress(VK_DOWN)) {
-		m_CameraDirection.y += 0.02;
+	if (ActionInput::GetInstance().IsPress(Action::Down)) {
+		m_CameraDirection.y += 0.02f;
 		inputFg = true;
 	}
 

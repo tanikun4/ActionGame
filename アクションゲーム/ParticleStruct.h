@@ -9,8 +9,8 @@ struct ParticleParam2D
     DirectX::SimpleMath::Vector3 velocity;
     DirectX::SimpleMath::Vector2 scale;
     float   rot;
-    float   life;
-    float   maxLife;
+    int   life;
+    int   maxLife;
     Int2    uv = Int2(1,1);
     Int2    maxuv = Int2(1, 1);
 	unsigned int color;

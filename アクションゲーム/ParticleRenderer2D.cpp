@@ -86,8 +86,8 @@ void ParticleRenderer2D::Draw(const ParticleDrawData2D& data)
         Renderer::SetWorldMatrix(&world);
 
         Renderer::SetUV(
-            p.uv.x - 1,
-            p.uv.y - 1,
+            (float)p.uv.x - 1.0f,
+            (float)p.uv.y - 1.0f,
             uw,
             vh);
 

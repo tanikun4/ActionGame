@@ -1,7 +1,7 @@
 #pragma once
 
 #include	<SimpleMath.h>
-#include	"input.h"
+#include	"ActionInput.h"
 #include	"Vibration.h"
 
 class Object;//‘O•ûéŒ¾

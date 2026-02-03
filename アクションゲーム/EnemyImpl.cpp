@@ -1511,7 +1511,7 @@ void Enemy::Impl::ShotBullet() {
 	int r1 = rand();
 	int r2 = rand();
 	Vector3 ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
-	Vector3 ta_addpos = Vector3((r1 % 20) + 20, 0, (r2 % 20) + 20);
+	Vector3 ta_addpos = Vector3((r1 % 20) + 20.0f, 0.0f, (r2 % 20) + 20.0f);
 	if (r1 % 2 == 0) { ta_addpos.x *= -1; };
 	if (r2 % 2 == 0) { ta_addpos.z *= -1; };
 	if (!m_bullet.size()) {

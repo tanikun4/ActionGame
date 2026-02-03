@@ -1,5 +1,6 @@
 #pragma once
 
+// ゲーム内のアクション列挙型
 enum class Action {
     MoveUp,
     MoveDown,
@@ -11,6 +12,10 @@ enum class Action {
 	Dodge,
     Debug,
     Enter,
+    Up,
+    Down,
+    Left,
+    Right,
 
 	ActionMax
 };

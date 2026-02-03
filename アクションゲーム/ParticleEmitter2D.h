@@ -39,10 +39,10 @@ private:
     Texture* m_Texture; // テクスチャ
     std::unique_ptr<Material> m_Materiale; //マテリアル
 
-    float m_SplitX = 1;
-    float m_SplitY = 1;
+    int m_SplitX = 1;
+    int m_SplitY = 1;
 
-    float m_timer = 0.0f;
+    int m_timer = 0.0f;
     bool  m_live = false;
 	bool  m_UI = false; // UI用かどうか
 };

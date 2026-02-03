@@ -473,7 +473,7 @@ namespace Collision
 	//==================================
 	Vector3 ProjectPointToPlane(const Vector3& point, const Plane& plane)
 	{
-		double t = -Dot((point - plane.point), plane.normal) / Dot(plane.normal, plane.normal);
+		float t = -Dot((point - plane.point), plane.normal) / Dot(plane.normal, plane.normal);
 
 		// Œğ“_‚ÌÀ•W‚ğŒvZ
 		return  point + (plane.normal * t);

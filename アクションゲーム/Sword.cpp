@@ -452,7 +452,7 @@ void Sword::Stance(int t, StanceMode mode) {
 		break;
 
 	case StanceMode::VERTICAL:
-		StanceStart({ 0,0,0 }, { PI * 0.5,0,(PI * 0.5) + 0.2f }, t);
+		StanceStart({ 0,0,0 }, { PI * 0.5f,0,(PI * 0.5f) + 0.2f }, t);
 		break;
 	case StanceMode::THRUST:
 		Stance_Thrust();

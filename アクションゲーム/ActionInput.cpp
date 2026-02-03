@@ -19,6 +19,11 @@ void ActionInput::Init()
     bindings[(int)Action::Dodge] = { 'J', XINPUT_GAMEPAD_B };
     bindings[(int)Action::Debug] = { 'O', XINPUT_GAMEPAD_BACK };
 	bindings[(int)Action::Enter] = { VK_RETURN, XINPUT_GAMEPAD_START };
+	// ここのコントローラ割り当ては変える、右スティックが良いかも
+    bindings[(int)Action::Up] = { VK_UP, XINPUT_GAMEPAD_LEFT_THUMB };
+    bindings[(int)Action::Down] = { VK_DOWN, XINPUT_GAMEPAD_RIGHT_THUMB };
+    bindings[(int)Action::Left] = { VK_LEFT, XINPUT_GAMEPAD_LEFT_SHOULDER };
+    bindings[(int)Action::Right] = { VK_RIGHT, XINPUT_GAMEPAD_RIGHT_SHOULDER };
 }
 
 void ActionInput::Update()
