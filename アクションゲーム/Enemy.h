@@ -31,6 +31,8 @@ public:
 	bool IsAttacking();
 	bool IsAway();
 
+	void Death();
+
 	// Hit ŒniŠO•”‚©‚çŒÄ‚Î‚ê‚é‚Ì‚Å public ‚Ì‚Ü‚Üj
 	void HitObject(Object* ob) override { ob->OnHit(this); }
 

@@ -31,6 +31,7 @@ public:
 	void Attack();//攻撃開始する、マネージャーからこの関数を呼び出し、攻撃処理を開始する
 	// 自前では攻撃開始を行わない。
 	void ReInit();// 再初期化、敵を復活させる際の処理
+	void Death(); // 敵が死亡した時の処理
 
 	void ShotBullet();
 	int GetHP();
@@ -154,7 +155,6 @@ private:
 	void StunUpdate();
 	void Jump(float _power = 1.5f);
 	void StateReset();//状態リセット
-	void Death();
 
 	void Thrust(ThrustType type);
 	bool ManyThrust(int maxcount);

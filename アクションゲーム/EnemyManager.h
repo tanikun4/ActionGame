@@ -18,7 +18,7 @@ public:
     int GetLiveEnemy();// “G‚Ì¶‘¶”‚ğ•Ô‚·
     void SetEnemy(int num,const DirectX::SimpleMath::Vector3& spawnrange);
 	void EnemyDeath();//“G‚ª“|‚³‚ê‚½‚ÉŒÄ‚Ño‚·
-    //static void Init();
+    void Init();
     void Update();
     void Draw();
     void Uninit();
@@ -43,5 +43,7 @@ private:
 	int baseInterval = 240; // “G‚ÌUŒ‚ŠÔŠu‚ÌŠî€’l
 	int randomRange = 60; // “G‚ÌUŒ‚ŠÔŠu‚Ìƒ‰ƒ“ƒ_ƒ€”ÍˆÍ
 	void AttackEnemy();//UŒ‚w¦‚ğs‚¤
+	// ƒfƒoƒbƒO—pŠÖ”
+	void DebugEnemyManager();
 };
 

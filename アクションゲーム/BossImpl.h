@@ -65,7 +65,7 @@ private:
 		CROSS_SHOT,
 		ROTATESWING_FIBONACCI,
 		ALTEREGO_SHOT,
-		ALTEREGO_SPINSLASH,
+		//ALTEREGO_SPINSLASH,//一旦削除
 
 		KIND_MAX
 	};
@@ -125,6 +125,7 @@ private:
 	float jumppower = 1.5f;//ジャンプ力
 	//const float delta60f = 1.0f / 60.0f;// 60fps換算用
 
+	bool hitwall = false;//壁に当たったかどうか
 	bool m_slowFg = false;//動きが遅い状態か
 	int slow_frame = 0;//遅くなっているフレーム数
 	int slow_rate = 6;//元の速度の何分の1にするか

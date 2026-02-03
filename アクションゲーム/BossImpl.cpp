@@ -180,6 +180,7 @@ void Boss::Impl::Update() {
 		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 
 	m_Owner->BallUpdate();
+	hitwall = false;
 
 	if (m_weapon)
 		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);
@@ -382,9 +383,10 @@ void Boss::Impl::AttackUpdate() {
 	case ALTEREGO_SHOT:
 		AlterEgoShot();
 		break;
-	case ALTEREGO_SPINSLASH:
-		AlterEgoSpinSlash();
-		break;
+		// 分身攻撃は一旦削除、高速移動にして再実装する
+	//case ALTEREGO_SPINSLASH:
+	//	AlterEgoSpinSlash();
+	//	break;
 	case KIND_MAX:
 		m_attackPhase = AttackPhase::ENTER;
 		m_Owner->m_State = NORMAL;
@@ -480,9 +482,9 @@ void Boss::Impl::SwingVerticalRush() {
 		}
 		++m_attackframe;
 
-		//近づいたら振る
+		//近づくか、壁に当たっていたら振る
 		if (fabs(m_Owner->m_Position.x - m_ta_pos.x) < m_Owner->radius * 2 &&
-			fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 2) {
+			fabs(m_Owner->m_Position.z - m_ta_pos.z) < m_Owner->radius * 2 || hitwall) {
 			m_weapon->Swing_Vertical();
 			m_rushFg = false;
 			m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
@@ -586,6 +588,7 @@ void Boss::Impl::ThreeSwing() {
 		m_rotatespeed = 0.1f;
 		m_lookatFg = true;
 		m_rushFg = true;
+		m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 		m_attackPhase = AttackPhase::PREPARE;
 	}
 
@@ -800,9 +803,9 @@ void Boss::Impl::JumpSpinSlashRush(){
 		}
 
 		m_Owner->m_Rotation.x = m_AngleAnim.UpdateAbsolute().x;// 回転切りアニメーション更新、絶対値参照
-
+		
 		//回転終了後、硬直フェーズへ。ここから着地まで何もしない
-		if (!m_AngleAnim.IsPlaying()) {
+		if (!m_AngleAnim.IsPlaying() || hitwall) {
 			m_Owner->m_Rotation.x = 0;
 			m_weapon->AttackEnd();
 			m_attackPhase = AttackPhase::RECOVER;
@@ -1751,22 +1754,7 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 		m_Owner->m_Position.x = m_Owner->m_oldPos.x;
 		m_Owner->m_Position.z = m_Owner->m_oldPos.z;
 
-		// 突進中の処理
-		if (m_rushFg) {
-		    m_rushFg = false;
-		    m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
-
-			// 壁に当たったらその時点で攻撃する
-			if (attack_kind == SWING_VERTICAL_RUSH) {
-				m_weapon->Swing_Vertical();
-			}
-
-			// 攻撃終了処理へ移行
-			if(attack_kind == JUMP_SPINSLASH_RUSH) {
-				m_attackPhase = AttackPhase::RECOVER;
-				m_Owner->m_Rotation.x = 0;
-			}
-		}
+		hitwall = true;
 	}
 	
 

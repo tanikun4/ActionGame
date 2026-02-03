@@ -11,7 +11,7 @@ public:
 
     void Init();
     void Update();
-	void Uninit();
+    void Uninit();
 
     bool IsPress(Action a)   const;
     bool IsTrigger(Action a) const;
@@ -28,5 +28,5 @@ private:
     GamePadState  gamepad;
 
     ActionState   states[(int)Action::ActionMax];
-    ActionBinding bindings[(int)Action::ActionMax];
+    ActionBinding bindings[(int)Action::ActionMax] = {};
 };

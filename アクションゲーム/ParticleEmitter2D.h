@@ -42,7 +42,7 @@ private:
     int m_SplitX = 1;
     int m_SplitY = 1;
 
-    int m_timer = 0.0f;
+    int m_timer = 0;
     bool  m_live = false;
 	bool  m_UI = false; // UI—p‚©‚Ç‚¤‚©
 };

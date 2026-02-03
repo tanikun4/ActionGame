@@ -5,15 +5,15 @@
 #include "Shader.h"
 struct ParticleParam2D
 {
-    DirectX::SimpleMath::Vector3 pos;
-    DirectX::SimpleMath::Vector3 velocity;
-    DirectX::SimpleMath::Vector2 scale;
-    float   rot;
-    int   life;
-    int   maxLife;
+    DirectX::SimpleMath::Vector3 pos = {0.0f,0.0f,0.0f};
+    DirectX::SimpleMath::Vector3 velocity = { 0.0f,0.0f,0.0f };
+    DirectX::SimpleMath::Vector2 scale = { 1.0f,1.0f};
+    float   rot = 0.0f;
+    int   life = 1;
+    int   maxLife = 1;
     Int2    uv = Int2(1,1);
     Int2    maxuv = Int2(1, 1);
-	unsigned int color;
+	unsigned int color = 1;
 
     int animframe = 0;
     int maxanimframe = 10;

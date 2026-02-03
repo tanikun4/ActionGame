@@ -34,3 +34,4 @@ void Enemy::OnHit(Sword* po) { impl->OnHit(po); }
 void Enemy::OnHit(Bullet* bu) { impl->OnHit(bu); }
 void Enemy::OnHit(Projectile* pr) { impl->OnHit(pr); }
 void Enemy::OnHit(TestCube* cube) { impl->OnHit(cube); }
+void Enemy::Death() { impl->Death(); }  

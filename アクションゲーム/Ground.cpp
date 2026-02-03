@@ -22,9 +22,6 @@ Ground::~Ground()
 void Ground::Init()
 {
 
-	m_SizeX = 20;
-	m_SizeZ = 20;
-
 	m_Vertices.resize(6 * m_SizeX * m_SizeZ);
 
 	// インデックスバッファ生成

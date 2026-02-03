@@ -56,7 +56,7 @@ void Stage1Scene::Init()
 
 	GroundManager::GetInstance().Init();
 
-	//EnemyManager::Init();
+	EnemyManager::GetInstance().Init();
 	EnemyManager::GetInstance().AddEnemys();
 
 

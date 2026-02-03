@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "RandomCommon.h"
 #include "Player.h"
+#include "DebugUI.h"
 
 // static メンバの実体定義
 std::unique_ptr<EnemyManager> EnemyManager::m_Instance = nullptr;
@@ -10,15 +11,10 @@ std::unique_ptr<EnemyManager> EnemyManager::m_Instance = nullptr;
 using namespace std;
 using namespace DirectX::SimpleMath;
 
-//void EnemyManager::Init() {
-//	if (m_Instance) return; // 二重初期化防止
-//	m_Instance = make_unique<EnemyManager>();
-//}
-//
-//EnemyManager* EnemyManager::GetInstance()
-//{
-//	return m_Instance.get();
-//}
+// 初期化処理、デバッグ関数を登録する
+void EnemyManager::Init() {
+    DebugUI::RedistDebugFunction([this]() { DebugEnemyManager(); });
+}
 
 // 敵オブジェクトを確保する
 void EnemyManager::AddEnemys()
@@ -212,6 +208,22 @@ bool EnemyManager::NearDistance(
     }
 
     return found;
+}
+
+// プレイヤー状態の操作
+void EnemyManager::DebugEnemyManager() {
+    ImGui::Begin("EnemyStatus");
+
+    if (ImGui::Button("Enemy Delete"))
+    {
+		// 全敵を倒す
+        for (auto* e : m_enemies)
+        {
+			e->Death();
+        }
+    }
+
+    ImGui::End();
 }
 
 

@@ -20,8 +20,8 @@ class Ground : public Object
 	Texture m_Texture; // テクスチャ
 	std::unique_ptr<Material> m_Materiale; //マテリアル
 
-	int m_SizeX; //横サイズ
-	int m_SizeZ; //縦サイズ
+	int m_SizeX = 20; //横サイズ
+	int m_SizeZ = 20; //縦サイズ
 	std::vector<VERTEX_3D> m_Vertices; //頂点情報
 
 public:
