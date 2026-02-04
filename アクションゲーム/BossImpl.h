@@ -23,7 +23,7 @@ public:
 	void Draw();
 	void Uninit();
 	void ReInit();// 再初期化、正式に出現時の処理
-	void SetGaugeLive(bool _live) { m_hp_gauge.SetLive(_live); };
+	void SetGaugeLive(bool _live) { m_hp_gauge.SetLive(_live); m_guard_gauge.SetLive(_live); };
 
 	void Damage(int _atk);
 	void Stun(); // 行動不能状態にする
@@ -48,6 +48,9 @@ private:
 		NORMAL = 0, //通常状態
 		ATTACK,		// 攻撃中
 		STUN,		// 行動不能、ジャストガードされると移行する。
+		BREAK,		// ガードブレイク状態
+
+		STATE_MAX
 	};
 
 	enum Attack_Kind {
@@ -109,6 +112,13 @@ private:
 	const int maxhp = 200;
 	int hp = maxhp;
 	int def = 0; //防御力、値分ダメージを減らす
+
+	const int maxguard = 3000;// ガード値最大
+	int guard = maxguard; // ガード値、0になるとブレイク状態になる
+
+	int m_guard_recover = 0; // ガード値回復用フレームカウント
+	const int m_guard_recover_max = 180; // ガード値回復までのフレーム数
+
 	int m_stateframe = 0;//状態継続フレーム数
 	bool inviFg = false;
 	int invicount = 0;
@@ -145,14 +155,14 @@ private:
 	ArcMoveAnim m_ArcAnim;// 円弧移動アニメーション構造体
 	FibonacciAnim m_FiboAnim;// 黄金螺旋移動アニメーション構造体
 	Gauge m_hp_gauge; //  HPゲージ用構造体
+	Gauge m_guard_gauge; //  ガードブレイクゲージ用構造体
 
 	void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
 	void Move();
-	void AttackUpdate();
-	void StunUpdate();
 	void Jump(float _power = 1.5f);
 	void StateReset();//状態リセット
 	void Death();
+	void Break();//ガードブレイク処理
 
 	void Thrust(ThrustType type);
 	bool ManyThrust(int maxcount);
@@ -183,6 +193,11 @@ private:
 	// 飛び道具発射
 	void ProjectileShot();
 	void ProjectileShot_All();
+
+	// 状態別更新関数
+	void AttackUpdate();
+	void StunUpdate();
+	void BreakUpdate();
 
 	void DebugBossStatus();
 

@@ -753,6 +753,8 @@ void Player::Impl::Parry() {
     inviFg = true;
     m_Owner->SetColor({ 0,0,1,0.5f });
 
+    m_Owner->m_Scale = { 1.0f, 1.0f, 1.0f };// 元に戻す
+
     // パリィエフェクト再生
     EffectParams param;
 

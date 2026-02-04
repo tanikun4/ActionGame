@@ -106,7 +106,7 @@ void Boss::Impl::Init() {
 	m_Owner->m_Position = Vector3(0.0f, 50.0f, -50.0f);
 	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	hp = maxhp;
-	def = 0;
+	def = 2;
 	m_Owner->m_Scale.x = 2;
 	m_Owner->m_Scale.y = 2;
 	m_Owner->m_Scale.z = 2;
@@ -160,6 +160,8 @@ void Boss::Impl::Update() {
 	case STUN:
 		StunUpdate();
 		break;
+	case BREAK:
+		BreakUpdate();
 	}
 
 
@@ -173,6 +175,14 @@ void Boss::Impl::Update() {
 		inviFg = false;
 		invicount = 0;
 		m_Owner->SetColor(Vector4(1, 0, 0, 1));
+	}
+
+	if (m_guard_recover <= 0 && guard < maxguard) {
+		++guard;
+		m_guard_gauge.ChangeGauge(guard, maxguard);
+	}
+	else {
+		--m_guard_recover;
 	}
 
 	// 回転していない場合は前方回転を適用
@@ -217,6 +227,9 @@ void Boss::Impl::ReInit() {
 void Boss::Impl::SetGauge() {
 	m_hp_gauge.Init({200, 325, 0}, { 800, 50, 0 });
 	m_hp_gauge.SetColor({ 1,0.5f,0,1 });
+
+	m_guard_gauge.Init({ 300, 275, 0 }, { 400, 50, 0 });
+	m_guard_gauge.SetColor({ 1,0,0,1 });
 }
 
 void Boss::Impl::Damage(int _atk) {
@@ -228,6 +241,9 @@ void Boss::Impl::Damage(int _atk) {
 	if (_atk < 0) _atk = 0;
 
 	hp -= _atk;
+	guard -= _atk * 100;
+	m_guard_recover = m_guard_recover_max;//ガード値回復用フレームカウントリセット
+
 	invicount = 0;
 	inviFg = true;
 	//m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
@@ -256,8 +272,59 @@ void Boss::Impl::Damage(int _atk) {
 	// ダメージがある場合(デモ中でない)HPゲージ更新
 	if(_atk > 0)
 		m_hp_gauge.ChangeGauge(hp, maxhp);
+		m_guard_gauge.ChangeGauge(guard, maxguard);
 
+	// ガードゲージ、体力が0以下になったらそれぞれの処理を行う
+		if (guard <= 0 && m_Owner->m_State != BREAK) Break(); // ガードブレイク状態でなければブレイク状態にする
 	if (hp <= 0) Death();
+}
+
+// ガードブレイク処理
+void Boss::Impl::Break()
+{
+	StateReset();
+	LookAt(m_target->GetPosition());
+	m_Owner->m_ForwardRotation.y = m_destrot.y;// 確実にターゲットの方を向く
+	m_Owner->m_State = BREAK;
+	def = -2;
+	m_Owner->m_Velocity_f = -1.0f;//後ろにノックバックする
+	m_vib.Start(1.2f, PI * 0.5f);//振動開始
+	m_weapon->AttackEnd();
+	m_weapon->Stance(10, StanceMode::VERTICAL);// 縦に構える
+	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
+	m_Owner->m_Rotation.x -= PI / 8;//少し上に仰け反る
+
+	// ブレイクエフェクト再生
+	EffectParams param;
+
+	//エフェクトパラメーター構造体設定
+	Vector3 pos = m_Owner->m_Position + (m_Owner->radius * m_Owner->AngleToForward(m_Owner->m_ForwardRotation));
+	param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x * 3);
+	param.scale = m_Owner->m_Scale * 30;
+	param.color = { 1,0,0,0.5f };
+	param.maxLife = 30;
+	EffectManager::GetInstance()->Play(EFFECT_SHOCKWAVE, param);
+
+	Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
+
+	m_Camera->StartVibration(10.0f, PI * 0.5f, 5);// カメラを揺らす
+
+	Game::GetInstance()->SlowMotion(20); // スローモーション開始
+}
+
+// 行動不能状態にする
+void Boss::Impl::Stun() 
+{
+	StateReset();
+	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
+	m_vib.Start(1.0f, PI * 0.5f);//振動開始
+	m_weapon->AttackEnd();
+	m_weapon->Stance(10,StanceMode::VERTICAL);// 縦に構える
+	m_Owner->m_State = STUN;
+	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
+	m_Owner->m_Rotation.x -= PI / 8;//少し上に仰け反る
+	guard -= 500; // ガード値を大幅に減少させる
+	m_guard_recover = m_guard_recover_max;//ガード値回復用フレームカウントリセット
 }
 
 void Boss::Impl::Death()
@@ -838,6 +905,7 @@ void Boss::Impl::JumpSpinSlashRush(){
 	}
 
 }
+
 
 // 衝撃波発射
 void  Boss::Impl::SonicBoomShot() {
@@ -1432,19 +1500,33 @@ void Boss::Impl::StunUpdate()
 	}
 }
 
-// 行動不能状態にする
-void Boss::Impl::Stun() 
+// ガードブレイク状態更新
+void Boss::Impl::BreakUpdate()
 {
-	StateReset();
-	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
-	m_vib.Start(1.0f, PI * 0.5f);//振動開始
-	m_weapon->AttackEnd();
-	m_weapon->Stance(10,StanceMode::VERTICAL);// 縦に構える
-	m_Owner->m_State = STUN;
-	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
-	m_spinFg = false;
-	m_Owner->is_SPECIALMOVE = false;// 特殊移動解除
-	m_Owner->m_Rotation.x -= PI / 8;//少し上に仰け反る
+	if (m_stateframe > 20) {
+		m_Owner->m_Velocity_f = 0.0f;//20フレーム経過後ノックバック停止
+	}
+
+	Vector3 forward;
+	forward.x = sinf(m_Owner->m_ForwardRotation.y);
+	forward.y = 0.0f;
+	forward.z = cosf(m_Owner->m_ForwardRotation.y);
+
+	//振動させる
+	m_Owner->m_Position += m_vib.UpdateMoveDir(forward);
+
+	++m_stateframe;
+
+	// 終了処理
+	if (m_stateframe > 180) {
+		m_Owner->m_State = NORMAL;
+		m_stateframe = 0;
+		m_Owner->m_Rotation.x = 0;
+		m_weapon->StanceEnd();
+		m_lookatFg = true;//lookat復活
+		guard = maxguard;//ガード値回復
+		def = 2;//	防御力を回復
+	}
 }
 
 // スタン時等の際のリセット処理
@@ -1456,6 +1538,8 @@ void Boss::Impl::StateReset() {
 	m_attackframe = 0;
 	m_lookatFg = false;//lookat解除
 	m_rushFg = false;
+	m_spinFg = false;
+	m_Owner->is_SPECIALMOVE = false;
 	move_speed = 0.25f;// 移動速度を戻す
 	m_attackPhase = AttackPhase::ENTER;// 攻撃フェーズ初期化
 }
@@ -1749,8 +1833,6 @@ void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
 	else
 	{
 		// 壁（ほぼ垂直）
-		//m_Owner->m_Velocity.x = 0.0f;
-		//m_Owner->m_Velocity.z = 0.0f;
 		m_Owner->m_Position.x = m_Owner->m_oldPos.x;
 		m_Owner->m_Position.z = m_Owner->m_oldPos.z;
 

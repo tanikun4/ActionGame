@@ -114,7 +114,7 @@ void TitleScene::Init()
 
 	//press_enterkey画像オブジェクトを作成
 	press_enterkey = Game::GetInstance()->AddObject<Texture2D>();
-	press_enterkey->SetTexture("assets/texture/2DEffect/press_enterkey.png"); // 画像を指定
+	press_enterkey->SetTexture("assets/texture/2DEffect/PressEnterKey.png"); // 画像を指定
 	press_enterkey->SetPosition(0.0f, -300.0f, 0.0f); // 位置を指定
 	press_enterkey->SetScale(640.0f, 128.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(press_enterkey);
