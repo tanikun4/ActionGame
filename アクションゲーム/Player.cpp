@@ -27,4 +27,4 @@ void Player::OnHit(Boss* bo) { impl->OnHit(bo); }
 void Player::OnHit(Sword* po) { impl->OnHit(po); }
 void Player::OnHit(Bullet* bu) { impl->OnHit(bu); }
 void Player::OnHit(Projectile* pr) { impl->OnHit(pr); }
-void Player::OnHit(TestCube* cube) { impl->OnHit(cube); }
+void Player::OnHit(Cube* cube) { impl->OnHit(cube); }

@@ -10,9 +10,9 @@
 class BallObject;
 
 //-----------------------------------------------------------------------------
-//TestCubeクラス
+//Cubeクラス
 //-----------------------------------------------------------------------------
-class TestCube : 
+class Cube : 
 	public Object , public ICollider
 { 
 protected:
@@ -30,9 +30,9 @@ protected:
 	DirectX::SimpleMath::Vector3 m_length = {10.0f,10.0f,10.0f};
 
 public:
-	TestCube(Camera* cam); // コンストラクタ
-	TestCube(); // コンストラクタ
-	~TestCube();//デストラクタ
+	Cube(Camera* cam); // コンストラクタ
+	Cube(); // コンストラクタ
+	~Cube();//デストラクタ
 	DirectX::SimpleMath::Vector3 GetPos() const;
 	DirectX::SimpleMath::Vector3 GetDirect(int elem) const;   // 指定軸番号の方向ベクトルを取得
 	float GetLen(int elem) const;							  // 指定軸方向の長さを取得

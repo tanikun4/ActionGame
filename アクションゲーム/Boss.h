@@ -38,7 +38,7 @@ public:
 	}
 	void OnHit(Sword* pole);
 	void OnHit(Bullet* bu);
-	void OnHit(TestCube* cube);
+	void OnHit(Cube* cube);
 	void OnHit(Projectile* pr);
 };
 

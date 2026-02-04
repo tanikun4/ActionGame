@@ -5,7 +5,7 @@
 #include "CollisionResult.h"
 
 
-class TestCube;
+class Cube;
 namespace Collision
 {
 
@@ -155,7 +155,7 @@ namespace Collision
 	bool CheckHit(const OBB& obb, const Sphere& sphere, CollisionResult& out);//obbと球の当たり判定、衝突情報付き
 	bool CheckHit(const Sphere& sphere, const OBB& obb, CollisionResult& out);
 
-	bool CheckHit(const TestCube& obb, const Sphere& sphere);
+	bool CheckHit(const Cube& obb, const Sphere& sphere);
 	bool CheckHit(const OBB& obb1, const OBB& obb2);//OBB同士の当たり判定
 
 	template<typename T1, typename T2>
@@ -213,7 +213,7 @@ namespace Collision
 
 	DirectX::SimpleMath::Vector3 moveSphere(const Segment& capsule, const float& radius, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact, float& distance);
 	DirectX::SimpleMath::Vector3 moveSphere(const Sphere& sphere, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact);
-	float LenOBBtoPoint(const TestCube& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
+	float LenOBBtoPoint(const Cube& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
 	float LenOBBtoPoint(const OBB& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
 
 

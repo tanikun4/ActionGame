@@ -39,7 +39,7 @@ public:
 	void OnHit(Sword* po);
 	void OnHit(class Bullet* bu);
 	void OnHit(class Projectile* pr);
-	void OnHit(class TestCube* cube);
+	void OnHit(class Cube* cube);
 	void OnHit(Object* ob) override {};
 };
 

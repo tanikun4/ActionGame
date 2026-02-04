@@ -119,14 +119,14 @@ void Stage1Scene::Init()
 	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
 	pt1->SetTexture("assets/texture/hp_ui.png"); // 画像を指定
 	pt1->SetPosition(-580.0f, -320.0f, 0.0f); // 位置を設定
-	pt1->SetScale(75.0f, 75.0f, 0.0f); // 大きさを指定
+	pt1->SetScale(100.0f, 75.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(pt1);
 
 	// UI(ボスHP文字)
 	boss_hp_text = Game::GetInstance()->AddObject<Texture2D>();
 	boss_hp_text->SetTexture("assets/texture/bosshp_ui.png"); // 画像を指定
-	boss_hp_text->SetPosition(-280.0f, 335.0f, 0.0f); // 位置を設定
-	boss_hp_text->SetScale(120.0f, 60.0f, 0.0f); // 大きさを指定
+	boss_hp_text->SetPosition(-300.0f, 335.0f, 0.0f); // 位置を設定
+	boss_hp_text->SetScale(180.0f, 60.0f, 0.0f); // 大きさを指定
 	boss_hp_text->SetUV(1, 1, 1, 1); //UVを指定
 	m_MySceneObjects.emplace_back(boss_hp_text);
 	boss_hp_text->SetLive(false); // 最初は非表示
@@ -134,8 +134,8 @@ void Stage1Scene::Init()
 	// UI(ガードゲージ文字)
 	boss_guard_text = Game::GetInstance()->AddObject<Texture2D>();
 	boss_guard_text->SetTexture("assets/texture/guard_ui.png"); // 画像を指定
-	boss_guard_text->SetPosition(-80.0f, 305.0f, 0.0f); // 位置を設定
-	boss_guard_text->SetScale(120.0f, 50.0f, 0.0f); // 大きさを指定
+	boss_guard_text->SetPosition(-100.0f, 305.0f, 0.0f); // 位置を設定
+	boss_guard_text->SetScale(150.0f, 50.0f, 0.0f); // 大きさを指定
 	boss_guard_text->SetUV(1, 1, 1, 1); //UVを指定
 	m_MySceneObjects.emplace_back(boss_guard_text);
 	boss_guard_text->SetLive(false); // 最初は非表示

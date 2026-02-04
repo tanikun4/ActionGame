@@ -385,7 +385,7 @@
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="stb_image.cpp" />
-    <ClCompile Include="TestCube.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="TestModel.cpp" />
     <ClCompile Include="TestPlane.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -475,7 +475,7 @@
     <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="TestCube.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="TestModel.h" />
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />

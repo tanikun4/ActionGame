@@ -57,7 +57,7 @@ public:
 	virtual void OnHit(class Bullet* bullet) {} 
 	virtual void OnHit(class Projectile* projectile) {}
 	virtual void OnHit(class BallObject* ball) {} 
-	virtual void OnHit(class TestCube* cube) {};
+	virtual void OnHit(class Cube* cube) {};
 
 	virtual bool GetLive() { return m_live; }
 

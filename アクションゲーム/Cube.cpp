@@ -1,32 +1,32 @@
-#include	"TestCube.h"
+#include	"Cube.h"
 
 using namespace DirectX::SimpleMath;
 
 // コンストラクタ
-TestCube::TestCube(Camera* cam) : Object(cam)
+Cube::Cube(Camera* cam) : Object(cam)
 {
 
 }
 
-TestCube::TestCube()
+Cube::Cube()
 {
 
 }
 
 // デストラクタ
-TestCube::~TestCube()
+Cube::~Cube()
 {
 
 }
 
-void TestCube::Init() {
+void Cube::Init() {
 	InitCube();
 }
 
 //=======================================
 //初期化処理
 //=======================================
-void TestCube::InitCube()
+void Cube::InitCube()
 {
 	// 頂点データ
 	std::vector<VERTEX_3D>	vertices;
@@ -197,14 +197,14 @@ void TestCube::InitCube()
 }
 
 
-void TestCube::Update() {
+void Cube::Update() {
 	UpdateCube();
 }
 
 //=======================================
 //更新処理
 //=======================================
-void TestCube::UpdateCube()
+void Cube::UpdateCube()
 {
 
 	//m_Rotation.x += 0.01;
@@ -221,7 +221,7 @@ void TestCube::UpdateCube()
 	m_NormaDirect[2] = Vector3(r._31, r._32, r._33);
 }
 
-void TestCube::Draw()
+void Cube::Draw()
 {
 	DrawCube();
 }
@@ -229,7 +229,7 @@ void TestCube::Draw()
 //=======================================
 //描画処理
 //=======================================
-void TestCube::DrawCube()
+void Cube::DrawCube()
 {
 	// SRT情報作成
 	Matrix r = Matrix::CreateFromYawPitchRoll( m_Rotation.y, m_Rotation.x, m_Rotation.z);
@@ -264,28 +264,28 @@ void TestCube::DrawCube()
 //=======================================
 //終了処理
 //=======================================
-void TestCube::Uninit()
+void Cube::Uninit()
 {
 
 }
 
-DirectX::SimpleMath::Vector3 TestCube::GetDirect(int elem) const{
+DirectX::SimpleMath::Vector3 Cube::GetDirect(int elem) const{
 	return m_NormaDirect[elem];
 }
 
-float TestCube::GetLen(int elem) const {
+float Cube::GetLen(int elem) const {
 	return m_fLength[elem];
 }
 
-DirectX::SimpleMath::Vector3 TestCube::GetPos() const{
+DirectX::SimpleMath::Vector3 Cube::GetPos() const{
 	return m_Position;
 }
 
-Collision::ColliderVariant TestCube::GetCollision() {
+Collision::ColliderVariant Cube::GetCollision() {
 	return Collision::OBB{ m_Position, m_Rotation, Vector3(GetLen(0),GetLen(1),GetLen(2)) };
 }
 
-void TestCube::SetColor(const DirectX::SimpleMath::Vector4& color)
+void Cube::SetColor(const DirectX::SimpleMath::Vector4& color)
 {
 	for (auto& v : m_Vertices)
 		v.color = color;

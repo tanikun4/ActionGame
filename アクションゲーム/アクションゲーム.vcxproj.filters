@@ -150,7 +150,7 @@
     <ClCompile Include="Ground.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
-    <ClCompile Include="TestCube.cpp">
+    <ClCompile Include="Cube.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
     <ClCompile Include="TestModel.cpp">
@@ -329,7 +329,7 @@
     <ClInclude Include="BallObject.h">
       <Filter>ソース ファイル\Object</Filter>
     </ClInclude>
-    <ClInclude Include="TestCube.h">
+    <ClInclude Include="Cube.h">
       <Filter>ソース ファイル\Object</Filter>
     </ClInclude>
     <ClInclude Include="TestModel.h">

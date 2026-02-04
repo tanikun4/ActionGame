@@ -212,9 +212,9 @@ void Sword::UpdateOBB() {
 	obb = {
 		obbWorldCenter,
 		m_Rotation,
-		{ m_Scale.x * m_baseSize.x * 0.5f, m_Scale.y * m_baseSize.y * 0.5f, m_Scale.z * m_baseSize.z * 0.5f}
+		{ m_Scale.x * m_baseSize.x * obb_scale.x, m_Scale.y * m_baseSize.y * obb_scale.y, m_Scale.z * m_baseSize.z * obb_scale.z}
 	};
-	// 見た目通りの大きさだが、小さすぎるかもしれない。
+	// obb_scale = 0.5fだと見た目通りの大きさだが、小さすぎるかもしれない。
 
 	// 軌跡エフェクト更新処理
 	m_EffectTrail->Update();

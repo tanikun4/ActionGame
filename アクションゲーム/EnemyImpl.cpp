@@ -111,7 +111,7 @@ void Enemy::Impl::Init() {
 	m_Owner->radius *= m_Owner->m_Scale.x;
 
 	//丸影の大きさをセット
-	m_Owner->m_Shadow->SetBaseScale(18 * m_Owner->m_Scale.x);
+	m_Owner->m_Shadow->SetBaseScale(15 * m_Owner->m_Scale.x);
 
 	m_weapon->SetScale({2,2,2});
 	// 武器の軌跡色をセット
@@ -1704,7 +1704,7 @@ void Enemy::Impl::OnHit(Projectile* pr) {
 	return;
 }
 
-void Enemy::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
+void Enemy::Impl::OnHit(Cube* cube) {//箱に当たった時の処理
 	// 法線方向への速度成分
 	auto& col = m_Owner->GetLastCollision();
 	float vn = m_Owner->m_Velocity.Dot(col.normal);

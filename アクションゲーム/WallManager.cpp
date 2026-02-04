@@ -1,6 +1,6 @@
 #include "WallManager.h"
 #include "Game.h"
-#include "TestCube.h"//壁用オブジェクト
+#include "Cube.h"//壁用オブジェクト
 #include "DebugUI.h"
 
 using namespace std;
@@ -16,33 +16,33 @@ void WallManager::SetWall(const Vector2& groundsize, vector<Object*>& _scene_obj
 	// Cube の厚み（Z方向とX方向で壁として使う分）
 	float thickness = 1.0f; // 例：10 units
 	//Cubeの縦の厚み
-	float scaleY = 1.5f;
+	float scaleY = 2.0f;
 	//初期色
 	DirectX::SimpleMath::Vector4 color{ 1,1,1,0.5f };//透明度を下げて見やすいようにしておく
 
 	// 上辺（+Z側）
-	TestCube* top = Game::GetInstance()->AddObject<TestCube>();
+	Cube* top = Game::GetInstance()->AddObject<Cube>();
 	top->SetScale(Vector3(groundsize.x * 0.05f, scaleY, thickness)); // X幅は地面いっぱい、Zは薄く
 	top->SetPosition(Vector3(-halfX * 0.1f, scaleY * 10.0f, halfZ + halfZ * 0.1f)); // Yは高さ調整
 	top->SetColor(color);
 	_scene_object.emplace_back(top);
 
 	// 下辺（-Z側）
-	TestCube* bottom = Game::GetInstance()->AddObject<TestCube>();
+	Cube* bottom = Game::GetInstance()->AddObject<Cube>();
 	bottom->SetScale(Vector3(groundsize.x * 0.05f, scaleY, thickness));
 	bottom->SetPosition(Vector3(-halfX * 0.1f, scaleY * 10.0f, -halfZ));
 	bottom->SetColor(color);
 	_scene_object.emplace_back(bottom);
 
 	// 右辺（+X側）
-	TestCube* right = Game::GetInstance()->AddObject<TestCube>();
+	Cube* right = Game::GetInstance()->AddObject<Cube>();
 	right->SetScale(Vector3(thickness, scaleY, groundsize.y * 0.05f));
 	right->SetPosition(Vector3(halfX, scaleY * 10.0f, 0.0f));
 	right->SetColor(color);
 	_scene_object.emplace_back(right);
 
 	// 左辺（-X側）
-	TestCube* left = Game::GetInstance()->AddObject<TestCube>();
+	Cube* left = Game::GetInstance()->AddObject<Cube>();
 	left->SetScale(Vector3(thickness, scaleY, groundsize.y * 0.05f));
 	left->SetPosition(Vector3(-halfX - halfX * 0.15f, scaleY * 10.0f, 0.0f));
 	left->SetColor(color);
@@ -58,7 +58,7 @@ void WallManager::DebugWallStatus() {//壁の大きさや位置を操作する
 	static std::vector<Vector3> originalPos;
 
 	// TestCube を取得
-	auto cubes = Game::GetInstance()->GetObjects<TestCube>();
+	auto cubes = Game::GetInstance()->GetObjects<Cube>();
 
 	// 初期値を保存
 	if (!initialized) {
@@ -86,7 +86,7 @@ void WallManager::DebugWallStatus() {//壁の大きさや位置を操作する
 		wall_color = Vector4(1, 1, 1, 0.5f);
 	}
 
-	vector<TestCube*> cube = Game::GetInstance()->GetObjects<TestCube>();
+	vector<Cube*> cube = Game::GetInstance()->GetObjects<Cube>();
 
 	// 元の値にスライダー分だけ加える
 	for (size_t i = 0; i < cubes.size(); ++i) {

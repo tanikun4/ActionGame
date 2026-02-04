@@ -29,8 +29,9 @@ protected:
 
     DirectX::SimpleMath::Vector3 m_offset{};//位置の補正値
 
-    DirectX::SimpleMath::Vector3 offset_debug{};//位置の補正値(デバッグ用)
+    DirectX::SimpleMath::Vector3 obb_scale = {0.5f,0.5f,0.5f};//OBBの大きさ
 
+    DirectX::SimpleMath::Vector3 offset_debug{};//位置の補正値(デバッグ用)
 
     DirectX::SimpleMath::Vector3 angle_debug{};//角度の補正値(デバッグ用)
 
@@ -59,6 +60,8 @@ public:
 	void SetColor(DirectX::SimpleMath::Vector4 color, int index = -1);//マテリアルの色を変更する、 indexが0未満の場合全てのマテリアルの色を変更する
 
     void SetOwner(class BallObject* owner);
+
+	void SetOBBScale(DirectX::SimpleMath::Vector3 scale) { obb_scale = scale; }
     
     bool GetPl() { return pl; }
     

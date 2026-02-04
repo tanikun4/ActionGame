@@ -50,4 +50,4 @@ void Boss::OnHit(Bullet* bu) { impl->OnHit(bu); }
 
 void Boss::OnHit(Projectile* pr) { impl->OnHit(pr); }
 
-void Boss::OnHit(TestCube* cube) { impl->OnHit(cube); }
+void Boss::OnHit(Cube* cube) { impl->OnHit(cube); }

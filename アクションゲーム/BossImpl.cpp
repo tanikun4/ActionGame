@@ -178,7 +178,7 @@ void Boss::Impl::Update() {
 	}
 
 	if (m_guard_recover <= 0 && guard < maxguard) {
-		++guard;
+		guard += 3;
 		m_guard_gauge.ChangeGauge(guard, maxguard);
 	}
 	else {
@@ -294,7 +294,7 @@ void Boss::Impl::Break()
 	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 	m_Owner->m_Rotation.x -= PI / 8;//少し上に仰け反る
 
-	// ブレイクエフェクト再生
+	// ガードブレイクエフェクト再生
 	EffectParams param;
 
 	//エフェクトパラメーター構造体設定
@@ -1510,7 +1510,7 @@ void Boss::Impl::BreakUpdate()
 	++m_stateframe;
 
 	// 終了処理
-	if (m_stateframe > 180) {
+	if (m_stateframe > 300) {
 		m_Owner->m_State = NORMAL;
 		m_stateframe = 0;
 		m_Owner->m_Rotation.x = 0;
@@ -1803,7 +1803,7 @@ void Boss::Impl::OnHit(Projectile* pr) {
 	return;
 }
 
-void Boss::Impl::OnHit(TestCube* cube) {//箱に当たった時の処理
+void Boss::Impl::OnHit(Cube* cube) {//箱に当たった時の処理
 	// 法線方向への速度成分
 	auto& col = m_Owner->GetLastCollision();
 	float vn = m_Owner->m_Velocity.Dot(col.normal);

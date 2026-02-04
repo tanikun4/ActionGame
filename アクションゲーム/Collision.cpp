@@ -1,7 +1,7 @@
 #include "Collision.h"
 #include <algorithm>
 #include <DirectXMath.h>
-#include "TestCube.h"
+#include "Cube.h"
 using namespace DirectX::SimpleMath;
 
 namespace Collision
@@ -738,7 +738,7 @@ namespace Collision
 		return CheckHit(obb, sphere);
 	}
 
-	bool CheckHit(const TestCube& obb, const Sphere& sphere) {//OBBと球の判定
+	bool CheckHit(const Cube& obb, const Sphere& sphere) {//OBBと球の判定
 		if (LenOBBtoPoint(obb, sphere.center) < sphere.radius) {
 			return true;
 		}
@@ -897,7 +897,7 @@ namespace Collision
 	}
 
 	//OBBと点の長さ(Test用)
-	float LenOBBtoPoint(const TestCube& obb, const Vector3& point) {
+	float LenOBBtoPoint(const Cube& obb, const Vector3& point) {
 		Vector3 Vec(0, 0, 0);   // 最終的に長さを求めるベクトル
 
 		// 各軸についてはみ出た部分のベクトルを算出

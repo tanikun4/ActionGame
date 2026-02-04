@@ -11,7 +11,7 @@ class Sword;
 class Enemy;
 class Boss;
 class Bullet;
-class TestCube;
+class Cube;
 
 
 //Player::Impl クラス、これとcppにPrivateの実装を記述することで、ビルド時間を短縮する。
@@ -38,7 +38,7 @@ public:
     void OnHit(Sword* po);
     void OnHit(Bullet* bu);
     void OnHit(Projectile* pr);
-    void OnHit(TestCube* cube);
+    void OnHit(Cube* cube);
 
 private:
     // 所有者とカメラ参照

@@ -1,5 +1,5 @@
 #pragma once
-#include "TestCube.h"
+#include "Cube.h"
 #include "Weapon.h"
 
 	enum class ProjectileSTATE {

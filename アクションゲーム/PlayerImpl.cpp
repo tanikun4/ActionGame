@@ -55,6 +55,10 @@ void Player::Impl::Init() {
 
     // 武器の軌跡色をセット
     m_weapon->SetTrailColor({ 0,0,1,1 });
+
+    // 武器のOBBスケールをセット
+	m_weapon->SetOBBScale({ 2.0f, 0.5f, 2.0f});
+    
     //丸影の大きさ調整
     m_Owner->m_Shadow->SetBaseScale(15 * m_Owner->m_Scale.x);
 
@@ -187,7 +191,7 @@ void Player::Impl::OnHit(Projectile* pr) {
 }
 
 //ブロックと当たった場合
-void Player::Impl::OnHit(TestCube* cube) {
+void Player::Impl::OnHit(Cube* cube) {
     auto& col = m_Owner->GetLastCollision();
     float vn = m_Owner->m_Velocity.Dot(col.normal);
 

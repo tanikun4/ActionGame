@@ -11,7 +11,7 @@ class Player;
 class Sword;
 class Enemy;
 class Bullet;
-class TestCube;
+class Cube;
 
 class Enemy::Impl
 {
@@ -42,7 +42,7 @@ public:
 
 	void OnHit(Sword* pole);
 	void OnHit(Bullet* bu);
-	void OnHit(TestCube* cube);
+	void OnHit(Cube* cube);
 	void OnHit(Projectile* pr);
 private:
 	// Š—LÒ‚ÆƒJƒƒ‰QÆ
