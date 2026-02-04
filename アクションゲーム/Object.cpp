@@ -113,8 +113,8 @@ bool Object::UpdateForwardDirectionVectors() {
 	return false;// 更新なし
 }
 
-//回転角から前向きベクトルを求める関数
-Vector3 Object::AngleToForward(const Vector3& rot)
+//回転角から前向きベクトルとその大きさを求める関数
+Vector3 Object::AngleToForward(const Vector3& rot ,const Vector3& offset)
 {
 	float cy = cosf(rot.y);
 	float sy = sinf(rot.y);
@@ -122,7 +122,7 @@ Vector3 Object::AngleToForward(const Vector3& rot)
 	float sp = sinf(rot.x);
 
 	Vector3 f;
-	f.x = sy * cp;
+	f.x = offset.x * sy * cp;
 	f.y = sp;
 	f.z = cy * cp;
 	return f;

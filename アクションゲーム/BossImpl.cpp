@@ -527,7 +527,7 @@ void Boss::Impl::SwingVerticalRush() {
 	if (m_attackPhase == AttackPhase::PREPARE) {
 		if (m_weapon->GetStanceTime() > 120) {
 			m_lookatFg = false;
-			m_ta_pos = Game::GetInstance()->GetObjects<Player>()[0]->GetPosition();
+			m_ta_pos = m_target->GetPosition();
 			m_ta_pos.y = m_Owner->m_Position.y;//高さはそのまま
 			m_rushFg = true;
 			m_attackPhase = AttackPhase::ATTACK;
@@ -1330,10 +1330,10 @@ void Boss::Impl::AlterEgoShot()
 	// 準備フェーズ、一定フレーム経過後、攻撃フェーズに
 	if (m_attackPhase == AttackPhase::PREPARE) {
 		m_Owner->m_Position = m_startpos;// 元の位置に戻す
-		Vector3 forward;
-		forward.x = sinf(m_Owner->m_ForwardRotation.y);
-		forward.y = 0.0f;
-		forward.z = cosf(m_Owner->m_ForwardRotation.y);
+		Vector3 forward = m_Owner->AngleToForward(m_Owner->m_ForwardRotation);
+		//forward.x = sinf(m_Owner->m_ForwardRotation.y);
+		//forward.y = 0.0f;
+		//forward.z = cosf(m_Owner->m_ForwardRotation.y);
 
 		m_Owner->m_Velocity = m_vib.UpdateMoveDir(forward);
 
@@ -1695,7 +1695,6 @@ void Boss::Impl::ProjectileChargeMax_VT(float _offset , float _angle) {
 			if (_offset != 0) {
 				//位置計算
 				Vector3 rotOffset;
-
 				// Yaw + Pitch 回転
 				rotOffset.x = _offset * cosf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * sinf(m_Owner->m_Rotation.y);
 

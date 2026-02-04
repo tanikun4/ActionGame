@@ -71,9 +71,6 @@ void Game::Update()
 	// シーン更新
 	m_Instance->m_Scene->Update();
 
-	// カメラ更新
-	m_Instance->m_Camera->Update();
-
 	// 入力処理更新
 	//m_Instance->m_Input->Update();
 	ActionInput::GetInstance().Update();
@@ -133,6 +130,9 @@ void Game::Update()
 		m_Instance->change_request = false;
 		m_Instance->ChangeScene(m_Instance->m_NextScene);
 	}
+
+	// カメラ更新
+	m_Instance->m_Camera->Update();
 
 }
 

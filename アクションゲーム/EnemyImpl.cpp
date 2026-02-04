@@ -1561,7 +1561,6 @@ void Enemy::Impl::ProjectileChargeMax(float _offset, float _angle) {
 			if (_offset != 0) {
 				//ˆÊ’uŒvŽZ
 				Vector3 rotOffset;
-
 				// Yaw + Pitch ‰ñ“]
 				rotOffset.x = _offset * cosf(m_Owner->m_Rotation.y) + m_Owner->radius * 2 * sinf(m_Owner->m_Rotation.y);
 

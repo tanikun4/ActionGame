@@ -663,6 +663,8 @@ void Player::Impl::Damage(int atk) {
 
     m_Owner->SetColor(Vector4(1, 1, 0, 0.5f));
 
+	m_Owner->m_Velocity_f = speed * -2;// ノックバック速度設定
+
 	if (demoMode) { m_weapon->SwingEnd(); return; }//デモ中はダメージを受けず、演出処理を終了
 
     // ガード中ならダメージを半減
@@ -684,12 +686,24 @@ void Player::Impl::Damage(int atk) {
     else {
         m_Camera->StartVibration(8.0f, PI * 0.5f, 6);
 
+        // ダメージエフェクト再生
+        EffectParams param;
+
+        //エフェクトパラメーター構造体設定
+		Vector3 pos = m_Owner->m_Position - (m_Owner->radius * m_Owner->AngleToForward(m_Owner->m_ForwardRotation)); // プレイヤーの後方にエフェクトを出す
+        param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x * 3);
+        param.scale = m_Owner->m_Scale * 20;
+		param.color = { 1,0.5f,0,1 };
+        param.maxLife = 15;
+        EffectManager::GetInstance()->Play(EFFECT_SPARK, param);
+
         m_weapon->SwingEnd();
         Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
+
+        m_Owner->m_Scale = { 1.3f, 0.5f, 0.7f };// ダメージを受けたら少し変形する
     }
 
     hp -= atk;
-	m_Owner->m_Scale = { 1.3f, 0.5f, 0.7f };// ダメージを受けたら少し変形する
 
     m_hp_gauge.ChangeGauge(hp, maxhp);
     
@@ -850,10 +864,10 @@ void Player::Impl::UpdateAttack() {
 
 //ダメージ中
 void Player::Impl::UpdateDamage() {
-    m_Owner->m_Velocity_f = speed * -1;
+    m_Owner->m_Velocity_f +=  0.1f;
     Guard();
     Attack();
-    if (framecount > 10) {
+    if (framecount >= 10) {
         m_Owner->m_State = NORMAL;
         m_Owner->m_Scale = { 1.0f, 1.0f, 1.0f };
     }

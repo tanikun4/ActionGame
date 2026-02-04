@@ -141,6 +141,9 @@ void BallObject::BallUpdate()
 void BallObject::BallDraw()
 {
 
+	// カメラの設定を指定
+	m_Camera->SetCamera(0);
+
 	// SRT情報作成
 	Matrix r = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
 	Matrix t = Matrix::CreateTranslation(m_Position.x, m_Position.y, m_Position.z);
@@ -155,8 +158,6 @@ void BallObject::BallDraw()
 	// インデックスバッファ・頂点バッファをセット
 	m_MeshRenderer.BeforeDraw();
 
-	// カメラの設定を指定
-	m_Camera->SetCamera(0);
 
 	//マテリアル数分ループ 
 	for (int i = 0; i < m_subsets.size(); i++)
@@ -176,6 +177,8 @@ void BallObject::BallDraw()
 	}
 	if(m_Shadow->GetLive())
 		m_Shadow->Draw();
+
+
 }
 
 void BallObject::Draw() {
