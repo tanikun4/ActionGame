@@ -131,7 +131,7 @@ void Game::Update()
 		m_Instance->ChangeScene(m_Instance->m_NextScene);
 	}
 
-	// カメラ更新
+	// カメラ更新、何があっても一番最後にする。
 	m_Instance->m_Camera->Update();
 
 }

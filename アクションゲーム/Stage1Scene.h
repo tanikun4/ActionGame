@@ -38,6 +38,7 @@ private:
 
 	int framecount = 0;//フレームカウント用
 	Texture2D* boss_hp_text = nullptr;// ボスHP文字
+	Texture2D* boss_guard_text = nullptr;// ボスガードゲージ文字
 	Texture2D* wave1_text = nullptr;// Wave1文字
 	Texture2D* wave2_text = nullptr;// Wave2文字
 	Texture2D* finalwave_text = nullptr;// FinalWave文字

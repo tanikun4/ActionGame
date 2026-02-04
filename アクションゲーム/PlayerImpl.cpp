@@ -114,7 +114,7 @@ void Player::Impl::Uninit() {
 }
 
 void Player::Impl::SetGauge() {
-    m_hp_gauge.Init({ -250 ,-325, 0 }, { 500,50, 0 });
+    m_hp_gauge.Init({ -280 ,-325, 0 }, { 500,30, 0 });
 }
 
 int Player::Impl::GetHP() {
@@ -864,7 +864,7 @@ void Player::Impl::UpdateAttack() {
 
 //ダメージ中
 void Player::Impl::UpdateDamage() {
-    m_Owner->m_Velocity_f +=  0.1f;
+	m_Owner->m_Velocity_f += 0.1f;// ノックバック減速
     Guard();
     Attack();
     if (framecount >= 10) {

@@ -31,7 +31,7 @@ protected:
 
 	bool UpdateDirectionVectors();//行列更新関数
 	bool UpdateForwardDirectionVectors();//行列更新関数(進行方向版)
-	DirectX::SimpleMath::Vector3 AngleToForward(const DirectX::SimpleMath::Vector3& rot ,const DirectX::SimpleMath::Vector3& offset = {1,1,1});//回転角から前向きベクトルと、方向ごとの大きさを求める関数
+	DirectX::SimpleMath::Vector3 AngleToForward(const DirectX::SimpleMath::Vector3& rot);//回転角から前向きベクトルを求める関数
 
 public:
 

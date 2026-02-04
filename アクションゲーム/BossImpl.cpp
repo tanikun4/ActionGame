@@ -225,10 +225,10 @@ void Boss::Impl::ReInit() {
 
 // ゲージ初期化用、ゲームシーンでのみ呼び出す
 void Boss::Impl::SetGauge() {
-	m_hp_gauge.Init({200, 325, 0}, { 800, 50, 0 });
+	m_hp_gauge.Init({200, 340, 0}, { 800, 30, 0 });
 	m_hp_gauge.SetColor({ 1,0.5f,0,1 });
 
-	m_guard_gauge.Init({ 300, 275, 0 }, { 400, 50, 0 });
+	m_guard_gauge.Init({ 300, 310, 0 }, { 600, 30, 0 });
 	m_guard_gauge.SetColor({ 1,0,0,1 });
 }
 
@@ -324,6 +324,7 @@ void Boss::Impl::Stun()
 	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
 	m_Owner->m_Rotation.x -= PI / 8;//少し上に仰け反る
 	guard -= 500; // ガード値を大幅に減少させる
+	m_guard_gauge.ChangeGauge(guard, maxguard);
 	m_guard_recover = m_guard_recover_max;//ガード値回復用フレームカウントリセット
 }
 
@@ -1331,19 +1332,10 @@ void Boss::Impl::AlterEgoShot()
 	if (m_attackPhase == AttackPhase::PREPARE) {
 		m_Owner->m_Position = m_startpos;// 元の位置に戻す
 		Vector3 forward = m_Owner->AngleToForward(m_Owner->m_ForwardRotation);
-		//forward.x = sinf(m_Owner->m_ForwardRotation.y);
-		//forward.y = 0.0f;
-		//forward.z = cosf(m_Owner->m_ForwardRotation.y);
 
 		m_Owner->m_Velocity = m_vib.UpdateMoveDir(forward);
 
 		++m_attackframe;
-		//if (m_attackframe == 120) {
-		//	m_Owner->m_Position = m_startpos;// 元の位置に戻す
-		//	// 左右に弾を発射する準備
-		//	ProjectileChargeMax_VT(20.0f,PI);
-		//	ProjectileChargeMax_VT(-20.0f, PI);
-		//}
 
 		if (m_attackframe > 120) {
 			m_Owner->m_Position = m_startpos;// 元の位置に戻す
@@ -1525,6 +1517,7 @@ void Boss::Impl::BreakUpdate()
 		m_weapon->StanceEnd();
 		m_lookatFg = true;//lookat復活
 		guard = maxguard;//ガード値回復
+		m_guard_gauge.ChangeGauge(guard, maxguard);
 		def = 2;//	防御力を回復
 	}
 }
@@ -1542,6 +1535,10 @@ void Boss::Impl::StateReset() {
 	m_Owner->is_SPECIALMOVE = false;
 	move_speed = 0.25f;// 移動速度を戻す
 	m_attackPhase = AttackPhase::ENTER;// 攻撃フェーズ初期化
+
+	for(auto& m : m_projectile) {
+		m->Reset();
+	}
 }
 
 void Boss::Impl::ShotBullet() {
