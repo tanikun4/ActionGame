@@ -304,13 +304,13 @@ void Game::CollisionObject(std::vector<Object*>& Object)
 	for (size_t i = 0; i < Object.size(); ++i) {
 		auto a = Object[i];
 		if (!a->GetLive()) { continue; };
-		auto col_a = dynamic_cast<ICollider*>(a);
+		auto col_a = a->GetCollider();
 		if (!col_a) { continue; }
 
 		for (size_t j = i + 1; j < Object.size(); ++j) {
 			auto b = Object[j];
 			if (!b->GetLive()) { continue; };
-			auto col_b = dynamic_cast<ICollider*>(b);
+			auto col_b = b->GetCollider();
 			if (!col_b) { continue; }
 
 			if (Collision::CheckHit(*col_a, *col_b)) {

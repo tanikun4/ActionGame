@@ -54,6 +54,7 @@ public:
 	}
 	void OnHit(Object* ob) {};
 
+	ICollider* GetCollider() override { return this; }
 	Collision::ColliderVariant GetCollision();
 	//=======================================
 	//ˆÚ“®ˆ—

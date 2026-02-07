@@ -67,6 +67,8 @@ public:
     
     int GetAtk() { return atk; }
 
+    ICollider* GetCollider() override { return this; }
+
     BallObject* GetOwner();
 };
 

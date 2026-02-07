@@ -71,5 +71,6 @@ public:
 	DirectX::SimpleMath::Vector3 GetRotation() const;
 	DirectX::SimpleMath::Vector3 GetScale() const;
 	DirectX::SimpleMath::Vector3 GetForwardRotation() const;
+	virtual class ICollider* GetCollider() { return nullptr; }
 
 };

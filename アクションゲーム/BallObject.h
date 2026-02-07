@@ -69,6 +69,7 @@ public:
 	float GetRadius();
 	Collision::ColliderVariant GetCollision();
 	DirectX::SimpleMath::Vector3 GetForwardVector();
+	ICollider* GetCollider() override { return this; }
 
 	void SetColor(const DirectX::SimpleMath::Vector4& color);//F‚ğ•Ï‚¦‚é
 };
