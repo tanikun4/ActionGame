@@ -188,7 +188,7 @@ bool Camera::CameraInput() {
 	bool inputFg = false;
 
 	//上下左右キーでカメラ回転
-	if (ActionInput::GetInstance().IsPress(Action::Left)) {
+	/*if (ActionInput::GetInstance().IsPress(Action::Left)) {
 		m_CameraDirection.x += 0.02f;
 		inputFg = true;
 	}
@@ -202,6 +202,17 @@ bool Camera::CameraInput() {
 	}
 	if (ActionInput::GetInstance().IsPress(Action::Down)) {
 		m_CameraDirection.y += 0.02f;
+		inputFg = true;
+	}*/
+
+	// 右スティック取得
+	Vector2 stick = ActionInput::GetInstance().GetCameraVector();
+
+	const float sensitivity = 0.02f; // 感度
+
+	if (stick.Length() > 0.01f) {
+		m_CameraDirection.x -= stick.x * sensitivity;
+		m_CameraDirection.y -= stick.y * sensitivity;
 		inputFg = true;
 	}
 

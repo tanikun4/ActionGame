@@ -458,7 +458,7 @@ void Player::Impl::Move() {
     if (demoMode) dir = m_demoParam.demoMoveDir;
     else dir = ActionInput::GetInstance().GetMoveDirectionRad();
 
-    if (dir >= 0.0f) {
+    if (dir != -1.0f) {
         m_Owner->m_ForwardRotation.y = dir + m_Owner->m_Camera->GetCameraDirection().x;
         m_Owner->m_Velocity_f = speed;		
 		//m_Owner->m_Rotation.x += speed * 0.1f;//回転、zだとドリルみたいになる。そういう突進技もありかも。

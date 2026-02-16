@@ -195,6 +195,7 @@ private:
 	void ProjectileShot_All();
 
 	// ó‘Ô•ÊXVŠÖ”
+	void NormalUpdate();
 	void AttackUpdate();
 	void StunUpdate();
 	void BreakUpdate();

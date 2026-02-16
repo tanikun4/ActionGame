@@ -4,6 +4,7 @@
 #include "ActionBinding.h"
 #include "KeyboardState.h"
 #include "GamePadState.h"
+#include "MathCommon.h"
 
 class ActionInput {
 public:
@@ -17,7 +18,11 @@ public:
     bool IsTrigger(Action a) const;
     bool IsRelease(Action a) const;
 
+    DirectX::SimpleMath::Vector2 GetMoveVector() const;
+
     float GetMoveDirectionRad() const;
+
+    DirectX::SimpleMath::Vector2 GetCameraVector() const;
 private:
     ActionInput() = default;                  // äOïîê∂ê¨ã÷é~
     ~ActionInput() = default;

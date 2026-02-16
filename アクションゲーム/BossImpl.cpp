@@ -145,14 +145,7 @@ void Boss::Impl::Update() {
 
 	switch (m_Owner->m_State) {
 	case NORMAL:
-		Move();
-		if (m_stateframe > 240) {
-			m_Owner->m_State = ATTACK;
-			m_stateframe = 0;
-			m_Owner->m_Velocity_f = 0;
-			attack_kind = (rand() % (KIND_MAX - 1)) + 1;
-		}
-		++m_stateframe;
+		NormalUpdate();
 		break;
 	case ATTACK:
 		AttackUpdate();
@@ -162,6 +155,7 @@ void Boss::Impl::Update() {
 		break;
 	case BREAK:
 		BreakUpdate();
+		break;
 	}
 
 
@@ -269,10 +263,11 @@ void Boss::Impl::Damage(int _atk) {
 	// ヒットストップ処理
 	Game::GetInstance()->HitStop();
 
-	// ダメージがある場合(デモ中でない)HPゲージ更新
-	if(_atk > 0)
+	// ダメージがある場合(デモ中でない)ゲージ更新
+	if (_atk > 0) {
 		m_hp_gauge.ChangeGauge(hp, maxhp);
 		m_guard_gauge.ChangeGauge(guard, maxguard);
+	}
 
 	// ガードゲージ、体力が0以下になったらそれぞれの処理を行う
 		if (guard <= 0 && m_Owner->m_State != BREAK) Break(); // ガードブレイク状態でなければブレイク状態にする
@@ -366,6 +361,17 @@ void Boss::Impl::LookAt(Vector3 ta_pos) {
 	{
 		m_Owner->m_ForwardRotation.y += PI * 2.0f;
 	}
+}
+
+void Boss::Impl::NormalUpdate() {
+	Move();
+	if (m_stateframe > 240) {
+		m_Owner->m_State = ATTACK;
+		m_stateframe = 0;
+		m_Owner->m_Velocity_f = 0;
+		attack_kind = (rand() % (KIND_MAX - 1)) + 1;
+	}
+	++m_stateframe;
 }
 
 void Boss::Impl::AttackUpdate() {
@@ -906,7 +912,6 @@ void Boss::Impl::JumpSpinSlashRush(){
 	}
 
 }
-
 
 // 衝撃波発射
 void  Boss::Impl::SonicBoomShot() {

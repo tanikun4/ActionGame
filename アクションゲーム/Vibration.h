@@ -2,6 +2,7 @@
 #include <SimpleMath.h>
 #include <cmath>
 
+// 座標振動用クラス
 class Vibration
 {
 public:

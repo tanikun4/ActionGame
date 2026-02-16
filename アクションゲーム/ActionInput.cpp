@@ -1,5 +1,4 @@
 #include "ActionInput.h"
-#include "MathCommon.h"
 
 ActionInput& ActionInput::GetInstance()
 {
@@ -57,9 +56,33 @@ bool ActionInput::IsRelease(Action a) const
     return states[(int)a].Release();
 }
 
+DirectX::SimpleMath::Vector2 ActionInput::GetMoveVector() const
+{
+    // キーボード、コントローラ十字キー
+    float x = 0;
+    float y = 0;
+
+    if (IsPress(Action::MoveRight)) x -= 1;
+    if (IsPress(Action::MoveLeft)) x += 1;
+    if (IsPress(Action::MoveUp)) y -= 1;
+    if (IsPress(Action::MoveDown)) y += 1;
+
+    DirectX::SimpleMath::Vector2 keyVec = { x, y };
+    if (keyVec.Length() > 1) keyVec.Normalize();
+
+    // スティック
+    DirectX::SimpleMath::Vector2 stick = gamepad.GetLeftStick();
+
+    // スティック優先
+    if (stick.Length() > 0.01f)
+        return stick;
+
+    return keyVec;
+}
+
 float ActionInput::GetMoveDirectionRad() const
 {
-    bool w = IsPress(Action::MoveUp);
+    /*bool w = IsPress(Action::MoveUp);
     bool s = IsPress(Action::MoveDown);
     bool a = IsPress(Action::MoveLeft);
     bool d = IsPress(Action::MoveRight);
@@ -73,5 +96,38 @@ float ActionInput::GetMoveDirectionRad() const
     if (a)      return PI / 2.0f;
     if (d)      return 3.0f * PI / 2.0f;
 
-    return -1.0f;
+    return -1.0f;*/
+
+    DirectX::SimpleMath::Vector2 v = GetMoveVector();
+
+    if (v.Length() < 0.01f)
+        return -1.0f;
+
+    // atan2(y, x) ではなく
+    // 今の座標系に合わせる
+    return atan2f(v.x, v.y);
+}
+
+DirectX::SimpleMath::Vector2 ActionInput::GetCameraVector() const
+{
+    // キーボード
+    float x = 0;
+    float y = 0;
+
+    if (IsPress(Action::Right)) x -= 1;
+    if (IsPress(Action::Left)) x += 1;
+    if (IsPress(Action::Up)) y -= 1;
+    if (IsPress(Action::Down)) y += 1;
+
+    DirectX::SimpleMath::Vector2 keyVec = { x, y };
+    if (keyVec.Length() > 1) keyVec.Normalize();
+
+    // スティック
+    DirectX::SimpleMath::Vector2 stick = gamepad.GetRightStick();
+
+    // スティック優先
+    if (stick.Length() > 0.01f)
+        return stick;
+
+    return keyVec;
 }
