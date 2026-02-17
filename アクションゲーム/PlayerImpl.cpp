@@ -571,6 +571,7 @@ void Player::Impl::SwingAttack(int _swingtime,int _atk) {
     case COMBO_3:
         m_weapon->Swing(_swingtime,SwingMode::VERTICAL);
         m_weapon->SetAtk(_atk + 1);
+		m_weapon->SetOBBScale({ 2.0f, 0.5f, 5.0f });// 縦斬りは当たり判定を広くする
         m_Anim.StartAbsolute({ -PI * 0.3f,0,0 }, { PI * 0.1f,0,0 },_swingtime, 1.0f);
         break;
     }
@@ -832,6 +833,7 @@ void Player::Impl::UpdateAttack() {
 			m_Owner->m_Rotation.x = 0;// 攻撃終了時にX回転リセット
 			m_attackkind = NONE;
 			parryFg = false;// ジャストガードフラグリセット
+            m_weapon->SetOBBScale({ 2.0f, 0.5f, 2.0f });// 当たり判定を戻す
         }
         break;
 

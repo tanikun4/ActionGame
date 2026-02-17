@@ -42,7 +42,7 @@ private:
         const float dz = 0.2f;
         if (len < dz) return { 0,0 };
 
-        // スムーズ補正（重要）
+        // スムーズ補正
         float scale = (len - dz) / (1.0f - dz);
         v.Normalize();
         return v * scale;

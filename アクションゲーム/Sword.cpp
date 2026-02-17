@@ -228,6 +228,7 @@ void Sword::UpdateOBB() {
 	Vector3 base = obbWorldCenter - dir * halfLen;
 	Vector3 tip = obbWorldCenter + dir * 8.0f;
 
+	// 軌跡エフェクト発生
 	m_EffectTrail->AddPoint(base, tip);
 }
 

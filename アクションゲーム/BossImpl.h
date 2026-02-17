@@ -81,7 +81,7 @@ private:
 		ATTACK,     // 攻撃
 		FOLLOW,     // 追撃・派生・急降下など
 		RECOVER,    // 硬直・構え戻し
-		END
+		END			// 終了処理
 	};
 
 	// 突き攻撃の位置

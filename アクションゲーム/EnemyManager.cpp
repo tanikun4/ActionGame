@@ -153,6 +153,7 @@ void EnemyManager::AttackEnemy() {
     chosen->Attack(); // ŠO•”UŒ‚ŠJŽn
 }
 
+// “G“¯Žm‚Å‹——£‚ðŽæ‚éŠÖ”
 bool EnemyManager::NearDistance(
     const Enemy* self,
     Vector3* awaydir
@@ -172,11 +173,7 @@ bool EnemyManager::NearDistance(
         if (!e->GetLive())
             continue;
 
-		// UŒ‚’†‚È‚ç‘ÎÛ‚É‚µ‚È‚¢
-       /* if(e->IsAttacking())
-			continue;*/
-
-		// ‹——£‚ðŽæ‚Á‚Ä‚¢‚é‚È‚ç‘ÎÛ‚É‚µ‚È‚¢
+		// ‹——£‚ðŽæ‚Á‚Ä‚¢‚éÅ’†‚È‚ç‘ÎÛ‚É‚µ‚È‚¢
         if(e->IsAway())
 			continue;
 

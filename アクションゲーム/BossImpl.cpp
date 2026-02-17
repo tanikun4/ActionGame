@@ -165,7 +165,7 @@ void Boss::Impl::Update() {
 	if (inviFg) {
 		++invicount;
 	}
-	if (invicount > 20) {
+	if (invicount > 18) {
 		inviFg = false;
 		invicount = 0;
 		m_Owner->SetColor(Vector4(1, 0, 0, 1));

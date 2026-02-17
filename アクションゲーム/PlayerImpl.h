@@ -86,7 +86,7 @@ private:
 	DemoParam m_demoParam; // デモ用パラメータ
 
     int hp = 20;
-	const int maxhp = 20;
+	const int maxhp = 50;
 	int atk = 3; // 攻撃力
     int framecount = 0;
     int invicount = 0; // 無敵時間カウント
