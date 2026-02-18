@@ -668,6 +668,8 @@ void Player::Impl::Damage(int atk) {
 
     m_Owner->SetColor(Vector4(1, 1, 0, 0.5f));
 
+    m_weapon->SetOBBScale({ 2.0f, 0.5f, 2.0f });//当たり判定を戻す
+
 	m_Owner->m_Velocity_f = speed * -2;// ノックバック速度設定
 
 	if (demoMode) { m_weapon->SwingEnd(); return; }//デモ中はダメージを受けず、演出処理を終了

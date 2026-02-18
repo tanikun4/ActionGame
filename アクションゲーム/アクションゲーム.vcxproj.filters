@@ -607,6 +607,9 @@
     <FxCompile Include="shader\litTextureVS_notlight.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="shader\PS_Toon.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="アクションゲーム.rc">

@@ -57,6 +57,8 @@ void BallObject::BallInit(std::u8string modelfilename)
 	radius = base_radius;
 
 	// シェーダオブジェクト生成
+	//m_Shader.Create("shader/litTextureVS_notlight.hlsl", "shader/PS_Toon.hlsl");
+
 	m_Shader.Create("shader/litTextureVS_notlight.hlsl", "shader/litTexturePS.hlsl");
 
 	// サブセット情報取得

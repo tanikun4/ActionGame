@@ -23,5 +23,5 @@ public:
 	bool Load(const std::string& filename);
 	bool LoadFromFemory(const unsigned char* data,int len);
 
-	void SetGPU();
+	void SetGPU(int slot = 0);
 };

@@ -167,6 +167,14 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(finalwave_text);
 	finalwave_text->SetLive(false); // wave2は非表示
 
+	// UI (操作説明)
+	Texture2D* sousa_text = Game::GetInstance()->AddObject<Texture2D>();
+	sousa_text->SetTexture("assets/texture/sousa_camera.png"); // 画像を指定
+	sousa_text->SetPosition(300.0f, -300.0f, 0.0f); // 位置を設定
+	sousa_text->SetScale(600.0f, 100.0f, 0.0f); // 大きさを指定
+	sousa_text->SetUV(1, 1, 1, 1); //UVを指定
+	m_MySceneObjects.emplace_back(sousa_text);
+
 	// UI(プレイヤーHP)
 	//Texture2D* pt4 = Game::GetInstance()->AddObject<Texture2D>();
 	//pt4->SetTexture("assets/texture/number.png"); // 画像を指定
