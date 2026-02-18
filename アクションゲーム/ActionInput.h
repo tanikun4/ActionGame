@@ -23,6 +23,9 @@ public:
     float GetMoveDirectionRad() const;
 
     DirectX::SimpleMath::Vector2 GetCameraVector() const;
+
+	bool GetControllerInput() const { return cont_Input; } // コントローラー入力があるかどうか
+
 private:
     ActionInput() = default;                  // 外部生成禁止
     ~ActionInput() = default;
@@ -34,4 +37,6 @@ private:
 
     ActionState   states[(int)Action::ActionMax];
     ActionBinding bindings[(int)Action::ActionMax] = {};
+
+	bool cont_Input = false; // コントローラー入力フラグ
 };

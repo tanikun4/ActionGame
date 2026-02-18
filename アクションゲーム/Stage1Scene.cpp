@@ -167,13 +167,22 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(finalwave_text);
 	finalwave_text->SetLive(false); // wave2は非表示
 
-	// UI (操作説明)
-	Texture2D* sousa_text = Game::GetInstance()->AddObject<Texture2D>();
-	sousa_text->SetTexture("assets/texture/sousa_camera.png"); // 画像を指定
-	sousa_text->SetPosition(300.0f, -300.0f, 0.0f); // 位置を設定
-	sousa_text->SetScale(600.0f, 100.0f, 0.0f); // 大きさを指定
-	sousa_text->SetUV(1, 1, 1, 1); //UVを指定
-	m_MySceneObjects.emplace_back(sousa_text);
+	// UI (操作説明、キーボード)
+	sousa_key_text = Game::GetInstance()->AddObject<Texture2D>();
+	sousa_key_text->SetTexture("assets/texture/sousa_camera_uv.png"); // 画像を指定
+	sousa_key_text->SetPosition(300.0f, -300.0f, 0.0f); // 位置を設定
+	sousa_key_text->SetScale(600.0f, 100.0f, 0.0f); // 大きさを指定
+	sousa_key_text->SetUV(1, 1, 1, 2); //UVを指定
+	m_MySceneObjects.emplace_back(sousa_key_text);
+
+	// UI (操作説明、コントローラ)
+	sousa_cont_text = Game::GetInstance()->AddObject<Texture2D>();
+	sousa_cont_text->SetTexture("assets/texture/sousa_cont_camera.png"); // 画像を指定
+	sousa_cont_text->SetPosition(300.0f, -300.0f, 0.0f); // 位置を設定
+	sousa_cont_text->SetScale(600.0f, 100.0f, 0.0f); // 大きさを指定
+	sousa_cont_text->SetUV(1, 1, 1, 1); //UVを指定
+	m_MySceneObjects.emplace_back(sousa_cont_text);
+	sousa_cont_text->SetLive(false); // コントローラは非表示
 
 	// UI(プレイヤーHP)
 	//Texture2D* pt4 = Game::GetInstance()->AddObject<Texture2D>();
@@ -238,6 +247,13 @@ void Stage1Scene::Update()
 {
 	Game::GetInstance()->CollisionObject(m_MySceneObjects);
 	EnemyManager::GetInstance().Update();
+
+	if (ActionInput::GetInstance().GetControllerInput()) {
+		sousa_key_text->SetUV(1, 2, 1, 2);
+	}
+	else {
+		sousa_key_text->SetUV(1, 1, 1, 2);
+	}
 
 	if(boss->GetHP() <= 0){
 		Game::GetInstance()->ChangeSceneFadeOut(RESULT);

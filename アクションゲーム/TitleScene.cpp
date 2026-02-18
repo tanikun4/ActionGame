@@ -114,9 +114,10 @@ void TitleScene::Init()
 
 	//press_enterkey画像オブジェクトを作成
 	press_enterkey = Game::GetInstance()->AddObject<Texture2D>();
-	press_enterkey->SetTexture("assets/texture/2DEffect/PressEnterKey.png"); // 画像を指定
+	press_enterkey->SetTexture("assets/texture/2DEffect/PressStart.png"); // 画像を指定
 	press_enterkey->SetPosition(0.0f, -300.0f, 0.0f); // 位置を指定
 	press_enterkey->SetScale(640.0f, 128.0f, 0.0f); // 大きさを指定
+	press_enterkey->SetUV(1, 1, 1, 2);
 	m_MySceneObjects.emplace_back(press_enterkey);
 	press_enterkey->SetLive(false);
 }
@@ -146,6 +147,13 @@ void TitleScene::Update()
 	}
 
 	Game::GetInstance()->CollisionObject(m_MySceneObjects);
+
+	if (ActionInput::GetInstance().GetControllerInput()) {
+		press_enterkey->SetUV(1, 2, 1, 2);
+	}
+	else {
+		press_enterkey->SetUV(1, 1, 1, 2);
+	}
 
 	// エンターキーを押してステージ1へ
 	if (ActionInput::GetInstance().IsTrigger(Action::Enter))

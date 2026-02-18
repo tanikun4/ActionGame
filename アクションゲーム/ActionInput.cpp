@@ -33,9 +33,12 @@ void ActionInput::Update()
     for (int i = 0; i < (int)Action::ActionMax; ++i) {
         const ActionBinding& b = bindings[i];
 
-        bool down =
-            keyboard.Press(b.key) ||
-            gamepad.Press(b.btn);
+        bool key = keyboard.Press(b.key);
+        bool pad = gamepad.Press(b.btn);
+
+		cont_Input = pad;
+
+		bool down = key || pad;
 
         states[i].Update(down);
     }
@@ -82,21 +85,6 @@ DirectX::SimpleMath::Vector2 ActionInput::GetMoveVector() const
 
 float ActionInput::GetMoveDirectionRad() const
 {
-    /*bool w = IsPress(Action::MoveUp);
-    bool s = IsPress(Action::MoveDown);
-    bool a = IsPress(Action::MoveLeft);
-    bool d = IsPress(Action::MoveRight);
-
-    if (w && a) return 3.0f * PI / 4.0f;
-    if (w && d) return 5.0f * PI / 4.0f;
-    if (s && a) return 1.0f * PI / 4.0f;
-    if (s && d) return 7.0f * PI / 4.0f;
-    if (w)      return PI;
-    if (s)      return 0.0f;
-    if (a)      return PI / 2.0f;
-    if (d)      return 3.0f * PI / 2.0f;
-
-    return -1.0f;*/
 
     DirectX::SimpleMath::Vector2 v = GetMoveVector();
 
