@@ -36,7 +36,14 @@ void ActionInput::Update()
         bool key = keyboard.Press(b.key);
         bool pad = gamepad.Press(b.btn);
 
-		cont_Input = pad;
+        if (pad)
+        {
+			cont_Input = true;
+        }
+        else if(key)
+        {
+			cont_Input = false;
+        }
 
 		bool down = key || pad;
 
