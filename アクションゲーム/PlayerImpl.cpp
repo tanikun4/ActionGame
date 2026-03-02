@@ -1023,7 +1023,7 @@ void Player::Impl::UpdateDemo()
 
         if (m_weapon && m_Owner->m_State == NORMAL)
         {
-            m_weapon->Swing();
+			SwingAttack();
             m_Owner->m_State = ATTACK;
 			m_attackkind = SWING;
         }
