@@ -30,6 +30,36 @@ ID3D11BlendState* Renderer::m_BlendStateATC{}; // 特定のアルファテストとカバレッ
 ID3D11RasterizerState* Renderer::m_RSCullBack = nullptr;
 ID3D11RasterizerState* Renderer::m_RSCullNone = nullptr;
 
+// ここからポストプロセス
+ID3D11Texture2D* Renderer::m_PostTexture = nullptr;
+ID3D11RenderTargetView* Renderer::m_PostRTV = nullptr;
+ID3D11ShaderResourceView* Renderer::m_PostSRV = nullptr;
+
+// ブルームエフェクト用のテクスチャとビュー
+ID3D11Texture2D* Renderer::m_BloomTex = nullptr;
+ID3D11RenderTargetView* Renderer::m_BloomRTV = nullptr;
+ID3D11ShaderResourceView* Renderer::m_BloomSRV = nullptr;
+
+// ブルームエフェクト用PS変数
+ID3D11PixelShader* Renderer::m_BrightPassPS = nullptr;
+ID3D11PixelShader* Renderer::m_BloomCombinePS = nullptr;
+
+// ブラー用のテクスチャとビュー
+ID3D11Texture2D* Renderer::m_BlurTex = nullptr;
+ID3D11RenderTargetView* Renderer::m_BlurRTV = nullptr;
+ID3D11ShaderResourceView* Renderer::m_BlurSRV = nullptr;
+
+ID3D11PixelShader* Renderer::m_BlurXPS = nullptr;
+ID3D11PixelShader* Renderer::m_BlurYPS = nullptr;
+
+ID3D11Buffer* Renderer::m_BlurBuffer = nullptr;
+
+ID3D11Buffer* Renderer::m_FullscreenVB = nullptr;
+ID3D11Buffer* Renderer::m_FullscreenIB = nullptr;
+
+// スプライトバッチ
+std::unique_ptr<DirectX::SpriteBatch> Renderer::m_SpriteBatch = nullptr;
+
 //=======================================
 //初期化処理
 //=======================================
@@ -181,10 +211,16 @@ void Renderer::Init()
 
 	// サンプラーステート設定
 	D3D11_SAMPLER_DESC samplerDesc{};
-	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	//samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	//samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	//samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	//samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; // ブルーム用
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+
 	samplerDesc.MaxAnisotropy = 4;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
@@ -245,8 +281,100 @@ void Renderer::Init()
 	m_DeviceContext->VSSetConstantBuffers(5, 1, &m_TextureBuffer);
 	if (FAILED(hr)) return;
 
+	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&renderTarget);
+	D3D11_TEXTURE2D_DESC backBufferDesc;
+	renderTarget->GetDesc(&backBufferDesc); // 実際の画面サイズを取得
+	renderTarget->Release();
+
+	// ポストプロセス用RT
+	D3D11_TEXTURE2D_DESC postDesc{};
+	postDesc.Width = Application::GetWidth();
+	postDesc.Height = Application::GetHeight();
+	postDesc.MipLevels = 1;
+	postDesc.ArraySize = 1;
+	postDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	postDesc.SampleDesc.Count = 1;
+	postDesc.BindFlags =
+		D3D11_BIND_RENDER_TARGET |
+		D3D11_BIND_SHADER_RESOURCE;
+
+	postDesc.Usage = D3D11_USAGE_DEFAULT;
+	postDesc.CPUAccessFlags = 0;
+	postDesc.MiscFlags = 0;
+
+	// フルスクリーンクアッド
+	Vertex2D quad[4] = {
+		{ {-1,  1, 0}, {0,0} }, // 左上
+		{ { 1,  1, 0}, {1,0} }, // 右上
+		{ {-1, -1, 0}, {0,1} }, // 左下
+		{ { 1, -1, 0}, {1,1} }, // 右下
+	};
+	D3D11_BUFFER_DESC bd{};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(quad);
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	D3D11_SUBRESOURCE_DATA init{};
+	init.pSysMem = quad;
+	m_Device->CreateBuffer(&bd, &init, &m_FullscreenVB);
+
+	UINT indices[6] = { 0,1,2,2,1,3 };
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(indices);
+	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	init.pSysMem = indices;
+	m_Device->CreateBuffer(&bd, &init, &m_FullscreenIB);
+
+
+	hr = m_Device->CreateTexture2D(&postDesc, nullptr, &m_PostTexture);
+	if (FAILED(hr)) return;
+
+	hr = m_Device->CreateRenderTargetView(m_PostTexture, nullptr, &m_PostRTV);
+	if (FAILED(hr)) return;
+
+	hr = m_Device->CreateShaderResourceView(m_PostTexture, nullptr, &m_PostSRV);
+	if (FAILED(hr)) return;
+
+	// ブルーム用RT
+	hr = m_Device->CreateTexture2D(&postDesc, nullptr, &m_BloomTex);
+	if (FAILED(hr)) return;
+
+	hr = m_Device->CreateRenderTargetView(m_BloomTex, nullptr, &m_BloomRTV);
+	if (FAILED(hr)) return;
+
+	hr = m_Device->CreateShaderResourceView(m_BloomTex, nullptr, &m_BloomSRV);
+	if (FAILED(hr)) return;
+
+	// ブラー用RT
+	hr = m_Device->CreateTexture2D(&postDesc, nullptr, &m_BlurTex);
+	if (FAILED(hr)) return;
+
+	hr = m_Device->CreateRenderTargetView(m_BlurTex, nullptr, &m_BlurRTV);
+	if (FAILED(hr)) return;
+
+	hr = m_Device->CreateShaderResourceView(m_BlurTex, nullptr, &m_BlurSRV);
+	if (FAILED(hr)) return;
+
+	// ブラー用定数バッファ
+	D3D11_BUFFER_DESC blurDesc{};
+	blurDesc.ByteWidth = (sizeof(BlurBuffer) + 15) & ~15;
+	blurDesc.Usage = D3D11_USAGE_DEFAULT;
+	blurDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	m_Device->CreateBuffer(&blurDesc, nullptr, &m_BlurBuffer);
+
+	// スプライトバッチの初期化
+	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_DeviceContext);
+
 	// UV初期化
 	SetUV(0, 0, 1, 1);
+
+    // ブルーム用ピクセルシェーダー読み込み
+	CreatePixelShader(&m_BrightPassPS, "shader/BrightPassPS.cso");
+	CreatePixelShader(&m_BloomCombinePS, "shader/BloomCombinePS.cso");
+
+	// ブラー用ピクセルシェーダー読み込み
+	CreatePixelShader(&m_BlurXPS, "shader/BlurXPS.cso");
+	CreatePixelShader(&m_BlurYPS, "shader/BlurYPS.cso");
 }
 
 //=======================================
@@ -284,9 +412,22 @@ void Renderer::Uninit()
 //=======================================
 void Renderer::Begin()
 {
+
+
+	ID3D11ShaderResourceView* nullSRV[8] = {};
+	m_DeviceContext->PSSetShaderResources(0, 8, nullSRV);
+
+	SetFullViewport();
+
 	float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
-	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
-	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	//m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
+	//m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	// 描画先をポストRTへ
+	m_DeviceContext->OMSetRenderTargets(1, &m_PostRTV, m_DepthStencilView);
+
+	m_DeviceContext->ClearRenderTargetView(m_PostRTV, clearColor);
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1, 0);
 }
 
 //=======================================
@@ -294,7 +435,182 @@ void Renderer::Begin()
 //=======================================
 void Renderer::End()
 {
+
+	// ブルーム描画
+	DrawBloom();
+
+	// ここでポストプロセス描画
+	DrawPostProcess();
+
+
+	//m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
+
+	//D3D11_VIEWPORT vp{};
+	//vp.Width = (float)Application::GetWidth();
+	//vp.Height = (float)Application::GetHeight();
+	//vp.MinDepth = 0.0f;
+	//vp.MaxDepth = 1.0f;
+	//m_DeviceContext->RSSetViewports(1, &vp);
+
+	// フルスクリーンスプライト描画
+	//m_SpriteBatch->Begin();
+	//m_SpriteBatch->Draw(m_PostSRV, DirectX::XMFLOAT2(0, 0));
+	//m_SpriteBatch->End();
+
+	SetFullViewport();
+
 	m_SwapChain->Present(1, 0);
+
+	/*float green[4] = { 0, 1, 0, 1 };
+	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, green);*/
+}
+
+//=======================================
+// ポストプロセス描画
+//=======================================
+//void Renderer::DrawPostProcess()
+//{
+//
+//	m_DeviceContext->PSSetShader(nullptr, nullptr, 0);
+//
+//	SetFullViewport();
+//
+//	SetDepthEnable(false);
+//
+//	// バックバッファに戻す
+//	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
+//
+//	// フルスクリーン用
+//	SetWorldViewProjection2D();
+//
+//	// SRVセット（さっき描いた画面）
+//	m_DeviceContext->PSSetShaderResources(0, 1, &m_PostSRV);
+//
+//	m_SpriteBatch->Begin(
+//		DirectX::SpriteSortMode_Deferred);
+//
+//	// ポストテクスチャを画面に描く
+//	m_SpriteBatch->Draw(
+//		m_PostSRV,
+//		DirectX::SimpleMath::Vector2(0, 0));
+//
+//	m_SpriteBatch->End();
+//
+//    // Bloom加算
+//	SetBlendState(BS_ADDITIVE);  // 加算ブレンド
+//
+//	m_SpriteBatch->Begin(DirectX::SpriteSortMode_Deferred);
+//
+//	m_SpriteBatch->Draw(m_BloomSRV, Vector2(0, 0));
+//
+//	m_SpriteBatch->End();
+//
+//	SetBlendState(BS_ALPHABLEND);
+//
+//	// バックバッファへ戻す
+//	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
+//
+//	// ビューポートをフルサイズへ戻す
+//	D3D11_VIEWPORT vp{};
+//	vp.TopLeftX = 0;
+//	vp.TopLeftY = 0;
+//	vp.Width = (float)Application::GetWidth();
+//	vp.Height = (float)Application::GetHeight();
+//	vp.MinDepth = 0.0f;
+//	vp.MaxDepth = 1.0f;
+//	m_DeviceContext->RSSetViewports(1, &vp);
+//
+//	// SRV解除
+//	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+//	m_DeviceContext->PSSetShaderResources(0, 1, nullSRV);
+//}
+
+void Renderer::DrawPostProcess()
+{
+	// バックバッファへ
+	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
+	SetFullViewport();
+	SetDepthEnable(false);
+
+	// 1. 元の画面を描画
+	m_DeviceContext->PSSetShader(m_DefaultPostPS, nullptr, 0); // 単純なテクスチャ表示PS
+	m_DeviceContext->PSSetShaderResources(0, 1, &m_PostSRV);
+	DrawFullScreenQuad();
+
+	// 2. ブルームを加算
+	SetBlendState(BS_ADDITIVE); // 加算ブレンド
+	m_DeviceContext->PSSetShaderResources(0, 1, &m_BloomSRV);
+	DrawFullScreenQuad();
+
+	// 後片付け
+	SetBlendState(BS_ALPHABLEND);
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	m_DeviceContext->PSSetShaderResources(0, 1, nullSRV);
+}
+
+void Renderer::DrawBloom()
+{
+	SetDepthEnable(false);
+	float clear[4] = { 0, 0, 0, 0 };
+
+	// --- 1. 輝度抽出 ---
+	m_DeviceContext->OMSetRenderTargets(1, &m_BloomRTV, nullptr);
+	m_DeviceContext->ClearRenderTargetView(m_BloomRTV, clear);
+
+	m_DeviceContext->PSSetShader(m_BrightPassPS, nullptr, 0);
+	m_DeviceContext->PSSetShaderResources(0, 1, &m_PostSRV);
+	DrawFullScreenQuad();
+
+	// --- 2. ガウス重みの計算 (サンプルから移植) ---
+	float weight[8];
+	float total = 0;
+	float sigma = 8.0f;
+	for (int x = 0; x < 8; x++) {
+		weight[x] = expf(-0.5f * (float)(x * x) / sigma);
+		total += 2.0f * weight[x];
+	}
+	for (int i = 0; i < 8; i++) weight[i] /= total;
+
+	// --- 3. X方向ブラー ---
+	m_DeviceContext->OMSetRenderTargets(1, &m_BlurRTV, nullptr);
+	m_DeviceContext->ClearRenderTargetView(m_BlurRTV, clear);
+
+	BlurBuffer buf{};
+	buf.TexelSize = Vector2(1.0f / Application::GetWidth(), 0.0f);
+	m_DeviceContext->UpdateSubresource(m_BlurBuffer, 0, nullptr, &buf, 0, 0);
+
+	// 重みテーブルを定数バッファ(スロット1)に送る
+	m_DeviceContext->UpdateSubresource(m_WeightBuffer, 0, nullptr, weight, 0, 0);
+
+	m_DeviceContext->PSSetShader(m_BlurXPS, nullptr, 0);
+	m_DeviceContext->PSSetConstantBuffers(1, 1, &m_BlurBuffer);
+	m_DeviceContext->PSSetConstantBuffers(2, 1, &m_WeightBuffer);
+	m_DeviceContext->PSSetShaderResources(0, 1, &m_BloomSRV);
+	DrawFullScreenQuad();
+
+	// --- 4. Y方向ブラー ---
+	m_DeviceContext->OMSetRenderTargets(1, &m_BloomRTV, nullptr);
+	m_DeviceContext->ClearRenderTargetView(m_BloomRTV, clear);
+
+	buf.TexelSize = Vector2(0.0f, 1.0f / Application::GetHeight());
+	m_DeviceContext->UpdateSubresource(m_BlurBuffer, 0, nullptr, &buf, 0, 0);
+
+	m_DeviceContext->PSSetShader(m_BlurYPS, nullptr, 0);
+	m_DeviceContext->PSSetShaderResources(0, 1, &m_BlurSRV);
+	DrawFullScreenQuad();
+}
+
+void Renderer::SetFullViewport()
+{
+	D3D11_VIEWPORT vp{};
+	vp.Width = (FLOAT)Application::GetWidth();
+	vp.Height = (FLOAT)Application::GetHeight();
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+
+	m_DeviceContext->RSSetViewports(1, &vp);
 }
 
 //=======================================
@@ -339,25 +655,18 @@ void Renderer::SetATCEnable(bool Enable)
 //=======================================
 void Renderer::SetWorldViewProjection2D()
 {
-	Matrix world = Matrix::Identity;			// 単位行列にする
-	world = world.Transpose();			// 転置
-	m_DeviceContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &world, 0, 0);
+	// サンプルコードに近い設定：幅1, 高さ1の正射影行列
+	// これにより、Size(1,1)の板ポリゴンを描画すれば画面全体を覆えるようになります
+	Matrix world = Matrix::Identity;
+	Matrix view = Matrix::Identity;
+	Matrix projection = DirectX::XMMatrixOrthographicLH(1.0f, 1.0f, 0.0f, 1.0f);
 
-	Matrix view = Matrix::Identity;			// 単位行列にする
-	view = view.Transpose();			// 転置
-	m_DeviceContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &view, 0, 0);
-
-	// 2D描画を左上原点にする
-	Matrix projection = DirectX::XMMatrixOrthographicOffCenterLH(
-		0.0f,
-		static_cast<float>(Application::GetWidth()),	// ビューボリュームの最小Ｘ
-		static_cast<float>(Application::GetHeight()),	// ビューボリュームの最小Ｙ
-		0.0f,											// ビューボリュームの最大Ｙ
-		0.0f,
-		1.0f);
-
+	world = world.Transpose();
+	view = view.Transpose();
 	projection = projection.Transpose();
 
+	m_DeviceContext->UpdateSubresource(m_WorldBuffer, 0, NULL, &world, 0, 0);
+	m_DeviceContext->UpdateSubresource(m_ViewBuffer, 0, NULL, &view, 0, 0);
 	m_DeviceContext->UpdateSubresource(m_ProjectionBuffer, 0, NULL, &projection, 0, 0);
 }
 
