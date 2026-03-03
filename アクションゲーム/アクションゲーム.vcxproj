@@ -332,6 +332,7 @@
   <ItemGroup>
     <ClCompile Include="ActionInput.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BlurManager.cpp" />
     <ClCompile Include="EnemyImpl.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="AssimpPerse.cpp" />
@@ -404,6 +405,7 @@
     <ClInclude Include="ActionState.h" />
     <ClInclude Include="AnimStruct.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BlurManager.h" />
     <ClInclude Include="EnemyImpl.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="AssimpPerse.h" />
@@ -546,12 +548,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">vs_main</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="shader\PS_Toon.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ps_main</EntryPointName>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ps_main</EntryPointName>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="shader\unlitTexturePS.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ps_main</EntryPointName>

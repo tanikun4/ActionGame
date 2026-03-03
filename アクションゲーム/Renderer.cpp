@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "Application.h"
+#include "BlurManager.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -247,6 +248,30 @@ void Renderer::Init()
 
 	// UV初期化
 	SetUV(0, 0, 1, 1);
+
+	// フルスクリーンクアッド作成
+	BlurManager::GetInstance().Init(m_Device, m_DeviceContext);
+
+	// ブラー用レンダーターゲット作成
+	BlurManager::GetInstance().InitRenderTargets(Application::GetWidth(), Application::GetHeight());
+
+	// シェーダー設定（あらかじめコンパイル済みのPS）
+	// blurXPS / blurYPS / averagePS / copyPS は別途ロードしておく
+
+	ID3D11PixelShader* blurXPS;
+	CreatePixelShader(&blurXPS,"shader/PS_Blur.cso");
+	
+	ID3D11PixelShader* blurYPS;
+	CreatePixelShader(&blurYPS, "shader/PS_Blur.cso");
+
+	ID3D11PixelShader* averagePS;
+	CreatePixelShader(&averagePS, "shader/PS_AverageBlur.cso");
+
+	ID3D11PixelShader* copyPS;
+	CreatePixelShader(&copyPS, "shader/PS_TexColor.cso");
+
+
+	BlurManager::GetInstance().SetShaders(blurXPS, blurYPS, averagePS, copyPS);
 }
 
 //=======================================
@@ -284,8 +309,16 @@ void Renderer::Uninit()
 //=======================================
 void Renderer::Begin()
 {
-	float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	/*float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);*/
+
+	auto& blur = BlurManager::GetInstance();
+	float clearColor[4] = { 0,0,0,1 };
+
+	// SceneRT にクリア
+	m_DeviceContext->OMSetRenderTargets(1, &blur.GetSceneRT()->rtv, m_DepthStencilView);
+	m_DeviceContext->ClearRenderTargetView(blur.GetSceneRT()->rtv, clearColor);
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
@@ -295,6 +328,30 @@ void Renderer::Begin()
 void Renderer::End()
 {
 	m_SwapChain->Present(1, 0);
+}
+
+void Renderer::PostProcess()
+{
+	auto& blur = BlurManager::GetInstance();
+
+	// 横ブラー → FinalRT
+	blur.SetBlurDirection(1.0f, 0.0f, 11, 5.0f);
+	blur.Blur(blur.GetSceneRT(), blur.GetFinalRT(), BlurManager::Mode::Gaussian);
+
+	// 縦ブラー → FinalRT 上書き
+	blur.SetBlurDirection(0.0f, 1.0f ,11, 5.0f);
+	blur.Blur(blur.GetFinalRT(), blur.GetFinalRT(), BlurManager::Mode::Gaussian);
+
+
+	// バックバッファに描画
+	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+	ID3D11ShaderResourceView* finalSRV = blur.GetFinalRT()->srv;
+	m_DeviceContext->PSSetShaderResources(0, 1, &finalSRV);
+	blur.DrawFullScreenQuad(blur.GetCopyPS());
+
+	// SRV解除
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	m_DeviceContext->PSSetShaderResources(0, 1, nullSRV);
 }
 
 //=======================================

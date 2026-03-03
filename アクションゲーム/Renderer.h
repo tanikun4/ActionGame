@@ -99,6 +99,7 @@ public:
 	static void Init();
 	static void Uninit();
 	static void Begin();
+	static void PostProcess(); // ©‚±‚±‚ð’Ç‰Á
 	static void End();
 
 	static void SetDepthEnable(bool Enable);
@@ -141,4 +142,5 @@ public:
 		else
 			m_DeviceContext->RSSetState(m_RSCullNone);
 	}
+
 };
