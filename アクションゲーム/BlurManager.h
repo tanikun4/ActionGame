@@ -76,6 +76,7 @@ public:
     RenderTarget* GetSceneRT() { return &m_rtScene; }
     RenderTarget* GetFinalRT() { return &m_rtFinal; }
     ID3D11PixelShader* GetCopyPS() { return m_copy; }
+    ID3D11SamplerState* GetSampler() { return m_sampler; }
 
 private:
     void GaussianWeights(float* weights, int count, float sigma);
@@ -101,5 +102,9 @@ private:
     int m_screenHeight = 0;
 
     ID3D11Buffer* m_cbParam = nullptr; // blur用定数バッファ
+
+    ID3D11VertexShader* m_fullScreenVS = nullptr;
+    ID3D11InputLayout* m_inputLayout = nullptr;
+    ID3D11SamplerState* m_sampler = nullptr;
 };
 

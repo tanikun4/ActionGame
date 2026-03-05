@@ -1,9 +1,51 @@
 #include "BlurManager.h"
+#include "dx11helper.h"
 
 void BlurManager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
 {
     m_device = device;
     m_context = context;
+
+    // -----------------------------------
+   // フルスクリーン専用InputLayout
+   // -----------------------------------
+    D3D11_INPUT_ELEMENT_DESC layout[] =
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+          D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+          D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
+
+    // -----------------------------------
+    // フルスクリーンVS作成
+    // -----------------------------------
+    bool sts = CreateVertexShader(
+        device,
+        "shader/FullScreenVS.hlsl",  // ← あなたが作ったVS
+        "vs_main",                       // エントリポイント
+        "vs_5_0",
+        layout,
+        2,
+        &m_fullScreenVS,
+        &m_inputLayout);
+
+    if (!sts)
+    {
+        MessageBox(nullptr, "FullScreen VS Create Error", "error", MB_OK);
+        return;
+    }
+
+    D3D11_SAMPLER_DESC sampDesc = {};
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+
+    m_device->CreateSamplerState(&sampDesc, &m_sampler);
+
+
     InitBuffers();
 }
 
@@ -66,11 +108,17 @@ void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
 {
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
+
+    m_context->IASetInputLayout(m_inputLayout);
     m_context->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
     m_context->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
     m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    // ? 必ずVSをセット
+    m_context->VSSetShader(m_fullScreenVS, nullptr, 0);
+
     m_context->PSSetShader(ps, nullptr, 0);
+
     m_context->DrawIndexed(6, 0, 0);
 }
 
@@ -116,19 +164,56 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
         break;
 
     case Mode::Gaussian:
-        // ガウス用のバッファ設定はシェーダー内で管理
+    {
+        D3D11_VIEWPORT vp = {};
+        vp.MinDepth = 0.0f;
+        vp.MaxDepth = 1.0f;
+        vp.TopLeftX = 0;
+        vp.TopLeftY = 0;
+
+        // =========================
+        // 横ブラー (src → m_rtX)
+        // =========================
+        SetBlurDirection(1.0f, 0.0f, 5, 2.0f);
+
         m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
+
+        vp.Width = (FLOAT)m_rtX.width;
+        vp.Height = (FLOAT)m_rtX.height;
+        m_context->RSSetViewports(1, &vp);
+
         m_context->PSSetShaderResources(0, 1, &src->srv);
         DrawFullScreenQuad(m_blurX);
 
+
+        // =========================
+        // 縦ブラー (m_rtX → m_rtY)
+        // =========================
+        SetBlurDirection(0.0f, 1.0f, 5, 2.0f);
+
         m_context->OMSetRenderTargets(1, &m_rtY.rtv, nullptr);
+
+        vp.Width = (FLOAT)m_rtY.width;
+        vp.Height = (FLOAT)m_rtY.height;
+        m_context->RSSetViewports(1, &vp);
+
         m_context->PSSetShaderResources(0, 1, &m_rtX.srv);
         DrawFullScreenQuad(m_blurY);
 
+
+        // =========================
+        // 最終出力 (m_rtY → dst)
+        // =========================
         m_context->OMSetRenderTargets(1, &dst->rtv, nullptr);
+
+        vp.Width = (FLOAT)dst->width;
+        vp.Height = (FLOAT)dst->height;
+        m_context->RSSetViewports(1, &vp);
+
         m_context->PSSetShaderResources(0, 1, &m_rtY.srv);
         DrawFullScreenQuad(m_copy);
-        break;
+    }
+    break;
     }
     // SRVを解除
     ID3D11ShaderResourceView* nullSRV[1] = { nullptr };

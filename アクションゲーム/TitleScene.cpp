@@ -104,7 +104,7 @@ void TitleScene::Init()
 		WallManager::DebugWallStatus();
 		});
 
-	//背景画像オブジェクトを作成
+	//タイトル画像オブジェクトを作成
 	Texture2D* pt = Game::GetInstance()->AddObject<Texture2D>();
 	pt->SetTexture("assets/texture/title.png"); // 画像を指定
 	pt->SetPosition(0.0f, 0.0f, 0.0f); // 位置を指定

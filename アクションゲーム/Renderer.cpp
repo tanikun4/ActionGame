@@ -268,7 +268,7 @@ void Renderer::Init()
 	CreatePixelShader(&averagePS, "shader/PS_AverageBlur.cso");
 
 	ID3D11PixelShader* copyPS;
-	CreatePixelShader(&copyPS, "shader/PS_TexColor.cso");
+	CreatePixelShader(&copyPS, "shader/PS_TexColor_Red.cso");
 
 
 	BlurManager::GetInstance().SetShaders(blurXPS, blurYPS, averagePS, copyPS);
@@ -309,17 +309,21 @@ void Renderer::Uninit()
 //=======================================
 void Renderer::Begin()
 {
-	/*float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
-	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);*/
-
-	auto& blur = BlurManager::GetInstance();
-	float clearColor[4] = { 0,0,0,1 };
-
-	// SceneRT にクリア
-	m_DeviceContext->OMSetRenderTargets(1, &blur.GetSceneRT()->rtv, m_DepthStencilView);
-	m_DeviceContext->ClearRenderTargetView(blur.GetSceneRT()->rtv, clearColor);
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	auto sceneRT = BlurManager::GetInstance().GetSceneRT();
+
+	m_DeviceContext->OMSetRenderTargets(
+		1,
+		&sceneRT->rtv,
+		m_DepthStencilView);
+
+	float sceneColor[4] = { 0, 1, 0, 1 };
+	m_DeviceContext->ClearRenderTargetView(sceneRT->rtv, sceneColor);
+	m_DeviceContext->ClearDepthStencilView(nullptr,
+		D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 //=======================================
@@ -327,26 +331,39 @@ void Renderer::Begin()
 //=======================================
 void Renderer::End()
 {
+	PostProcess();
 	m_SwapChain->Present(1, 0);
 }
 
 void Renderer::PostProcess()
 {
 	auto& blur = BlurManager::GetInstance();
+	auto sceneRT = blur.GetSceneRT();
 
-	// 横ブラー → FinalRT
-	blur.SetBlurDirection(1.0f, 0.0f, 11, 5.0f);
-	blur.Blur(blur.GetSceneRT(), blur.GetFinalRT(), BlurManager::Mode::Gaussian);
+	// バックバッファへ戻す
+	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
 
-	// 縦ブラー → FinalRT 上書き
-	blur.SetBlurDirection(0.0f, 1.0f ,11, 5.0f);
-	blur.Blur(blur.GetFinalRT(), blur.GetFinalRT(), BlurManager::Mode::Gaussian);
+	// ビューポート
+	D3D11_VIEWPORT vp{};
+	vp.Width = static_cast<FLOAT>(Application::GetWidth());
+	vp.Height = static_cast<FLOAT>(Application::GetHeight());
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	m_DeviceContext->RSSetViewports(1, &vp);
 
+	// 深度テストOFF
+	SetDepthEnable(false);
+	SetATCEnable(true);
 
-	// バックバッファに描画
-	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
-	ID3D11ShaderResourceView* finalSRV = blur.GetFinalRT()->srv;
-	m_DeviceContext->PSSetShaderResources(0, 1, &finalSRV);
+	// SceneRTをPSへセット
+	ID3D11ShaderResourceView* srv = sceneRT->srv;
+	m_DeviceContext->PSSetShaderResources(0, 1, &srv);
+
+	// Sampler
+	ID3D11SamplerState* sampler = blur.GetSampler();
+	m_DeviceContext->PSSetSamplers(0, 1, &sampler);
+
+	// フルスクリーンクアッド描画
 	blur.DrawFullScreenQuad(blur.GetCopyPS());
 
 	// SRV解除

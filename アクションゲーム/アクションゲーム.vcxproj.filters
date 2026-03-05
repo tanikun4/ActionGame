@@ -321,6 +321,9 @@
     <ClCompile Include="EnemyManager.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="BlurManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
@@ -578,6 +581,9 @@
     <ClInclude Include="EnemyManager.h">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="BlurManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\common.hlsl">
@@ -607,7 +613,8 @@
     <FxCompile Include="shader\litTextureVS_notlight.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="shader\PS_Toon.hlsl">
+    <FxCompile Include="shader\PS_Blur.hlsl" />
+    <FxCompile Include="shader\FullScreenVS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
