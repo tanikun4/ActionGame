@@ -446,17 +446,11 @@
     <ClInclude Include="WeaponManager.h">
       <Filter>ソース ファイル\Object\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="IDamage.h">
-      <Filter>ソース ファイル\Object\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="ICollider.h">
       <Filter>ソース ファイル\Object\Interface</Filter>
     </ClInclude>
     <ClInclude Include="GroundManager.h">
       <Filter>ソース ファイル\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="IColliderBase.h">
-      <Filter>ソース ファイル\Object\Interface</Filter>
     </ClInclude>
     <ClInclude Include="WireRenderer.h">
       <Filter>ソース ファイル\Renderer</Filter>
@@ -605,21 +599,6 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="shader\litTextureVS_notlight.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="shader\PS_Toon.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="shader\BloomCombinePS.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="shader\BrightPassPS.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="shader\BlurXPS.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="shader\BlurYPS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

@@ -23,8 +23,6 @@ private:
 
 	Sound sound;
 	std::vector<Object*> m_MySceneObjects; // このシーンのオブジェクト
-	//std::vector<Texture2D*> m_UI; // UI用オブジェクト
-	int m_State = 0; // 状態 0:ボール移動中, 1:方向選択中, 2:パワー選択中
 
 	DirectX::XMFLOAT2 groundsize;//地面の大きさ
 

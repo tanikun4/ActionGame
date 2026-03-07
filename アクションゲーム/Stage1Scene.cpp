@@ -184,37 +184,6 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(sousa_cont_text);
 	sousa_cont_text->SetLive(false); // コントローラは非表示
 
-	// UI(プレイヤーHP)
-	//Texture2D* pt4 = Game::GetInstance()->AddObject<Texture2D>();
-	//pt4->SetTexture("assets/texture/number.png"); // 画像を指定
-	//pt4->SetPosition(-485.0f, -300.0f, 0.0f); // 位置を設定
-	//pt4->SetScale(65.0f, 45.0f, 0.0f); // 大きさを指定
-	//pt4->SetUV(m_Par + 1, 1, 10, 1); //UVを指定
-	//m_MySceneObjects.emplace_back(pt4);
-
-	// UI(ボスHP 1桁目)
-	//Texture2D* pt5 = Game::GetInstance()->AddObject<Texture2D>();
-	//pt5->SetTexture("assets/texture/number.png"); // 画像を指定
-	//pt5->SetPosition(565.0f, 300.0f, 0.0f); // 位置を設定
-	//pt5->SetScale(95.0f, 72.0f, 0.0f); // 大きさを指定
-	//pt5->SetUV(2, 1, 10, 1); //UVを指定
-	//m_MySceneObjects.emplace_back(pt5);
-
-	// UI(ボスHP 2桁目)
-	//Texture2D* pt6 = Game::GetInstance()->AddObject<Texture2D>();
-	//pt6->SetTexture("assets/texture/number.png"); // 画像を指定
-	//pt6->SetPosition(485.0f, 300.0f, 0.0f); // 位置を設定
-	//pt6->SetScale(95.0f, 72.0f, 0.0f); // 大きさを指定
-	//pt6->SetUV(1, 1, 10, 1); //UVを指定
-	//m_MySceneObjects.emplace_back(pt6);
-
-	//vector<Texture2D*> gauge = player->GetGauge();
-	//m_MySceneObjects.insert(
-	//	m_MySceneObjects.end(),    // 挿入位置
-	//	gauge.begin(),        // 挿入する範囲の開始
-	//	gauge.end()           // 挿入する範囲の終了
-	//);
-
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
 	Sound::GetInstance()->SetVolume(SOUND_BGM_MAIN, 0.5f);
 	Sound::GetInstance()->SetMasterVolume(0.3f);
