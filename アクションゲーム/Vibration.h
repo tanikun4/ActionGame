@@ -34,6 +34,7 @@ public:
         return m_Active;
     }
 
+	// Update()は毎フレーム呼び出し、振動オフのときはゼロベクトルを返す
     inline DirectX::SimpleMath::Vector3 Update()
     {
         if (!m_Active)
@@ -60,6 +61,7 @@ public:
         return offset;
     }
 
+	// moveDirは振動の方向ベクトル。振動オフのときはゼロベクトルを返す
     inline DirectX::SimpleMath::Vector3 UpdateMoveDir(
         const DirectX::SimpleMath::Vector3& moveDir
     )

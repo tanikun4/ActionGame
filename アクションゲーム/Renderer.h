@@ -96,31 +96,6 @@ private:
 	static ID3D11RasterizerState* m_RSCullBack;
 	static ID3D11RasterizerState* m_RSCullNone;
 
-	// ポストエフェクト用のテクスチャとビュー
-	static ID3D11Texture2D* m_PostTexture;
-	static ID3D11RenderTargetView* m_PostRTV;
-	static ID3D11ShaderResourceView* m_PostSRV;
-
-	// ブルームエフェクト用のテクスチャとビュー
-	static ID3D11Texture2D* m_BloomTex;
-	static ID3D11RenderTargetView* m_BloomRTV;
-	static ID3D11ShaderResourceView* m_BloomSRV;
-
-	//　ブルーム用のシェーダー
-	static ID3D11PixelShader* m_BrightPassPS;
-	static ID3D11PixelShader* m_BloomCombinePS;
-
-	// ブラー用
-	static ID3D11Texture2D* m_BlurTex;
-	static ID3D11RenderTargetView* m_BlurRTV;
-	static ID3D11ShaderResourceView* m_BlurSRV;
-
-	// ブラー用PS
-	static ID3D11PixelShader* m_BlurXPS;
-	static ID3D11PixelShader* m_BlurYPS;
-
-	// スプライトバッチ（ポストエフェクトや2D描画に使用）
-	static std::unique_ptr<DirectX::SpriteBatch> m_SpriteBatch;
 
 	static struct BlurBuffer
 	{
@@ -159,9 +134,6 @@ public:
 	static void SetMaterial(MATERIAL Material);
 	static void SetUV(float u, float v, float uw, float vh);
 
-	static void DrawBloom();
-	static void DrawPostProcess();
-	static void SetFullViewport();
 
 	//=============================================================================
 	// ブレンド ステート設定

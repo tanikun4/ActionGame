@@ -362,6 +362,7 @@ private:
     const float phi = 1.61803398875f;
 
 public:
+    // 開始
     void Start(
         float startAngle,
         float endAngle,
@@ -380,6 +381,7 @@ public:
         );
     }
 
+	// 前フレームからの変化量を返す
     DirectX::SimpleMath::Vector3 Update()
     {
         auto angle = angleAnim.UpdateAbsolute();
@@ -405,11 +407,13 @@ public:
         return delta;
     }
 
+	// アニメーション中か
     bool IsPlaying() const
     {
         return angleAnim.IsPlaying();
     }
 
+	// リセット関数
     void Reset()
     {
         angleAnim.Reset();
