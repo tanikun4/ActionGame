@@ -24,16 +24,19 @@ public:
         m_Active = true;
     }
 
+	// 振動を停止する
     inline void Stop()
     {
         m_Active = false;
     }
 
+	// 振動が有効か
     inline bool IsActive() const
     {
         return m_Active;
     }
 
+	// 振動を更新し、現在のオフセットを返す
     inline DirectX::SimpleMath::Vector3 Update()
     {
         if (!m_Active)
@@ -59,7 +62,7 @@ public:
 
         return offset;
     }
-
+	// moveDir : 振動の移動方向
     inline DirectX::SimpleMath::Vector3 UpdateMoveDir(
         const DirectX::SimpleMath::Vector3& moveDir
     )

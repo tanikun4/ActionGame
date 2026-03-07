@@ -23,8 +23,8 @@ void BlurManager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
     // -----------------------------------
     bool sts = CreateVertexShader(
         device,
-        "shader/FullScreenVS.hlsl",  // ← あなたが作ったVS
-        "vs_main",                       // エントリポイント
+        "shader/FullScreenVS.hlsl",  
+        "vs_main",                       
         "vs_5_0",
         layout,
         2,
@@ -96,6 +96,7 @@ void BlurManager::InitRenderTargets(int screenW, int screenH)
     m_rtFinal.Create(m_device, screenW, screenH);
 }
 
+// ブラーシェーダーをセット
 void BlurManager::SetShaders(ID3D11PixelShader* blurX, ID3D11PixelShader* blurY, ID3D11PixelShader* average, ID3D11PixelShader* copy)
 {
     m_blurX = blurX;
@@ -104,6 +105,7 @@ void BlurManager::SetShaders(ID3D11PixelShader* blurX, ID3D11PixelShader* blurY,
     m_copy = copy;
 }
 
+// フルスクリーンにクアッドを描画する共通関数
 void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
 {
     UINT stride = sizeof(Vertex);
@@ -114,7 +116,7 @@ void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
     m_context->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
     m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    // ? 必ずVSをセット
+    // 必ずVSをセット
     m_context->VSSetShader(m_fullScreenVS, nullptr, 0);
 
     m_context->PSSetShader(ps, nullptr, 0);
@@ -122,6 +124,7 @@ void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
     m_context->DrawIndexed(6, 0, 0);
 }
 
+// ガウシアンブラーの重みを計算
 void BlurManager::GaussianWeights(float* weights, int count, float sigma)
 {
     float total = 0.0f;
@@ -133,6 +136,7 @@ void BlurManager::GaussianWeights(float* weights, int count, float sigma)
     for (int i = 0; i < count; i++) weights[i] /= total;
 }
 
+// ブラー処理
 void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
 {
     switch (mode)
@@ -171,9 +175,7 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
         vp.TopLeftX = 0;
         vp.TopLeftY = 0;
 
-        // =========================
         // 横ブラー (src → m_rtX)
-        // =========================
         SetBlurDirection(1.0f, 0.0f, 5, 2.0f);
 
         m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
@@ -186,9 +188,7 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
         DrawFullScreenQuad(m_blurX);
 
 
-        // =========================
         // 縦ブラー (m_rtX → m_rtY)
-        // =========================
         SetBlurDirection(0.0f, 1.0f, 5, 2.0f);
 
         m_context->OMSetRenderTargets(1, &m_rtY.rtv, nullptr);

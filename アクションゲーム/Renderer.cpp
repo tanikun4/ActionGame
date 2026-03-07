@@ -268,7 +268,7 @@ void Renderer::Init()
 	CreatePixelShader(&averagePS, "shader/PS_AverageBlur.cso");
 
 	ID3D11PixelShader* copyPS;
-	CreatePixelShader(&copyPS, "shader/PS_TexColor_Red.cso");
+	CreatePixelShader(&copyPS, "shader/PS_TexColor.cso");
 
 
 	BlurManager::GetInstance().SetShaders(blurXPS, blurYPS, averagePS, copyPS);
@@ -331,10 +331,13 @@ void Renderer::Begin()
 //=======================================
 void Renderer::End()
 {
-	PostProcess();
 	m_SwapChain->Present(1, 0);
 }
 
+//=======================================
+// ポストプロセス（フルスクリーンクアッドでSceneRTを描画）
+//=======================================
+//現状はSceneRTをそのまま描画するだけだが、ここでブラーなどのエフェクトをかけることもできる
 void Renderer::PostProcess()
 {
 	auto& blur = BlurManager::GetInstance();
@@ -409,7 +412,7 @@ void Renderer::SetATCEnable(bool Enable)
 }
 
 //=======================================
-//
+//　ワールド、ビュー、プロジェクション行列を2D描画用に設定
 //=======================================
 void Renderer::SetWorldViewProjection2D()
 {
