@@ -37,7 +37,7 @@ void ShadowCircle::Draw()
 	//if (m_color.w <= 0.0f) { return; } //“§–¾‚È‚ç•`‰æ‚µ‚È‚¢
 
 	Renderer::SetDepthEnable(false); // [“x‘‚«ž‚Ý‚ð–³Œø‚É‚·‚é
-	Renderer::SetBlendState(BS_ALPHABLEND);
+	//Renderer::SetBlendState(BS_ALPHABLEND);
 
 	// SRTî•ñì¬
 	Matrix r = Matrix::CreateFromYawPitchRoll(m_Rotation.x, m_Rotation.y, m_Rotation.z);

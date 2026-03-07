@@ -137,15 +137,12 @@ void BlurManager::GaussianWeights(float* weights, int count, float sigma)
 }
 
 // ブラー処理
-void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode, ID3D11BlendState* blendState)
+void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
 {
-    float blendFactor[4] = { 0,0,0,0 };
-    UINT sampleMask = 0xFFFFFFFF;
 
     switch (mode)
     {
     case Mode::Simple:
-        m_context->OMSetBlendState(blendState, blendFactor, sampleMask);
 
         // 横→縦ブラー
         m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
@@ -164,7 +161,6 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode, ID3D11Bl
         break;
 
     case Mode::Average:
-        m_context->OMSetBlendState(blendState, blendFactor, sampleMask);
 
         m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
         m_context->PSSetShaderResources(0, 1, &src->srv);
@@ -178,7 +174,6 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode, ID3D11Bl
     case Mode::Gaussian:
     {
 
-        m_context->OMSetBlendState(blendState, blendFactor, sampleMask);
         D3D11_VIEWPORT vp = {};
         vp.MinDepth = 0.0f;
         vp.MaxDepth = 1.0f;

@@ -68,7 +68,7 @@ public:
     void InitRenderTargets(int screenW, int screenH);
     void SetShaders(ID3D11PixelShader* blurX, ID3D11PixelShader* blurY, ID3D11PixelShader* average, ID3D11PixelShader* copy);
 
-    void Blur(RenderTarget* src, RenderTarget* dst, Mode mode, ID3D11BlendState* blendState);
+    void Blur(RenderTarget* src, RenderTarget* dst, Mode mode);
     void ClearRenderTargets(float r, float g, float b, float a);
     void DrawFullScreenQuad(ID3D11PixelShader* ps);
     void SetBlurDirection(float x, float y, int count, float sigma);
