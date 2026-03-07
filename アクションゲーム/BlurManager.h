@@ -49,11 +49,13 @@ struct Vertex
 
 struct CBParam
 {
-    DirectX::XMFLOAT2 texSize;      // テクスチャサイズ
-    DirectX::XMFLOAT2 blurDir;      // ブラー方向
-    float weights[32];              // 最大32サンプル
-    int sampleCount;                // 実際に使うサンプル数
-    float pad[3];                   // 16バイト境界調整
+    DirectX::XMFLOAT2 texSize;
+    DirectX::XMFLOAT2 blurDir;
+};
+
+struct CBBlur
+{
+    DirectX::XMFLOAT4 weight[2];
 };
 
 class BlurManager : public Manager<BlurManager>
@@ -102,6 +104,7 @@ private:
     int m_screenHeight = 0;
 
     ID3D11Buffer* m_cbParam = nullptr; // blur用定数バッファ
+    ID3D11Buffer* m_cbBlur = nullptr;
 
     ID3D11VertexShader* m_fullScreenVS = nullptr;
     ID3D11InputLayout* m_inputLayout = nullptr;

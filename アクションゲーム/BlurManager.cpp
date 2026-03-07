@@ -79,6 +79,9 @@ void BlurManager::InitBuffers()
     cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
     m_device->CreateBuffer(&cbd, nullptr, &m_cbParam);
+
+    cbd.ByteWidth = sizeof(CBBlur);
+    m_device->CreateBuffer(&cbd, nullptr, &m_cbBlur);
 }
 
 void BlurManager::InitRenderTargets(int screenW, int screenH)
@@ -181,7 +184,7 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
         vp.TopLeftY = 0;
 
         // 横ブラー (src → m_rtX)
-        SetBlurDirection(1.0f, 0.0f, 15, 5.0f);
+        SetBlurDirection(1.0f, 0.0f, 2, 5.0f);
 
         m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
 
@@ -197,7 +200,7 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
 
 
         // 縦ブラー (m_rtX → m_rtY)
-        SetBlurDirection(0.0f, 1.0f, 15, 5.0f);
+        SetBlurDirection(0.0f, 1.0f, 2, 5.0f);
 
         m_context->OMSetRenderTargets(1, &m_rtY.rtv, nullptr);
 
@@ -239,10 +242,15 @@ void BlurManager::ClearRenderTargets(float r, float g, float b, float a)
 void BlurManager::SetBlurDirection(float x, float y, int count, float sigma)
 {
     CBParam cb{};
-    cb.texSize = { 1.0f / (float)m_screenWidth, 1.0f / (float)m_screenHeight };
+    cb.texSize = { (float)m_screenWidth, (float)m_screenHeight };
     cb.blurDir = { x, y };
-    cb.sampleCount = count;
-    GaussianWeights(cb.weights, count, sigma);
+    
+    CBBlur cbb{};
+    cbb.weight[0] = { 0.227027f, 0.1945946f, 0.1216216f, 0.054054f };
+    cbb.weight[1] = { 0.016216f, 0.0f, 0.0f, 0.0f };
+
+    //GaussianWeights(cbb.weight, count, sigma);
+
 
     D3D11_MAPPED_SUBRESOURCE mapped;
     m_context->Map(m_cbParam, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
@@ -250,4 +258,13 @@ void BlurManager::SetBlurDirection(float x, float y, int count, float sigma)
     m_context->Unmap(m_cbParam, 0);
 
     m_context->PSSetConstantBuffers(0, 1, &m_cbParam);
+
+    cbb.weight[0] = { 0.227027f, 0.1945946f, 0.1216216f, 0.054054f };
+    cbb.weight[1] = { 0.016216f, 0.0f, 0.0f, 0.0f };
+
+    m_context->Map(m_cbBlur, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+    memcpy(mapped.pData, &cbb, sizeof(cbb));
+    m_context->Unmap(m_cbBlur, 0);
+
+    m_context->PSSetConstantBuffers(1, 1, &m_cbBlur);  // b1
 }

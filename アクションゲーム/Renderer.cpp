@@ -259,10 +259,10 @@ void Renderer::Init()
 	// blurXPS / blurYPS / averagePS / copyPS は別途ロードしておく
 
 	ID3D11PixelShader* blurXPS;
-	CreatePixelShader(&blurXPS,"shader/PS_Blur.cso");
+	CreatePixelShader(&blurXPS,"shader/PS_GaussianBlur.cso");
 	
 	ID3D11PixelShader* blurYPS;
-	CreatePixelShader(&blurYPS, "shader/PS_Blur.cso");
+	CreatePixelShader(&blurYPS, "shader/PS_GaussianBlur.cso");
 
 	ID3D11PixelShader* averagePS;
 	CreatePixelShader(&averagePS, "shader/PS_AverageBlur.cso");
@@ -349,7 +349,7 @@ void Renderer::PostProcess()
 	// アルファブレンドOFF
 	SetBlendState(BS_NONE);
 	// ① SceneRT → Blur → FinalRT
-	blur.Blur(sceneRT, finalRT, BlurManager::Mode::Average);
+	blur.Blur(sceneRT, finalRT, BlurManager::Mode::Gaussian);
 
 	// バックバッファへ戻す
 	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
