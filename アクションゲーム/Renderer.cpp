@@ -322,7 +322,7 @@ void Renderer::Begin()
 
 	float sceneColor[4] = { 0, 1, 0, 1 };
 	m_DeviceContext->ClearRenderTargetView(sceneRT->rtv, sceneColor);
-	m_DeviceContext->ClearDepthStencilView(nullptr,
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView,
 		D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
@@ -341,7 +341,12 @@ void Renderer::End()
 void Renderer::PostProcess()
 {
 	auto& blur = BlurManager::GetInstance();
+
 	auto sceneRT = blur.GetSceneRT();
+	auto finalRT = blur.GetFinalRT();
+
+	// ① SceneRT → Blur → FinalRT
+	blur.Blur(sceneRT, finalRT, BlurManager::Mode::Average, m_BlendState[0]);
 
 	// バックバッファへ戻す
 	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
@@ -359,7 +364,7 @@ void Renderer::PostProcess()
 	SetATCEnable(true);
 
 	// SceneRTをPSへセット
-	ID3D11ShaderResourceView* srv = sceneRT->srv;
+	ID3D11ShaderResourceView* srv = finalRT->srv;
 	m_DeviceContext->PSSetShaderResources(0, 1, &srv);
 
 	// Sampler

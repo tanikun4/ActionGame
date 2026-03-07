@@ -162,7 +162,7 @@ void Game::Draw()
 	EffectManager::Draw();
 
 	// フェード描画
-	Fade::GetInstance()->Draw();
+	//Fade::GetInstance()->Draw();
 
 	Renderer::PostProcess();
 

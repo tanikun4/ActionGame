@@ -86,8 +86,8 @@ void BlurManager::InitRenderTargets(int screenW, int screenH)
     m_screenWidth = screenW;
     m_screenHeight = screenH;
 
-    m_rtX.Create(m_device, screenW / 2, screenH);  // 横ブラー用
-    m_rtY.Create(m_device, screenW, screenH / 2);  // 縦ブラー用
+    m_rtX.Create(m_device, screenW , screenH);  // 横ブラー用
+    m_rtY.Create(m_device, screenW, screenH );  // 縦ブラー用
 
     // シーン描画用
     m_rtScene.Create(m_device, screenW, screenH);
@@ -108,6 +108,7 @@ void BlurManager::SetShaders(ID3D11PixelShader* blurX, ID3D11PixelShader* blurY,
 // フルスクリーンにクアッドを描画する共通関数
 void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
 {
+    
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
 
@@ -115,7 +116,6 @@ void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
     m_context->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
     m_context->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
     m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
     // 必ずVSをセット
     m_context->VSSetShader(m_fullScreenVS, nullptr, 0);
 
@@ -137,15 +137,21 @@ void BlurManager::GaussianWeights(float* weights, int count, float sigma)
 }
 
 // ブラー処理
-void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
+void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode, ID3D11BlendState* blendState)
 {
+    float blendFactor[4] = { 0,0,0,0 };
+    UINT sampleMask = 0xFFFFFFFF;
+
     switch (mode)
     {
     case Mode::Simple:
+        m_context->OMSetBlendState(blendState, blendFactor, sampleMask);
+
         // 横→縦ブラー
         m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
         m_context->PSSetShaderResources(0, 1, &src->srv);
         DrawFullScreenQuad(m_blurX);
+
 
         m_context->OMSetRenderTargets(1, &m_rtY.rtv, nullptr);
         m_context->PSSetShaderResources(0, 1, &m_rtX.srv);
@@ -153,11 +159,13 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
 
         // 最終出力にコピー
         m_context->OMSetRenderTargets(1, &dst->rtv, nullptr);
-        m_context->PSSetShaderResources(0, 1, &m_rtY.srv);
+        m_context->PSSetShaderResources(0, 1, &src->srv);
         DrawFullScreenQuad(m_copy);
         break;
 
     case Mode::Average:
+        m_context->OMSetBlendState(blendState, blendFactor, sampleMask);
+
         m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
         m_context->PSSetShaderResources(0, 1, &src->srv);
         DrawFullScreenQuad(m_average);
@@ -169,6 +177,8 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
 
     case Mode::Gaussian:
     {
+
+        m_context->OMSetBlendState(blendState, blendFactor, sampleMask);
         D3D11_VIEWPORT vp = {};
         vp.MinDepth = 0.0f;
         vp.MaxDepth = 1.0f;
@@ -176,7 +186,7 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
         vp.TopLeftY = 0;
 
         // 横ブラー (src → m_rtX)
-        SetBlurDirection(1.0f, 0.0f, 5, 2.0f);
+        SetBlurDirection(1.0f, 0.0f, 15, 5.0f);
 
         m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
 
@@ -187,9 +197,12 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
         m_context->PSSetShaderResources(0, 1, &src->srv);
         DrawFullScreenQuad(m_blurX);
 
+        ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+        m_context->PSSetShaderResources(0, 1, nullSRV);
+
 
         // 縦ブラー (m_rtX → m_rtY)
-        SetBlurDirection(0.0f, 1.0f, 5, 2.0f);
+        SetBlurDirection(0.0f, 1.0f, 15, 5.0f);
 
         m_context->OMSetRenderTargets(1, &m_rtY.rtv, nullptr);
 
@@ -199,6 +212,8 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
 
         m_context->PSSetShaderResources(0, 1, &m_rtX.srv);
         DrawFullScreenQuad(m_blurY);
+
+        m_context->PSSetShaderResources(0, 1, nullSRV);
 
 
         // =========================
@@ -229,7 +244,7 @@ void BlurManager::ClearRenderTargets(float r, float g, float b, float a)
 void BlurManager::SetBlurDirection(float x, float y, int count, float sigma)
 {
     CBParam cb{};
-    cb.texSize = { (float)m_screenWidth, (float)m_screenHeight };
+    cb.texSize = { 1.0f / (float)m_screenWidth, 1.0f / (float)m_screenHeight };
     cb.blurDir = { x, y };
     cb.sampleCount = count;
     GaussianWeights(cb.weights, count, sigma);
