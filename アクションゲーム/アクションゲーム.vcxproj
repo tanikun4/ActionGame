@@ -332,8 +332,10 @@
   <ItemGroup>
     <ClCompile Include="ActionInput.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BloomManager.cpp" />
     <ClCompile Include="BlurManager.cpp" />
     <ClCompile Include="EnemyImpl.cpp" />
+    <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="AssimpPerse.cpp" />
     <ClCompile Include="Boss.cpp" />
@@ -405,8 +407,10 @@
     <ClInclude Include="ActionState.h" />
     <ClInclude Include="AnimStruct.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BloomManager.h" />
     <ClInclude Include="BlurManager.h" />
     <ClInclude Include="EnemyImpl.h" />
+    <ClInclude Include="PostProcessManager.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="AssimpPerse.h" />
     <ClInclude Include="Boss.h" />
@@ -423,6 +427,7 @@
     <ClInclude Include="ParticleRenderer2D.h" />
     <ClInclude Include="ParticleSystem2D.h" />
     <ClInclude Include="RandomCommon.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ShadowCircle.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionResult.h" />

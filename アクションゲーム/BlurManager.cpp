@@ -112,7 +112,7 @@ void BlurManager::SetShaders(ID3D11PixelShader* blurX, ID3D11PixelShader* blurY,
 void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
 {
     
-    UINT stride = sizeof(Vertex);
+    UINT stride = sizeof(FullScreenVertex);
     UINT offset = 0;
 
     m_context->IASetInputLayout(m_inputLayout);
