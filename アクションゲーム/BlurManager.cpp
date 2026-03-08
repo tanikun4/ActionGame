@@ -1,131 +1,134 @@
 #include "BlurManager.h"
 #include "dx11helper.h"
+#include "PostProcessManager.h"
+#include "Renderer.h"
+#include "Application.h"
 
-void BlurManager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
-{
-    m_device = device;
-    m_context = context;
+//void BlurManager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
+//{
+//    m_device = device;
+//    m_context = context;
+//
+//    // -----------------------------------
+//   // フルスクリーン専用InputLayout
+//   // -----------------------------------
+//    D3D11_INPUT_ELEMENT_DESC layout[] =
+//    {
+//        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+//          D3D11_INPUT_PER_VERTEX_DATA, 0 },
+//
+//        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+//          D3D11_INPUT_PER_VERTEX_DATA, 0 },
+//    };
+//
+//    // -----------------------------------
+//    // フルスクリーンVS作成
+//    // -----------------------------------
+//    bool sts = CreateVertexShader(
+//        device,
+//        "shader/FullScreenVS.hlsl",  
+//        "vs_main",                       
+//        "vs_5_0",
+//        layout,
+//        2,
+//        &m_fullScreenVS,
+//        &m_inputLayout);
+//
+//    if (!sts)
+//    {
+//        MessageBox(nullptr, "FullScreen VS Create Error", "error", MB_OK);
+//        return;
+//    }
+//
+//    D3D11_SAMPLER_DESC sampDesc = {};
+//    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+//    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+//    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+//    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+//
+//    m_device->CreateSamplerState(&sampDesc, &m_sampler);
+//
+//
+//    InitBuffers();
+//}
 
-    // -----------------------------------
-   // フルスクリーン専用InputLayout
-   // -----------------------------------
-    D3D11_INPUT_ELEMENT_DESC layout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-          D3D11_INPUT_PER_VERTEX_DATA, 0 },
+//void BlurManager::InitBuffers()
+//{
+//    Vertex vertices[4] = {
+//        { {-1,  1, 0}, {0, 0} },
+//        { { 1,  1, 0}, {1, 0} },
+//        { {-1, -1, 0}, {0, 1} },
+//        { { 1, -1, 0}, {1, 1} }
+//    };
+//    D3D11_BUFFER_DESC vbd = {};
+//    vbd.Usage = D3D11_USAGE_DEFAULT;
+//    vbd.ByteWidth = sizeof(vertices);
+//    vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+//    D3D11_SUBRESOURCE_DATA vinit = { vertices };
+//    m_device->CreateBuffer(&vbd, &vinit, &m_vb);
+//
+//    unsigned short indices[6] = { 0, 1, 2, 2, 1, 3 };
+//    D3D11_BUFFER_DESC ibd = {};
+//    ibd.Usage = D3D11_USAGE_DEFAULT;
+//    ibd.ByteWidth = sizeof(indices);
+//    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+//    D3D11_SUBRESOURCE_DATA iinit = { indices };
+//    m_device->CreateBuffer(&ibd, &iinit, &m_ib);
+//
+//    D3D11_BUFFER_DESC cbd = {};
+//    cbd.Usage = D3D11_USAGE_DYNAMIC;
+//    cbd.ByteWidth = sizeof(CBParam);
+//    cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+//    cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+//
+//    m_device->CreateBuffer(&cbd, nullptr, &m_cbParam);
+//
+//    cbd.ByteWidth = sizeof(CBBlur);
+//    m_device->CreateBuffer(&cbd, nullptr, &m_cbBlur);
+//}
 
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
-          D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-
-    // -----------------------------------
-    // フルスクリーンVS作成
-    // -----------------------------------
-    bool sts = CreateVertexShader(
-        device,
-        "shader/FullScreenVS.hlsl",  
-        "vs_main",                       
-        "vs_5_0",
-        layout,
-        2,
-        &m_fullScreenVS,
-        &m_inputLayout);
-
-    if (!sts)
-    {
-        MessageBox(nullptr, "FullScreen VS Create Error", "error", MB_OK);
-        return;
-    }
-
-    D3D11_SAMPLER_DESC sampDesc = {};
-    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-
-    m_device->CreateSamplerState(&sampDesc, &m_sampler);
-
-
-    InitBuffers();
-}
-
-void BlurManager::InitBuffers()
-{
-    Vertex vertices[4] = {
-        { {-1,  1, 0}, {0, 0} },
-        { { 1,  1, 0}, {1, 0} },
-        { {-1, -1, 0}, {0, 1} },
-        { { 1, -1, 0}, {1, 1} }
-    };
-    D3D11_BUFFER_DESC vbd = {};
-    vbd.Usage = D3D11_USAGE_DEFAULT;
-    vbd.ByteWidth = sizeof(vertices);
-    vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    D3D11_SUBRESOURCE_DATA vinit = { vertices };
-    m_device->CreateBuffer(&vbd, &vinit, &m_vb);
-
-    unsigned short indices[6] = { 0, 1, 2, 2, 1, 3 };
-    D3D11_BUFFER_DESC ibd = {};
-    ibd.Usage = D3D11_USAGE_DEFAULT;
-    ibd.ByteWidth = sizeof(indices);
-    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    D3D11_SUBRESOURCE_DATA iinit = { indices };
-    m_device->CreateBuffer(&ibd, &iinit, &m_ib);
-
-    D3D11_BUFFER_DESC cbd = {};
-    cbd.Usage = D3D11_USAGE_DYNAMIC;
-    cbd.ByteWidth = sizeof(CBParam);
-    cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-    m_device->CreateBuffer(&cbd, nullptr, &m_cbParam);
-
-    cbd.ByteWidth = sizeof(CBBlur);
-    m_device->CreateBuffer(&cbd, nullptr, &m_cbBlur);
-}
-
-void BlurManager::InitRenderTargets(int screenW, int screenH)
-{
-    m_screenWidth = screenW;
-    m_screenHeight = screenH;
-
-    m_rtX.Create(m_device, screenW , screenH);  // 横ブラー用
-    m_rtY.Create(m_device, screenW, screenH );  // 縦ブラー用
-
-    // シーン描画用
-    m_rtScene.Create(m_device, screenW, screenH);
-
-    // ブラー後の最終出力用
-    m_rtFinal.Create(m_device, screenW, screenH);
-}
+//void BlurManager::InitRenderTargets(int screenW, int screenH)
+//{
+//    m_screenWidth = screenW;
+//    m_screenHeight = screenH;
+//
+//    m_rtX.Create(m_device, screenW , screenH);  // 横ブラー用
+//    m_rtY.Create(m_device, screenW, screenH );  // 縦ブラー用
+//
+//    // シーン描画用
+//    m_rtScene.Create(m_device, screenW, screenH);
+//
+//    // ブラー後の最終出力用
+//    m_rtFinal.Create(m_device, screenW, screenH);
+//}
 
 // ブラーシェーダーをセット
-void BlurManager::SetShaders(ID3D11PixelShader* blurX, ID3D11PixelShader* blurY, ID3D11PixelShader* average, ID3D11PixelShader* copy)
+void BlurManager::Init()
 {
-    m_blurX = blurX;
-    m_blurY = blurY;
-    m_average = average;
-    m_copy = copy;
+    Renderer::CreatePixelShader(&m_blur, "shader/PS_GaussianBlur.cso");
+
+    Renderer::CreatePixelShader(&m_average, "shader/PS_AverageBlur.cso");
+
 }
 
-// フルスクリーンにクアッドを描画する共通関数
-void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
-{
-    
-    UINT stride = sizeof(FullScreenVertex);
-    UINT offset = 0;
-
-    m_context->IASetInputLayout(m_inputLayout);
-    m_context->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
-    m_context->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
-    m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    // 必ずVSをセット
-    m_context->VSSetShader(m_fullScreenVS, nullptr, 0);
-
-    m_context->PSSetShader(ps, nullptr, 0);
-
-    m_context->DrawIndexed(6, 0, 0);
-}
+//// フルスクリーンにクアッドを描画する共通関数
+//void BlurManager::DrawFullScreenQuad(ID3D11PixelShader* ps)
+//{
+//    
+//    UINT stride = sizeof(FullScreenVertex);
+//    UINT offset = 0;
+//
+//    m_context->IASetInputLayout(m_inputLayout);
+//    m_context->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+//    m_context->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
+//    m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//    // 必ずVSをセット
+//    m_context->VSSetShader(m_fullScreenVS, nullptr, 0);
+//
+//    m_context->PSSetShader(ps, nullptr, 0);
+//
+//    m_context->DrawIndexed(6, 0, 0);
+//}
 
 // ガウシアンブラーの重みを計算
 void BlurManager::GaussianWeights(float* weights, int count, float sigma)
@@ -140,91 +143,80 @@ void BlurManager::GaussianWeights(float* weights, int count, float sigma)
 }
 
 // ブラー処理
-void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
+void BlurManager::Blur(
+    RenderTarget* src,
+    RenderTarget* temp,
+    RenderTarget* dst,
+    Mode mode)
 {
+    auto ctx = m_context;
 
+    ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+
+    D3D11_VIEWPORT vp{};
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+
+	auto& post = PostProcessManager::GetInstance();
     switch (mode)
     {
-    case Mode::Simple:
 
-        // 横→縦ブラー
-        m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
-        m_context->PSSetShaderResources(0, 1, &src->srv);
-        DrawFullScreenQuad(m_blurX);
-
-
-        m_context->OMSetRenderTargets(1, &m_rtY.rtv, nullptr);
-        m_context->PSSetShaderResources(0, 1, &m_rtX.srv);
-        DrawFullScreenQuad(m_blurY);
-
-        // 最終出力にコピー
-        m_context->OMSetRenderTargets(1, &dst->rtv, nullptr);
-        m_context->PSSetShaderResources(0, 1, &src->srv);
-        DrawFullScreenQuad(m_copy);
-        break;
+        //--------------------------------
+        // Average
+        //--------------------------------
 
     case Mode::Average:
+    {
+        // src → temp
+        ctx->OMSetRenderTargets(1, &temp->rtv, nullptr);
 
-        m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
-        m_context->PSSetShaderResources(0, 1, &src->srv);
-        DrawFullScreenQuad(m_average);
+        vp.Width = (FLOAT)temp->width;
+        vp.Height = (FLOAT)temp->height;
+        ctx->RSSetViewports(1, &vp);
 
-        m_context->OMSetRenderTargets(1, &dst->rtv, nullptr);
-        m_context->PSSetShaderResources(0, 1, &m_rtX.srv);
-        DrawFullScreenQuad(m_copy);
-        break;
+        ctx->PSSetShaderResources(0, 1, &src->srv);
+        post.DrawFullscreenQuad(m_average);
+
+        ctx->PSSetShaderResources(0, 1, nullSRV);
+
+    }
+    break;
+
+    //--------------------------------
+    // Gaussian
+    //--------------------------------
 
     case Mode::Gaussian:
     {
+        // 横ブラー
 
-        D3D11_VIEWPORT vp = {};
-        vp.MinDepth = 0.0f;
-        vp.MaxDepth = 1.0f;
-        vp.TopLeftX = 0;
-        vp.TopLeftY = 0;
+        SetBlurDirection(1, 0, 2, 5);
 
-        // 横ブラー (src → m_rtX)
-        SetBlurDirection(1.0f, 0.0f, 2, 5.0f);
+        ctx->OMSetRenderTargets(1, &temp->rtv, nullptr);
 
-        m_context->OMSetRenderTargets(1, &m_rtX.rtv, nullptr);
+        vp.Width = (FLOAT)temp->width;
+        vp.Height = (FLOAT)temp->height;
+        ctx->RSSetViewports(1, &vp);
 
-        vp.Width = (FLOAT)m_rtX.width;
-        vp.Height = (FLOAT)m_rtX.height;
-        m_context->RSSetViewports(1, &vp);
+        ctx->PSSetShaderResources(0, 1, &src->srv);
+        post.DrawFullscreenQuad(m_blur);
 
-        m_context->PSSetShaderResources(0, 1, &src->srv);
-        DrawFullScreenQuad(m_blurX);
+        ctx->PSSetShaderResources(0, 1, nullSRV);
 
-        ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-        m_context->PSSetShaderResources(0, 1, nullSRV);
+        // 縦ブラー
 
+        SetBlurDirection(0, 1, 2, 5);
 
-        // 縦ブラー (m_rtX → m_rtY)
-        SetBlurDirection(0.0f, 1.0f, 2, 5.0f);
-
-        m_context->OMSetRenderTargets(1, &m_rtY.rtv, nullptr);
-
-        vp.Width = (FLOAT)m_rtY.width;
-        vp.Height = (FLOAT)m_rtY.height;
-        m_context->RSSetViewports(1, &vp);
-
-        m_context->PSSetShaderResources(0, 1, &m_rtX.srv);
-        DrawFullScreenQuad(m_blurY);
-
-        m_context->PSSetShaderResources(0, 1, nullSRV);
-
-
-        // =========================
-        // 最終出力 (m_rtY → dst)
-        // =========================
-        m_context->OMSetRenderTargets(1, &dst->rtv, nullptr);
+        ctx->OMSetRenderTargets(1, &dst->rtv, nullptr);
 
         vp.Width = (FLOAT)dst->width;
         vp.Height = (FLOAT)dst->height;
-        m_context->RSSetViewports(1, &vp);
+        ctx->RSSetViewports(1, &vp);
 
-        m_context->PSSetShaderResources(0, 1, &m_rtY.srv);
-        DrawFullScreenQuad(m_copy);
+        ctx->PSSetShaderResources(0, 1, &temp->srv);
+        post.DrawFullscreenQuad(m_blur);
+
+        ctx->PSSetShaderResources(0, 1, nullSRV);
     }
     break;
     }
@@ -233,16 +225,16 @@ void BlurManager::Blur(RenderTarget* src, RenderTarget* dst, Mode mode)
     m_context->PSSetShaderResources(0, 1, nullSRV);
 }
 
-void BlurManager::ClearRenderTargets(float r, float g, float b, float a)
-{
-    m_rtX.Clear(m_context, r, g, b, a);
-    m_rtY.Clear(m_context, r, g, b, a);
-}
+//void BlurManager::ClearRenderTargets(float r, float g, float b, float a)
+//{
+//    m_rtX.Clear(m_context, r, g, b, a);
+//    m_rtY.Clear(m_context, r, g, b, a);
+//}
 
 void BlurManager::SetBlurDirection(float x, float y, int count, float sigma)
 {
     CBParam cb{};
-    cb.texSize = { (float)m_screenWidth, (float)m_screenHeight };
+    cb.texSize = { Application::GetWidth(), Application::GetHeight() };
     cb.blurDir = { x, y };
     
     CBBlur cbb{};

@@ -46,7 +46,7 @@ void PostProcessManager::Apply(
 
     if (m_enableBlur)
     {
-        BlurManager::GetInstance().Blur(src, dst,BlurManager::Mode::Gaussian);
+        BlurManager::GetInstance().Blur(src, dst, &m_pong,BlurManager::Mode::Gaussian);
         std::swap(src, dst);
     }
 
