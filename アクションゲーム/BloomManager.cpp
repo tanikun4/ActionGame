@@ -2,6 +2,7 @@
 #include "BlurManager.h"
 #include "PostProcessManager.h"
 #include "Renderer.h"
+#include "DebugUI.h"
 
 bool BloomManager::Init(ID3D11Device* device, int width, int height)
 {
@@ -51,6 +52,18 @@ bool BloomManager::Init(ID3D11Device* device, int width, int height)
 
     Renderer::CreatePixelShader(&m_combinePS, "shader/BloomCombinePS.cso");
 
+    // ƒfƒoƒbƒOŠÖ”‚Ì“o˜^
+    DebugUI::RedistDebugFunction([this]() {
+        ImGui::Begin("BloomStatus");
+
+
+        ImGui::SliderFloat("Bright", &m_bright, -1.0f, 3.0f);
+
+        ImGui::SliderFloat("Bloom", &m_bloom, -1.0f, 3.0f);
+
+        ImGui::End();
+        });
+
     return true;
 }
 
@@ -67,7 +80,7 @@ void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
     ctx->OMSetRenderTargets(1, &m_brightRT.rtv ,nullptr);
 
     BloomParam param{};
-    param.intensity = 0.75f;
+    param.intensity = m_bright;
 
     D3D11_MAPPED_SUBRESOURCE mapped{};
     ctx->Map(m_cbBrightPass, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
@@ -98,7 +111,7 @@ void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
     //--------------------------------
 
     //BloomParam param{};
-    param.intensity = 0.3f;   // Bloom‹­‚³
+    param.intensity = m_bloom;   // Bloom‹­‚³
 
     //D3D11_MAPPED_SUBRESOURCE mapped{};
     ctx->Map(m_cbBloom, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
@@ -125,3 +138,4 @@ void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
     ID3D11ShaderResourceView* nullSRV2[2] = { nullptr, nullptr };
     ctx->PSSetShaderResources(0, 2, nullSRV2);
 }
+

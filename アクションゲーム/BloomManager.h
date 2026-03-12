@@ -37,6 +37,9 @@ private:
     ID3D11Buffer* m_cbBloom = nullptr;
     ID3D11Buffer* m_cbBrightPass = nullptr;
 
+	float m_bright = 0.5f;
+	float m_bloom = 0.15f;
+
     //ID3D11RenderTargetView* m_brightRTV = nullptr;
     //ID3D11RenderTargetView* m_bloomRTV = nullptr;
 
