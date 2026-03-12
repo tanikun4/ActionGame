@@ -106,11 +106,49 @@ void PostProcessManager::DrawFullscreenQuad(ID3D11PixelShader* ps)
     UINT offset = 0;
 
     ctx->IASetVertexBuffers(0, 1, &m_fullScreenVB, &stride, &offset);
+    ctx->IASetInputLayout(m_inputLayout);
     ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
+    ctx->VSSetShader(m_fullScreenVS, nullptr, 0);
     ctx->PSSetShader(ps, nullptr, 0);
 
     ctx->Draw(4, 0);
+
+   /* auto ctx = Renderer::GetDeviceContext();
+
+    UINT stride = sizeof(FullScreenVertex);
+    UINT offset = 0;
+
+    ctx->IASetVertexBuffers(0, 1, &m_fullScreenVB, &stride, &offset);
+    ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);*/
+
+  /*  ctx->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
+    ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);*/
+
+    //void BlurManager::DrawFullScreenQuad(ID3D11PixelShader * ps)
+    //{
+
+    //    UINT stride = sizeof(Vertex);
+    //    UINT offset = 0;
+
+    //    m_context->IASetInputLayout(m_inputLayout);
+    //    m_context->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+    //    m_context->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
+    //    m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    //    // 必ずVSをセット
+    //    m_context->VSSetShader(m_fullScreenVS, nullptr, 0);
+
+    //    m_context->PSSetShader(ps, nullptr, 0);
+
+    //    m_context->DrawIndexed(6, 0, 0);
+    //}
+
+    // 必ずVSをセット
+    //ctx->VSSetShader(m_fullScreenVS, nullptr, 0);
+
+    //ctx->PSSetShader(ps, nullptr, 0);
+
+    //ctx->Draw(6, 0);
 }
 
 void PostProcessManager::CreateFullscreenQuad(ID3D11Device* device)
