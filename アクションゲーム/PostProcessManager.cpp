@@ -17,7 +17,8 @@ void PostProcessManager::Init(ID3D11Device* device, int w, int h)
     samp.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
     samp.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
     samp.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-
+    samp.MaxAnisotropy = 4;
+    samp.MaxLOD = D3D11_FLOAT32_MAX;
     device->CreateSamplerState(&samp, &m_sampler);
 
     //--------------------------------
@@ -31,6 +32,8 @@ void PostProcessManager::Init(ID3D11Device* device, int w, int h)
     //--------------------------------
 
     CreateFullscreenQuad(device);
+
+	BlurManager::GetInstance().Init();
 }
 
 void PostProcessManager::Apply(
@@ -41,6 +44,8 @@ void PostProcessManager::Apply(
 
     RenderTarget* src = sceneRT;
     RenderTarget* dst = &m_ping;
+
+    ctx->OMSetRenderTargets(0, nullptr, nullptr);
 
     // Blur
 
@@ -66,6 +71,12 @@ void PostProcessManager::Apply(
     //--------------------------------
     // 最終出力
     //--------------------------------
+
+	//Renderer::SetBlendState(BS_NONE);
+	//Renderer::SetDepthEnable(false);
+
+    Renderer::SetBlendState(BS_NONE);
+    Renderer::SetDepthEnable(false);
 
     ctx->OMSetRenderTargets(1, &backBuffer, nullptr);
 
@@ -104,6 +115,31 @@ void PostProcessManager::DrawFullscreenQuad(ID3D11PixelShader* ps)
 
 void PostProcessManager::CreateFullscreenQuad(ID3D11Device* device)
 {
+    // -----------------------------------
+   // フルスクリーン専用InputLayout
+   // -----------------------------------
+    D3D11_INPUT_ELEMENT_DESC layout[] =
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+          D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+          D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
+
+    // -----------------------------------
+    // フルスクリーンVS作成
+    // -----------------------------------
+    bool sts = CreateVertexShader(
+        device,
+        "shader/FullScreenVS.hlsl",  
+        "vs_main",                       
+        "vs_5_0",
+        layout,
+        2,
+        &m_fullScreenVS,
+        &m_inputLayout);
+
     //--------------------------------
     // フルスクリーン頂点
     //--------------------------------

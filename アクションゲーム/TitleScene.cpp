@@ -34,7 +34,7 @@ TitleScene::~TitleScene()
 // 初期化
 void TitleScene::Init()
 {
-	Sound::GetInstance()->SetMasterVolume(0.0f); // 全体音量を0%に
+	Sound::GetInstance()->SetMasterVolume(0.5f); // 全体音量を50%に
 
 	srand((unsigned)time(NULL));
 
@@ -120,6 +120,8 @@ void TitleScene::Init()
 	press_enterkey->SetUV(1, 1, 1, 2);
 	m_MySceneObjects.emplace_back(press_enterkey);
 	press_enterkey->SetLive(false);
+
+	Sound::GetInstance()->Play(SOUND_BGM_TITLE);
 }
 
 // 更新
@@ -159,6 +161,7 @@ void TitleScene::Update()
 	if (ActionInput::GetInstance().IsTrigger(Action::Enter))
 	{
 		Game::GetInstance()->ChangeSceneFadeOut(STAGE1);
+		Sound::GetInstance()->Stop(SOUND_BGM_TITLE);
 	}
 }
 

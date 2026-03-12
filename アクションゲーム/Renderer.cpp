@@ -1,6 +1,6 @@
 #include "Renderer.h"
 #include "Application.h"
-#include "BlurManager.h"
+#include "PostProcessManager.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -30,6 +30,8 @@ ID3D11BlendState* Renderer::m_BlendStateATC{}; // 特定のアルファテストとカバレッ
 
 ID3D11RasterizerState* Renderer::m_RSCullBack = nullptr;
 ID3D11RasterizerState* Renderer::m_RSCullNone = nullptr;
+
+RenderTarget Renderer::m_SceneRT; // シーンのレンダリング用ターゲット
 
 //=======================================
 //初期化処理
@@ -249,29 +251,32 @@ void Renderer::Init()
 	// UV初期化
 	SetUV(0, 0, 1, 1);
 
+	PostProcessManager::GetInstance().Init(m_Device, Application::GetWidth(), Application::GetHeight());
+	m_SceneRT.Create(m_Device, Application::GetWidth(), Application::GetHeight());
+
 	// フルスクリーンクアッド作成
-	BlurManager::GetInstance().Init(m_Device, m_DeviceContext);
+	//BlurManager::GetInstance().Init(m_Device, m_DeviceContext);
 
-	// ブラー用レンダーターゲット作成
-	BlurManager::GetInstance().InitRenderTargets(Application::GetWidth(), Application::GetHeight());
+	//// ブラー用レンダーターゲット作成
+	//BlurManager::GetInstance().InitRenderTargets(Application::GetWidth(), Application::GetHeight());
 
-	// シェーダー設定（あらかじめコンパイル済みのPS）
-	// blurXPS / blurYPS / averagePS / copyPS は別途ロードしておく
+	//// シェーダー設定（あらかじめコンパイル済みのPS）
+	//// blurXPS / blurYPS / averagePS / copyPS は別途ロードしておく
 
-	ID3D11PixelShader* blurXPS;
-	CreatePixelShader(&blurXPS,"shader/PS_GaussianBlur.cso");
-	
-	ID3D11PixelShader* blurYPS;
-	CreatePixelShader(&blurYPS, "shader/PS_GaussianBlur.cso");
+	//ID3D11PixelShader* blurXPS;
+	//CreatePixelShader(&blurXPS,"shader/PS_GaussianBlur.cso");
+	//
+	//ID3D11PixelShader* blurYPS;
+	//CreatePixelShader(&blurYPS, "shader/PS_GaussianBlur.cso");
 
-	ID3D11PixelShader* averagePS;
-	CreatePixelShader(&averagePS, "shader/PS_AverageBlur.cso");
+	//ID3D11PixelShader* averagePS;
+	//CreatePixelShader(&averagePS, "shader/PS_AverageBlur.cso");
 
-	ID3D11PixelShader* copyPS;
-	CreatePixelShader(&copyPS, "shader/PS_TexColor.cso");
+	//ID3D11PixelShader* copyPS;
+	//CreatePixelShader(&copyPS, "shader/PS_TexColor.cso");
 
 
-	BlurManager::GetInstance().SetShaders(blurXPS, blurYPS, averagePS, copyPS);
+	//BlurManager::GetInstance().SetShaders(blurXPS, blurYPS, averagePS, copyPS);
 }
 
 //=======================================
@@ -311,20 +316,44 @@ void Renderer::Begin()
 {
 	SetBlendState(BS_ALPHABLEND);
 	float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
-	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
-	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	//m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
+	//m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	auto sceneRT = BlurManager::GetInstance().GetSceneRT();
+	////auto sceneRT = BlurManager::GetInstance().GetSceneRT();
 
+	//m_DeviceContext->OMSetRenderTargets(
+	//	1,
+	//	&sceneRT->rtv,
+	//	m_DepthStencilView);
+
+	//float sceneColor[4] = { 0, 1, 0, 1 };
+	//m_DeviceContext->ClearRenderTargetView(sceneRT->rtv, sceneColor);
+	//m_DeviceContext->ClearDepthStencilView(m_DepthStencilView,
+	//	D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	//SetBlendState(BS_ALPHABLEND);
+
+	//auto sceneRT = PostProcessManager::GetInstance().GetSceneRT();
+
+	//float clearColor[4] = { 0,0,0,1 };
+
+	SetDepthEnable(true);
+
+	m_DeviceContext->ClearDepthStencilView(
+		m_DepthStencilView,
+		D3D11_CLEAR_DEPTH,
+		1.0f,
+		0);
+
+	// シーンRTに描画
 	m_DeviceContext->OMSetRenderTargets(
 		1,
-		&sceneRT->rtv,
+		&m_SceneRT.rtv,
 		m_DepthStencilView);
 
-	float sceneColor[4] = { 0, 1, 0, 1 };
-	m_DeviceContext->ClearRenderTargetView(sceneRT->rtv, sceneColor);
-	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView,
-		D3D11_CLEAR_DEPTH, 1.0f, 0);
+	m_DeviceContext->ClearRenderTargetView(
+		m_SceneRT.rtv,
+		clearColor);
 }
 
 //=======================================
@@ -332,6 +361,7 @@ void Renderer::Begin()
 //=======================================
 void Renderer::End()
 {
+	PostProcessManager::GetInstance().Apply(&m_SceneRT, m_RenderTargetView);
 	m_SwapChain->Present(1, 0);
 }
 
@@ -339,46 +369,52 @@ void Renderer::End()
 // ポストプロセス（フルスクリーンクアッドでSceneRTを描画）
 //=======================================
 //現状はSceneRTをそのまま描画するだけだが、ここでブラーなどのエフェクトをかけることもできる
+//void Renderer::PostProcess()
+//{
+//	auto& blur = BlurManager::GetInstance();
+//
+//	auto sceneRT = blur.GetSceneRT();
+//	auto finalRT = blur.GetFinalRT();
+//
+//	// アルファブレンドOFF
+//	SetBlendState(BS_NONE);
+//	// ① SceneRT → Blur → FinalRT
+//	blur.Blur(sceneRT, finalRT, BlurManager::Mode::Gaussian);
+//
+//	// バックバッファへ戻す
+//	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
+//
+//	// ビューポート
+//	D3D11_VIEWPORT vp{};
+//	vp.Width = static_cast<FLOAT>(Application::GetWidth());
+//	vp.Height = static_cast<FLOAT>(Application::GetHeight());
+//	vp.MinDepth = 0.0f;
+//	vp.MaxDepth = 1.0f;
+//	m_DeviceContext->RSSetViewports(1, &vp);
+//
+//	// 深度テストOFF
+//	SetDepthEnable(false);
+//
+//	// SceneRTをPSへセット
+//	ID3D11ShaderResourceView* srv = finalRT->srv;
+//	m_DeviceContext->PSSetShaderResources(0, 1, &srv);
+//
+//	// Sampler
+//	ID3D11SamplerState* sampler = blur.GetSampler();
+//	m_DeviceContext->PSSetSamplers(0, 1, &sampler);
+//
+//	// フルスクリーンクアッド描画
+//	blur.DrawFullScreenQuad(blur.GetCopyPS());
+//
+//	// SRV解除
+//	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+//	m_DeviceContext->PSSetShaderResources(0, 1, nullSRV);
+//}
+
 void Renderer::PostProcess()
 {
-	auto& blur = BlurManager::GetInstance();
-
-	auto sceneRT = blur.GetSceneRT();
-	auto finalRT = blur.GetFinalRT();
-
-	// アルファブレンドOFF
-	SetBlendState(BS_NONE);
-	// ① SceneRT → Blur → FinalRT
-	blur.Blur(sceneRT, finalRT, BlurManager::Mode::Gaussian);
-
-	// バックバッファへ戻す
-	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
-
-	// ビューポート
-	D3D11_VIEWPORT vp{};
-	vp.Width = static_cast<FLOAT>(Application::GetWidth());
-	vp.Height = static_cast<FLOAT>(Application::GetHeight());
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	m_DeviceContext->RSSetViewports(1, &vp);
-
-	// 深度テストOFF
-	SetDepthEnable(false);
-
-	// SceneRTをPSへセット
-	ID3D11ShaderResourceView* srv = finalRT->srv;
-	m_DeviceContext->PSSetShaderResources(0, 1, &srv);
-
-	// Sampler
-	ID3D11SamplerState* sampler = blur.GetSampler();
-	m_DeviceContext->PSSetSamplers(0, 1, &sampler);
-
-	// フルスクリーンクアッド描画
-	blur.DrawFullScreenQuad(blur.GetCopyPS());
-
-	// SRV解除
-	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-	m_DeviceContext->PSSetShaderResources(0, 1, nullSRV);
+	PostProcessManager::GetInstance().EnableBlur(false);
+	//PostProcessManager::GetInstance().Apply(&m_SceneRT, m_RenderTargetView);
 }
 
 //=======================================

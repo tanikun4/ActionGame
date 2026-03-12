@@ -31,46 +31,46 @@ bool BloomManager::Initialize(ID3D11Device* device, int width, int height)
     return true;
 }
 
-void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
-{
-	auto& m_blur = BlurManager::GetInstance();
-
-    //--------------------------------
-    // ‡@ BrightPass
-    //--------------------------------
-
-    m_context->OMSetRenderTargets(1, &m_brightRTV ,nullptr);
-
-    m_context->PSSetShaderResources(0, 1, &scene->srv);
-
-    m_blur.DrawFullScreenQuad(m_brightPS);
-
-    ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-    m_context->PSSetShaderResources(0, 1, nullSRV);
-
-
-    //--------------------------------
-    // ‡A GaussianBlur
-    //--------------------------------
-
-    m_blur.Blur(&m_rtBright, &m_bloomRTV, BlurManager::Mode::Gaussian);
-
-
-    //--------------------------------
-    // ‡B Combine
-    //--------------------------------
-
-    m_context->OMSetRenderTargets(1, &dst->rtv, nullptr);
-
-    ID3D11ShaderResourceView* srvs[2] =
-    {
-        scene->srv,
-        m_rtBloom.srv
-    };
-
-    m_context->PSSetShaderResources(0, 2, srvs);
-
-    m_blur.DrawFullScreenQuad(m_combinePS);
-
-    m_context->PSSetShaderResources(0, 1, nullSRV);
-}
+//void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
+//{
+//	auto& m_blur = BlurManager::GetInstance();
+//
+//    //--------------------------------
+//    // ‡@ BrightPass
+//    //--------------------------------
+//
+//    m_context->OMSetRenderTargets(1, &m_brightRTV ,nullptr);
+//
+//    m_context->PSSetShaderResources(0, 1, &scene->srv);
+//
+//    m_blur.DrawFullScreenQuad(m_brightPS);
+//
+//    ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+//    m_context->PSSetShaderResources(0, 1, nullSRV);
+//
+//
+//    //--------------------------------
+//    // ‡A GaussianBlur
+//    //--------------------------------
+//
+//    m_blur.Blur(&m_rtBright, &m_bloomRTV, BlurManager::Mode::Gaussian);
+//
+//
+//    //--------------------------------
+//    // ‡B Combine
+//    //--------------------------------
+//
+//    m_context->OMSetRenderTargets(1, &dst->rtv, nullptr);
+//
+//    ID3D11ShaderResourceView* srvs[2] =
+//    {
+//        scene->srv,
+//        m_rtBloom.srv
+//    };
+//
+//    m_context->PSSetShaderResources(0, 2, srvs);
+//
+//    m_blur.DrawFullScreenQuad(m_combinePS);
+//
+//    m_context->PSSetShaderResources(0, 1, nullSRV);
+//}

@@ -6,6 +6,7 @@
 typedef enum
 {
 	SOUND_BGM_MAIN = 0,		
+	SOUND_BGM_TITLE,
 
 	SOUND_SE_SWING,			
 	SOUND_SE_SWORDHIT,			
@@ -35,6 +36,7 @@ private:
 	PARAM m_param[SOUND_LABEL_MAX] =
 	{
 		{"assets/Sound/BGM/maou_bgm_fantasy15.wav", true},	
+		{"assets/Sound/BGM/sentoukei_02.wav", true},
 		{"assets/Sound/SE/swing.wav", false},
 		{"assets/Sound/SE/swordhit.wav", false},		
 		{"assets/Sound/SE/arrowcharge.wav", false},				

@@ -6,6 +6,7 @@
 #include	<io.h>
 #include	<string>
 #include	<vector>
+#include	"RenderTarget.h" 
 
 //外部ライブラリ
 #pragma comment(lib,"directxtk.lib")
@@ -93,6 +94,8 @@ private:
 	// ラスタライザーステート、カリングモード設定用
 	static ID3D11RasterizerState* m_RSCullBack;
 	static ID3D11RasterizerState* m_RSCullNone;
+
+	static RenderTarget m_SceneRT; // ポストプロセス用のレンダーターゲット
 
 public:
 

@@ -216,7 +216,7 @@ void Stage1Scene::Init()
 	//);
 
 	Sound::GetInstance()->Play(SOUND_BGM_MAIN);
-	Sound::GetInstance()->SetVolume(SOUND_BGM_MAIN, 0.5f);
+	Sound::GetInstance()->SetVolume(SOUND_BGM_MAIN, 0.5f);//‘S‘Ì‰¹—Ê‚ğ50“‚Éİ’è
 	Sound::GetInstance()->SetMasterVolume(0.3f);
 	Fade::GetInstance()->StartFadeIn();
 	Game::GetInstance()->GetCamera().SetTarget(*player);

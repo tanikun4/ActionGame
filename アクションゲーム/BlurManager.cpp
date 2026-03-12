@@ -9,30 +9,30 @@
 //    m_device = device;
 //    m_context = context;
 //
-//    // -----------------------------------
-//   // フルスクリーン専用InputLayout
-//   // -----------------------------------
-//    D3D11_INPUT_ELEMENT_DESC layout[] =
-//    {
-//        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-//          D3D11_INPUT_PER_VERTEX_DATA, 0 },
-//
-//        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
-//          D3D11_INPUT_PER_VERTEX_DATA, 0 },
-//    };
-//
-//    // -----------------------------------
-//    // フルスクリーンVS作成
-//    // -----------------------------------
-//    bool sts = CreateVertexShader(
-//        device,
-//        "shader/FullScreenVS.hlsl",  
-//        "vs_main",                       
-//        "vs_5_0",
-//        layout,
-//        2,
-//        &m_fullScreenVS,
-//        &m_inputLayout);
+   // // -----------------------------------
+   //// フルスクリーン専用InputLayout
+   //// -----------------------------------
+   // D3D11_INPUT_ELEMENT_DESC layout[] =
+   // {
+   //     { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+   //       D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+   //     { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+   //       D3D11_INPUT_PER_VERTEX_DATA, 0 },
+   // };
+
+    // -----------------------------------
+   // // フルスクリーンVS作成
+   // // -----------------------------------
+   // bool sts = CreateVertexShader(
+   //     device,
+   //     "shader/FullScreenVS.hlsl",  
+   //     "vs_main",                       
+   //     "vs_5_0",
+   //     layout,
+   //     2,
+   //     &m_fullScreenVS,
+   //     &m_inputLayout);
 //
 //    if (!sts)
 //    {
@@ -108,6 +108,8 @@ void BlurManager::Init()
     Renderer::CreatePixelShader(&m_blur, "shader/PS_GaussianBlur.cso");
 
     Renderer::CreatePixelShader(&m_average, "shader/PS_AverageBlur.cso");
+
+	m_context = Renderer::GetDeviceContext();
 
 }
 
@@ -221,7 +223,7 @@ void BlurManager::Blur(
     break;
     }
     // SRVを解除
-    ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+    //ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
     m_context->PSSetShaderResources(0, 1, nullSRV);
 }
 
@@ -234,7 +236,7 @@ void BlurManager::Blur(
 void BlurManager::SetBlurDirection(float x, float y, int count, float sigma)
 {
     CBParam cb{};
-    cb.texSize = { Application::GetWidth(), Application::GetHeight() };
+    cb.texSize = { (float)Application::GetWidth(), (float)Application::GetHeight() };
     cb.blurDir = { x, y };
     
     CBBlur cbb{};
