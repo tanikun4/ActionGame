@@ -24,7 +24,7 @@ public:
     enum class Mode { Simple, Average, Gaussian };
 
     void Init();
-    //void InitBuffers();
+    void InitBuffers();
     //void InitRenderTargets(int screenW, int screenH);
     //void SetShaders(ID3D11PixelShader* blurX, ID3D11PixelShader* blurY, ID3D11PixelShader* average, ID3D11PixelShader* copy);
 

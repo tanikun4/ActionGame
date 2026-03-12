@@ -1,5 +1,6 @@
 #include "PostProcessManager.h"
 #include "BlurManager.h"
+#include "BloomManager.h"
 #include "Renderer.h"
 #include "Application.h"
 
@@ -34,6 +35,7 @@ void PostProcessManager::Init(ID3D11Device* device, int w, int h)
     CreateFullscreenQuad(device);
 
 	BlurManager::GetInstance().Init();
+	BloomManager::GetInstance().Init(device, w, h);
 }
 
 void PostProcessManager::Apply(
@@ -48,7 +50,7 @@ void PostProcessManager::Apply(
     ctx->OMSetRenderTargets(0, nullptr, nullptr);
 
     // Blur
-
+    Renderer::SetBlendState(BS_NONE);
     if (m_enableBlur)
     {
         BlurManager::GetInstance().Blur(src, dst, &m_pong,BlurManager::Mode::Gaussian);
@@ -61,7 +63,7 @@ void PostProcessManager::Apply(
 
     if (m_enableBloom)
     {
-        //BloomManager::GetInstance().Apply(src, dst);
+        BloomManager::GetInstance().Apply(src, dst);
         std::swap(src, dst);
     }
 
@@ -75,7 +77,7 @@ void PostProcessManager::Apply(
 	//Renderer::SetBlendState(BS_NONE);
 	//Renderer::SetDepthEnable(false);
 
-    Renderer::SetBlendState(BS_NONE);
+    //Renderer::SetBlendState(BS_NONE);
     Renderer::SetDepthEnable(false);
 
     ctx->OMSetRenderTargets(1, &backBuffer, nullptr);

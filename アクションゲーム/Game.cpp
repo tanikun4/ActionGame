@@ -162,10 +162,10 @@ void Game::Draw()
 	//エフェクトマネージャ描画	
 	EffectManager::Draw();
 
-	Renderer::PostProcess();
+	Renderer::PostProcess(false,true);
 
 	// フェード描画
-	Fade::GetInstance()->Draw();
+	//Fade::GetInstance()->Draw();
 
 	// デバッグUIの描画
 	if(m_Instance->debugmode) DebugUI::Render();

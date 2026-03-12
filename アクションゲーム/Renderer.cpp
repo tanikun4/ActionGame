@@ -361,7 +361,7 @@ void Renderer::Begin()
 //=======================================
 void Renderer::End()
 {
-	PostProcessManager::GetInstance().Apply(&m_SceneRT, m_RenderTargetView);
+	//PostProcessManager::GetInstance().Apply(&m_SceneRT, m_RenderTargetView);
 	m_SwapChain->Present(1, 0);
 }
 
@@ -411,10 +411,12 @@ void Renderer::End()
 //	m_DeviceContext->PSSetShaderResources(0, 1, nullSRV);
 //}
 
-void Renderer::PostProcess()
+void Renderer::PostProcess(bool blur, bool bloom)
 {
-	PostProcessManager::GetInstance().EnableBlur(false);
-	//PostProcessManager::GetInstance().Apply(&m_SceneRT, m_RenderTargetView);
+	auto& post = PostProcessManager::GetInstance();
+	post.EnableBlur(blur);
+	post.EnableBloom(bloom);
+	post.Apply(&m_SceneRT, m_RenderTargetView);
 }
 
 //=======================================

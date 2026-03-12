@@ -32,6 +32,8 @@ void Fade::Update()
 
 void Fade::Draw() 
 {
+	Renderer::SetDepthEnable(true);
+	Renderer::SetBlendState(BS_ALPHABLEND);
 	fadetex->Draw();
 }
 

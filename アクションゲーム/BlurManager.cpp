@@ -52,40 +52,40 @@
 //    InitBuffers();
 //}
 
-//void BlurManager::InitBuffers()
-//{
-//    Vertex vertices[4] = {
-//        { {-1,  1, 0}, {0, 0} },
-//        { { 1,  1, 0}, {1, 0} },
-//        { {-1, -1, 0}, {0, 1} },
-//        { { 1, -1, 0}, {1, 1} }
-//    };
-//    D3D11_BUFFER_DESC vbd = {};
-//    vbd.Usage = D3D11_USAGE_DEFAULT;
-//    vbd.ByteWidth = sizeof(vertices);
-//    vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//    D3D11_SUBRESOURCE_DATA vinit = { vertices };
-//    m_device->CreateBuffer(&vbd, &vinit, &m_vb);
-//
-//    unsigned short indices[6] = { 0, 1, 2, 2, 1, 3 };
-//    D3D11_BUFFER_DESC ibd = {};
-//    ibd.Usage = D3D11_USAGE_DEFAULT;
-//    ibd.ByteWidth = sizeof(indices);
-//    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-//    D3D11_SUBRESOURCE_DATA iinit = { indices };
-//    m_device->CreateBuffer(&ibd, &iinit, &m_ib);
-//
-//    D3D11_BUFFER_DESC cbd = {};
-//    cbd.Usage = D3D11_USAGE_DYNAMIC;
-//    cbd.ByteWidth = sizeof(CBParam);
-//    cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-//    cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-//
-//    m_device->CreateBuffer(&cbd, nullptr, &m_cbParam);
-//
-//    cbd.ByteWidth = sizeof(CBBlur);
-//    m_device->CreateBuffer(&cbd, nullptr, &m_cbBlur);
-//}
+void BlurManager::InitBuffers()
+{
+    //Vertex vertices[4] = {
+    //    { {-1,  1, 0}, {0, 0} },
+    //    { { 1,  1, 0}, {1, 0} },
+    //    { {-1, -1, 0}, {0, 1} },
+    //    { { 1, -1, 0}, {1, 1} }
+    //};
+    //D3D11_BUFFER_DESC vbd = {};
+    //vbd.Usage = D3D11_USAGE_DEFAULT;
+    //vbd.ByteWidth = sizeof(vertices);
+    //vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    //D3D11_SUBRESOURCE_DATA vinit = { vertices };
+    //m_device->CreateBuffer(&vbd, &vinit, &m_vb);
+
+    //unsigned short indices[6] = { 0, 1, 2, 2, 1, 3 };
+    //D3D11_BUFFER_DESC ibd = {};
+    //ibd.Usage = D3D11_USAGE_DEFAULT;
+    //ibd.ByteWidth = sizeof(indices);
+    //ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    //D3D11_SUBRESOURCE_DATA iinit = { indices };
+    //m_device->CreateBuffer(&ibd, &iinit, &m_ib);
+
+    D3D11_BUFFER_DESC cbd = {};
+    cbd.Usage = D3D11_USAGE_DYNAMIC;
+    cbd.ByteWidth = sizeof(CBParam);
+    cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+    m_device->CreateBuffer(&cbd, nullptr, &m_cbParam);
+
+    cbd.ByteWidth = sizeof(CBBlur);
+    m_device->CreateBuffer(&cbd, nullptr, &m_cbBlur);
+}
 
 //void BlurManager::InitRenderTargets(int screenW, int screenH)
 //{
@@ -109,7 +109,11 @@ void BlurManager::Init()
 
     Renderer::CreatePixelShader(&m_average, "shader/PS_AverageBlur.cso");
 
+	m_device = Renderer::GetDevice();
+
 	m_context = Renderer::GetDeviceContext();
+
+    InitBuffers();
 
 }
 

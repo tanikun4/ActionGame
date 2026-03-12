@@ -1,6 +1,9 @@
 #include "BloomManager.h"
 #include "BlurManager.h"
-bool BloomManager::Initialize(ID3D11Device* device, int width, int height)
+#include "PostProcessManager.h"
+#include "Renderer.h"
+
+bool BloomManager::Init(ID3D11Device* device, int width, int height)
 {
     m_width = width;
     m_height = height;
@@ -16,61 +19,95 @@ bool BloomManager::Initialize(ID3D11Device* device, int width, int height)
         D3D11_BIND_RENDER_TARGET |
         D3D11_BIND_SHADER_RESOURCE;
 
-    device->CreateTexture2D(&desc, nullptr, &m_brightTex);
-    device->CreateTexture2D(&desc, nullptr, &m_tempTex);
-    device->CreateTexture2D(&desc, nullptr, &m_bloomTex);
+    D3D11_BUFFER_DESC budesc{};
+    budesc.ByteWidth = sizeof(BloomParam);
+    budesc.Usage = D3D11_USAGE_DYNAMIC;
+    budesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    budesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-    device->CreateRenderTargetView(m_brightTex, nullptr, &m_brightRTV);
-    device->CreateRenderTargetView(m_tempTex, nullptr, &m_tempRTV);
-    device->CreateRenderTargetView(m_bloomTex, nullptr, &m_bloomRTV);
+    device->CreateBuffer(&budesc, nullptr, &m_cbBloom);
 
-    device->CreateShaderResourceView(m_brightTex, nullptr, &m_brightSRV);
-    device->CreateShaderResourceView(m_tempTex, nullptr, &m_tempSRV);
-    device->CreateShaderResourceView(m_bloomTex, nullptr, &m_bloomSRV);
+    // ======================
+    // Bright RT
+    // ======================
+
+    m_brightRT.Create(device,width,height);
+
+
+    // ======================
+    // Bloom RT
+    // ======================
+
+
+    m_bloomRT.Create(device, width, height);
+
+    // ======================
+    // Shaders
+    // ======================
+
+    Renderer::CreatePixelShader(&m_brightPS, "shader/PS_Luminance.cso");
+
+    Renderer::CreatePixelShader(&m_combinePS, "shader/BloomCombinePS.cso");
 
     return true;
 }
 
-//void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
-//{
-//	auto& m_blur = BlurManager::GetInstance();
-//
-//    //--------------------------------
-//    // ‡@ BrightPass
-//    //--------------------------------
-//
-//    m_context->OMSetRenderTargets(1, &m_brightRTV ,nullptr);
-//
-//    m_context->PSSetShaderResources(0, 1, &scene->srv);
-//
-//    m_blur.DrawFullScreenQuad(m_brightPS);
-//
-//    ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-//    m_context->PSSetShaderResources(0, 1, nullSRV);
-//
-//
-//    //--------------------------------
-//    // ‡A GaussianBlur
-//    //--------------------------------
-//
-//    m_blur.Blur(&m_rtBright, &m_bloomRTV, BlurManager::Mode::Gaussian);
-//
-//
-//    //--------------------------------
-//    // ‡B Combine
-//    //--------------------------------
-//
-//    m_context->OMSetRenderTargets(1, &dst->rtv, nullptr);
-//
-//    ID3D11ShaderResourceView* srvs[2] =
-//    {
-//        scene->srv,
-//        m_rtBloom.srv
-//    };
-//
-//    m_context->PSSetShaderResources(0, 2, srvs);
-//
-//    m_blur.DrawFullScreenQuad(m_combinePS);
-//
-//    m_context->PSSetShaderResources(0, 1, nullSRV);
-//}
+void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
+{
+	auto& post = PostProcessManager::GetInstance();
+	auto& m_blur = BlurManager::GetInstance();
+	auto ctx = Renderer::GetDeviceContext();
+
+    //--------------------------------
+    // ‡@ BrightPass
+    //--------------------------------
+
+    ctx->OMSetRenderTargets(1, &m_brightRT.rtv ,nullptr);
+
+    ctx->PSSetShaderResources(0, 1, &scene->srv);
+
+    post.DrawFullscreenQuad(m_brightPS);
+
+    ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+    ctx->PSSetShaderResources(0, 1, nullSRV);
+
+
+    //--------------------------------
+    // ‡A GaussianBlur
+    //--------------------------------
+
+    m_blur.Blur(&m_brightRT, dst, &m_bloomRT, BlurManager::Mode::Gaussian);
+
+
+    //--------------------------------
+    // ‡B Combine
+    //--------------------------------
+
+    BloomParam param{};
+    param.intensity = 0.3f;   // Bloom‹­‚³
+
+    D3D11_MAPPED_SUBRESOURCE mapped{};
+    ctx->Map(m_cbBloom, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+
+    memcpy(mapped.pData, &param, sizeof(param));
+
+    ctx->Unmap(m_cbBloom, 0);
+
+    ctx->PSSetConstantBuffers(0, 1, &m_cbBloom);
+
+    ctx->OMSetRenderTargets(1, &dst->rtv, nullptr);
+
+    ID3D11ShaderResourceView* srvs[2] =
+    {
+        scene->srv,
+        m_bloomRT.srv
+    };
+
+    ctx->PSSetShaderResources(0, 2, srvs);
+
+    post.DrawFullscreenQuad(m_combinePS);
+
+  //  ctx->PSSetShaderResources(0, 1, nullSRV);
+    ID3D11ShaderResourceView* nullSRV2[2] = { nullptr, nullptr };
+    ctx->PSSetShaderResources(0, 2, nullSRV2);
+}

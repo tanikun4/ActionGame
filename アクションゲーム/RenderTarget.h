@@ -24,9 +24,16 @@ struct RenderTarget
         desc.Usage = D3D11_USAGE_DEFAULT;
         desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
-        device->CreateTexture2D(&desc, nullptr, &texture);
-        device->CreateRenderTargetView(texture, nullptr, &rtv);
-        device->CreateShaderResourceView(texture, nullptr, &srv);
+        HRESULT hr;
+
+        hr = device->CreateTexture2D(&desc, nullptr, &texture);
+        if (FAILED(hr)) return;
+
+        hr = device->CreateRenderTargetView(texture, nullptr, &rtv);
+        if (FAILED(hr)) return;
+
+        hr = device->CreateShaderResourceView(texture, nullptr, &srv);
+        if (FAILED(hr)) return;
     }
 
     void Clear(ID3D11DeviceContext* context, float r, float g, float b, float a)
