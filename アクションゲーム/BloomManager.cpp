@@ -27,6 +27,8 @@ bool BloomManager::Init(ID3D11Device* device, int width, int height)
 
     device->CreateBuffer(&budesc, nullptr, &m_cbBloom);
 
+    device->CreateBuffer(&budesc, nullptr, &m_cbBrightPass);
+
     // ======================
     // Bright RT
     // ======================
@@ -64,6 +66,18 @@ void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
 
     ctx->OMSetRenderTargets(1, &m_brightRT.rtv ,nullptr);
 
+    BloomParam param{};
+    param.intensity = 0.75f;
+
+    D3D11_MAPPED_SUBRESOURCE mapped{};
+    ctx->Map(m_cbBrightPass, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+
+    memcpy(mapped.pData, &param, sizeof(param));
+
+    ctx->Unmap(m_cbBrightPass, 0);
+
+    ctx->PSSetConstantBuffers(0, 1, &m_cbBrightPass);
+
     ctx->PSSetShaderResources(0, 1, &scene->srv);
 
     post.DrawFullscreenQuad(m_brightPS);
@@ -83,10 +97,10 @@ void BloomManager::Apply(RenderTarget* scene, RenderTarget* dst)
     // ‡B Combine
     //--------------------------------
 
-    BloomParam param{};
+    //BloomParam param{};
     param.intensity = 0.3f;   // Bloom‹­‚³
 
-    D3D11_MAPPED_SUBRESOURCE mapped{};
+    //D3D11_MAPPED_SUBRESOURCE mapped{};
     ctx->Map(m_cbBloom, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 
     memcpy(mapped.pData, &param, sizeof(param));

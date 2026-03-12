@@ -35,6 +35,7 @@ private:
 	RenderTarget m_bloomRT;
 
     ID3D11Buffer* m_cbBloom = nullptr;
+    ID3D11Buffer* m_cbBrightPass = nullptr;
 
     //ID3D11RenderTargetView* m_brightRTV = nullptr;
     //ID3D11RenderTargetView* m_bloomRTV = nullptr;
