@@ -17,7 +17,7 @@ void WallManager::SetWall(const Vector2& groundsize, vector<Object*>& _scene_obj
 	//Cubeの縦の厚み
 	float scaleY = 2.0f;
 	//初期色
-	DirectX::SimpleMath::Vector4 color{ 1,1,1,0.5f };//透明度を下げて見やすいようにしておく
+	DirectX::SimpleMath::Vector4 color{ 1,1,1,1 };//透明度を下げて見やすいようにしておく
 
 	// 上辺（+Z側）
 	Cube* top = Game::GetInstance()->AddObject<Cube>();

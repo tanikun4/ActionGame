@@ -146,7 +146,7 @@ public:
 	void SetTrailSize(float _size) { trailSize = _size; };//軌跡エフェクトのサイズ設定
 	void SetTrailColor(DirectX::SimpleMath::Vector4 color);//軌跡エフェクトの色設定
 	int GetState();//状態を返す
-	Collision::ColliderVariant GetCollision();
+	Collision::ColliderVariant GetCollision() const override;
 	DirectX::SimpleMath::Vector3 GetBaseRotation() { return m_baseRotation; }
 	int GetAttackTime() { return m_attacktime; }
 	int GetStanceTime() { return m_stancetime; }

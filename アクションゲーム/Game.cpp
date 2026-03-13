@@ -99,8 +99,8 @@ void Game::Update()
 	}
 	else if (m_Instance->slow)//スローモーション処理
 	{
-		//偶数フレームでのみ更新
-		updateObjects = (m_Instance->slow_frame & 1) == 0;
+		//3フレームに1回オブジェクトを更新する
+		updateObjects = (m_Instance->slow_frame % 3) == 0;
 		updateEffects = updateObjects;
 
 		++m_Instance->slow_frame;
@@ -166,7 +166,8 @@ void Game::Draw()
 	//エフェクトマネージャ描画	
 	EffectManager::Draw();
 
-	Renderer::PostProcess(false,false,false);
+	// ポストプロセス描画
+	Renderer::PostProcess();
 
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)

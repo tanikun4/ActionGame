@@ -158,6 +158,16 @@ void Cube::InitCube()
 	vertices[22].normal = Vector3(0, -1, 0);
 	vertices[23].normal = Vector3(0, -1, 0);
 
+	// UV座標の設定、上記のはサイコロ用の物なので、普通に0～1で割り当てる場合は以下のようになる
+	for (int face = 0; face < 6; ++face)
+	{
+		int base = face * 4; // 1 面につき 4 頂点
+		vertices[base + 0].uv = Vector2(0, 0);
+		vertices[base + 1].uv = Vector2(1, 0);
+		vertices[base + 2].uv = Vector2(0, 1);
+		vertices[base + 3].uv = Vector2(1, 1);
+	}
+
 	// 頂点バッファ生成
 	m_VertexBuffer.Create(vertices);
 
@@ -191,7 +201,7 @@ void Cube::InitCube()
 	//m_Shader.Create("shader/litTextureVS.hlsl", "shader/litTexturePS.hlsl");//マテリアルを持つモデルの場合はこっち
 
 	// テクスチャロード
-	bool sts = m_Texture.Load("assets/texture/blue.png");//青色一色のテクスチャ
+	bool sts = m_Texture.Load("assets/texture/wall/wall2.jpg");//壁のテクスチャ
 	assert(sts == true);
 
 }

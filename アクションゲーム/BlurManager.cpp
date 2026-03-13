@@ -196,7 +196,7 @@ void BlurManager::Blur(
     {
         // 横ブラー
 
-        SetBlurDirection(1, 0, 2, 5);
+        SetBlurDirection(1, 0, 2, 15);
 
         ctx->OMSetRenderTargets(1, &temp->rtv, nullptr);
 
@@ -211,7 +211,7 @@ void BlurManager::Blur(
 
         // 縦ブラー
 
-        SetBlurDirection(0, 1, 2, 5);
+        SetBlurDirection(0, 1, 2, 15);
 
         ctx->OMSetRenderTargets(1, &dst->rtv, nullptr);
 

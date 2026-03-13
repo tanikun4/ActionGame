@@ -293,7 +293,7 @@ ProjectileSTATE Projectile::GetState() {
 
 Vector3 Projectile::GetForwardVector() { return m_ForwardVector; }
 
-Collision::ColliderVariant Projectile::GetCollision() {
+Collision::ColliderVariant Projectile::GetCollision() const {
 	return obb;
 }
 

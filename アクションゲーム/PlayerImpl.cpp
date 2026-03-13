@@ -11,10 +11,12 @@
 #include "Enemy.h"
 #include "sound.h"
 #include "Boss.h"
-#include "WeaponManager.h"
 #include "DebugUI.h"
 
+#include "WeaponManager.h"
 #include "EffectManager.h"
+#include "PostProcessManager.h"
+
 #include "ActionInput.h"
 
 #include <imgui.h>
@@ -710,6 +712,8 @@ void Player::Impl::Damage(int atk) {
         m_Owner->m_Scale = { 1.3f, 0.5f, 0.7f };// ダメージを受けたら少し変形する
     }
 
+    PostProcessManager::GetInstance().EnableBlur(true); // ダメージ時にブラーをかける
+
     hp -= atk;
 
     m_hp_gauge.ChangeGauge(hp, maxhp);
@@ -748,6 +752,7 @@ void Player::Impl::Counter() {
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 }
 
+// ボススタン処理、対象を指定できるようになったので没関数
 void Player::Impl::BossStan() {
     // ボスの動きを止める
     auto bosses = Game::GetInstance()->GetObjects<Boss>();
@@ -780,7 +785,7 @@ void Player::Impl::Parry() {
     EffectParams param;
 
     //エフェクトパラメーター構造体設定
-    Vector3 pos = m_Owner->m_Position + (m_Owner->radius * m_Owner->AngleToForward(m_Owner->m_ForwardRotation));
+	Vector3 pos = m_Owner->m_Position + (m_Owner->radius * 6 * m_Owner->AngleToForward(m_Owner->m_ForwardRotation)); // プレイヤーの前方にエフェクトを出す、距離はプレイヤーの前進距離に応じて調整
     param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x * 3);
     param.scale = m_Owner->m_Scale * 30;
     param.maxLife = 30;
@@ -790,7 +795,9 @@ void Player::Impl::Parry() {
 
     m_Camera->StartVibration(10.0f, PI * 0.5f, 5);// カメラを揺らす
 
-	Game::GetInstance()->SlowMotion(20); // スローモーション開始
+	Game::GetInstance()->SlowMotion(30); // スローモーション開始、30フレーム続く
+
+	PostProcessManager::GetInstance().EnableMono(true); // 画面をモノクロにする
 }
 
 // 指定座標の方向に向く
@@ -834,7 +841,11 @@ void Player::Impl::UpdateAttack() {
             m_weapon->SwingEnd();
 			m_Owner->m_Rotation.x = 0;// 攻撃終了時にX回転リセット
 			m_attackkind = NONE;
-			parryFg = false;// ジャストガードフラグリセット
+            // パリィ反撃状態なら、解除する
+            if (parryFg) {
+                parryFg = false;// ジャストガードフラグリセット
+                PostProcessManager::GetInstance().EnableMono(false); // 画面のモノクロ解除
+            }
             m_weapon->SetOBBScale({ 2.0f, 0.5f, 2.0f });// 当たり判定を戻す
         }
         break;
@@ -875,9 +886,11 @@ void Player::Impl::UpdateDamage() {
 	m_Owner->m_Velocity_f += 0.1f;// ノックバック減速
     Guard();
     Attack();
-    if (framecount >= 10) {
+	// 通常状態に戻す
+    if (framecount >= 15) {
         m_Owner->m_State = NORMAL;
         m_Owner->m_Scale = { 1.0f, 1.0f, 1.0f };
+        PostProcessManager::GetInstance().EnableBlur(false); // ブラー解除
     }
 }
 
@@ -904,7 +917,7 @@ void Player::Impl::UpdateDodge() {
     }
 }
 
-//カウンター攻撃中
+//カウンター攻撃中、現在使っていない没関数
 void Player::Impl::UpdateCounter() {
 
 	//常に3倍の速度で移動
@@ -934,7 +947,7 @@ void Player::Impl::UpdateCounter() {
     }
 }
 
-// パリィ中
+// パリィ中、カウンター攻撃に置き変えたので、現在は使っていない没関数
 void Player::Impl::UpdateParry() 
 {
     // パリィ終了

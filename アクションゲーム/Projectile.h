@@ -55,7 +55,7 @@ public:
 	DirectX::SimpleMath::Vector3 GetForwardVector();
 	ProjectileSTATE GetState();
 	bool GetAtkFg() { return atkFg; }
-	Collision::ColliderVariant GetCollision();
+	Collision::ColliderVariant GetCollision() const override;
 
 	void HitObject(Object* ob) override { //当たり判定を増やす場合、Objectに基底関数を追加すること。
 		if (!atkFg) { return; };//攻撃判定フラグが無ければ判定を行わない

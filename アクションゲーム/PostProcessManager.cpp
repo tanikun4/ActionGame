@@ -56,7 +56,7 @@ void PostProcessManager::Apply(
     Renderer::SetBlendState(BS_NONE);
     if (m_enableBlur)
     {
-        BlurManager::GetInstance().Blur(src, dst, &m_pong,BlurManager::Mode::Gaussian);
+        BlurManager::GetInstance().Blur(src, dst, &m_pong,BlurManager::Mode::Average);
         std::swap(src, dst);
     }
 

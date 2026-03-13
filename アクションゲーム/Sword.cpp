@@ -611,7 +611,7 @@ void Sword::SetTrailColor(Vector4 color) {
 	m_EffectTrail->SetColor(color);
 }
 
-Collision::ColliderVariant Sword::GetCollision() {
+Collision::ColliderVariant Sword::GetCollision() const{
 	return obb;
 }
 

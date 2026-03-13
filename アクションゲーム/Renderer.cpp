@@ -411,9 +411,9 @@ void Renderer::End()
 void Renderer::PostProcess(bool blur, bool bloom,bool mono)
 {
 	auto& post = PostProcessManager::GetInstance();
-	post.EnableBlur(blur);
-	post.EnableBloom(bloom);
-	post.EnableMono(mono);
+	//post.EnableBlur(false);
+	post.EnableBloom(true);
+	//post.EnableMono(mono);
 	post.Apply(&m_SceneRT, m_RenderTargetView);
 
 	// アルファブレンドON、深度テストONに戻す
