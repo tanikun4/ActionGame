@@ -411,11 +411,12 @@ void Renderer::End()
 //	m_DeviceContext->PSSetShaderResources(0, 1, nullSRV);
 //}
 
-void Renderer::PostProcess(bool blur, bool bloom)
+void Renderer::PostProcess(bool blur, bool bloom,bool mono)
 {
 	auto& post = PostProcessManager::GetInstance();
 	post.EnableBlur(blur);
 	post.EnableBloom(bloom);
+	post.EnableMono(mono);
 	post.Apply(&m_SceneRT, m_RenderTargetView);
 }
 

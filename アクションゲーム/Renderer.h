@@ -102,7 +102,7 @@ public:
 	static void Init();
 	static void Uninit();
 	static void Begin();
-	static void PostProcess(bool blur = false, bool bloom = false);
+	static void PostProcess(bool blur = false, bool bloom = false,bool mono = false);
 	static void End();
 
 	static void SetDepthEnable(bool Enable);

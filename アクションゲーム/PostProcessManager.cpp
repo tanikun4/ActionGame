@@ -28,6 +28,9 @@ void PostProcessManager::Init(ID3D11Device* device, int w, int h)
 
     Renderer::CreatePixelShader(&m_copyPS, "shader/PS_TexColor.cso");
 
+    Renderer::CreatePixelShader(&m_monoPS, "shader/PS_Monochrome.cso");
+
+
     //--------------------------------
     // fullscreen quad
     //--------------------------------
@@ -67,6 +70,12 @@ void PostProcessManager::Apply(
         std::swap(src, dst);
     }
 
+    if (m_monocrome)
+    {
+        ApplyPS(src, dst, m_monoPS);
+        std::swap(src, dst);
+    }
+
     ID3D11ShaderResourceView* nullSRV[8] = {};
     ctx->PSSetShaderResources(0, 8, nullSRV);
 
@@ -74,10 +83,6 @@ void PostProcessManager::Apply(
     // 最終出力
     //--------------------------------
 
-	//Renderer::SetBlendState(BS_NONE);
-	//Renderer::SetDepthEnable(false);
-
-    //Renderer::SetBlendState(BS_NONE);
     Renderer::SetDepthEnable(false);
 
     ctx->OMSetRenderTargets(1, &backBuffer, nullptr);
@@ -96,10 +101,11 @@ void PostProcessManager::Apply(
     ctx->PSSetSamplers(0, 1, &m_sampler);
 
     DrawFullscreenQuad(m_copyPS);
-
+    
     ID3D11ShaderResourceView* nullSRV2[1] = { nullptr };
     ctx->PSSetShaderResources(0, 1, nullSRV2);
 }
+
 void PostProcessManager::DrawFullscreenQuad(ID3D11PixelShader* ps)
 {
     auto ctx = Renderer::GetDeviceContext();
@@ -116,41 +122,26 @@ void PostProcessManager::DrawFullscreenQuad(ID3D11PixelShader* ps)
 
     ctx->Draw(4, 0);
 
-   /* auto ctx = Renderer::GetDeviceContext();
+}
 
-    UINT stride = sizeof(FullScreenVertex);
-    UINT offset = 0;
+void PostProcessManager::ApplyPS(
+    RenderTarget* src,
+    RenderTarget* dst,
+    ID3D11PixelShader* ps)
+{
+    auto ctx = Renderer::GetDeviceContext();
 
-    ctx->IASetVertexBuffers(0, 1, &m_fullScreenVB, &stride, &offset);
-    ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);*/
+    ctx->OMSetRenderTargets(1, &dst->rtv, nullptr);
 
-  /*  ctx->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
-    ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);*/
+    ID3D11ShaderResourceView* srv = src->srv;
+    ctx->PSSetShaderResources(0, 1, &srv);
 
-    //void BlurManager::DrawFullScreenQuad(ID3D11PixelShader * ps)
-    //{
+    ctx->PSSetSamplers(0, 1, &m_sampler);
 
-    //    UINT stride = sizeof(Vertex);
-    //    UINT offset = 0;
+    DrawFullscreenQuad(ps);
 
-    //    m_context->IASetInputLayout(m_inputLayout);
-    //    m_context->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
-    //    m_context->IASetIndexBuffer(m_ib, DXGI_FORMAT_R16_UINT, 0);
-    //    m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    //    // 必ずVSをセット
-    //    m_context->VSSetShader(m_fullScreenVS, nullptr, 0);
-
-    //    m_context->PSSetShader(ps, nullptr, 0);
-
-    //    m_context->DrawIndexed(6, 0, 0);
-    //}
-
-    // 必ずVSをセット
-    //ctx->VSSetShader(m_fullScreenVS, nullptr, 0);
-
-    //ctx->PSSetShader(ps, nullptr, 0);
-
-    //ctx->Draw(6, 0);
+    ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+    ctx->PSSetShaderResources(0, 1, nullSRV);
 }
 
 void PostProcessManager::CreateFullscreenQuad(ID3D11Device* device)

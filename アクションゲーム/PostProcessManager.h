@@ -11,6 +11,11 @@ public:
     void Apply(RenderTarget* sceneRT,
         ID3D11RenderTargetView* backBuffer);
 
+    void ApplyPS(
+        RenderTarget* src,
+        RenderTarget* dst,
+        ID3D11PixelShader* ps);
+
 
     //--------------------------------
     // ‹¤’Ê•`‰æ
@@ -23,6 +28,7 @@ public:
 
     void EnableBlur(bool v) { m_enableBlur = v; }
     void EnableBloom(bool v) { m_enableBloom = v; }
+    void EnableMono(bool v) { m_monocrome = v; }
 
 private:
 
@@ -34,6 +40,7 @@ private:
 
     bool m_enableBlur = false;
     bool m_enableBloom = false;
+	bool m_monocrome = false;
 
 
     //--------------------------------
@@ -42,6 +49,7 @@ private:
 
     ID3D11SamplerState* m_sampler = nullptr;
     ID3D11PixelShader* m_copyPS = nullptr;
+    ID3D11PixelShader* m_monoPS = nullptr;
 
     ID3D11Buffer* m_fullScreenVB = nullptr;
     ID3D11VertexShader* m_fullScreenVS = nullptr;
