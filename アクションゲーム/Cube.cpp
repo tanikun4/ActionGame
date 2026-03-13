@@ -223,6 +223,7 @@ void Cube::UpdateCube()
 
 void Cube::Draw()
 {
+	if (m_Invisible) return;
 	DrawCube();
 }
 
@@ -281,7 +282,11 @@ DirectX::SimpleMath::Vector3 Cube::GetPos() const{
 	return m_Position;
 }
 
-Collision::ColliderVariant Cube::GetCollision() {
+Collision::ColliderVariant Cube::GetCollision() const {
+	return Collision::OBB{ m_Position, m_Rotation, Vector3(GetLen(0),GetLen(1),GetLen(2)) };
+}
+
+Collision::OBB Cube::GetOBB() const {
 	return Collision::OBB{ m_Position, m_Rotation, Vector3(GetLen(0),GetLen(1),GetLen(2)) };
 }
 

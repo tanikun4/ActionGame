@@ -257,7 +257,7 @@ bool BallObject::CheckGround() {
 }
 
 
-Collision::ColliderVariant BallObject::GetCollision(){
+Collision::ColliderVariant BallObject::GetCollision() const{
 	return Collision::Sphere{ m_Position, radius };
 }
 

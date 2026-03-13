@@ -47,7 +47,7 @@ public:
     void HitObject(Object* ob) override {
         ob->OnHit(this);
     }
-    virtual Collision::ColliderVariant GetCollision();
+    virtual Collision::ColliderVariant GetCollision() const override;;
     void SetAtk(int a) { atk = a; }
 
     void SetPl(bool p) { pl = p; }

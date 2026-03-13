@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Object.h"
 #include "DebugUI.h"
+#include "WallManager.h"
 
 using namespace DirectX::SimpleMath;
 extern Input input;//externは、元の変数が宣言されているファイルをインクルードしなくても、コンパイル時に自動で読み取ってくれる
@@ -69,10 +70,33 @@ void Camera::Update()
 		m_Position += m_vib.Update();
 	}
 
+	Vector3 start = m_Target;   // プレイヤー
+	Vector3 end = m_Position; // カメラ
+
+	Vector3 dir = end - start;
+	float length = dir.Length();
+
+	dir.Normalize();
+
 	//カメラの角度制限
 	if (m_CameraDirection.x >= pi * 2 || m_CameraDirection.x <= -pi * 2) m_CameraDirection.x = 0.0f;
 	if (m_CameraDirection.y >= -pi * 0.55f) m_CameraDirection.y = -pi * 0.55f;
 	else if (m_CameraDirection.y <= -pi) m_CameraDirection.y = -pi;
+
+	if (cameraInputFg)
+	{
+		for (auto& wall : WallManager::GetInstance().GetWalls())
+		{
+			if (Collision::CheckHitRay(start, dir, length, wall->GetOBB()))
+			{
+				wall->SetInvisible(true);
+			}
+			else
+			{
+				wall->SetInvisible(false);
+			}
+		}
+	}
 
 }
 
@@ -187,32 +211,15 @@ bool Camera::CameraInput() {
 	//入力フラグ
 	bool inputFg = false;
 
-	//上下左右キーでカメラ回転
-	/*if (ActionInput::GetInstance().IsPress(Action::Left)) {
-		m_CameraDirection.x += 0.02f;
-		inputFg = true;
-	}
-	if (ActionInput::GetInstance().IsPress(Action::Right)) {
-		m_CameraDirection.x -= 0.02f;
-		inputFg = true;
-	}
-	if (ActionInput::GetInstance().IsPress(Action::Up)) {
-		m_CameraDirection.y -= 0.02f;
-		inputFg = true;
-	}
-	if (ActionInput::GetInstance().IsPress(Action::Down)) {
-		m_CameraDirection.y += 0.02f;
-		inputFg = true;
-	}*/
-
-	// 右スティック取得
-	Vector2 stick = ActionInput::GetInstance().GetCameraVector();
+	// 入力取得
+	Vector2 inputvector = ActionInput::GetInstance().GetCameraVector();
 
 	const float sensitivity = 0.02f; // 感度
 
-	if (stick.Length() > 0.01f) {
-		m_CameraDirection.x -= stick.x * sensitivity;
-		m_CameraDirection.y -= stick.y * sensitivity;
+	// 入力がある場合、カメラの方向を更新
+	if (inputvector.Length() > 0.01f) {
+		m_CameraDirection.x -= inputvector.x * sensitivity;
+		m_CameraDirection.y -= inputvector.y * sensitivity;
 		inputFg = true;
 	}
 

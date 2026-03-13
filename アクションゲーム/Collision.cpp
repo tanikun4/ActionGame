@@ -967,6 +967,47 @@ namespace Collision
 		return CheckHit(sphere, obb, out);
 	}
 
+	bool CheckHitRay(
+		const Vector3& rayOrigin,
+		const Vector3& rayDir,
+		float rayLength,
+		const OBB& obb)
+	{
+		const float EPS = 0.0001f;
+
+		float tmin = 0.0f;
+		float tmax = rayLength;
+
+		Vector3 delta = obb.m_pos - rayOrigin;
+
+		for (int i = 0; i < 3; i++)
+		{
+			float e = obb.m_axis[i].Dot(delta);
+			float f = rayDir.Dot(obb.m_axis[i]);
+
+			if (fabs(f) > EPS)
+			{
+				float t1 = (e + obb.GetLen(i)) / f;
+				float t2 = (e - obb.GetLen(i)) / f;
+
+				if (t1 > t2) std::swap(t1, t2);
+
+				tmin = std::max(tmin, t1);
+				tmax = std::min(tmax, t2);
+
+				if (tmin > tmax)
+					return false;
+			}
+			else
+			{
+				if (-e - obb.GetLen(i) > 0.0f ||
+					-e + obb.GetLen(i) < 0.0f)
+					return false;
+			}
+		}
+		return true;
+	}
+
 	//“_‚ÆOBB‚ÌÅ’Z‹——£‚ðŽg‚¦‚Îƒ|ƒŠƒSƒ“‚Ì‚â‚Â‚às‚¯‚»‚¤
 
 }

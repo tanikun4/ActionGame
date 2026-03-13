@@ -1,6 +1,5 @@
 #include "WallManager.h"
 #include "Game.h"
-#include "Cube.h"//壁用オブジェクト
 #include "DebugUI.h"
 
 using namespace std;
@@ -26,6 +25,7 @@ void WallManager::SetWall(const Vector2& groundsize, vector<Object*>& _scene_obj
 	top->SetPosition(Vector3(-halfX * 0.1f, scaleY * 10.0f, halfZ + halfZ * 0.1f)); // Yは高さ調整
 	top->SetColor(color);
 	_scene_object.emplace_back(top);
+	walls.emplace_back(top);
 
 	// 下辺（-Z側）
 	Cube* bottom = Game::GetInstance()->AddObject<Cube>();
@@ -33,6 +33,7 @@ void WallManager::SetWall(const Vector2& groundsize, vector<Object*>& _scene_obj
 	bottom->SetPosition(Vector3(-halfX * 0.1f, scaleY * 10.0f, -halfZ));
 	bottom->SetColor(color);
 	_scene_object.emplace_back(bottom);
+	walls.emplace_back(bottom);
 
 	// 右辺（+X側）
 	Cube* right = Game::GetInstance()->AddObject<Cube>();
@@ -40,6 +41,7 @@ void WallManager::SetWall(const Vector2& groundsize, vector<Object*>& _scene_obj
 	right->SetPosition(Vector3(halfX, scaleY * 10.0f, 0.0f));
 	right->SetColor(color);
 	_scene_object.emplace_back(right);
+	walls.emplace_back(right);
 
 	// 左辺（-X側）
 	Cube* left = Game::GetInstance()->AddObject<Cube>();
@@ -47,6 +49,7 @@ void WallManager::SetWall(const Vector2& groundsize, vector<Object*>& _scene_obj
 	left->SetPosition(Vector3(-halfX - halfX * 0.15f, scaleY * 10.0f, 0.0f));
 	left->SetColor(color);
 	_scene_object.emplace_back(left);
+	walls.emplace_back(left);
 }
 
 void WallManager::DebugWallStatus() {//壁の大きさや位置を操作する

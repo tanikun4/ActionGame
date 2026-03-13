@@ -67,7 +67,7 @@ public:
 	void Shot(DirectX::SimpleMath::Vector3 v);
 
 	float GetRadius();
-	Collision::ColliderVariant GetCollision();
+	Collision::ColliderVariant GetCollision() const override;;
 	DirectX::SimpleMath::Vector3 GetForwardVector();
 	ICollider* GetCollider() override { return this; }
 

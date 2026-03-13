@@ -6,7 +6,7 @@ class ICollider
 
 public:
     virtual ~ICollider() {}
-    virtual Collision::ColliderVariant GetCollision() = 0;
+    virtual Collision::ColliderVariant GetCollision() const = 0;
 
     // Õ“ËŒ‹‰Ê‚Ì•Û‘¶‚Ææ“¾
     void SetCollisionResult(const CollisionResult& result) { m_LastCollision = result; }

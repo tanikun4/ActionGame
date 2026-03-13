@@ -85,7 +85,7 @@ void TitleScene::Init()
 	);
 
 	//壁の設置
-	WallManager::SetWall(ground->GetGroundSize(), m_MySceneObjects);
+	WallManager::GetInstance().SetWall(ground->GetGroundSize(), m_MySceneObjects);
 
 	// カメラ開始位置
 	Vector3 initialOffset(0.0f, 80.0f, -180.0f);
@@ -101,7 +101,7 @@ void TitleScene::Init()
 	Game::GetInstance()->GetCamera().SetPosition(Vector3(0,150,200));
 
 	DebugUI::RedistDebugFunction([this]() {
-		WallManager::DebugWallStatus();
+		WallManager::GetInstance().DebugWallStatus();
 		});
 
 	//タイトル画像オブジェクトを作成
@@ -178,5 +178,6 @@ void TitleScene::Uninit()
 		o = nullptr;
 	}
 	m_MySceneObjects.clear();
+	WallManager::GetInstance().ClearPointer();
 }
 

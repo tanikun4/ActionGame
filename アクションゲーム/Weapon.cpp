@@ -37,6 +37,6 @@ void Weapon::SetOwner(BallObject* owner) { m_Owner = owner; }// 所有者をセット
 
 BallObject* Weapon::GetOwner() { return m_Owner; }
 
-Collision::ColliderVariant Weapon::GetCollision() {
+Collision::ColliderVariant Weapon::GetCollision() const{
 	return Collision::OBB { m_Position, m_Rotation,m_Scale };
 }

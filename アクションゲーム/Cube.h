@@ -7,8 +7,6 @@
 #include "Object.h"
 #include "ICollider.h"
 
-class BallObject;
-
 //-----------------------------------------------------------------------------
 //Cubeクラス
 //-----------------------------------------------------------------------------
@@ -27,7 +25,9 @@ protected:
 
 	// 描画の為の情報（見た目に関わる部分）
 	Texture m_Texture; // テクスチャ
-	DirectX::SimpleMath::Vector3 m_length = {10.0f,10.0f,10.0f};
+	const DirectX::SimpleMath::Vector3 m_length = { 10.0f,10.0f,10.0f }; // 各軸方向の長さの基準値
+
+	bool m_Invisible = false;//透明かどうか
 
 public:
 	Cube(Camera* cam); // コンストラクタ
@@ -37,7 +37,6 @@ public:
 	DirectX::SimpleMath::Vector3 GetDirect(int elem) const;   // 指定軸番号の方向ベクトルを取得
 	float GetLen(int elem) const;							  // 指定軸方向の長さを取得
 
-	void SetMaxMinVertices();
 	void InitCube();
 	void Init();
 	void DrawCube();
@@ -45,6 +44,7 @@ public:
 	void UpdateCube();
 	void Update();
 	void Uninit();
+	void SetInvisible(bool invisible) { m_Invisible = invisible; }
 
 	// 色を指定
 	void SetColor(const DirectX::SimpleMath::Vector4& color);
@@ -55,7 +55,8 @@ public:
 	void OnHit(Object* ob) {};
 
 	ICollider* GetCollider() override { return this; }
-	Collision::ColliderVariant GetCollision();
+	Collision::ColliderVariant GetCollision() const override;
+	Collision::OBB GetOBB() const; // OBBを取得
 	//=======================================
 	//移動処理
 	//=======================================

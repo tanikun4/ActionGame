@@ -166,7 +166,7 @@ void Game::Draw()
 	//エフェクトマネージャ描画	
 	EffectManager::Draw();
 
-	Renderer::PostProcess(false,false,true);
+	Renderer::PostProcess(false,false,false);
 
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)

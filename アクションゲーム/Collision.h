@@ -74,10 +74,10 @@ namespace Collision
 		DirectX::SimpleMath::Vector3 m_pos{};              // 位置
 		DirectX::SimpleMath::Vector3 m_axis[3]{ {1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f} };			 // 方向ベクトル(軸)
 		DirectX::SimpleMath::Vector3 m_length{ 1.0f,1.0f,1.0f };          // 各軸方向の長さ(サイズ)、一辺の長さではなく、半径を表す
-		DirectX::SimpleMath::Vector3 m_scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+		//DirectX::SimpleMath::Vector3 m_scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 		OBB(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& rotation, const DirectX::SimpleMath::Vector3& scale)
 			: m_pos(pos)
-			, m_scale(scale)
+			, m_length(scale)
 		{
 			DirectX::SimpleMath::Matrix r = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(rotation.y, rotation.x, rotation.z);
 			m_axis[0] = DirectX::SimpleMath::Vector3(r._11, r._12, r._13);
@@ -87,11 +87,11 @@ namespace Collision
 		float GetLen(int elem) const {
 			switch (elem) {
 			case 0:
-				return m_scale.x * m_length.x;
+				return m_length.x;
 			case 1:
-				return m_scale.y * m_length.y;
+				return m_length.y;
 			case 2:
-				return m_scale.z * m_length.z;
+				return m_length.z;
 			default:
 				return 0;
 			}
@@ -163,6 +163,11 @@ namespace Collision
 		// 未対応の組み合わせはfalse
 		return false;
 	}
+
+	bool CheckHitRay(const DirectX::SimpleMath::Vector3& rayOrigin,
+		const DirectX::SimpleMath::Vector3& rayDir,
+		float rayLength,
+		const OBB& obb); // OBBとRayの当たり判定
 
 	// variant 版
     //inline bool CheckHit(const ColliderVariant& a, const ColliderVariant& b, CollisionResult& out) {

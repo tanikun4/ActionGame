@@ -83,7 +83,7 @@ void Stage1Scene::Init()
 	boss->SetLive(false); // Å‰‚Í”ñ•\Ž¦
 
 	//•Ç‚ÌÝ’u
-	WallManager::SetWall(ground->GetGroundSize(), m_MySceneObjects);
+	WallManager::GetInstance().SetWall(ground->GetGroundSize(), m_MySceneObjects);
 
 	// ’e‚ÌŽæ“¾
 	for (int i = 0; i < 3; i++) {
@@ -238,7 +238,7 @@ void Stage1Scene::Init()
 	framecount = 0;
 
 	DebugUI::RedistDebugFunction([this]() {
-		WallManager::DebugWallStatus();
+		WallManager::GetInstance().DebugWallStatus();
 		});
 }
 
@@ -281,6 +281,7 @@ void Stage1Scene::Uninit()
 	}
 	EnemyManager::GetInstance().Uninit();
 	m_MySceneObjects.clear();
+	WallManager::GetInstance().ClearPointer();
 }
 
 // Wave•ÏXˆ—
