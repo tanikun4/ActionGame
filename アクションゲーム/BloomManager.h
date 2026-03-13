@@ -24,8 +24,8 @@ private:
         float padding[3];
     };
 
-    int m_width;
-    int m_height;
+    int m_width = 0;
+    int m_height = 0;
 
     // RenderTarget
     ID3D11Texture2D* m_brightTex = nullptr;

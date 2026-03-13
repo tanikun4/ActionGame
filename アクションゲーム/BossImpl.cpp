@@ -310,6 +310,7 @@ void Boss::Impl::Break()
 // 行動不能状態にする
 void Boss::Impl::Stun() 
 {
+	m_Owner->is_notUpdate = false;//動きを再開する
 	StateReset();
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
 	m_vib.Start(1.0f, PI * 0.5f);//振動開始

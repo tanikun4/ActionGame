@@ -117,7 +117,7 @@ private:
     DirectX::SimpleMath::Vector3 m_ta_pos; // 目標点
     Bullet* m_arrow = nullptr;
     Sword* m_weapon = nullptr;
-	Object* m_target = nullptr; // 攻撃対象
+	BallObject* m_target = nullptr; // 攻撃対象
 	AngleAnim m_Anim; // アニメーション用構造体
     Gauge m_hp_gauge; //  HPゲージ用構造体
 

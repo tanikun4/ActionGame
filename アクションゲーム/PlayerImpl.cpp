@@ -157,8 +157,8 @@ void Player::Impl::OnHit(Sword* po) {
     if (po->GetPl()) return;
      // ジャストガード成功で相手を行動不能にする
     if (GuardFg && guardcount <= justguardframe) { 
-        po->GetOwner()->Stun();
 		m_target = po->GetOwner();
+		m_target->SetNotUpdate(true);
         Parry(); 
         return; 
     }
@@ -795,8 +795,9 @@ void Player::Impl::Parry() {
 
     m_Camera->StartVibration(10.0f, PI * 0.5f, 5);// カメラを揺らす
 
-	Game::GetInstance()->SlowMotion(30); // スローモーション開始、30フレーム続く
+	Game::GetInstance()->SlowMotion(50); // スローモーション開始、50フレーム続く
 
+    PostProcessManager::GetInstance().EnableBlur(false); // ブラーを解除する
 	PostProcessManager::GetInstance().EnableMono(true); // 画面をモノクロにする
 }
 
@@ -824,7 +825,7 @@ void Player::Impl::UpdateNormal() {
 //攻撃中
 void Player::Impl::UpdateAttack() {
 	if (m_Owner->is_GROUND) m_Owner->m_Velocity_f = 0.0f; //速度をリセット
-    if (parryFg) m_Owner->m_Velocity_f = speed * 2.0f;//パリィ中は前進する
+    if (parryFg && m_weapon->GetAttackTime() >= 5) m_Owner->m_Velocity_f = speed * 2.0f;//パリィ中は前進する
     
 	if (!m_weapon) { return; }
     switch (m_attackkind) {
@@ -836,6 +837,14 @@ void Player::Impl::UpdateAttack() {
 			// 通常攻撃アニメーション更新、絶対値参照
 			m_Owner->m_Rotation = m_Owner->m_ForwardRotation + m_Anim.UpdateAbsolute();//現在の前向き方向にアニメーション分を加算して算出する
         }
+
+        if (parryFg) {
+			// 攻撃時間が5フレーム時にスタンさせる
+            if (m_weapon->GetAttackTime() == 5) {
+                m_target->Stun();
+            }
+        }
+
         if (m_weapon->GetMaxAttack()) {
             m_Owner->m_State = NORMAL;
             m_weapon->SwingEnd();

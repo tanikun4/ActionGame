@@ -1384,6 +1384,7 @@ void Enemy::Impl::StunUpdate()
 // 行動不能状態にする
 void Enemy::Impl::Stun()
 {
+	m_Owner->is_notUpdate = false;//動きを再開する
 	StateReset();
 	m_lookatFg = false;// lookat無効
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする

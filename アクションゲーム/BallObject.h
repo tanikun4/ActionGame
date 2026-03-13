@@ -27,6 +27,7 @@ protected:
 	float radius = base_radius;//自身の半径
 	bool is_GROUND = false;//地面に接地しているかどうかのフラグ
 	bool is_SPECIALMOVE = false;//特殊移動中かどうかのフラグ
+	bool is_notUpdate = false;//更新を止めるフラグ
 
 	float m_Velocity_f = 0.0; // 現在の移動速度（前進後退）
 	DirectX::SimpleMath::Vector3 m_oldPos;
@@ -61,6 +62,7 @@ public:
 
 	// 状態の設定・取得
 	void SetState(int s);
+	void SetNotUpdate(bool b) { is_notUpdate = b; }
 	int GetState();
 
 	// ショット

@@ -101,6 +101,7 @@ void BallObject::BallInit(std::u8string modelfilename)
 
 void BallObject::BallUpdate()
 {
+	if (is_notUpdate) return;
 	//çsóÒÇÃçXêV
 	UpdateForwardDirectionVectors();
 

@@ -32,11 +32,20 @@ private:
     {
         DirectX::SimpleMath::Vector3 base;
         DirectX::SimpleMath::Vector3 tip;
-        int   life;
+        int  life = 0;
     };
 
+	// メッシュを構築する
     void BuildMesh();
 
+	// 前のポイントと新しいポイントの間に補間ポイントを追加する
+    void AddInterpolatedPoint(const DirectX::SimpleMath::Vector3& prevBase, const DirectX::SimpleMath::Vector3& prevTip,
+        const DirectX::SimpleMath::Vector3& newBase, const DirectX::SimpleMath::Vector3& newTip);
+
+    void AddPointCatmullRom(const DirectX::SimpleMath::Vector3& newBase, const DirectX::SimpleMath::Vector3& newTip);
+
+    void AddPointBezier(const DirectX::SimpleMath::Vector3& newBase, const DirectX::SimpleMath::Vector3& newTip);
+    DirectX::SimpleMath::Vector3 BezierCubic(const DirectX::SimpleMath::Vector3& P0, const DirectX::SimpleMath::Vector3& P1, const  DirectX::SimpleMath::Vector3& P2, const  DirectX::SimpleMath::Vector3& P3, float t);
 private:
     std::vector<TrailPoint> m_Points;
 
