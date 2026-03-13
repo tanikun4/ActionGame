@@ -149,8 +149,12 @@ void Game::Draw()
 	// オブジェクト描画
 	for (auto& o : m_Instance->m_Objects)
 	{
+
 		if (!o->GetLive()) continue;// 生存フラグがオフなら非表示
-		o->Draw();
+		// 描画レイヤーがWorld3Dのオブジェクトのみ描画
+		if (o->GetLayer() == DrawLayer::World3D)
+			o->Draw();
+		
 		if (m_Instance->debugmode) {
 			auto col = dynamic_cast<ICollider*>(o.get());
 			if (col) {
@@ -164,12 +168,21 @@ void Game::Draw()
 
 	Renderer::PostProcess(false,false,true);
 
+	// オブジェクト描画
+	for (auto& o : m_Instance->m_Objects)
+	{
+		if (!o->GetLive()) continue;// 生存フラグがオフなら非表示
+		// 描画レイヤーがUIのオブジェクトのみ描画
+		if (o->GetLayer() == DrawLayer::UI) {
+			o->Draw();
+		}
+	}
+
 	// フェード描画
 	Fade::GetInstance()->Draw();
 
 	// デバッグUIの描画
 	if(m_Instance->debugmode) DebugUI::Render();
-
 
 	// 描画後処理
 	Renderer::End();

@@ -3,6 +3,12 @@
 #include "Shader.h"
 #include "Camera.h"
 
+enum class DrawLayer
+{
+	World3D,
+	UI
+};
+
 class Object  {
 protected:
 	// SRT情報（姿勢情報）
@@ -29,6 +35,8 @@ protected:
 	Camera* m_Camera;
 	bool m_live = true;
 
+	DrawLayer m_layer = DrawLayer::World3D;//描画レイヤー
+
 	bool UpdateDirectionVectors();//行列更新関数
 	bool UpdateForwardDirectionVectors();//行列更新関数(進行方向版)
 	DirectX::SimpleMath::Vector3 AngleToForward(const DirectX::SimpleMath::Vector3& rot);//回転角から前向きベクトルを求める関数
@@ -38,7 +46,7 @@ public:
 	Object();
 	Object(Camera* cam); // コンストラクタ
 
-	virtual ~Object(); // デストラクタ
+	virtual ~Object() = default;// デストラクタ
 
 	virtual void Init()=0;
 	virtual void Update() = 0;
@@ -67,10 +75,13 @@ public:
 	void SetScale(const DirectX::SimpleMath::Vector3& sca);
 	void SetLive(const bool& live);
 	void SetCamera(Camera* cam) { m_Camera = cam; };
+	void SetLayer(DrawLayer layer) { m_layer = layer; }
+
 	DirectX::SimpleMath::Vector3 GetPosition() const;
 	DirectX::SimpleMath::Vector3 GetRotation() const;
 	DirectX::SimpleMath::Vector3 GetScale() const;
 	DirectX::SimpleMath::Vector3 GetForwardRotation() const;
 	virtual class ICollider* GetCollider() { return nullptr; }
+	virtual DrawLayer GetLayer() const { return m_layer; }
 
 };

@@ -62,12 +62,30 @@ public:
 	
 
 	// オブジェクトを追加する(※テンプレート関数なのでここに直接記述)
-	template<class T> T* AddObject()
+	//template<class T> T* AddObject(DrawLayer layer = DrawLayer::World3D)
+	//{
+	//	auto obj = std::make_unique<T>(m_Camera.get());
+
+	//	T* pt = new T(m_Camera.get());
+	//	pt->SetLayer(layer);
+	//	m_Instance->m_Objects.emplace_back(pt);
+	//	pt->Init(); // 初期化
+	//	return pt;
+	//}
+	template<class T>
+	T* AddObject(DrawLayer layer = DrawLayer::World3D)
 	{
-		T* pt = new T(m_Camera.get());
-		m_Instance->m_Objects.emplace_back(pt);
-		pt->Init(); // 初期化
-		return pt;
+		auto obj = std::make_unique<T>(m_Camera.get());
+
+		obj->SetLayer(layer);
+
+		T* ptr = obj.get();
+
+		m_Instance->m_Objects.emplace_back(std::move(obj));
+
+		ptr->Init();
+
+		return ptr;
 	}
 
 	// オブジェクトを取得する(※テンプレート関数なのでここに直接記述)

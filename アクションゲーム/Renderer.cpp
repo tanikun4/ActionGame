@@ -314,7 +314,6 @@ void Renderer::Uninit()
 //=======================================
 void Renderer::Begin()
 {
-	SetBlendState(BS_ALPHABLEND);
 	float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	//m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
 	//m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -336,8 +335,6 @@ void Renderer::Begin()
 	//auto sceneRT = PostProcessManager::GetInstance().GetSceneRT();
 
 	//float clearColor[4] = { 0,0,0,1 };
-
-	SetDepthEnable(true);
 
 	m_DeviceContext->ClearDepthStencilView(
 		m_DepthStencilView,
@@ -418,6 +415,10 @@ void Renderer::PostProcess(bool blur, bool bloom,bool mono)
 	post.EnableBloom(bloom);
 	post.EnableMono(mono);
 	post.Apply(&m_SceneRT, m_RenderTargetView);
+
+	// アルファブレンドON、深度テストONに戻す
+	SetBlendState(BS_ALPHABLEND);
+	SetDepthEnable(true);
 }
 
 //=======================================

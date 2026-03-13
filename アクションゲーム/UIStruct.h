@@ -10,7 +10,7 @@ struct Gauge
 	float baseScale_X = 0;
 
     void Init(DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 scale) {
-        backTex = Game::GetInstance()->AddObject<Texture2D>();
+        backTex = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
         backTex->SetTexture("assets/texture/white.png"); // ‰æ‘œ‚ðŽw’è
         backTex->SetPosition(pos);
         backTex->SetScale(scale);
@@ -18,7 +18,7 @@ struct Gauge
         backTex->SetUV(1, 1, 1, 1); //UV‚ðŽw’è
         baseScale_X = scale.x;
 
-        gaugeTex = Game::GetInstance()->AddObject<Texture2D>();
+        gaugeTex = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
         gaugeTex->SetTexture("assets/texture/white.png"); // ‰æ‘œ‚ðŽw’è
         gaugeTex->SetPosition(pos);
         gaugeTex->SetScale(scale);

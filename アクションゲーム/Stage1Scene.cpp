@@ -116,14 +116,14 @@ void Stage1Scene::Init()
 	boss->SetGaugeLive(false);
 
 	// UI(HP文字)
-	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>();
+	Texture2D* pt1 = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	pt1->SetTexture("assets/texture/hp_ui.png"); // 画像を指定
 	pt1->SetPosition(-580.0f, -320.0f, 0.0f); // 位置を設定
 	pt1->SetScale(100.0f, 75.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(pt1);
 
 	// UI(ボスHP文字)
-	boss_hp_text = Game::GetInstance()->AddObject<Texture2D>();
+	boss_hp_text = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	boss_hp_text->SetTexture("assets/texture/bosshp_ui.png"); // 画像を指定
 	boss_hp_text->SetPosition(-300.0f, 335.0f, 0.0f); // 位置を設定
 	boss_hp_text->SetScale(180.0f, 60.0f, 0.0f); // 大きさを指定
@@ -132,7 +132,7 @@ void Stage1Scene::Init()
 	boss_hp_text->SetLive(false); // 最初は非表示
 
 	// UI(ガードゲージ文字)
-	boss_guard_text = Game::GetInstance()->AddObject<Texture2D>();
+	boss_guard_text = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	boss_guard_text->SetTexture("assets/texture/guard_ui.png"); // 画像を指定
 	boss_guard_text->SetPosition(-100.0f, 305.0f, 0.0f); // 位置を設定
 	boss_guard_text->SetScale(150.0f, 50.0f, 0.0f); // 大きさを指定
@@ -141,7 +141,7 @@ void Stage1Scene::Init()
 	boss_guard_text->SetLive(false); // 最初は非表示
 
 	// UI(Wave1文字)
-	wave1_text = Game::GetInstance()->AddObject<Texture2D>();
+	wave1_text = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	wave1_text->SetTexture("assets/texture/Wave1.png"); // 画像を指定
 	wave1_text->SetPosition(0.0f, 0.0f, 0.0f); // 位置を設定
 	wave1_text->SetScale(600.0f, 200.0f, 0.0f); // 大きさを指定
@@ -150,7 +150,7 @@ void Stage1Scene::Init()
 	wave1_text->SetLive(true); // wave1は最初表示
 
 	// UI(Wave2文字)
-	wave2_text = Game::GetInstance()->AddObject<Texture2D>();
+	wave2_text = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	wave2_text->SetTexture("assets/texture/Wave2.png"); // 画像を指定
 	wave2_text->SetPosition(0.0f, 0.0f, 0.0f); // 位置を設定
 	wave2_text->SetScale(600.0f, 200.0f, 0.0f); // 大きさを指定
@@ -159,7 +159,7 @@ void Stage1Scene::Init()
 	wave2_text->SetLive(false); // wave2は非表示
 
 	// UI(FinalWave文字)
-	finalwave_text = Game::GetInstance()->AddObject<Texture2D>();
+	finalwave_text = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	finalwave_text->SetTexture("assets/texture/FinalWave.png"); // 画像を指定
 	finalwave_text->SetPosition(0.0f, 0.0f, 0.0f); // 位置を設定
 	finalwave_text->SetScale(800.0f, 400.0f, 0.0f); // 大きさを指定
@@ -168,7 +168,7 @@ void Stage1Scene::Init()
 	finalwave_text->SetLive(false); // wave2は非表示
 
 	// UI (操作説明、キーボード)
-	sousa_key_text = Game::GetInstance()->AddObject<Texture2D>();
+	sousa_key_text = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	sousa_key_text->SetTexture("assets/texture/sousa_camera_uv.png"); // 画像を指定
 	sousa_key_text->SetPosition(300.0f, -300.0f, 0.0f); // 位置を設定
 	sousa_key_text->SetScale(600.0f, 100.0f, 0.0f); // 大きさを指定
@@ -176,7 +176,7 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(sousa_key_text);
 
 	// UI (操作説明、コントローラ)
-	sousa_cont_text = Game::GetInstance()->AddObject<Texture2D>();
+	sousa_cont_text = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	sousa_cont_text->SetTexture("assets/texture/sousa_cont_camera.png"); // 画像を指定
 	sousa_cont_text->SetPosition(300.0f, -300.0f, 0.0f); // 位置を設定
 	sousa_cont_text->SetScale(600.0f, 100.0f, 0.0f); // 大きさを指定

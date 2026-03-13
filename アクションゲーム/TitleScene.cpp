@@ -105,7 +105,7 @@ void TitleScene::Init()
 		});
 
 	//タイトル画像オブジェクトを作成
-	Texture2D* pt = Game::GetInstance()->AddObject<Texture2D>();
+	Texture2D* pt = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	pt->SetTexture("assets/texture/title.png"); // 画像を指定
 	pt->SetPosition(0.0f, 0.0f, 0.0f); // 位置を指定
 	pt->SetRotation(0.0f, 0.0f, 0.0f); // 角度を指定
@@ -113,7 +113,7 @@ void TitleScene::Init()
 	m_MySceneObjects.emplace_back(pt);
 
 	//press_enterkey画像オブジェクトを作成
-	press_enterkey = Game::GetInstance()->AddObject<Texture2D>();
+	press_enterkey = Game::GetInstance()->AddObject<Texture2D>(DrawLayer::UI);
 	press_enterkey->SetTexture("assets/texture/2DEffect/PressStart.png"); // 画像を指定
 	press_enterkey->SetPosition(0.0f, -300.0f, 0.0f); // 位置を指定
 	press_enterkey->SetScale(640.0f, 128.0f, 0.0f); // 大きさを指定

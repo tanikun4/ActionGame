@@ -83,7 +83,7 @@ void Sword::Init()
 	m_Scale.z = 3;
 
 	//軌跡エフェクト初期化
-	m_EffectTrail->Init();
+	//m_EffectTrail->Init();
 	m_EffectTrail->SetTexture("assets/texture/white.png");
 }
 
