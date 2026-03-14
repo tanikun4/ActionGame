@@ -106,6 +106,7 @@ private:
     bool GuardFg = false; // ガード
     bool RollFg = false; // 回避
 	bool parryFg = false; // ジャストガード中フラグ
+	bool swordparryFg = false; // 剣での攻撃をパリィしたかどうかのフラグ
     bool is_JUMP = false; // ジャンプフラグ
 	bool is_InputMove = true; // 移動入力可能フラグ
 	int m_attackkind = NONE; // 攻撃種類

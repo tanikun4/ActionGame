@@ -162,15 +162,13 @@ void Player::Impl::OnHit(Sword* po) {
 		m_target = po->GetOwner();
 		m_target->SetNotUpdate(true);
         Parry(); 
+		swordparryFg = true;//近接パリィフラグを立てる
         return; 
     }
     Damage(2);
 }
-		//Counter();
-    //if(RollFg && rollcount < 5 && po->GetAttackTime() < 10) { Counter(); return; } // 回避の初めに攻撃を受けたらカウンター
-    //if (GuardFg && guardcount < justguardframe && po->GetAttackTime() < 10) { Counter(); return; } // ガードの初めに攻撃を受けたらカウンター
 
-//弾と当たった場合
+//弾と当たった場合、弾は今使っていないので没状態
 void Player::Impl::OnHit(Bullet* bu) {
     if (bu->GetPl()) return;
     if (GuardFg && guardcount <= justguardframe) { Counter(); return; }
@@ -215,8 +213,6 @@ void Player::Impl::OnHit(Cube* cube) {
     }
     else {
         // 壁
-        //m_Owner->m_Velocity.x = 0.0f;
-        //m_Owner->m_Velocity.z = 0.0f;
         m_Owner->m_Position.x = m_Owner->m_oldPos.x;
         m_Owner->m_Position.z = m_Owner->m_oldPos.z;
 
@@ -785,8 +781,6 @@ void Player::Impl::Parry() {
 	speed = 1.0f;
     if (m_weapon) m_weapon->GuardEnd();
 	LookAt(m_target->GetPosition());
-    //m_Owner->m_State = PARRY;
-    //m_weapon->Swing_Parry();
     m_Owner->m_State = ATTACK;
 	attackcombo = 0;
 	SwingAttack(10,6);
@@ -845,19 +839,23 @@ void Player::Impl::UpdateAttack() {
         }
 
         if (parryFg) {
-			// 攻撃時間が5フレーム時にスタンさせる
-            if (m_weapon->GetAttackTime() == 5) {
-                m_target->Stun();
+			// パリィモーション時間が5フレーム時にエフェクト発生、近接パリィならスタンさせる
+            if (m_weapon->GetAttackTime() == 5){
 
                 // パリィエフェクト再生
                 EffectParams param;
 
                 //エフェクトパラメーター構造体設定
-                Vector3 pos = m_Owner->m_Position + (m_Owner->radius * 3 * m_Owner->AngleToForward(m_Owner->m_ForwardRotation)); // プレイヤーの前方にエフェクトを出す、距離はプレイヤーの前進距離に応じて調整
+                Vector3 pos = m_Owner->m_Position + (m_Owner->radius * 6 * m_Owner->AngleToForward(m_Owner->m_ForwardRotation)); // プレイヤーの前方にエフェクトを出す、距離はプレイヤーの前進距離に応じて調整
                 param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x * 3);
                 param.scale = m_Owner->m_Scale * 30;
                 param.maxLife = 30;
                 EffectManager::GetInstance()->Play(EFFECT_SHOCKWAVE, param);
+
+                if(swordparryFg) {
+                    m_target->Stun();
+                    swordparryFg = false;// スタンさせたらフラグを下ろす
+                }
             }
         }
 
