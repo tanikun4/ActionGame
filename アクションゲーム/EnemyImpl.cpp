@@ -44,7 +44,7 @@ Enemy::Impl::~Impl()
 void Enemy::Impl::DebugEnemyStatus() {//ボスの状態を操作する
 	ImGui::Begin("EnemyStatus");
 
-	ImGui::Checkbox("NotUpdate", &notUpdate);
+	ImGui::Checkbox("NotUpdate", &m_Owner->is_notUpdate);
 	ImGui::Checkbox("Slow", &m_slowFg);
 	ImGui::SliderInt("Slowrate", &slow_rate, 1, 59);
 
@@ -128,7 +128,7 @@ void Enemy::Impl::Init() {
 }
 
 void Enemy::Impl::Update() {
-	if (hp <= 0 || notUpdate) { return; };
+	if (hp <= 0 || m_Owner->is_notUpdate) { return; };
 	//　簡易的なスローモーション処理
 	if (m_slowFg) {
 		++slow_frame;

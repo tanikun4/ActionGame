@@ -44,7 +44,7 @@ Boss::Impl::~Impl()
 void Boss::Impl::DebugBossStatus() {//ボスの状態を操作する
 	ImGui::Begin("BossStatus");
 
-	ImGui::Checkbox("NotUpdate", &notUpdate);
+	ImGui::Checkbox("NotUpdate", &m_Owner->is_notUpdate);
 	ImGui::Checkbox("Slow", &m_slowFg);
 	ImGui::SliderInt("Slowrate", &slow_rate, 1, 59);
 
@@ -131,7 +131,7 @@ void Boss::Impl::Init() {
 }
 
 void Boss::Impl::Update() {
-	if (!m_Owner->m_live || notUpdate) { return; };
+	if (!m_Owner->m_live || m_Owner->is_notUpdate) { return; };
 	//　簡易的なスローモーション処理
 	if (m_slowFg) {
 		++slow_frame;

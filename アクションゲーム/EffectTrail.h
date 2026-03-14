@@ -46,6 +46,14 @@ private:
 
     void AddPointBezier(const DirectX::SimpleMath::Vector3& newBase, const DirectX::SimpleMath::Vector3& newTip);
     DirectX::SimpleMath::Vector3 BezierCubic(const DirectX::SimpleMath::Vector3& P0, const DirectX::SimpleMath::Vector3& P1, const  DirectX::SimpleMath::Vector3& P2, const  DirectX::SimpleMath::Vector3& P3, float t);
+
+    DirectX::SimpleMath::Vector3 CatmullRom(
+        const DirectX::SimpleMath::Vector3& p0,
+        const DirectX::SimpleMath::Vector3& p1,
+        const DirectX::SimpleMath::Vector3& p2,
+        const DirectX::SimpleMath::Vector3& p3,
+        float t);
+    
 private:
     std::vector<TrailPoint> m_Points;
 

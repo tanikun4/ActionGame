@@ -68,28 +68,54 @@ void EffectTrail::AddPoint(const Vector3& base, const Vector3& tip)
 {
     if (!m_live) return;
 
-    if (!m_Points.empty())
-    {
-		// 前のポイントと新しいポイントの間に補間ポイントを追加
-        //const TrailPoint& last = m_Points.back();
-        //AddInterpolatedPoint(last.base, last.tip, base, tip);
+  //  if (!m_Points.empty())
+  //  {
+		//// 前のポイントと新しいポイントの間に補間ポイントを追加
+  //      //const TrailPoint& last = m_Points.back();
+  //      //AddInterpolatedPoint(last.base, last.tip, base, tip);
 
-        // Catmull-Rom補間付きでポイントを追加
-        //AddPointCatmullRom(base, tip);
+  //      // Catmull-Rom補間付きでポイントを追加
+  //      AddPointCatmullRom(base, tip);
 
-		// Bezier曲線補間付きでポイントを追加
-		AddPointBezier(base, tip);
-    }
-    else
-    {
-        // 最初のポイントはそのまま
-        TrailPoint p;
-        p.base = base;
-        p.tip = tip;
-        p.life = m_LifeTime;
-        m_Points.emplace_back(p);
-        m_Change = true;
-    }
+		//// Bezier曲線補間付きでポイントを追加
+		////AddPointBezier(base, tip);
+  //  }
+  //  else
+  //  {
+  //      // 最初のポイントはそのまま
+  //      TrailPoint p;
+  //      p.base = base;
+  //      p.tip = tip;
+  //      p.life = m_LifeTime;
+  //      m_Points.emplace_back(p);
+  //      m_Change = true;
+  //  }
+
+    // 最初のポイントはそのまま
+    TrailPoint p;
+    p.base = base;
+    p.tip = tip;
+    p.life = m_LifeTime;
+    m_Points.emplace_back(p);
+    m_Change = true;
+}
+
+Vector3 EffectTrail::CatmullRom(
+    const Vector3& p0,
+    const Vector3& p1,
+    const Vector3& p2,
+    const Vector3& p3,
+    float t)
+{
+    float t2 = t * t;
+    float t3 = t2 * t;
+
+    return 0.5f * (
+        (2 * p1) +
+        (-p0 + p2) * t +
+        (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+        (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+        );
 }
 
 //void EffectTrail::BuildMesh()
@@ -152,58 +178,135 @@ void EffectTrail::AddPoint(const Vector3& base, const Vector3& tip)
 //    }
 //}
 
+//void EffectTrail::BuildMesh()
+//{
+//    if (m_Points.size() < 2) return;
+//
+//    m_Vertices.clear();
+//    m_Indices.clear();
+//
+//    // TRIANGLESTRIP 用のインデックス
+//    int index = 0;
+//
+//    for (size_t i = 0; i < m_Points.size(); ++i)
+//    {
+//        float alpha =  static_cast<float>(m_Points[i].life) / static_cast<float>(m_LifeTime);
+//
+//        // base と tip の頂点を作成
+//        VERTEX_3D vBase, vTip;
+//        vBase.position = m_Points[i].base;
+//        vTip.position = m_Points[i].tip;
+//
+//        switch (i % 3) {
+//        case 0:
+//            vBase.color = Color(1, 0, 0, alpha);
+//            vTip.color = Color(1, 0, 0, alpha);
+//            break;
+//        case 1:
+//            vBase.color = Color(0, 1, 0, alpha);
+//            vTip.color = Color(0, 1, 0, alpha);
+//            break;
+//        case 2:
+//            vBase.color = Color(0, 0, 1, alpha);
+//            vTip.color = Color(0, 0, 1, alpha);
+//            break;
+//        }
+//
+//        if (i == m_Points.size() - 1) {
+//            int a = 0;
+//        }
+//
+//        // UV は長さに沿って割り振り
+//        vBase.uv = Vector2(0, static_cast<float>(i) / static_cast<float>(m_Points.size() - 1));
+//        vTip.uv = Vector2(1, static_cast<float>(i) / static_cast<float>(m_Points.size() - 1));
+//
+//        m_Vertices.push_back(vBase);
+//        m_Vertices.push_back(vTip);
+//
+//        // TRIANGLESTRIP のインデックス生成
+//        if (i > 0)
+//        {
+//            // 直前の 2頂点と今回の 2頂点で四角形を作る
+//            m_Indices.push_back(index - 2);
+//            m_Indices.push_back(index - 1);
+//            m_Indices.push_back(index);
+//
+//            m_Indices.push_back(index + 1);
+//            m_Indices.push_back(index);
+//            m_Indices.push_back(index - 1);
+//        }
+//
+//        index += 2;
+//    }
+//
+//    // GPU に転送
+//    if (!m_Vertices.empty())
+//    {
+//        m_VertexBuffer.Create(m_Vertices);
+//        m_IndexBuffer.Create(m_Indices);
+//    }
+//}
+
 void EffectTrail::BuildMesh()
 {
-    if (m_Points.size() < 2) return;
+    if (m_Points.size() < 4) return;
 
     m_Vertices.clear();
     m_Indices.clear();
 
-    // TRIANGLESTRIP 用のインデックス
     int index = 0;
 
-    for (size_t i = 0; i < m_Points.size(); ++i)
+    const int SUBDIV = 4; // 補間分割数
+
+    for (size_t i = 0; i < m_Points.size() - 3; i++)
     {
-        float alpha =  static_cast<float>(m_Points[i].life) / static_cast<float>(m_LifeTime);
+        auto& p0 = m_Points[i];
+        auto& p1 = m_Points[i + 1];
+        auto& p2 = m_Points[i + 2];
+        auto& p3 = m_Points[i + 3];
 
-        // base と tip の頂点を作成
-        VERTEX_3D vBase, vTip;
-        vBase.position = m_Points[i].base;
-        vTip.position = m_Points[i].tip;
-
-        vBase.color = Color(1, 1, 1, alpha);
-        vTip.color = Color(1, 1, 1, alpha);
-
-        // UV は長さに沿って割り振り
-        vBase.uv = Vector2(0, static_cast<float>(i) / static_cast<float>(m_Points.size() - 1));
-        vTip.uv = Vector2(1, static_cast<float>(i) / static_cast<float>(m_Points.size() - 1));
-
-        m_Vertices.push_back(vBase);
-        m_Vertices.push_back(vTip);
-
-        // TRIANGLESTRIP のインデックス生成
-        if (i > 0)
+        for (int j = 0; j <= SUBDIV; j++)
         {
-            // 直前の 2頂点と今回の 2頂点で四角形を作る
-            m_Indices.push_back(index - 2);
-            m_Indices.push_back(index - 1);
-            m_Indices.push_back(index);
+            float t = j / (float)SUBDIV;
 
-            m_Indices.push_back(index + 1);
-            m_Indices.push_back(index);
-            m_Indices.push_back(index - 1);
+            Vector3 base = CatmullRom(p0.base, p1.base, p2.base, p3.base, t);
+            Vector3 tip = CatmullRom(p0.tip, p1.tip, p2.tip, p3.tip, t);
+
+            float alpha = (float)p1.life / (float)m_LifeTime;
+
+            VERTEX_3D v0, v1;
+
+            v0.position = base;
+            v1.position = tip;
+
+            v0.color = Color(1, 1, 1, alpha);
+            v1.color = Color(1, 1, 1, alpha);
+
+            v0.uv = Vector2(0, 0);
+            v1.uv = Vector2(1, 0);
+
+            m_Vertices.push_back(v0);
+            m_Vertices.push_back(v1);
+
+            if (index > 0)
+            {
+                m_Indices.push_back(index - 2);
+                m_Indices.push_back(index - 1);
+                m_Indices.push_back(index);
+
+                m_Indices.push_back(index + 1);
+                m_Indices.push_back(index);
+                m_Indices.push_back(index - 1);
+            }
+
+            index += 2;
         }
-
-        index += 2;
     }
 
-    // GPU に転送
-    if (!m_Vertices.empty())
-    {
-        m_VertexBuffer.Create(m_Vertices);
-        m_IndexBuffer.Create(m_Indices);
-    }
+    m_VertexBuffer.Create(m_Vertices);
+    m_IndexBuffer.Create(m_Indices);
 }
+
 // 前のポイントと新しいポイントの間に補間ポイントを追加する
 void EffectTrail::AddInterpolatedPoint(const Vector3& prevBase, const Vector3& prevTip,
     const Vector3& newBase, const Vector3& newTip)
@@ -433,7 +536,7 @@ void EffectTrail::AddPointBezier(const Vector3& newBase, const Vector3& newTip)
         float distTip = (newTip - last.tip).Length();
         float dist = std::max(distBase, distTip);
 
-        const float step = 0.5f; // 1ユニットごとに補間
+        const float step = 1.0f; // 1ユニットごとに補間
         if (dist > step)
         {
             int steps = static_cast<int>(dist / step);
