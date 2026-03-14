@@ -30,7 +30,6 @@ public:
 	void SetDEF(int _def) { def = _def; }
 	void SetGauge();//ゲージ初期化用、ゲームシーンでのみ呼び出す
 	void SetTarget(Player* player) { m_target = player; }
-	void SetNotUpdate(bool _notupdate) { notUpdate = _notupdate;  }
 	void ShotBullet();
 	int GetHP();
 	

@@ -64,9 +64,14 @@ struct Gauge
     }
 
     void Uninit() {
+		// テクスチャの解放、オブジェクトの削除
 		if (!gaugeTex || !backTex) return;
         gaugeTex->Uninit();
         backTex->Uninit();
+		Game::GetInstance()->DeleteObject(gaugeTex);
+        Game::GetInstance()->DeleteObject(backTex);
+		gaugeTex = nullptr;
+		backTex = nullptr;
     }
 
     void SetLive(bool _live) 

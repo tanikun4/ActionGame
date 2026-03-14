@@ -77,24 +77,6 @@ void Enemy::Impl::DebugEnemyStatus() {//ボスの状態を操作する
 		m_Owner->m_Rotation.z = 0;
 	}
 
-	//static Vector3 gauge_pos = { 500,300,0 };
-	//ImGui::SliderFloat3("GaugePos", &gauge_pos.x, 0, 700);
-
-	//static Vector2 gauge_scale = { 800,50 };
-	//ImGui::SliderFloat2("GaugeScale", &gauge_scale.x, 0, 1000);
-
-	//m_gauge.SetPosScale(gauge_pos, { gauge_scale.x, gauge_scale.y, 0});
-
-	/*static Vector3 projectile_offset = {0,-4,16};
-	ImGui::SliderFloat3("Projectile Offset", &projectile_offset.x,-30,30);
-
-	static Vector3 projectile_OBB_scale = { 10.0f,1.0f,1.0f };
-	ImGui::SliderFloat3("Projectile OBBScale", &projectile_OBB_scale.x, 0, 20);
-
-	for (auto& p : m_projectile) {
-		p->SetOffset(projectile_offset);
-		p->SetOBBScale(projectile_OBB_scale);
-	}*/
 
 	ImGui::End();
 }
@@ -119,12 +101,12 @@ void Enemy::Impl::Init() {
 
 	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // 攻撃をランダムに設定、以降固定される
 
+	// 飛び道具をセット
 	SetProjectile();
 	// 武器、影を非表示
 	m_weapon->SetLive(false);
 	m_Owner->m_Shadow->SetLive(false);
 
-	//DebugUI::RedistDebugFunction([this]() { DebugBossStatus(); });
 }
 
 void Enemy::Impl::Update() {
@@ -144,6 +126,7 @@ void Enemy::Impl::Update() {
 	if (m_lookatFg)
 		LookAt(m_target->GetPosition());
 
+	// 状態別Update処理、通常時は他の敵と距離を取りながらプレイヤーを追う
 	switch (m_Owner->m_State) {
 	case NORMAL:
 		DistanceMove();
@@ -200,8 +183,10 @@ void Enemy::Impl::ReInit() {
 	m_Owner->m_Scale.z = 1;
 	m_Owner->radius *= m_Owner->m_Scale.x;
 
+	// 武器、武器軌跡、影をアクティブにする
 	m_weapon->SetLive(true);
 	m_Owner->m_Shadow->SetLive(true);
+	m_weapon->SetTrailLive(true);
 
 	m_Owner->m_State = NORMAL;
 	m_weapon->AttackEnd();
@@ -260,6 +245,7 @@ void Enemy::Impl::Death()
 	m_Owner->m_live = false;
 	m_weapon->SetLive(false);
 	m_Owner->m_Shadow->SetLive(false);
+	m_weapon->SetTrailLive(false);
 	hp = 0;
 	EnemyManager::GetInstance().EnemyDeath();
 	for(auto& p : m_projectile)

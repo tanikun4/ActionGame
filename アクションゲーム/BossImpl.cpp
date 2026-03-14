@@ -201,18 +201,23 @@ void Boss::Impl::Uninit()
 	m_weapon->StanceEnd();
 	m_AngleAnim.Reset();
 	m_ArcAnim.Reset();
-
+	m_hp_gauge.Uninit();
+	m_guard_gauge.Uninit();
 }
 
 void Boss::Impl::ReInit() {
 	m_Owner->m_live = true;
 	m_Owner->m_Velocity_f = 0.0f;//はじめに移動速度を0にする
 	hp = maxhp;
+	// 武器、武器軌跡、影をアクティブにする
 	m_weapon->SetLive(true);
+
+	// 位置の関係で一度更新する
 	if (m_weapon)
 		m_weapon->Update(m_Owner->m_Position, m_Owner->radius, m_Owner->m_Rotation);
 	
 	m_Owner->m_Shadow->SetLive(true);
+	m_weapon->SetTrailLive(true);
 	//丸影の更新
 	m_Owner->m_Shadow->UpdateShadow(m_Owner->m_Position, -0.1f);//地面座標が一旦決め打ち、そのうち地面のシステムから変えたい。
 }
@@ -330,6 +335,7 @@ void Boss::Impl::Death()
 	m_Owner->m_live = false;
 	m_weapon->SetLive(false);
 	m_Owner->m_Shadow->SetLive(false);
+	m_weapon->SetTrailLive(false);
 	hp = 0;
 	m_hp_gauge.ChangeGauge(hp, maxhp);
 }

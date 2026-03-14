@@ -135,6 +135,7 @@ private:
     void LookAt(DirectX::SimpleMath::Vector3 ta_pos);
     void BossStan();// ボスの動きを止める
 	void Parry();//ジャストガード処理
+    void Death();
 
 	// 回転斬り攻撃開始 
 	void SpinAttack(const int& t = 24, const int& attack_t = 18, const float& accel = 0);//全体フレーム、攻撃有効フレーム、加速度

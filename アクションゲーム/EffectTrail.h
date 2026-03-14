@@ -62,8 +62,7 @@ private:
     Texture        m_Texture;
     std::unique_ptr<Material> m_Materiale;
 
-    int   m_MaxPoint = 20;
-    int m_LifeTime = 15;
+    int m_LifeTime = 30;
     bool  m_Active = false;
 	bool m_Change = false;//“_‚ª•ÏX‚³‚ê‚½‚©‚Ç‚¤‚©
 };

@@ -195,7 +195,7 @@ void EffectTrail::AddInterpolatedPoint(const Vector3& prevBase, const Vector3& p
 
 void EffectTrail::Draw()
 {
-
+    if (!m_live) return;
     if (m_Vertices.size() < 4) return;
 
     Renderer::SetDepthEnable(false);

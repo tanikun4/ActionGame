@@ -34,7 +34,7 @@ TitleScene::~TitleScene()
 // 初期化
 void TitleScene::Init()
 {
-	Sound::GetInstance()->SetMasterVolume(0.5f); // 全体音量を50%に
+	Sound::GetInstance()->SetMasterVolume(0.3f); // 全体音量を30%に
 
 	srand((unsigned)time(NULL));
 
@@ -47,10 +47,14 @@ void TitleScene::Init()
 	background->SetScale(1280.0f, 720.0f, 0.0f); // 大きさを指定
 	m_MySceneObjects.emplace_back(background);
 
+	// 地面の設置
 	Ground* ground = Game::GetInstance()->AddObject<Ground>();
 	m_MySceneObjects.emplace_back(ground);
 
 	GroundManager::GetInstance().Init();
+
+	//壁の設置
+	WallManager::GetInstance().SetWall(ground->GetGroundSize(), m_MySceneObjects);
 
 	Player* player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
@@ -84,8 +88,6 @@ void TitleScene::Init()
 		projectiles.end()           // 挿入する範囲の終了
 	);
 
-	//壁の設置
-	WallManager::GetInstance().SetWall(ground->GetGroundSize(), m_MySceneObjects);
 
 	// カメラ開始位置
 	Vector3 initialOffset(0.0f, 80.0f, -180.0f);

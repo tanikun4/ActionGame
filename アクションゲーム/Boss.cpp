@@ -38,8 +38,6 @@ void Boss::SetTarget(Player* player) { impl->SetTarget(player); }
 
 void Boss::SetDEF(int _def) { impl->SetDEF(_def); }
 
-void Boss::SetNotUpdate(bool _notupdate) { impl->SetNotUpdate(_notupdate); }
-
 int Boss::GetHP() { return impl->GetHP(); }
 
 Sword* Boss::GetWeapon() { return impl->GetWeapon(); }

@@ -88,7 +88,7 @@ void Player::Impl::Update() {
         UpdateAttack();
         break;
     case SHOT:
-        // 射撃は一旦削除
+        // 射撃は削除
         break;
     case DAMAGE:
         UpdateDamage();
@@ -117,6 +117,7 @@ void Player::Impl::Draw() {
 void Player::Impl::Uninit() {
     m_weapon->SetOwner(nullptr);
     m_weapon = nullptr;
+	m_hp_gauge.Uninit();
 }
 
 void Player::Impl::SetGauge() {
@@ -298,9 +299,8 @@ void Player::Impl::DebugPlayerStatus() {
         m_hp_gauge.ChangeGauge(hp, maxhp);
     }
 
-    if (ImGui::Button("HP ZERO")) {
-        hp = 0;
-        m_hp_gauge.ChangeGauge(hp, maxhp);
+    if (ImGui::Button("Death")) {
+        Death();
     }
 
 	static int slowtime = 300;
@@ -717,7 +717,22 @@ void Player::Impl::Damage(int atk) {
     hp -= atk;
 
     m_hp_gauge.ChangeGauge(hp, maxhp);
+
+    // hpが無くなれば死亡処理
+    if (hp <= 0) {
+        Death();
+    }
     
+}
+
+void Player::Impl::Death() {
+    // 武器、影を非表示にする
+    m_Owner->m_live = false;
+    m_weapon->SetLive(false);
+    m_Owner->m_Shadow->SetLive(false);
+    m_weapon->SetTrailLive(false);
+    hp = 0;
+    m_hp_gauge.ChangeGauge(hp, maxhp);
 }
 
 void Player::Impl::Guard() {
@@ -781,16 +796,6 @@ void Player::Impl::Parry() {
 
     m_Owner->m_Scale = { 1.0f, 1.0f, 1.0f };// 元に戻す
 
-    // パリィエフェクト再生
-    EffectParams param;
-
-    //エフェクトパラメーター構造体設定
-	Vector3 pos = m_Owner->m_Position + (m_Owner->radius * 6 * m_Owner->AngleToForward(m_Owner->m_ForwardRotation)); // プレイヤーの前方にエフェクトを出す、距離はプレイヤーの前進距離に応じて調整
-    param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x * 3);
-    param.scale = m_Owner->m_Scale * 30;
-    param.maxLife = 30;
-    EffectManager::GetInstance()->Play(EFFECT_SHOCKWAVE, param);
-
     Sound::GetInstance()->Play(SOUND_SE_PLAYERJUSTGUARD);
 
     m_Camera->StartVibration(10.0f, PI * 0.5f, 5);// カメラを揺らす
@@ -842,6 +847,16 @@ void Player::Impl::UpdateAttack() {
 			// 攻撃時間が5フレーム時にスタンさせる
             if (m_weapon->GetAttackTime() == 5) {
                 m_target->Stun();
+
+                // パリィエフェクト再生
+                EffectParams param;
+
+                //エフェクトパラメーター構造体設定
+                Vector3 pos = m_Owner->m_Position + (m_Owner->radius * 3 * m_Owner->AngleToForward(m_Owner->m_ForwardRotation)); // プレイヤーの前方にエフェクトを出す、距離はプレイヤーの前進距離に応じて調整
+                param.pos = EffectManager::ToCameraEffectPos(pos, m_Owner->radius * m_Owner->m_Scale.x * 3);
+                param.scale = m_Owner->m_Scale * 30;
+                param.maxLife = 30;
+                EffectManager::GetInstance()->Play(EFFECT_SHOCKWAVE, param);
             }
         }
 

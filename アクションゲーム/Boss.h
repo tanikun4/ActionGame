@@ -30,7 +30,6 @@ public:
 	void SetDEF(int _def);
 	void ShotBullet();
 	void Stun();
-	void SetNotUpdate(bool _notupdate);
 	Sword* GetWeapon();
 	int GetHP();
 	void HitObject(Object* ob) override {

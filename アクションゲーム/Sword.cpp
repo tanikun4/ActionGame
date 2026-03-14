@@ -560,8 +560,6 @@ void Sword::SetPosition(Vector3 pos)
 {
 	m_Position = pos;
 
-	// Y座標を地形に合わせて変更
-
 	// Groundの頂点データを取得
 	vector<Ground*> grounds = Game::GetInstance()->GetObjects<Ground>();
 	vector<VERTEX_3D> vertices;
@@ -585,18 +583,6 @@ void Sword::SetPosition(Vector3 pos)
 
 		Vector3 cp; // 接触点
 
-//		Vector3 start = m_Position;
-//		Vector3 end = m_Position;
-//		start.y -= 100;;
-//		end.y += 100;
-//		Collision::Segment collisionSegment = { start, end };
-//		if (Collision::CheckHit(collisionSegment, collisionPolygon, cp))
-//		{
-//
-////			m_Position.y = cp.y; // 接触点のちょっとだけ上をPoleのY座標とする
-//			int a = 4;
-//		}
-
 		Collision::Line line = { m_Position , Vector3(0,1,0) };
 		if (Collision::CheckHit(line, collisionPolygon, cp))
 		{
@@ -609,6 +595,11 @@ void Sword::SetPosition(Vector3 pos)
 
 void Sword::SetTrailColor(Vector4 color) {
 	m_EffectTrail->SetColor(color);
+}
+
+void Sword::SetTrailLive(bool live)
+{ 
+	m_EffectTrail->SetLive(live); 
 }
 
 Collision::ColliderVariant Sword::GetCollision() const{
