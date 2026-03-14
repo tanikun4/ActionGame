@@ -99,7 +99,7 @@ void Game::Update()
 	}
 	else if (m_Instance->slow)//スローモーション処理
 	{
-		//3フレームに1回オブジェクトを更新する
+		//偶数フレームでオブジェクトを更新する
 		updateObjects = (m_Instance->slow_frame & 1) == 0;
 		updateEffects = updateObjects;
 

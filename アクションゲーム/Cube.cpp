@@ -217,18 +217,11 @@ void Cube::Update() {
 void Cube::UpdateCube()
 {
 
-	//m_Rotation.x += 0.01;
-	//m_Rotation.z += 0.01;
-	//m_Rotation.y += 0.01;
 
 	m_fLength[0] = m_Scale.x * m_length.x;
 	m_fLength[1] = m_Scale.y * m_length.y;
 	m_fLength[2] = m_Scale.z * m_length.z;
 
-	Matrix r = Matrix::CreateFromYawPitchRoll(m_Rotation.y, m_Rotation.x, m_Rotation.z);
-	m_NormaDirect[0] = Vector3(r._11, r._12, r._13);
-	m_NormaDirect[1] = Vector3(r._21, r._22, r._23);
-	m_NormaDirect[2] = Vector3(r._31, r._32, r._33);
 }
 
 void Cube::Draw()
@@ -280,24 +273,16 @@ void Cube::Uninit()
 
 }
 
-DirectX::SimpleMath::Vector3 Cube::GetDirect(int elem) const{
-	return m_NormaDirect[elem];
-}
-
 float Cube::GetLen(int elem) const {
 	return m_fLength[elem];
 }
 
-DirectX::SimpleMath::Vector3 Cube::GetPos() const{
-	return m_Position;
-}
-
 Collision::ColliderVariant Cube::GetCollision() const {
-	return Collision::OBB{ m_Position, m_Rotation, Vector3(GetLen(0),GetLen(1),GetLen(2)) };
+	return Collision::OBB{ m_Position, m_Rotation, m_length * m_Scale};
 }
 
 Collision::OBB Cube::GetOBB() const {
-	return Collision::OBB{ m_Position, m_Rotation, Vector3(GetLen(0),GetLen(1),GetLen(2)) };
+	return Collision::OBB{ m_Position, m_Rotation, m_length * m_Scale};
 }
 
 void Cube::SetColor(const DirectX::SimpleMath::Vector4& color)

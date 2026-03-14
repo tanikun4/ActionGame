@@ -68,10 +68,8 @@ struct Gauge
 		if (!gaugeTex || !backTex) return;
         gaugeTex->Uninit();
         backTex->Uninit();
-		Game::GetInstance()->DeleteObject(gaugeTex);
-        Game::GetInstance()->DeleteObject(backTex);
-		gaugeTex = nullptr;
-		backTex = nullptr;
+		gaugeTex->SetLive(false);
+        backTex->SetLive(false);
     }
 
     void SetLive(bool _live) 

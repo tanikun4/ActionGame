@@ -14,7 +14,7 @@ namespace Collision
         if (hit) {
             a.SetCollisionResult(result);
 
-			result.normal = -result.normal; // 法線ベクトルを反転
+			//result.normal = -result.normal; // 法線ベクトルを反転
             b.SetCollisionResult(result);
         }
         return hit;

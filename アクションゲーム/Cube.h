@@ -14,7 +14,6 @@ class Cube :
 	public Object , public ICollider
 { 
 protected:
-	DirectX::SimpleMath::Vector3 m_NormaDirect[3] = { {1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f} };   // 方向ベクトル
 	float m_fLength[3] = {10.0f,10.0f,10.0f};             // 各軸方向の長さ
 
 	// 描画の為の情報（メッシュに関わる情報）
@@ -33,8 +32,6 @@ public:
 	Cube(Camera* cam); // コンストラクタ
 	Cube(); // コンストラクタ
 	~Cube();//デストラクタ
-	DirectX::SimpleMath::Vector3 GetPos() const;
-	DirectX::SimpleMath::Vector3 GetDirect(int elem) const;   // 指定軸番号の方向ベクトルを取得
 	float GetLen(int elem) const;							  // 指定軸方向の長さを取得
 
 	void InitCube();
