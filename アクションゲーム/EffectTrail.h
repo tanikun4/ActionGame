@@ -42,11 +42,7 @@ private:
     void AddInterpolatedPoint(const DirectX::SimpleMath::Vector3& prevBase, const DirectX::SimpleMath::Vector3& prevTip,
         const DirectX::SimpleMath::Vector3& newBase, const DirectX::SimpleMath::Vector3& newTip);
 
-    void AddPointCatmullRom(const DirectX::SimpleMath::Vector3& newBase, const DirectX::SimpleMath::Vector3& newTip);
-
-    void AddPointBezier(const DirectX::SimpleMath::Vector3& newBase, const DirectX::SimpleMath::Vector3& newTip);
-    DirectX::SimpleMath::Vector3 BezierCubic(const DirectX::SimpleMath::Vector3& P0, const DirectX::SimpleMath::Vector3& P1, const  DirectX::SimpleMath::Vector3& P2, const  DirectX::SimpleMath::Vector3& P3, float t);
-
+    // ï‚ä‘åvéZÇçsÇ§ä÷êî
     DirectX::SimpleMath::Vector3 CatmullRom(
         const DirectX::SimpleMath::Vector3& p0,
         const DirectX::SimpleMath::Vector3& p1,

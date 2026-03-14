@@ -321,14 +321,14 @@
     <ClCompile Include="EnemyManager.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessManager.cpp">
+      <Filter>ソース ファイル\Manager</Filter>
+    </ClCompile>
     <ClCompile Include="BlurManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Manager</Filter>
     </ClCompile>
     <ClCompile Include="BloomManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="PostProcessManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -397,9 +397,6 @@
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>ソース ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshRenderer.h">
-      <Filter>ソース ファイル\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>ソース ファイル\Game</Filter>
@@ -587,17 +584,20 @@
     <ClInclude Include="EnemyManager.h">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="BlurManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="BloomManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>ソース ファイル\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="RenderTarget.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="BlurManager.h">
+      <Filter>ソース ファイル\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BloomManager.h">
+      <Filter>ソース ファイル\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>ソース ファイル\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
