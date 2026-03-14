@@ -63,7 +63,7 @@ void Texture2D::Init()
 	m_IndexBuffer.Create(indices);
 
 	// シェーダオブジェクト生成
-	m_Shader.Create("shader/unlitTextureVS.hlsl", "shader/EffectTexturePS.hlsl");//"shader/unlitTexturePS.hlsl");
+	m_Shader.Create("shader/unlitTextureVS.hlsl", "shader/EffectTexturePS.hlsl");
 
 	// マテリアル情報取得
 	m_Materiale = std::make_unique<Material>();
@@ -192,16 +192,8 @@ void Texture2D::SetUV(const float& nu, const float& nv, const float& sx, const f
 	m_SplitY = sy;
 }
 
-// 色を指定
-//void Texture2D::SetColor(const DirectX::SimpleMath::Vector4& color) 
-//{ 
-//	m_color = color; 
-//	for (auto& v : m_Vertices)
-//		v.color = m_color;
-//	m_VertexBuffer.Modify(m_Vertices);
-//}
 
-//色を変える(フェードが透明にならないバグがあるので、現在はコメントアウト)
+//色を変える
 void Texture2D::SetColor(const DirectX::SimpleMath::Vector4& color) 
 {
 	m_Materiale.get()->SetDiffuse(color);

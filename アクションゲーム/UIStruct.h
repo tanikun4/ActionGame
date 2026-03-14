@@ -68,8 +68,6 @@ struct Gauge
 		if (!gaugeTex || !backTex) return;
         gaugeTex->Uninit();
         backTex->Uninit();
-		gaugeTex->SetLive(false);
-        backTex->SetLive(false);
     }
 
     void SetLive(bool _live) 

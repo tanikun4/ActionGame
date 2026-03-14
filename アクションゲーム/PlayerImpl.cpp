@@ -118,6 +118,7 @@ void Player::Impl::Uninit() {
     m_weapon->SetOwner(nullptr);
     m_weapon = nullptr;
 	m_hp_gauge.Uninit();
+	m_Owner->m_Shadow = nullptr;
 }
 
 void Player::Impl::SetGauge() {

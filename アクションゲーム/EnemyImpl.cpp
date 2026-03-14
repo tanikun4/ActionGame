@@ -171,6 +171,7 @@ void Enemy::Impl::Uninit()
 	m_weapon->StanceEnd();
 	m_AngleAnim.Reset();
 	m_ArcAnim.Reset();
+	m_Owner->m_Shadow = nullptr;
 
 }
 
@@ -1379,11 +1380,6 @@ void Enemy::Impl::Stun()
 	m_weapon->Stance(10, StanceMode::VERTICAL);// c‚É\‚¦‚é
 	m_Owner->m_State = STUN;
 	m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
-	/*if (knockbackDir) {
-		m_Owner->m_ForwardRotation.y = knockbackDir.value().y;
-		m_Owner->m_Rotation.y = m_Owner->m_ForwardRotation.y;
-
-	}*/
 	m_Owner->m_Rotation.x -= PI / 8;//­‚µã‚É‹Â‚¯”½‚é
 }
 
@@ -1454,11 +1450,9 @@ void Enemy::Impl::DistanceMove() {
 void Enemy::Impl::Move() {
 	if (m_rushFg) {
 		m_Owner->m_Velocity_f = move_speed * 8;
-		//m_Owner->m_Rotation.x += 0.2f;
 	}
 	else {
 		m_Owner->m_Velocity_f = move_speed;
-		//m_Owner->m_Rotation.x += 0.025f;
 	}
 
 	if (m_Owner->m_Rotation.x > PI * 2) m_Owner->m_Rotation.x -= PI * 2;

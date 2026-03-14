@@ -17,6 +17,5 @@ public:
 
 	void Update(); // 更新
 
-	void SetScore(int c);//スコアを設定
 };
 

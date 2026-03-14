@@ -13,6 +13,7 @@
 #include "ICollider.h"
 #include "Fade.h"
 #include "ActionInput.h"
+#include "EffectTrail.h"
 
 #include "DebugUI.h"
 
@@ -67,13 +68,13 @@ void TitleScene::Init()
 	boss->SetTarget(player);
 	boss->ReInit();
 
-	for (int i = 0; i < 3; i++) {
-		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //弾
-		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects.back()); //弾
-		bullet->SetState(0); // //弾を非表示
-	}
+	//for (int i = 0; i < 3; i++) {
+	//	m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //弾
+	//	Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects.back()); //弾
+	//	bullet->SetState(0); // //弾を非表示
+	//}
 
-	std::vector<Sword*> weapons = Game::GetInstance()->GetObjects<Sword>();
+	vector<Sword*> weapons = Game::GetInstance()->GetObjects<Sword>();
 	m_MySceneObjects.insert(
 		m_MySceneObjects.end(),    // 挿入位置
 		weapons.begin(),        // 挿入する範囲の開始
@@ -81,7 +82,7 @@ void TitleScene::Init()
 	);
 
 	// 飛び道具の取得
-	std::vector<Projectile*> projectiles = Game::GetInstance()->GetObjects<Projectile>();
+	vector<Projectile*> projectiles = Game::GetInstance()->GetObjects<Projectile>();
 	m_MySceneObjects.insert(
 		m_MySceneObjects.end(),    // 挿入位置
 		projectiles.begin(),        // 挿入する範囲の開始
@@ -139,14 +140,6 @@ void TitleScene::Update()
 		if (count == 60) {
 			press_enterkey->SetLive(false);
 
-			//エフェクト版press enter key
-
-			//EffectParams param;
-			//param.scale = DirectX::SimpleMath::Vector3(114.0f, 64.0f, 0.0f);
-			//param.maxLife = 60;
-			//param.pos = DirectX::SimpleMath::Vector3(0.0f, -27.0f, 0.0f);
-			//param.scale = DirectX::SimpleMath::Vector3(80.0f, 16.0f, 0.0f);
-			//EffectManager::GetInstance()->Play(PRESS_ENTERKEY, param);
 		}
 	}
 
@@ -170,15 +163,27 @@ void TitleScene::Update()
 // 終了処理
 void TitleScene::Uninit()
 {
-
 	for (auto& o : m_MySceneObjects) {//ループ中にポインタを削除するとバグるので、終了処理のみを先に行う
 		if (o) o->Uninit();
 	}
 	// このシーンのオブジェクトを削除する
 	for (auto& o : m_MySceneObjects) {
 		if (o) Game::GetInstance()->DeleteObject(o);
-		o = nullptr;
 	}
+
+	vector<Texture2D*> tex = Game::GetInstance()->GetObjects<Texture2D>();
+
+	// 残っているテクスチャオブジェクトを削除する
+	for (auto& o : tex) {
+		if (o) Game::GetInstance()->DeleteObject(o);
+	}
+
+	vector<EffectTrail*> trail = Game::GetInstance()->GetObjects<EffectTrail>();
+	// 軌跡のオブジェクトを削除する
+	for (auto& o : trail) {
+		if (o) Game::GetInstance()->DeleteObject(o);
+	}
+
 	m_MySceneObjects.clear();
 	WallManager::GetInstance().ClearPointer();
 }

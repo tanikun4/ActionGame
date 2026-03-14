@@ -203,6 +203,7 @@ void Boss::Impl::Uninit()
 	m_ArcAnim.Reset();
 	m_hp_gauge.Uninit();
 	m_guard_gauge.Uninit();
+	m_Owner->m_Shadow = nullptr;
 }
 
 void Boss::Impl::ReInit() {

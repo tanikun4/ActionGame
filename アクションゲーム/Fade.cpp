@@ -7,7 +7,7 @@ std::unique_ptr<Fade> Fade::m_Instance = nullptr;
 
 void Fade::Init(Camera* cam) 
 {
-	//m_Instance = std::make_unique<Fade>();
+	// ‚±‚Ì•û–@‚Åì¬‚·‚é‚±‚Æ‚É‚æ‚èAGame‚ÉˆË‘¶‚µ‚È‚¢“Æ—§«‚ğ‚Á‚Ä“®‚¯‚é
 	fadetex = std::make_unique<Texture2D>(cam);
 	fadetex->Init();
 	fadetex->SetTexture("assets/texture/fade.png");

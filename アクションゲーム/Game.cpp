@@ -282,10 +282,12 @@ void Game::DeleteObject(Object* pt)
 // オブジェクトをすべて削除する
 void Game::DeleteAllObject()
 {
+	int count = 0;
 	// オブジェクト終了処理
 	for (auto& o : m_Instance->m_Objects)
 	{
 		o->Uninit();
+		count++;
 	}
 
 	m_Instance->m_Objects.clear(); //全て削除

@@ -13,6 +13,8 @@
 #include "WallManager.h"
 #include "ICollider.h"
 #include "EffectManager.h"
+#include "EffectTrail.h"
+#include "UIStruct.h"
 //#include "Skydome.h"
 #include "Fade.h"
 
@@ -36,8 +38,7 @@ Stage1Scene::~Stage1Scene()
 // 初期化
 void Stage1Scene::Init()
 {
-	Sound::GetInstance()->SetMasterVolume(1.0f); // 全体音量を100%に
-
+	// 乱数を初期化
 	srand((unsigned)time(NULL));
 
 	// オブジェクトを作成
@@ -63,14 +64,12 @@ void Stage1Scene::Init()
 	EnemyManager::GetInstance().Init();
 	EnemyManager::GetInstance().AddEnemys();
 
-
 	// プレイヤーの配置
 	player = Game::GetInstance()->AddObject<Player>();
 	m_MySceneObjects.emplace_back(player);
 	player->SetDemoMode(false);
 
 	// 敵の配置
-	//EnemyManager::GetInstance().SetEnemy(5, { (groundsize.x - 50) * 0.5f,30,(groundsize.y - 50) * 0.5f });
 	EnemyManager::GetInstance().SetTarget(player);
 
 	// 敵の取得
@@ -85,13 +84,6 @@ void Stage1Scene::Init()
 	m_MySceneObjects.emplace_back(boss);
 	boss->SetTarget(player);
 	boss->SetLive(false); // 最初は非表示
-
-	// 弾の取得
-	for (int i = 0; i < 3; i++) {
-		m_MySceneObjects.emplace_back(Game::GetInstance()->AddObject<Bullet>()); //弾
-		Bullet* bullet = dynamic_cast<Bullet*>(m_MySceneObjects.back()); //弾
-		bullet->SetState(0); // //弾を非表示
-	}
 
 	// 武器の取得
 	vector<Sword*> weapons = Game::GetInstance()->GetObjects<Sword>();
@@ -247,8 +239,21 @@ void Stage1Scene::Uninit()
 	// このシーンのオブジェクトを削除する
 	for (auto& o : m_MySceneObjects) {
 		if(o) Game::GetInstance()->DeleteObject(o);
-		o = nullptr;
 	}
+
+	vector<Texture2D*> tex = Game::GetInstance()->GetObjects<Texture2D>();
+
+	// 残っているテクスチャオブジェクトを削除する
+	for (auto& o : tex) {
+		if (o) Game::GetInstance()->DeleteObject(o);
+	}
+
+	vector<EffectTrail*> trail = Game::GetInstance()->GetObjects<EffectTrail>();
+	// 軌跡のオブジェクトを削除する
+	for (auto& o : trail) {
+		if (o) Game::GetInstance()->DeleteObject(o);
+	}
+
 	EnemyManager::GetInstance().Uninit();
 	m_MySceneObjects.clear();
 	WallManager::GetInstance().ClearPointer();
