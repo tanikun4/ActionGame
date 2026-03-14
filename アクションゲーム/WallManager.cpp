@@ -21,16 +21,18 @@ void WallManager::SetWall(const Vector2& groundsize, vector<Object*>& _scene_obj
 
 	// 上辺（+Z側）
 	Cube* top = Game::GetInstance()->AddObject<Cube>();
-	top->SetScale(Vector3(groundsize.x * 0.05f, scaleY, thickness)); // X幅は地面いっぱい、Zは薄く
+	top->SetScale(Vector3(thickness, scaleY, groundsize.y * 0.05f)); // X幅は地面いっぱい、Zは薄く
 	top->SetPosition(Vector3(-halfX * 0.1f, scaleY * 10.0f, halfZ + halfZ * 0.1f)); // Yは高さ調整
+	top->SetRotation(Vector3(0, PI * 0.5f, 0)); // 90度回転してZ方向に向ける
 	top->SetColor(color);
 	_scene_object.emplace_back(top);
 	walls.emplace_back(top);
 
 	// 下辺（-Z側）
 	Cube* bottom = Game::GetInstance()->AddObject<Cube>();
-	bottom->SetScale(Vector3(groundsize.x * 0.05f, scaleY, thickness));
+	bottom->SetScale(Vector3(thickness, scaleY, groundsize.y * 0.05f));
 	bottom->SetPosition(Vector3(-halfX * 0.1f, scaleY * 10.0f, -halfZ));
+	bottom->SetRotation(Vector3(0, PI * 0.5f, 0)); // 90度回転してZ方向に向ける
 	bottom->SetColor(color);
 	_scene_object.emplace_back(bottom);
 	walls.emplace_back(bottom);
@@ -80,13 +82,13 @@ void WallManager::DebugWallStatus() {//壁の大きさや位置を操作する
 	static Vector3 wall_pos{};
 	ImGui::SliderFloat3("WallPosition", &wall_pos.x, -100.0f, 100.0f);
 
-	static Vector4 wall_color{ 1,1,1,0.5f };
+	static Vector4 wall_color{ 1,1,1,1 };
 	ImGui::SliderFloat4("WallColor", &wall_color.x, 0.0f, 1.0f);
 
 	if (ImGui::Button("Reset Status")) {
 		wall_size = Vector3(0, 0, 0);
 		wall_pos = Vector3(0, 0, 0);
-		wall_color = Vector4(1, 1, 1, 0.5f);
+		wall_color = Vector4(1, 1, 1, 1);
 	}
 
 	vector<Cube*> cube = Game::GetInstance()->GetObjects<Cube>();

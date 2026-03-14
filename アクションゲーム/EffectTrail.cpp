@@ -193,13 +193,6 @@ void EffectTrail::AddInterpolatedPoint(const Vector3& prevBase, const Vector3& p
     m_Change = true;
 }
 
-// Cubic BezierŒvZA‚±‚¿‚ç‚Íg‚Á‚Ä‚¢‚È‚¢
-Vector3 EffectTrail::BezierCubic(const Vector3& P0, const Vector3& P1, const Vector3& P2, const Vector3& P3, float t)
-{
-    float u = 1.0f - t;
-    return u * u * u * P0 + 3 * u * u * t * P1 + 3 * u * t * t * P2 + t * t * t * P3;
-}
-
 void EffectTrail::Draw()
 {
 

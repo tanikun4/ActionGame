@@ -23,7 +23,7 @@ void Shader::Create(std::string vs, std::string ps)
 	// 頂点シェーダーオブジェクトを生成、同時に頂点レイアウトも生成
 	bool sts = CreateVertexShader(device,
 			vs.c_str(),
-			"vs_main",
+			"main",
 			"vs_5_0",
 			layout,
 			numElements,
@@ -38,7 +38,7 @@ void Shader::Create(std::string vs, std::string ps)
 	sts = CreatePixelShader(			// ピクセルシェーダーオブジェクトを生成
 		device,							// デバイスオブジェクト
 		ps.c_str(),
-		"ps_main",
+		"main",
 		"ps_5_0",
 		&m_pPixelShader);
 	if (!sts) {

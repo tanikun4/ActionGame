@@ -10,7 +10,7 @@ struct VS_OUT
     float2 uv : TEXCOORD0;
 };
 
-VS_OUT vs_main(VS_IN vin)
+VS_OUT main(VS_IN vin)
 {
     VS_OUT vout;
     vout.pos = float4(vin.pos, 1.0f);

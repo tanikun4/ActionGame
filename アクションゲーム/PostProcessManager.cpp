@@ -164,7 +164,7 @@ void PostProcessManager::CreateFullscreenQuad(ID3D11Device* device)
     bool sts = CreateVertexShader(
         device,
         "shader/FullScreenVS.hlsl",  
-        "vs_main",                       
+        "main",                       
         "vs_5_0",
         layout,
         2,

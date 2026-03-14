@@ -11,7 +11,7 @@ cbuffer BloomParam : register(b0)
     float Padding[3];
 };
 
-float4 ps_main(float4 pos : SV_POSITION, float2 uv : TEXCOORD) : SV_TARGET
+float4 main(float4 pos : SV_POSITION, float2 uv : TEXCOORD) : SV_TARGET
 {
     float3 scene = SceneTex.Sample(Samp, uv).rgb;
     float3 bloom = BloomTex.Sample(Samp, uv).rgb;
