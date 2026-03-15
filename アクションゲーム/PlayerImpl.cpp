@@ -483,19 +483,19 @@ void Player::Impl::Move() {
 
 // 移動方向の設定、ActionInput側で指定するようになったので没
 float Player::Impl::SetMoveDirection() {
-    bool w = Input::GetKeyPress(VK_W);
-    bool s = Input::GetKeyPress(VK_S);
-    bool a = Input::GetKeyPress(VK_A);
-    bool d = Input::GetKeyPress(VK_D);
+    //bool w = Input::GetKeyPress(VK_W);
+    //bool s = Input::GetKeyPress(VK_S);
+    //bool a = Input::GetKeyPress(VK_A);
+    //bool d = Input::GetKeyPress(VK_D);
 
-    if (w && a) return 3.0f * PI / 4.0f; // 前左
-    if (w && d) return 5.0f * PI / 4.0f; // 前右
-    if (s && a) return PI / 4.0f; // 後ろ左
-    if (s && d) return 7.0f * PI / 4.0f; // 後ろ右
-    if (w)      return PI; // 前
-    if (s)      return 0.0f; // 後ろ
-    if (a)      return PI / 2.0f; // 左
-    if (d)      return 3.0f * PI / 2.0f; // 右
+    //if (w && a) return 3.0f * PI / 4.0f; // 前左
+    //if (w && d) return 5.0f * PI / 4.0f; // 前右
+    //if (s && a) return PI / 4.0f; // 後ろ左
+    //if (s && d) return 7.0f * PI / 4.0f; // 後ろ右
+    //if (w)      return PI; // 前
+    //if (s)      return 0.0f; // 後ろ
+    //if (a)      return PI / 2.0f; // 左
+    //if (d)      return 3.0f * PI / 2.0f; // 右
 
     return -1.0f;
 }

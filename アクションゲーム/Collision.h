@@ -169,35 +169,14 @@ namespace Collision
 		float rayLength,
 		const OBB& obb); // OBBとRayの当たり判定
 
-	// variant 版
-    //inline bool CheckHit(const ColliderVariant& a, const ColliderVariant& b, CollisionResult& out) {
-
-    //    return std::visit([&](auto&& lhs, auto&& rhs) -> bool {
-    //        return Collision::CheckHit(lhs, rhs, out); // 適切なオーバーロードが呼ばれる
-    //    }, a, b);
-    //}
-
-	// ICollider 版、衝突情報付き
-	//inline bool CheckHit(ICollider& a, ICollider& b)//処理をまとめたバージョン
-	//{
-	//	CollisionResult result;
-
-	//	bool hit = std::visit([&](auto&& lhs, auto&& rhs) -> bool {
-	//		return Collision::CheckHit(lhs, rhs, result);
-	//		}, a.GetCollision(), b.GetCollision());
-
-	//	if (hit) {
-	//		a.SetCollisionResult(result);
-	//		b.SetCollisionResult(result);
-	//	}
-	//	return hit;
-	//}
-
 	bool CompareLengthOBB(		//OBBの重なりを判定
 		const OBB& obb1,		// OBB1
 		const OBB& obb2,		// OBB2
 		const DirectX::SimpleMath::Vector3& vecseparate,		// 分離軸
 		const DirectX::SimpleMath::Vector3& vecdistance);	// 中心座標を結んだベクトル
+
+	float LenOBBtoPoint(const Cube& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
+	float LenOBBtoPoint(const OBB& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
 
 	//内積・外積
 	float Dot(const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2);
@@ -218,8 +197,6 @@ namespace Collision
 
 	DirectX::SimpleMath::Vector3 moveSphere(const Segment& capsule, const float& radius, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact, float& distance);
 	DirectX::SimpleMath::Vector3 moveSphere(const Sphere& sphere, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact);
-	float LenOBBtoPoint(const Cube& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
-	float LenOBBtoPoint(const OBB& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
 
 
 	//struct Plane {

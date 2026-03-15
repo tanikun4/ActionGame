@@ -5,10 +5,9 @@
 #include "Game.h"
 #include "imgui_impl_win32.h"
 
-Input input;
 const auto ClassName = TEXT("2025 就職作品");     //!< ウィンドウクラス名.
 const auto WindowName = TEXT("2025 就職作品");    //!< ウィンドウ名.
-//Input      Application::input;
+
 HINSTANCE  Application::m_hInst;        // インスタンスハンドル
 HWND       Application::m_hWnd;         // ウィンドウハンドル
 uint32_t   Application::m_Width;        // ウィンドウの横幅

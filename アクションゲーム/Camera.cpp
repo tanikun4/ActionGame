@@ -70,6 +70,12 @@ void Camera::Update()
 		m_Position += m_vib.Update();
 	}
 
+	//カメラの角度制限
+	if (m_CameraDirection.x >= pi * 2 || m_CameraDirection.x <= -pi * 2) m_CameraDirection.x = 0.0f;
+	if (m_CameraDirection.y >= -pi * 0.55f) m_CameraDirection.y = -pi * 0.55f;
+	else if (m_CameraDirection.y <= -pi) m_CameraDirection.y = -pi;
+
+	// レイを使った壁の透過処理
 	Vector3 start = m_Target;   // プレイヤー
 	Vector3 end = m_Position; // カメラ
 
@@ -77,11 +83,6 @@ void Camera::Update()
 	float length = dir.Length();
 
 	dir.Normalize();
-
-	//カメラの角度制限
-	if (m_CameraDirection.x >= pi * 2 || m_CameraDirection.x <= -pi * 2) m_CameraDirection.x = 0.0f;
-	if (m_CameraDirection.y >= -pi * 0.55f) m_CameraDirection.y = -pi * 0.55f;
-	else if (m_CameraDirection.y <= -pi) m_CameraDirection.y = -pi;
 
 	if (cameraInputFg)
 	{

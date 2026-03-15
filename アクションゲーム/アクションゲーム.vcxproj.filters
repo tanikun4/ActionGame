@@ -219,9 +219,6 @@
     <ClCompile Include="sound.cpp">
       <Filter>ソース ファイル\Sound</Filter>
     </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>ソース ファイル\Input</Filter>
-    </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>ソース ファイル\Shader</Filter>
     </ClCompile>
@@ -239,9 +236,6 @@
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>ソース ファイル\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Skydome.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>ソース ファイル\system\imgui</Filter>
@@ -329,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="BloomManager.cpp">
       <Filter>ソース ファイル\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionSelf.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -437,9 +434,6 @@
     <ClInclude Include="Shader.h">
       <Filter>ソース ファイル\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>ソース ファイル\Input</Filter>
-    </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>ソース ファイル\Buffer</Filter>
     </ClInclude>
@@ -469,9 +463,6 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>ソース ファイル\Object\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="Skydome.h">
-      <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>ソース ファイル\system\imgui</Filter>
@@ -598,6 +589,9 @@
     </ClInclude>
     <ClInclude Include="MeshRenderer.h">
       <Filter>ソース ファイル\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSelf.h">
+      <Filter>ソース ファイル\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

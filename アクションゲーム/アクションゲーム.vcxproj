@@ -334,6 +334,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="BloomManager.cpp" />
     <ClCompile Include="BlurManager.cpp" />
+    <ClCompile Include="CollisionSelf.cpp" />
     <ClCompile Include="EnemyImpl.cpp" />
     <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -371,7 +372,6 @@
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -383,7 +383,6 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
@@ -409,6 +408,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="BloomManager.h" />
     <ClInclude Include="BlurManager.h" />
+    <ClInclude Include="CollisionSelf.h" />
     <ClInclude Include="EnemyImpl.h" />
     <ClInclude Include="PostProcessManager.h" />
     <ClInclude Include="Projectile.h" />
@@ -458,7 +458,6 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="input.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Material.h" />
@@ -466,7 +465,6 @@
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="PlayerImpl.h" />
-    <ClInclude Include="Skydome.h" />
     <ClInclude Include="UIStruct.h" />
     <ClInclude Include="WallManager.h" />
     <ClInclude Include="WireRenderer.h" />

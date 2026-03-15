@@ -79,21 +79,13 @@ void EffectTrail::AddPoint(const Vector3& base, const Vector3& tip)
 }
 
 Vector3 EffectTrail::CatmullRom(
-    const Vector3& p0,
-    const Vector3& p1,
-    const Vector3& p2,
-    const Vector3& p3,
-    float t)
+    const Vector3& p0,const Vector3& p1,const Vector3& p2,const Vector3& p3, float t)
 {
     float t2 = t * t;
     float t3 = t2 * t;
 
-    return 0.5f * (
-        (2 * p1) +
-        (-p0 + p2) * t +
-        (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
-        (-p0 + 3 * p1 - 3 * p2 + p3) * t3
-        );
+    return 0.5f * ((2 * p1) +(-p0 + p2) * t +(2 * p0 - 5 * p1 + 4 * p2 - p3) 
+        * t2 +(-p0 + 3 * p1 - 3 * p2 + p3) * t3);
 }
 
 

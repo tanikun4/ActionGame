@@ -2,7 +2,6 @@
 
 #include    <Windows.h>
 #include    <cstdint>
-#include    "input.h"
 #include "dx11helper.h"
 //-----------------------------------------------------------------------------
 // Applicationクラス
