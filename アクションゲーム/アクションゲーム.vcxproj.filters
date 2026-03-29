@@ -324,9 +324,6 @@
     <ClCompile Include="BloomManager.cpp">
       <Filter>ソース ファイル\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionSelf.cpp">
-      <Filter>ソース ファイル\Collision</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h">
@@ -589,9 +586,6 @@
     </ClInclude>
     <ClInclude Include="MeshRenderer.h">
       <Filter>ソース ファイル\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionSelf.h">
-      <Filter>ソース ファイル\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

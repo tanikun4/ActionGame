@@ -1,7 +1,7 @@
 #pragma once
 #include <Xinput.h>
 #include <SimpleMath.h>
-
+#pragma comment (lib, "xinput.lib") //XInput‚ðŽg‚¤‚½‚ß‚É•K—v
 class GamePadState {
 public:
     void Update() {

@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include "Camera.h"
-#include "Input.h"
 #include "TitleScene.h"
 #include "Stage1Scene.h"
 #include "ResultScene.h"

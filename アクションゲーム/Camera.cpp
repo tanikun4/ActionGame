@@ -7,7 +7,6 @@
 #include "WallManager.h"
 
 using namespace DirectX::SimpleMath;
-extern Input input;//externは、元の変数が宣言されているファイルをインクルードしなくても、コンパイル時に自動で読み取ってくれる
 
 using namespace std;
 

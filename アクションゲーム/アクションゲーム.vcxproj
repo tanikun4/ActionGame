@@ -334,7 +334,6 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="BloomManager.cpp" />
     <ClCompile Include="BlurManager.cpp" />
-    <ClCompile Include="CollisionSelf.cpp" />
     <ClCompile Include="EnemyImpl.cpp" />
     <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -408,7 +407,6 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="BloomManager.h" />
     <ClInclude Include="BlurManager.h" />
-    <ClInclude Include="CollisionSelf.h" />
     <ClInclude Include="EnemyImpl.h" />
     <ClInclude Include="PostProcessManager.h" />
     <ClInclude Include="Projectile.h" />

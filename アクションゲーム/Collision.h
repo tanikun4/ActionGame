@@ -169,14 +169,12 @@ namespace Collision
 		float rayLength,
 		const OBB& obb); // OBBとRayの当たり判定
 
+
 	bool CompareLengthOBB(		//OBBの重なりを判定
 		const OBB& obb1,		// OBB1
 		const OBB& obb2,		// OBB2
 		const DirectX::SimpleMath::Vector3& vecseparate,		// 分離軸
 		const DirectX::SimpleMath::Vector3& vecdistance);	// 中心座標を結んだベクトル
-
-	float LenOBBtoPoint(const Cube& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
-	float LenOBBtoPoint(const OBB& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
 
 	//内積・外積
 	float Dot(const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2);
@@ -197,6 +195,8 @@ namespace Collision
 
 	DirectX::SimpleMath::Vector3 moveSphere(const Segment& capsule, const float& radius, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact, float& distance);
 	DirectX::SimpleMath::Vector3 moveSphere(const Sphere& sphere, const Polygon& polygon, const DirectX::SimpleMath::Vector3& contact);
+	float LenOBBtoPoint(const Cube& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
+	float LenOBBtoPoint(const OBB& obb,const DirectX::SimpleMath::Vector3& point);//OBBと点の長さ
 
 
 	//struct Plane {
