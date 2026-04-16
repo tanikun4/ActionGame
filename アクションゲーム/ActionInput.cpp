@@ -18,11 +18,12 @@ void ActionInput::Init()
     bindings[(int)Action::Dodge] = { 'J', XINPUT_GAMEPAD_B };
     bindings[(int)Action::Debug] = { 'O', XINPUT_GAMEPAD_BACK };
 	bindings[(int)Action::Enter] = { VK_RETURN, XINPUT_GAMEPAD_START };
-	// ここのコントローラ割り当ては変える、右スティックが良いかも
-    bindings[(int)Action::Up] = { VK_UP, XINPUT_GAMEPAD_LEFT_THUMB };
-    bindings[(int)Action::Down] = { VK_DOWN, XINPUT_GAMEPAD_RIGHT_THUMB };
+	// 右スティックでのカメラ操作を実装したので、右スティックボタンをロックオン操作切り替えに割り当てる
+    bindings[(int)Action::Up] = { VK_UP };
+    bindings[(int)Action::Down] = { VK_DOWN};
     bindings[(int)Action::Left] = { VK_LEFT, XINPUT_GAMEPAD_LEFT_SHOULDER };
     bindings[(int)Action::Right] = { VK_RIGHT, XINPUT_GAMEPAD_RIGHT_SHOULDER };
+	bindings[(int)Action::RockOn] = { 'R', XINPUT_GAMEPAD_RIGHT_THUMB };
 }
 
 void ActionInput::Update()

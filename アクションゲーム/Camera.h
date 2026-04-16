@@ -20,8 +20,11 @@ private:
 	DirectX::SimpleMath::Vector2 m_CameraDirection = DirectX::SimpleMath::Vector2(0, 0); //カメラの方向
 	const float pi = DirectX::XM_PI;
 	Object* m_TargetObject = nullptr; //注視点オブジェクト
+	Object* m_RockTarget = nullptr; //ロックオン対象オブジェクト
 	
 	bool cameraInputFg = false; //カメラ操作入力有効フラグ
+
+	bool rockOnFg = false; //ロックオン有効フラグ
 
 	bool CameraInput(); //カメラ操作入力処理、 trueで操作あり
 	
@@ -42,6 +45,7 @@ public:
 	void SetCamera(int mode); // カメラを設定
 	void SetDirection(DirectX::SimpleMath::Vector2 dir) { m_CameraDirection = dir; } // カメラの方向を設定
 	void SetTarget(Object& ob) { m_TargetObject = &ob; } // 注視点を設定
+	void SetRockTarget(Object& ob) { m_RockTarget = &ob; } // ロックオン対象を設定
 	void SetInputFg(bool _inputFg) { cameraInputFg = _inputFg; } //カメラ操作入力有効フラグ設定
 	void SetPosition(DirectX::SimpleMath::Vector3 _pos) { m_Position = _pos; } // カメラ位置を設定
 

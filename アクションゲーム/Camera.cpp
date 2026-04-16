@@ -52,16 +52,42 @@ void Camera::Update()
 	//ターゲットの位置を取得し、距離をとる
 	if (m_TargetObject) {
 
-		// ターゲットから一定距離後方にカメラを置く
-		
-		Vector3 offset = GetForwardVector() * m_Distance;
+		if (rockOnFg && m_RockTarget) {
+			Vector3 pPos = m_TargetObject->GetPosition();
+			Vector3 ePos = m_RockTarget->GetPosition();
 
-		Vector3 pPos = m_TargetObject->GetPosition();
+			// プレイヤー→敵方向
+			Vector3 forward = ePos - pPos;
+			forward.Normalize();
 
-		m_Position = pPos - offset;
+			// カメラ位置（プレイヤーの後ろ）
+			Vector3 offset = forward * m_Distance;
+			offset.y -= 50.0f;
+			m_Position = pPos - offset;
 
-		// カメラをターゲットに向ける
-		m_Target = pPos;
+			// 視線は中間
+			m_Target = (pPos + ePos) * 0.5f;
+
+			// カメラの前方ベクトル
+			Vector3 camForward = (m_Target - m_Position);
+			camForward.Normalize();
+
+			m_CameraDirection.x = atan2(camForward.x, camForward.z) + PI;// PIで補正しないとプレイヤー移動の前後が逆になる
+
+		}
+		else {
+			// ターゲットから一定距離後方にカメラを置く
+
+			Vector3 offset = GetForwardVector() * m_Distance;
+
+			Vector3 pPos = m_TargetObject->GetPosition();
+
+			m_Position = pPos - offset;
+
+			// カメラをターゲットに向ける
+			m_Target = pPos;
+		}
+
 	}
 
 	// カメラの振動更新
@@ -222,6 +248,23 @@ bool Camera::CameraInput() {
 		m_CameraDirection.y -= inputvector.y * sensitivity;
 		inputFg = true;
 	}
+
+	if(ActionInput::GetInstance().IsTrigger(Action::RockOn)) {
+		rockOnFg = !rockOnFg;
+		inputFg = true;
+	}
+
+	if (rockOnFg) {
+		if (ActionInput::GetInstance().IsTrigger(Action::Right)) {
+			// ロックオン対象の切り替え、進む
+			inputFg = true;
+		}
+		else if (ActionInput::GetInstance().IsTrigger(Action::Left)) {
+			// ロックオン対象の切り替え、戻る
+			inputFg = true;
+		}
+	}
+
 
 	return inputFg;
 }

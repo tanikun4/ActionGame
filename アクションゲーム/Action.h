@@ -16,6 +16,7 @@ enum class Action {
     Down,
     Left,
     Right,
+    RockOn,
 
 	ActionMax
 };

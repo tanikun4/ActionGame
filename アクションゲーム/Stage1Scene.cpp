@@ -289,7 +289,7 @@ void Stage1Scene::UpdateWaveCheck()
 	if (EnemyManager::GetInstance().GetLiveEnemy() > 0) {
 		return;
 	}
-
+	
 	++wave;
 	if (wave == 2) {
 		wave2_text->SetLive(true);
@@ -302,6 +302,8 @@ void Stage1Scene::UpdateWaveCheck()
 		boss->SetGaugeLive(true);
 		boss_hp_text->SetLive(true);
 		boss_guard_text->SetLive(true);
+
+		Game::GetInstance()->GetCamera().SetRockTarget(*boss);
 	}
 	m_waveState = WaveState::WaveEffect;
 	framecount = 0;
