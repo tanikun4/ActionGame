@@ -21,6 +21,8 @@ void Camera::DebugCameraStatus() {
 
 	ImGui::SliderFloat("Distance", &m_Distance, 0, 500);
 
+	ImGui::SliderFloat3("RockOn Offset", &m_LockOnOffset.x, 0, 100);
+
 	ImGui::LabelText("Forward", "(%.2f, %.2f, %.2f)", forward.x, forward.y, forward.z);
 
 	ImGui::End();
@@ -52,9 +54,16 @@ void Camera::Update()
 	//ターゲットの位置を取得し、距離をとる
 	if (m_TargetObject) {
 
-		if (rockOnFg && m_RockTarget) {
+		if (lockOnFg && m_LockTarget) {
 			Vector3 pPos = m_TargetObject->GetPosition();
-			Vector3 ePos = m_RockTarget->GetPosition();
+			Vector3 ePos;
+
+			if (cloneLockFg) {
+			    ePos = m_CloneLockPos;
+			}
+			else {
+				ePos = m_LockTarget->GetPosition();
+			}
 
 			// プレイヤー→敵方向
 			Vector3 forward = ePos - pPos;
@@ -62,7 +71,7 @@ void Camera::Update()
 
 			// カメラ位置（プレイヤーの後ろ）
 			Vector3 offset = forward * m_Distance;
-			offset.y -= 50.0f;
+			offset -= m_LockOnOffset;
 			m_Position = pPos - offset;
 
 			// 視線は中間
@@ -250,11 +259,11 @@ bool Camera::CameraInput() {
 	}
 
 	if(ActionInput::GetInstance().IsTrigger(Action::RockOn)) {
-		rockOnFg = !rockOnFg;
+		lockOnFg = !lockOnFg;
 		inputFg = true;
 	}
 
-	if (rockOnFg) {
+	if (lockOnFg) {
 		if (ActionInput::GetInstance().IsTrigger(Action::Right)) {
 			// ロックオン対象の切り替え、進む
 			inputFg = true;
@@ -267,4 +276,10 @@ bool Camera::CameraInput() {
 
 
 	return inputFg;
+}
+
+void Camera::SetCloneLock(bool lock)
+{
+	cloneLockFg = lock;
+	if (cloneLockFg) m_CloneLockPos = m_LockTarget->GetPosition();
 }

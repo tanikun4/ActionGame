@@ -143,7 +143,11 @@ void Enemy::Impl::Update() {
 		++invicount;
 	}
 
-	if (invicount > 20) {
+	if (invicount == 9) {
+		m_Owner->m_Scale = { 1.0f, 1.0f, 1.0f };// スケールを元に戻す
+	}
+
+	if (invicount > 18) {
 		inviFg = false;
 		invicount = 0;
 		m_Owner->SetColor(Vector4(1, 0, 0, 1));
@@ -213,6 +217,8 @@ void Enemy::Impl::Damage(int _atk) {
 	inviFg = true;
 	//m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 	m_Owner->SetColor(Vector4(1, 1, 1, 0.5));
+
+	m_Owner->m_Scale = { 1.3f, 1.0f, 0.7f };// ダメージを受けたら少し変形する
 
 	//左から右へ移動するエフェクト再生
 	Vector3 pos = m_Owner->m_Position;

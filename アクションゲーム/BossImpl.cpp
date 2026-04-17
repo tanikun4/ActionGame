@@ -165,6 +165,11 @@ void Boss::Impl::Update() {
 	if (inviFg) {
 		++invicount;
 	}
+
+	if (invicount == 9) {
+		m_Owner->m_Scale = { 2.0f, 2.0f, 2.0f };// スケールを元に戻す
+	}
+
 	if (invicount > 18) {
 		inviFg = false;
 		invicount = 0;
@@ -248,6 +253,8 @@ void Boss::Impl::Damage(int _atk) {
 	inviFg = true;
 	//m_Owner->m_Velocity_f = 0.0f;//移動速度を0にする
 	m_Owner->SetColor(Vector4(1, 1, 1, 0.5));
+
+	m_Owner->m_Scale = { 2.6f, 2.0f, 1.4f };// ダメージを受けたら少し変形する
 
 	//左から右へ移動するエフェクト再生
 	Vector3 pos = m_Owner->m_Position;
@@ -1340,6 +1347,7 @@ void Boss::Impl::AlterEgoShot()
 		m_Owner->is_SPECIALMOVE = true;
 		m_Owner->m_Shadow->SetLive(false);// 分身中は影を消す
 		m_attackPhase = AttackPhase::PREPARE;
+		Game::GetInstance()->GetCamera().SetCloneLock(true);// ロックオン座標を固定する
 	}
 	// 準備フェーズ、一定フレーム経過後、攻撃フェーズに
 	if (m_attackPhase == AttackPhase::PREPARE) {
@@ -1379,6 +1387,7 @@ void Boss::Impl::AlterEgoShot()
 		++m_attackcount;
 		m_attackPhase = AttackPhase::RECOVER;
 		m_Owner->m_Shadow->SetLive(true); // 分身終了、影を戻す
+		Game::GetInstance()->GetCamera().SetCloneLock(false);// ロックオン固定解除
 		//// 2回発射したら硬直へ
 		//if (m_attackcount >= 2) {
 		//	m_attackPhase = AttackPhase::RECOVER;

@@ -706,7 +706,7 @@ void Player::Impl::Damage(int atk) {
         m_weapon->SwingEnd();
         Sound::GetInstance()->Play(SOUND_SE_PLAYERHIT);
 
-        m_Owner->m_Scale = { 1.3f, 0.5f, 0.7f };// ダメージを受けたら少し変形する
+        m_Owner->m_Scale = { 1.3f, 1.0f, 0.7f };// ダメージを受けたら少し変形する
     }
 
     PostProcessManager::GetInstance().EnableBlur(true); // ダメージ時にブラーをかける

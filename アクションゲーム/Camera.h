@@ -17,15 +17,18 @@ private:
 	DirectX::SimpleMath::Vector3	m_Target{};
 	DirectX::SimpleMath::Matrix		m_ViewMatrix{};
 
-	DirectX::SimpleMath::Vector2 m_CameraDirection = DirectX::SimpleMath::Vector2(0, 0); //カメラの方向
+	DirectX::SimpleMath::Vector2	m_CameraDirection = DirectX::SimpleMath::Vector2(0, 0); //カメラの方向
+	DirectX::SimpleMath::Vector3	m_LockOnOffset = DirectX::SimpleMath::Vector3(0, 50.0f, 0); //ロックオン時のカメラオフセット
+	DirectX::SimpleMath::Vector3	m_CloneLockPos = DirectX::SimpleMath::Vector3(0, 0, 0);// 分身ロックオン時の位置
+
 	const float pi = DirectX::XM_PI;
 	Object* m_TargetObject = nullptr; //注視点オブジェクト
-	Object* m_RockTarget = nullptr; //ロックオン対象オブジェクト
+	Object* m_LockTarget = nullptr; //ロックオン対象オブジェクト
 	
 	bool cameraInputFg = false; //カメラ操作入力有効フラグ
 
-	bool rockOnFg = false; //ロックオン有効フラグ
-
+	bool lockOnFg = false; //ロックオン有効フラグ
+	bool cloneLockFg = false; //分身中のロックオンフラグ
 	bool CameraInput(); //カメラ操作入力処理、 trueで操作あり
 	
 	void DebugCameraStatus();
@@ -45,7 +48,7 @@ public:
 	void SetCamera(int mode); // カメラを設定
 	void SetDirection(DirectX::SimpleMath::Vector2 dir) { m_CameraDirection = dir; } // カメラの方向を設定
 	void SetTarget(Object& ob) { m_TargetObject = &ob; } // 注視点を設定
-	void SetRockTarget(Object& ob) { m_RockTarget = &ob; } // ロックオン対象を設定
+	void SetLockTarget(Object& ob) { m_LockTarget = &ob; } // ロックオン対象を設定
 	void SetInputFg(bool _inputFg) { cameraInputFg = _inputFg; } //カメラ操作入力有効フラグ設定
 	void SetPosition(DirectX::SimpleMath::Vector3 _pos) { m_Position = _pos; } // カメラ位置を設定
 
@@ -55,6 +58,7 @@ public:
 		if (cameraInputFg) m_vib.Start(amplitude, frequency, duration); // 操作有効時のみ
 	} // カメラ振動開始
 
+	void SetCloneLock(bool lock);
 	// View行列を取得する関数
 	DirectX::SimpleMath::Matrix GetViewMatrix();
 

@@ -221,12 +221,25 @@ void Cube::UpdateCube()
 	m_fLength[0] = m_Scale.x * m_length.x;
 	m_fLength[1] = m_Scale.y * m_length.y;
 	m_fLength[2] = m_Scale.z * m_length.z;
+	
+	// 透明オフ → オンになった瞬間だけ発動
+	if (m_Invisible && !m_PrevInvisible) {
+		inviFrame = 60;
+	}
+
+	// タイマー減少
+	if (inviFrame > 0) {
+		--inviFrame;
+	}
+
+	// 状態保存
+	m_PrevInvisible = m_Invisible;
 
 }
 
 void Cube::Draw()
 {
-	if (m_Invisible) return;
+	if (m_Invisible || inviFrame > 0) return;// 透明状態のときは描画しない、最低でも60フレームは透明状態になるようにする
 	DrawCube();
 }
 

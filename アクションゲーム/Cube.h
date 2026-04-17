@@ -26,7 +26,10 @@ protected:
 	Texture m_Texture; // テクスチャ
 	const DirectX::SimpleMath::Vector3 m_length = { 10.0f,10.0f,10.0f }; // 各軸方向の長さの基準値
 
+	bool m_PrevInvisible = false; // 前フレームの透明状態
 	bool m_Invisible = false;//透明かどうか
+
+	int inviFrame = 0;//透明フレーム数
 
 public:
 	Cube(Camera* cam); // コンストラクタ

@@ -303,7 +303,7 @@ void Stage1Scene::UpdateWaveCheck()
 		boss_hp_text->SetLive(true);
 		boss_guard_text->SetLive(true);
 
-		Game::GetInstance()->GetCamera().SetRockTarget(*boss);
+		Game::GetInstance()->GetCamera().SetLockTarget(*boss);
 	}
 	m_waveState = WaveState::WaveEffect;
 	framecount = 0;
