@@ -18,7 +18,7 @@ private:
 	DirectX::SimpleMath::Matrix		m_ViewMatrix{};
 
 	DirectX::SimpleMath::Vector2	m_CameraDirection = DirectX::SimpleMath::Vector2(0, 0); //カメラの方向
-	DirectX::SimpleMath::Vector3	m_LockOnOffset = DirectX::SimpleMath::Vector3(0, 50.0f, 0); //ロックオン時のカメラオフセット
+	DirectX::SimpleMath::Vector3	m_LockOnOffset = DirectX::SimpleMath::Vector3(0, 100.0f, 0); //ロックオン時のカメラオフセット
 	DirectX::SimpleMath::Vector3	m_CloneLockPos = DirectX::SimpleMath::Vector3(0, 0, 0);// 分身ロックオン時の位置
 
 	const float pi = DirectX::XM_PI;

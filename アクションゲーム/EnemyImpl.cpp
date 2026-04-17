@@ -99,6 +99,8 @@ void Enemy::Impl::Init() {
 	// 武器の軌跡色をセット
 	m_weapon->SetTrailColor({ 1,0,1,1 });
 
+	m_weapon->SetAtk(2);
+
 	attack_kind = (rand() % (KIND_MAX - 1)) + 1; // 攻撃をランダムに設定、以降固定される
 
 	// 飛び道具をセット

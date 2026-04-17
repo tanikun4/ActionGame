@@ -138,6 +138,9 @@ private:
 	void Parry();//ジャストガード処理
     void Death();
 
+    void CollisionSphere(const DirectX::SimpleMath::Vector3& normal);//球判定時の壁床処理
+	void PushOutSphere(const DirectX::SimpleMath::Vector3& normal,float radius);//球判定時の敵押し出し処理
+
 	// 回転斬り攻撃開始 
 	void SpinAttack(const int& t = 24, const int& attack_t = 18, const float& accel = 0);//全体フレーム、攻撃有効フレーム、加速度
 	// 縦回転斬り攻撃開始

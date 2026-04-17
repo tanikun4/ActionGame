@@ -146,11 +146,23 @@ vector<Texture2D*> Player::Impl::GetGauge() {
 
 //敵と当たった場合
 void Player::Impl::OnHit(Enemy* en) {
+    auto& col = m_Owner->GetLastCollision();
+
+    CollisionSphere(col.normal);
+
+    PushOutSphere(en->GetPosition(),en->GetRadius());
+
     Damage(1);
 }
 
 //ボスと当たった場合
 void Player::Impl::OnHit(Boss* bo) {
+    auto& col = m_Owner->GetLastCollision();
+
+    CollisionSphere(col.normal);
+
+    PushOutSphere(bo->GetPosition(), bo->GetRadius());
+
     Damage(1);
 }
 
@@ -165,7 +177,7 @@ void Player::Impl::OnHit(Sword* po) {
 		swordparryFg = true;//近接パリィフラグを立てる
         return; 
     }
-    Damage(2);
+    Damage(po->GetAtk());
 }
 
 //弾と当たった場合、弾は今使っていないので没状態
@@ -805,6 +817,62 @@ void Player::Impl::Parry() {
 void Player::Impl::LookAt(Vector3 ta_pos) {
     m_Owner->m_ForwardRotation.y = atan2f((ta_pos.x - m_Owner->m_Position.x), (ta_pos.z - m_Owner->m_Position.z));
     m_ta_pos = ta_pos;
+}
+
+// 衝突処理、球と当たったときの処理をまとめる
+void Player::Impl::CollisionSphere(const Vector3& normal)
+{
+    float vn = m_Owner->m_Velocity.Dot(normal);
+
+    if (vn >= 0.0f) return;
+
+    // めり込み防止（速度補正）
+    m_Owner->m_Velocity -= normal * vn;
+
+    if (normal.y > 0.6f)
+    {
+        // 床
+        m_Owner->m_Velocity.y = 0.0f;
+        m_Owner->m_Position.y = m_Owner->m_oldPos.y;
+        m_Owner->is_GROUND = true;
+    }
+    else if (normal.y < -0.6f)
+    {
+        // 天井
+        m_Owner->m_Velocity.y = 0.0f;
+    }
+    else
+    {
+        // 壁
+        m_Owner->m_Position.x = m_Owner->m_oldPos.x;
+        m_Owner->m_Position.z = m_Owner->m_oldPos.z;
+    }
+}
+
+// 球と当たったときのめり込み防止処理、指定した位置と半径の球からプレイヤーを押し出す
+void Player::Impl::PushOutSphere(const DirectX::SimpleMath::Vector3& pos, float radius) {
+    
+    Vector3 pPos = m_Owner->m_Position;
+    float pRadius = m_Owner->radius;
+
+	// プレイヤーと球の中心の差分ベクトルを求める
+    Vector3 diff = pPos - pos;
+	diff.y = 0;// 水平方向のみに押し出す
+    float dist = diff.Length();
+
+	// プレイヤーと球の半径の合計に少し余裕を持たせた距離を求める
+    float minDist = pRadius + radius + 0.01f;
+
+	// プレイヤーと球が重なっている場合、プレイヤーを押し出す
+    if (dist < minDist && dist > 0.0001f)
+    {
+        Vector3 pushDir = diff / dist;
+        float push = minDist - dist;
+
+		// プレイヤーを押し出す、XZだけ押し出す
+        m_Owner->m_Position.x += pushDir.x * push;
+        m_Owner->m_Position.z += pushDir.z * push;
+    }
 }
 
 // -------------------------

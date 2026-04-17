@@ -120,6 +120,8 @@ void Boss::Impl::Init() {
 
 	m_weapon->SetScale({ 4.0f, 4.0f, 4.0f });
 
+	m_weapon->SetAtk(2);
+
 	SetProjectile();
 
 	// ”ñ•\Ž¦‚É‚·‚é
