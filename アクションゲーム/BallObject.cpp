@@ -212,6 +212,7 @@ bool BallObject::CheckGround() {
 	float moveDistance = 9999; //ˆÚ“®‹——£
 	Vector3 contactPoint; //ÚG“_
 	Vector3 normal;
+	bool hit = false;
 
 	//ü•ª‚Æƒ|ƒŠƒSƒ“‚Ì“–‚½‚è”»’è
 	for (const auto& poly : ground_polygon)
@@ -229,8 +230,9 @@ bool BallObject::CheckGround() {
 				m_Position = np;
 				contactPoint = cp;
 				normal = Collision::GetNormal(poly);
+				hit = true;
 			}
-			return true;
+			//return true;
 		}
 	}
 
@@ -249,12 +251,13 @@ bool BallObject::CheckGround() {
 				m_Position = np;
 				contactPoint = cp;
 				normal = Collision::GetNormal(poly);
+				hit = true;
 			}
-			return true;
+			//return true;
 		}
 	}
-
-	return false;
+	return hit;
+	//return false;
 }
 
 
