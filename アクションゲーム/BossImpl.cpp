@@ -298,6 +298,9 @@ void Boss::Impl::Break()
 	m_Owner->m_State = BREAK;
 	def = -2;
 	m_Owner->m_Velocity_f = -1.0f;//後ろにノックバックする
+
+	Game::GetInstance()->GetCamera().SetVibLock(true);// ロックオン座標を固定する
+
 	m_vib.Start(1.2f, PI * 0.5f);//振動開始
 	m_weapon->AttackEnd();
 	m_weapon->Stance(10, StanceMode::VERTICAL);// 縦に構える
@@ -328,6 +331,9 @@ void Boss::Impl::Stun()
 	m_Owner->is_notUpdate = false;//動きを再開する
 	StateReset();
 	m_Owner->m_Velocity_f = -2.0f;//後ろにノックバックする
+
+	Game::GetInstance()->GetCamera().SetVibLock(true);// ロックオン座標を固定する
+	
 	m_vib.Start(1.0f, PI * 0.5f);//振動開始
 	m_weapon->AttackEnd();
 	m_weapon->Stance(10,StanceMode::VERTICAL);// 縦に構える
@@ -1349,7 +1355,7 @@ void Boss::Impl::AlterEgoShot()
 		m_Owner->is_SPECIALMOVE = true;
 		m_Owner->m_Shadow->SetLive(false);// 分身中は影を消す
 		m_attackPhase = AttackPhase::PREPARE;
-		Game::GetInstance()->GetCamera().SetCloneLock(true);// ロックオン座標を固定する
+		Game::GetInstance()->GetCamera().SetVibLock(true);// ロックオン座標を固定する
 	}
 	// 準備フェーズ、一定フレーム経過後、攻撃フェーズに
 	if (m_attackPhase == AttackPhase::PREPARE) {
@@ -1389,7 +1395,7 @@ void Boss::Impl::AlterEgoShot()
 		++m_attackcount;
 		m_attackPhase = AttackPhase::RECOVER;
 		m_Owner->m_Shadow->SetLive(true); // 分身終了、影を戻す
-		Game::GetInstance()->GetCamera().SetCloneLock(false);// ロックオン固定解除
+		Game::GetInstance()->GetCamera().SetVibLock(false);// ロックオン固定解除
 		//// 2回発射したら硬直へ
 		//if (m_attackcount >= 2) {
 		//	m_attackPhase = AttackPhase::RECOVER;
@@ -1492,8 +1498,9 @@ void Boss::Impl::AlterEgoSpinSlash()
 // 行動不能状態更新
 void Boss::Impl::StunUpdate() 
 {
-	if (m_stateframe > 10) {
+	if (m_stateframe == 10) {
 		m_Owner->m_Velocity_f = 0.0f;//10フレーム経過後ノックバック停止
+		Game::GetInstance()->GetCamera().SetVibLock(true);// ロックオン座標を再固定する
 	}
 
 	Vector3 forward;
@@ -1513,14 +1520,17 @@ void Boss::Impl::StunUpdate()
 		m_Owner->m_Rotation.x = 0;
 		m_weapon->StanceEnd();
 		m_lookatFg = true;//lookat復活
+
+		Game::GetInstance()->GetCamera().SetVibLock(false);// 座標固定を解除
 	}
 }
 
 // ガードブレイク状態更新
 void Boss::Impl::BreakUpdate()
 {
-	if (m_stateframe > 20) {
+	if (m_stateframe == 20) {
 		m_Owner->m_Velocity_f = 0.0f;//20フレーム経過後ノックバック停止
+		Game::GetInstance()->GetCamera().SetVibLock(true);// ロックオン座標を再固定する
 	}
 
 	Vector3 forward;
@@ -1543,6 +1553,8 @@ void Boss::Impl::BreakUpdate()
 		guard = maxguard;//ガード値回復
 		m_guard_gauge.ChangeGauge(guard, maxguard);
 		def = 2;//	防御力を回復
+
+		Game::GetInstance()->GetCamera().SetVibLock(false);// 座標固定を解除
 	}
 }
 

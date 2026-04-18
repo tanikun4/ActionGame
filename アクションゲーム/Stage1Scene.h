@@ -42,8 +42,8 @@ private:
 	Texture2D* wave1_text = nullptr;// Wave1文字
 	Texture2D* wave2_text = nullptr;// Wave2文字
 	Texture2D* finalwave_text = nullptr;// FinalWave文字
-	Texture2D* sousa_key_text = nullptr;// 操作説明、キー表示
-	Texture2D* sousa_cont_text = nullptr;// 操作説明文字、コントローラー表示
+	Texture2D* sousa_text = nullptr;// 操作説明、キーとコントローラ表示
+	Texture2D* sousa_lock_text = nullptr;// ロックオン操作説明
 
 	void Init(); // 初期化
 	void Uninit(); // 終了処理

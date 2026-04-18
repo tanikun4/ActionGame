@@ -19,7 +19,7 @@ private:
 
 	DirectX::SimpleMath::Vector2	m_CameraDirection = DirectX::SimpleMath::Vector2(0, 0); //カメラの方向
 	DirectX::SimpleMath::Vector3	m_LockOnOffset = DirectX::SimpleMath::Vector3(0, 100.0f, 0); //ロックオン時のカメラオフセット
-	DirectX::SimpleMath::Vector3	m_CloneLockPos = DirectX::SimpleMath::Vector3(0, 0, 0);// 分身ロックオン時の位置
+	DirectX::SimpleMath::Vector3	m_vibLockPos = DirectX::SimpleMath::Vector3(0, 0, 0);// 振動ロックオン時の位置
 
 	const float pi = DirectX::XM_PI;
 	Object* m_TargetObject = nullptr; //注視点オブジェクト
@@ -28,7 +28,7 @@ private:
 	bool cameraInputFg = false; //カメラ操作入力有効フラグ
 
 	bool lockOnFg = false; //ロックオン有効フラグ
-	bool cloneLockFg = false; //分身中のロックオンフラグ
+	bool vibLockFg = false; //振動中のロックオンフラグ
 	bool CameraInput(); //カメラ操作入力処理、 trueで操作あり
 	
 	void DebugCameraStatus();
@@ -58,7 +58,7 @@ public:
 		if (cameraInputFg) m_vib.Start(amplitude, frequency, duration); // 操作有効時のみ
 	} // カメラ振動開始
 
-	void SetCloneLock(bool lock);
+	void SetVibLock(bool lock);
 	// View行列を取得する関数
 	DirectX::SimpleMath::Matrix GetViewMatrix();
 

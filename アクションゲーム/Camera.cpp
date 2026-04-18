@@ -58,8 +58,8 @@ void Camera::Update()
 			Vector3 pPos = m_TargetObject->GetPosition();
 			Vector3 ePos;
 
-			if (cloneLockFg) {
-			    ePos = m_CloneLockPos;
+			if (vibLockFg) {
+			    ePos = m_vibLockPos;
 			}
 			else {
 				ePos = m_LockTarget->GetPosition();
@@ -278,8 +278,8 @@ bool Camera::CameraInput() {
 	return inputFg;
 }
 
-void Camera::SetCloneLock(bool lock)
+void Camera::SetVibLock(bool lock)
 {
-	cloneLockFg = lock;
-	if (cloneLockFg) m_CloneLockPos = m_LockTarget->GetPosition();
+	vibLockFg = lock;
+	if (vibLockFg) m_vibLockPos = m_LockTarget->GetPosition();
 }
