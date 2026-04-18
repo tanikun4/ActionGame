@@ -281,5 +281,5 @@ bool Camera::CameraInput() {
 void Camera::SetVibLock(bool lock)
 {
 	vibLockFg = lock;
-	if (vibLockFg) m_vibLockPos = m_LockTarget->GetPosition();
+	if (vibLockFg && m_LockTarget) m_vibLockPos = m_LockTarget->GetPosition();
 }
